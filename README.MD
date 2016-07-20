@@ -14,11 +14,12 @@
  	- Please include EFEC team members.
 	- Please include tool owner.
 
-------
+------------------------------------------------------------------------
 ### Tool list:
 
 - **ET2**
 > **EFEC Testing Tool** is a tool to help you generate and activate test account easily. Provide feature to edit host file and access freqently used links.
+> 
 > 1. [Installation](file://cns-fileserver1/Departments/11%20Public/EFEC/ET2/ET2.application) (open in IE)
 > 2. Author: EFEC QA Team
  
