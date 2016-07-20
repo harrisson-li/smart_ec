@@ -15,9 +15,9 @@
 
 ### Tool list:
 
-- **ET2**
+- [**ET2**](file://cns-fileserver1/Departments/11%20Public/EFEC/ET2/ET2.application)
 > Short for EFEC Testing Tool, it is a tool to help you generate and activate test account easily. Provide feature to edit host file and access freqently links by QA team.
->
+> 
 > Author: EFEC QA Team (Toby)
  
 
@@ -25,6 +25,5 @@
 [1]: /projects/TEST/repos/efec_tools/browse?at=develop
 [2]: /projects/TEST/repos/efec_tools/browse/C%23
 [3]: /projects/TEST/repos/efec_tools/browse/python
-
 
 
