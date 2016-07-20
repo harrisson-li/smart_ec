@@ -1,6 +1,6 @@
 ## Respository for EFEC Tools.
 
-### Note:
+### Guide:
 
 1. Please place your code to correct folder according to programming language. Example:
 
@@ -12,13 +12,15 @@
 4. Create pull request to review the change.
 
  	- Please include EFEC team members.
+	- Please include tool owner.
 
+------
 ### Tool list:
 
-- [**ET2**](file://cns-fileserver1/Departments/11%20Public/EFEC/ET2/ET2.application)
-> Short for EFEC Testing Tool, it is a tool to help you generate and activate test account easily. Provide feature to edit host file and access freqently links by QA team.
-> 
-> Author: EFEC QA Team (Toby)
+- **ET2**
+> **EFEC Testing Tool** is a tool to help you generate and activate test account easily. Provide feature to edit host file and access freqently used links.
+> 1. [Installation](file://cns-fileserver1/Departments/11%20Public/EFEC/ET2/ET2.application) (open in IE)
+> 2. Author: EFEC QA Team
  
 
 
