@@ -14,9 +14,9 @@
 
 
 
-[1]: /browse?at=develop
-[2]: /browse/C%23
-[3]: /browse/python
+[1]: /projects/TEST/repos/efec_tools/browse?at=develop
+[2]: /projects/TEST/repos/efec_tools/browse/C%23
+[3]: /projects/TEST/repos/efec_tools/browse/python
 
 
 
