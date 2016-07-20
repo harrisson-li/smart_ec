@@ -1,0 +1,427 @@
+﻿<UserControl
+    x:Class="ET2.Views.TestAccountView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:cvt="clr-namespace:ET2.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ET2.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ET2.ViewModels"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <cvt:InverseBooleanConverter x:Key="InverseBoolean" />
+            <cvt:UrlConverter x:Key="ConvertUrl" />
+
+            <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="FieldLabelStyle" TargetType="Label">
+                <Setter Property="Height" Value="29" />
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="85" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Margin="0,0,0,5">
+            <Grid>
+                <Label
+                    Width="140"
+                    Height="30"
+                    Margin="0,-5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="Member Id:  "
+                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                <TextBox
+                    Name="txtId"
+                    Width="80"
+                    Height="20"
+                    Margin="0,23,0,0"
+                    HorizontalAlignment="Left"
+                    Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    Text="{Binding Path=TestAccountVM.CurrentTestAccount.MemberId,
+                                   Mode=OneWay}" />
+                <Label
+                    Width="140"
+                    Height="30"
+                    Margin="100,-5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="User Name:"
+                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                <TextBox
+                    Name="txtName"
+                    Width="80"
+                    Height="20"
+                    Margin="100,23,0,0"
+                    HorizontalAlignment="Left"
+                    Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    IsReadOnly="True"
+                    Text="{Binding Path=TestAccountVM.CurrentTestAccount.UserName,
+                                   Mode=OneWay}" />
+                <Label
+                    Width="140"
+                    Height="30"
+                    Margin="200,-5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="Password: "
+                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                <TextBox
+                    Name="txtPw"
+                    Width="80"
+                    Height="20"
+                    Margin="200,23,0,0"
+                    HorizontalAlignment="Left"
+                    Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    IsReadOnly="True"
+                    Text="{Binding Path=TestAccountVM.CurrentTestAccount.Password,
+                                   Mode=OneWay}" />
+                <CheckBox
+                    Name="chkIsV2"
+                    Width="80"
+                    Height="20"
+                    Margin="305,5,0,0"
+                    HorizontalAlignment="Left"
+                    Click="chkIsV2_Click"
+                    Content="?v=2"
+                    FontSize="15"
+                    FontWeight="Medium"
+                    IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
+                                        Mode=TwoWay}" />
+
+                <Button
+                    Width="70"
+                    Height="30"
+                    Margin="0,10,160,10"
+                    HorizontalAlignment="Right"
+                    Controls:ButtonHelper.PreserveTextCase="True"
+                    Click="NewAccount"
+                    Content="New"
+                    Style="{DynamicResource SquareButtonStyle}" />
+                <Button
+                    Width="140"
+                    Height="30"
+                    Margin="0,10,5,10"
+                    HorizontalAlignment="Right"
+                    Controls:ButtonHelper.PreserveTextCase="True"
+                    Click="NewAndActivate"
+                    Content="New + Activate"
+                    Style="{DynamicResource AccentedSquareButtonStyle}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Margin="0,0,0,-4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="180" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <Label Content="Partner: " Style="{DynamicResource FieldLabelStyle}" />
+                    <Label Content="Product ID: " Style="{DynamicResource FieldLabelStyle}" />
+                    <TextBox
+                        Name="mainRedemptionCode"
+                        Width="133"
+                        Margin="0,0,0,2"
+                        Controls:TextBoxHelper.UseFloatingWatermark="True"
+                        Controls:TextBoxHelper.Watermark="MainRedemptionCode"
+                        IsEnabled="False"
+                        IsReadOnly="True"
+                        Text="{Binding Path=ProductVM.CurrentProduct.MainRedCode,
+                                       Mode=TwoWay}" />
+                    <Label
+                        Content="MainRedemptionCode: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Collapsed" />
+                    <Label
+                        Content="MainRedemptionQty: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Visible" />
+                    <Label
+                        Content="FreeRedemptionCode:"
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Collapsed" />
+                    <Label
+                        Content="FreeRedemptionQty: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Visible" />
+                    <Label
+                        Content="StartLevel: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Visible" />
+                    <Label
+                        Content="LevelQty:"
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
+                                            Converter={StaticResource InverseBoolean}}"
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Collapsed" />
+
+                    <Label
+                        Content="City: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Visible" />
+
+                    <Label
+                        Content="School: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Visible" />
+
+                    <Label
+                        Content="DivisionCode: "
+                        Style="{DynamicResource FieldLabelStyle}"
+                        Visibility="Collapsed" />
+                    <CheckBox
+                        Margin="0,2,0,0"
+                        Content="Security Verified"
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.SecurityVerified,
+                                            Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Left">
+                    <ComboBox
+                        Name="partner"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        IsEditable="False"
+                        ItemsSource="{Binding Path=ProductVM.PartnerList}"
+                        MaxDropDownHeight="125"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        Text="{Binding Path=ProductVM.CurrentPartner,
+                                       Mode=TwoWay}" />
+
+                    <ComboBox
+                        Name="productName"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        IsEditable="False"
+                        ItemsSource="{Binding Path=ProductVM.ProductNameList}"
+                        MaxDropDownHeight="125"
+                        SelectedItem="{Binding Path=ProductVM.ProductName,
+                                               Mode=TwoWay}"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        ToolTip="{Binding Path=ProductVM.CurrentProduct.Name,
+                                          Mode=TwoWay}" />
+                    <TextBox
+                        Name="freeRedemptionCode"
+                        Width="150"
+                        Margin="0,2,0,2"
+                        Controls:TextBoxHelper.UseFloatingWatermark="True"
+                        Controls:TextBoxHelper.Watermark="FreeRedemptionCode"
+                        IsEnabled="False"
+                        Text="{Binding Path=ProductVM.CurrentProduct.FreeRedCode}" />
+                    <Controls:NumericUpDown
+                        Name="mainRedemptionQty"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        ButtonsAlignment="Right"
+                        HasDecimals="False"
+                        Interval="1"
+                        TextAlignment="Left"
+                        ToolTip="MainRedemptionQty"
+                        Value="{Binding Path=ProductVM.CurrentProduct.MainRedQty,
+                                        Mode=TwoWay}" />
+
+                    <Controls:NumericUpDown
+                        Name="freeRedemptionQty"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        ButtonsAlignment="Right"
+                        HasDecimals="False"
+                        Interval="1"
+                        TextAlignment="Left"
+                        ToolTip="FreeRedemptionQty"
+                        Value="{Binding Path=ProductVM.CurrentProduct.FreeRedQty,
+                                        Mode=TwoWay}" />
+
+                    <Controls:NumericUpDown
+                        Name="levelQty"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        ButtonsAlignment="Right"
+                        HasDecimals="False"
+                        Interval="1"
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
+                                            Converter={StaticResource InverseBoolean}}"
+                        TextAlignment="Left"
+                        ToolTip="LevelQty"
+                        Visibility="Collapsed"
+                        Value="{Binding Path=ProductVM.CurrentProduct.LevelQty,
+                                        Mode=TwoWay}" />
+                    <ComboBox
+                        Name="startLevel"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        IsEditable="True"
+                        ItemsSource="{Binding Path=ProductVM.ProductStartLevelList}"
+                        MaxDropDownHeight="125"
+                        SelectedItem="{Binding Path=ProductVM.CurrentProduct.StartLevel,
+                                               Mode=TwoWay}"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        ToolTip="StartLevel"
+                        Visibility="Visible" />
+                    <ComboBox
+                        Name="city"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        IsEditable="True"
+                        IsTextSearchCaseSensitive="False"
+                        IsTextSearchEnabled="True"
+                        ItemsSource="{Binding Path=ProductVM.ProductCityList}"
+                        MaxDropDownHeight="125"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        Text="{Binding Path=ProductVM.CurrentCity,
+                                       Mode=TwoWay}" />
+
+                    <ComboBox
+                        Name="homeSchool"
+                        Width="150"
+                        Margin="0,0,0,2"
+                        IsEditable="True"
+                        IsTextSearchCaseSensitive="False"
+                        IsTextSearchEnabled="True"
+                        ItemsSource="{Binding Path=ProductVM.ProductSchoolList}"
+                        MaxDropDownHeight="125"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        Text="{Binding Path=ProductVM.CurrentSchool,
+                                       Mode=TwoWay}" />
+                    <ComboBox
+                        Name="divisionCode"
+                        Width="150"
+                        Margin="0,0,0,1"
+                        IsEditable="True"
+                        IsTextSearchCaseSensitive="False"
+                        IsTextSearchEnabled="True"
+                        ItemsSource="{Binding Path=ProductVM.ProductDivisionCodeList}"
+                        MaxDropDownHeight="125"
+                        Style="{DynamicResource VirtualisedMetroComboBox}"
+                        Text="{Binding Path=ProductVM.CurrentProduct.DivisionCode,
+                                       Mode=TwoWay}"
+                        Visibility="Collapsed" />
+                    <CheckBox
+                        Margin="0,5,0,0"
+                        Content="Includes Enroll"
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
+                                            Mode=TwoWay}"
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <Button
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="ActivateAccount"
+                        Content="Activate Account" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="ClickLinkButton"
+                        Content="S15 Redemptions"
+                        ToolTip="{Binding Path=TestAccountVM.RedCodeRef,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="ConvertTo20"
+                        Content="Convert to 2.0"
+                        ToolTip="IsEcRolloutSchoolPlatform2 = true" />
+                    <Button
+                        Name="btnSuspendAccount"
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="ClickLinkButton"
+                        Content="Suspend Account"
+                        ToolTip="{Binding Path=TestAccountVM.Salesforce,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Name="btnExpireAccount"
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="ClickLinkButton"
+                        Content="Expire Account"
+                        ToolTip="{Binding Path=TestAccountVM.OBOE,
+                                          Converter={StaticResource ConvertUrl}}" />
+                </StackPanel>
+                <StackPanel
+                    Grid.Column="3"
+                    Width="180"
+                    HorizontalAlignment="Center"
+                    Background="AliceBlue">
+                    <Label
+                        Margin="10,2,35,5"
+                        HorizontalAlignment="Center"
+                        Content="Open Link"
+                        FontSize="16"
+                        Visibility="Collapsed" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Login ETown"
+                        ToolTip="{Binding Path=TestAccountVM.ETwon,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Login OBOE"
+                        ToolTip="{Binding Path=TestAccountVM.OBOE,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Login Salesfore"
+                        ToolTip="{Binding Path=TestAccountVM.Salesforce,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Student Tool"
+                        ToolTip="{Binding Path=TestAccountVM.StudentTool,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Submit Score 1.0"
+                        ToolTip="{Binding Path=TestAccountVM.SubmitScore10,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Submit Score 2.0"
+                        ToolTip="{Binding Path=TestAccountVM.SubmitScore20,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="Clear Cache"
+                        ToolTip="{Binding Path=TestAccountVM.ClearCache,
+                                          Converter={StaticResource ConvertUrl}}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,20,5"
+                        Click="ClickLinkButton"
+                        Content="EF Error Log"
+                        ToolTip="{Binding Path=TestAccountVM.EFErrorLog,
+                                          Converter={StaticResource ConvertUrl}}" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
