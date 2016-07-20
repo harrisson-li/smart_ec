@@ -27,7 +27,6 @@ namespace EF.Common.Http
             request.CookieContainer = this.Cookies;
             request.Timeout = 100000;
             request.Headers.Add("Accept-Language", "en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4");
-            // request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Origin", header.Origin);
             request.KeepAlive = true;
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";

@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace EF.Common
 {
+    /// <summary>
+    /// A class to hold all extension methods.
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
