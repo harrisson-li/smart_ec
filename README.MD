@@ -2,6 +2,21 @@
 
 ### Note:
 
-1. Please place your code to correct folder according to programming language.
+1. Please place your code to correct folder according to programming language. Example:
 
-	- e.g. `C#` projects should in [C#`](C#`) folder.
+	- `C#` tools should in [C#][2] folder.
+	- `python` tools should in [python][3] folder.
+
+2. The major branch for efec_tools is [**develop**][1] branch
+3. You should create feature branch (tool name) to submit your code.
+4. Create pull request to review the change.
+ 	- Please include EFEC team members.
+
+
+
+[1]: /browse?at=develop
+[2]: /browse/C%23
+[3]: /browse/python
+
+
+
