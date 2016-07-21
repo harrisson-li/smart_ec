@@ -9,7 +9,9 @@ namespace ET2.Models
     public enum ActionTypes
     {
         Cmd,
-        Url
+        Url,
+        Python,
+        Sql
     }
 
     public class ActionParameters

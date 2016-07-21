@@ -21,7 +21,7 @@ namespace ET2.ViewModels
                     return;
                 }
                 this.txt = value;
-                this.NotifyOfPropertyChange(() => this.Text);
+                this.NotifyOfPropertyChange();
             }
         }
 

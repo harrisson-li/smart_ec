@@ -24,18 +24,21 @@ namespace ET2.ViewModels
             }
             set
             {
-                if (_partner == value)
+                if (_partner == value || _partner.IsNullOrEmpty())
                 {
                     return;
                 }
                 _partner = value;
-                var prod = ProductList.Where(e => e.Partner == CurrentPartner).First().DeepCopy();
-                prod.DivisionCode = DivisionCodeList.Where(e =>
-                e.PartnerCode == CurrentPartner).First().DivisionCode;
-                ShellViewModel.Instance.ProductVM.CurrentProduct = prod;
-                ShellViewModel.Instance.ProductVM.ProductName = prod.Name;
+                var prod = ProductList
+                    .Where(e => e.Partner == CurrentPartner)
+                    .First().DeepCopy();
+                prod.DivisionCode = DivisionCodeList
+                    .Where(e => e.PartnerCode == CurrentPartner)
+                    .First().DivisionCode;
+                CurrentProduct = prod;
+                ProductName = prod.Name;
 
-                this.NotifyOfPropertyChange(() => this.CurrentPartner);
+                this.NotifyOfPropertyChange();
                 this.NotifyOfPropertyChange(() => this.ProductNameList);
                 this.NotifyOfPropertyChange(() => this.ProductMainRedCodeList);
                 this.NotifyOfPropertyChange(() => this.ProductFreeRedCodeList);
@@ -80,7 +83,9 @@ namespace ET2.ViewModels
                 }
 
                 this._name = value;
-                var prod = ProductList.Where(e => e.Name == _name).Single().DeepCopy();
+                var prod = ProductList
+                    .Where(e => e.Name == _name)
+                    .Single().DeepCopy();
                 this.CurrentProduct.Id = prod.Id;
                 this.CurrentProduct.MainRedCode = prod.MainRedCode;
                 this.CurrentProduct.FreeRedCode = prod.FreeRedCode;
@@ -206,7 +211,7 @@ namespace ET2.ViewModels
                 var div = DivisionCodeList
                     .Where(e => e.SchoolName == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
-                ShellViewModel.Instance.LogInfo("Division Code = {0}".FormatWith(div.DivisionCode));
+                ShellViewModel.Instance.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
 
                 this.NotifyOfPropertyChange(() => this.DivisionCodeList);
                 this.NotifyOfPropertyChange();

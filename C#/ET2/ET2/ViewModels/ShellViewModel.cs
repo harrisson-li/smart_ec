@@ -33,9 +33,9 @@ namespace ET2.ViewModels
             Instance = this;
         }
 
-        public void LogInfo(string message)
+        public void WriteStatus(string message)
         {
-            Log.Info(message);
+            Log.InfoFormat("Status: {0}", message);
             this.StatusInfoVM.Text = message;
         }
     }
