@@ -72,7 +72,7 @@ namespace ET2.ViewModels
                 accountUrl += "?v=2";
             }
             var result = HttpHelper.Get(accountUrl);
-            ShellViewModel.Instance.WriteStatus(result);
+            ShellViewModel.WriteStatus(result);
 
             var pattern = @".+studentId\: (?<id>\d+), username\: (?<name>.+), password\: (?<pw>.+)<br.+";
             var match = Regex.Match(result, pattern);
@@ -84,7 +84,7 @@ namespace ET2.ViewModels
             }
             else
             {
-                ShellViewModel.Instance.WriteStatus(result);
+                ShellViewModel.WriteStatus(result);
             }
 
             Save();
@@ -101,7 +101,7 @@ namespace ET2.ViewModels
             }
 
             var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isV2));
-            ShellViewModel.Instance.WriteStatus(result);
+            ShellViewModel.WriteStatus(result);
         }
 
         public void ConvertTo20(string envUrlString)
@@ -112,7 +112,7 @@ namespace ET2.ViewModels
 
             var data = "studentId={0}&flag=12&value=true&IsDBOnly=false".FormatWith(id);
             var result = HttpHelper.Post(url, data);
-            ShellViewModel.Instance.WriteStatus("IsEcRolloutSchoolPlatform2 = true");
+            ShellViewModel.WriteStatus("IsEcRolloutSchoolPlatform2 = true");
         }
 
         public void Save()

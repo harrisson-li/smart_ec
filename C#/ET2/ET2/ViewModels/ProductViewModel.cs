@@ -211,7 +211,7 @@ namespace ET2.ViewModels
                 var div = DivisionCodeList
                     .Where(e => e.SchoolName == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
-                ShellViewModel.Instance.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
+                ShellViewModel.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
 
                 this.NotifyOfPropertyChange(() => this.DivisionCodeList);
                 this.NotifyOfPropertyChange();

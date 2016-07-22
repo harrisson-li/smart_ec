@@ -49,7 +49,7 @@ namespace ET2.Views
             ShellViewModel.Instance.TestEnvVM.UpdateEnvironment(selectedEnv.Content.ToString());
             await this.HideMetroDialogAsync(CurrentDialog);
 
-            ShellViewModel.Instance.WriteStatus(
+            ShellViewModel.WriteStatus(
                 "Current Test Environment: {0}".FormatWith(selectedEnv.Content));
         }
 
@@ -66,7 +66,7 @@ namespace ET2.Views
             {
                 var txt = ((Hyperlink)sender).FindChildren<TextBlock>().FirstOrDefault();
                 txt.Text.CopyToClipboard();
-                ShellViewModel.Instance.WriteStatus("{0} copied.".FormatWith(txt.Text));
+                ShellViewModel.WriteStatus("{0} copied.".FormatWith(txt.Text));
             }
         }
     }

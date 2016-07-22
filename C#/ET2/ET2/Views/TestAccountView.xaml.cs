@@ -46,11 +46,11 @@ namespace ET2.Views
             var chk = sender as CheckBox;
             if (chk.IsChecked.Value)
             {
-                ShellViewModel.Instance.WriteStatus("Platform 2.0 test account.");
+                ShellViewModel.WriteStatus("Platform 2.0 test account.");
             }
             else
             {
-                ShellViewModel.Instance.WriteStatus("Platform 1.0 test account.");
+                ShellViewModel.WriteStatus("Platform 1.0 test account.");
             }
 
             ShellViewModel.Instance.TestAccountVM.Save();

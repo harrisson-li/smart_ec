@@ -23,7 +23,7 @@ namespace ET2.ViewModels
         {
             base.OnInitialize();
             this.DisplayName = "EFEC Testing Tools - {0}"
-                .FormatWith(Support.VersionHelper.GetCurrentVersion());
+                .FormatWith(Support.VersionHelper.GetCurrentVersion().Build);
             this.TestEnvVM = new TestEnvironmentViewModel();
             this.UsefulLinkVM = new UsefulLinkViewModel();
             this.TestAccountVM = new TestAccountViewModel();
@@ -34,10 +34,16 @@ namespace ET2.ViewModels
             Support.VersionHelper.ShowReleaseNote();
         }
 
-        public void WriteStatus(string message)
+        public static void WriteStatus(string message)
         {
             Log.InfoFormat("Status: {0}", message);
-            this.StatusInfoVM.Text = message;
+            Instance.StatusInfoVM.Text = message;
+        }
+
+        public static void InitForTest()
+        {
+            var shell = new ShellViewModel();
+            shell.OnInitialize();
         }
     }
 }
