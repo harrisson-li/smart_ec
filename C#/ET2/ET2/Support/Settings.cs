@@ -14,14 +14,25 @@ namespace ET2.Support
 {
     public static class Settings
     {
-        private static string CurrentTestAccount = "Save.CurrentTestAccount";
-        private static string CurrentTestEnvironment = "Save.CurrentTestEnvironment";
-        private static string CurrentProduct = "Save.CurrentProduct";
-        private static string HitRecords = "Save.Hits";
-        private static string UserLinks = "UsefulLinks.csv";
-        private static string ProductList = "ProductList.csv";
-        private static string DivisionCode = "DivisionCode.csv";
-        private static string globalFolderForDebug = @"%UserProfile%\ET2_Global";
+        #region Constants
+
+        internal class Data
+        {
+            public const string CurrentTestAccount = "Save.CurrentTestAccount";
+            public const string CurrentTestEnvironment = "Save.CurrentTestEnvironment";
+            public const string CurrentProduct = "Save.CurrentProduct";
+            public const string LastVersion = "Save.LastVersion";
+            public const string HitRecords = "Save.Hits";
+            public const string UserLinks = "UsefulLinks.csv";
+            public const string ProductList = "ProductList.csv";
+            public const string DivisionCode = "DivisionCode.csv";
+            public const string LinkFix = "LinkFix.csv";
+            public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
+        }
+
+        #endregion Constants
+
+        #region Common settings
 
         public static string AppFolder
         {
@@ -64,7 +75,7 @@ namespace ET2.Support
             get
             {
                 // For debug or development purpose, we can create a local global folder.
-                var debugDir = Environment.ExpandEnvironmentVariables(globalFolderForDebug);
+                var debugDir = Environment.ExpandEnvironmentVariables(Data.GlobalFolderForDebug);
                 if (Directory.Exists(debugDir))
                 {
                     return debugDir;
@@ -135,14 +146,18 @@ namespace ET2.Support
             }
         }
 
+        #endregion Common settings
+
+        #region Test account
+
         public static void SaveCurrentTestAccount(TestAccount obj)
         {
-            SavePersoanlSetting<TestAccount>(obj, CurrentTestAccount);
+            SavePersoanlSetting<TestAccount>(obj, Data.CurrentTestAccount);
         }
 
         public static TestAccount LoadCurrentTestAccount()
         {
-            var obj = LoadPersoanlSetting<TestAccount>(CurrentTestAccount);
+            var obj = LoadPersoanlSetting<TestAccount>(Data.CurrentTestAccount);
             if (obj == null)
             {
                 obj = new TestAccount()
@@ -156,14 +171,18 @@ namespace ET2.Support
             return obj;
         }
 
+        #endregion Test account
+
+        #region Test environment
+
         public static void SaveCurrentTestEnvironment(TestEnvironment obj)
         {
-            SavePersoanlSetting<TestEnvironment>(obj, CurrentTestEnvironment);
+            SavePersoanlSetting<TestEnvironment>(obj, Data.CurrentTestEnvironment);
         }
 
         public static TestEnvironment LoadCurrentTestEnvironment()
         {
-            var obj = LoadPersoanlSetting<TestEnvironment>(CurrentTestEnvironment);
+            var obj = LoadPersoanlSetting<TestEnvironment>(Data.CurrentTestEnvironment);
             if (obj == null)
             {
                 obj = new TestEnvironment
@@ -176,14 +195,18 @@ namespace ET2.Support
             return obj;
         }
 
+        #endregion Test environment
+
+        #region Products
+
         public static void SaveCurrentProduct(Product obj)
         {
-            SavePersoanlSetting<Product>(obj, CurrentProduct);
+            SavePersoanlSetting<Product>(obj, Data.CurrentProduct);
         }
 
         public static Product LoadCurrentProduct()
         {
-            var obj = LoadPersoanlSetting<Product>(CurrentProduct);
+            var obj = LoadPersoanlSetting<Product>(Data.CurrentProduct);
             if (obj == null || obj.Name.IsNullOrEmpty())
             {
                 obj = LoadProductList().First();
@@ -198,23 +221,16 @@ namespace ET2.Support
             return obj;
         }
 
-        public static Division LoadCurrentDivision()
-        {
-            return LoadDivisionCode()
-                .Where(e => e.DivisionCode == LoadCurrentProduct().DivisionCode)
-                .First();
-        }
-
         public static List<Product> LoadProductList()
         {
-            var dataFile = Path.Combine(AppDataFolder, ProductList);
-            var globalFile = AsGlobalFile(ProductList);
+            var dataFile = Path.Combine(AppDataFolder, Data.ProductList);
+            var globalFile = AsGlobalFile(Data.ProductList);
             if (!File.Exists(globalFile))
             {
                 File.Copy(dataFile, globalFile);
             }
 
-            var table = LoadDataFromCsv(globalFile);
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
             var list = table.Rows.Cast<DataRow>()
                   .Select(e => new Product
                   {
@@ -233,16 +249,52 @@ namespace ET2.Support
             return list;
         }
 
-        public static List<UsefulLink> LoadUsefulLinks()
+        #endregion Products
+
+        #region Division code
+
+        public static Division LoadCurrentDivision()
         {
-            var dataFile = Path.Combine(AppDataFolder, UserLinks);
-            var globalFile = AsGlobalFile(UserLinks);
+            return LoadDivisionCode()
+                .Where(e => e.DivisionCode == LoadCurrentProduct().DivisionCode)
+                .First();
+        }
+
+        public static List<Division> LoadDivisionCode()
+        {
+            var dataFile = Path.Combine(AppDataFolder, Data.DivisionCode);
+            var globalFile = AsGlobalFile(Data.DivisionCode);
             if (!File.Exists(globalFile))
             {
                 File.Copy(dataFile, globalFile);
             }
 
-            var table = LoadDataFromCsv(globalFile);
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
+            var list = table.Rows.Cast<DataRow>()
+                  .Select(e => new Division
+                  {
+                      PartnerCode = e["PartnerCode"].ToString().ToLower(),
+                      City = e["City"].ToString(),
+                      SchoolName = e["SchoolName"].ToString(),
+                      DivisionCode = e["DivisionCode"].ToString()
+                  }).ToList();
+            return list;
+        }
+
+        #endregion Division code
+
+        #region Useful links
+
+        public static List<UsefulLink> LoadUsefulLinks()
+        {
+            var dataFile = Path.Combine(AppDataFolder, Data.UserLinks);
+            var globalFile = AsGlobalFile(Data.UserLinks);
+            if (!File.Exists(globalFile))
+            {
+                File.Copy(dataFile, globalFile);
+            }
+
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
             var list = table.Rows.Cast<DataRow>()
                   .Select(e => new UsefulLink
                   {
@@ -258,7 +310,7 @@ namespace ET2.Support
 
         public static Dictionary<string, int> LoadHitRecords()
         {
-            var obj = LoadPersoanlSetting<Dictionary<string, int>>(HitRecords);
+            var obj = LoadPersoanlSetting<Dictionary<string, int>>(Data.HitRecords);
             if (obj == null)
             {
                 obj = new Dictionary<string, int>();
@@ -269,55 +321,9 @@ namespace ET2.Support
 
         public static void SaveHitRecords(Dictionary<string, int> obj)
         {
-            SavePersoanlSetting<Dictionary<string, int>>(obj, HitRecords);
+            SavePersoanlSetting<Dictionary<string, int>>(obj, Data.HitRecords);
         }
 
-        public static List<Division> LoadDivisionCode()
-        {
-            var dataFile = Path.Combine(AppDataFolder, DivisionCode);
-            var globalFile = AsGlobalFile(DivisionCode);
-            if (!File.Exists(globalFile))
-            {
-                File.Copy(dataFile, globalFile);
-            }
-
-            var table = LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new Division
-                  {
-                      PartnerCode = e["PartnerCode"].ToString().ToLower(),
-                      City = e["City"].ToString(),
-                      SchoolName = e["SchoolName"].ToString(),
-                      DivisionCode = e["DivisionCode"].ToString()
-                  }).ToList();
-            return list;
-        }
-
-        public static DataTable LoadDataFromCsv(string csvFile)
-        {
-            using (TextReader reader = File.OpenText(csvFile))
-            {
-                var csv = new CsvReader(reader);
-                csv.ReadHeader();
-                var headers = csv.FieldHeaders.ToList();
-                var table = BuildTableWithHeaders(headers);
-                while (csv.Read())
-                {
-                    table.Rows.Add(csv.CurrentRecord);
-                }
-
-                return table;
-            }
-        }
-
-        private static DataTable BuildTableWithHeaders(List<string> listOfHeaders)
-        {
-            var table = new DataTable();
-            foreach (string header in listOfHeaders)
-            {
-                table.Columns.Add(header, typeof(string));
-            }
-            return table;
-        }
+        #endregion Useful links
     }
 }
