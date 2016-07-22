@@ -31,6 +31,7 @@ namespace ET2.ViewModels
             this.ProductVM = new ProductViewModel();
 
             Instance = this;
+            Support.VersionHelper.ShowReleaseNote();
         }
 
         public void WriteStatus(string message)

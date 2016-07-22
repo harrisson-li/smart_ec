@@ -52,10 +52,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ShellWindowVMTests.cs" />
+    <Compile Include="ViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EFCommonTests.cs" />
     <Compile Include="TestBase.cs" />
+    <Compile Include="SettingsTests.cs" />
+    <Compile Include="VersionHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EF.Common\EF.Common.csproj">

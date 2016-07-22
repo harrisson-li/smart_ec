@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CsvHelper;
 using EF.Common;
 using ET2.Models;
 
@@ -26,8 +25,10 @@ namespace ET2.Support
             public const string UserLinks = "UsefulLinks.csv";
             public const string ProductList = "ProductList.csv";
             public const string DivisionCode = "DivisionCode.csv";
-            public const string LinkFix = "LinkFix.csv";
+            public const string FixLinks = "FixLinks.csv";
+            public const string Envrionments = "Environments.csv";
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
+            public const string ReleaseNote = "ReleaseNote.txt";
         }
 
         #endregion Constants
@@ -175,6 +176,26 @@ namespace ET2.Support
 
         #region Test environment
 
+        public static List<TestEnvironment> LoadEnvironments()
+        {
+            var dataFile = Path.Combine(AppDataFolder, Data.Envrionments);
+            var globalFile = AsGlobalFile(Data.Envrionments);
+            if (!File.Exists(globalFile))
+            {
+                File.Copy(dataFile, globalFile);
+            }
+
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
+            var list = table.Rows.Cast<DataRow>()
+                  .Select(e => new TestEnvironment
+                  {
+                      Name = (string)e["Name"],
+                      UrlReplacement = (string)e["Replacement"],
+                      Mark = (string)e["Mark"]
+                  }).ToList();
+            return list;
+        }
+
         public static void SaveCurrentTestEnvironment(TestEnvironment obj)
         {
             SavePersoanlSetting<TestEnvironment>(obj, Data.CurrentTestEnvironment);
@@ -284,6 +305,25 @@ namespace ET2.Support
         #endregion Division code
 
         #region Useful links
+
+        public static List<FixLink> LoadFixLinks()
+        {
+            var dataFile = Path.Combine(AppDataFolder, Data.FixLinks);
+            var globalFile = AsGlobalFile(Data.FixLinks);
+            if (!File.Exists(globalFile))
+            {
+                File.Copy(dataFile, globalFile);
+            }
+
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
+            var list = table.Rows.Cast<DataRow>()
+                  .Select(e => new FixLink
+                  {
+                      Origin = e["Origin"].ToString(),
+                      Fixed = e["Fixed"].ToString()
+                  }).ToList();
+            return list;
+        }
 
         public static List<UsefulLink> LoadUsefulLinks()
         {
