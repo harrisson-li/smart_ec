@@ -48,7 +48,8 @@ namespace ET2.ViewModels
             };
 
             this.Save();
-            ShellViewModel.Instance.TestAccountVM.UrlUpdate();
+            ShellViewModel.Instance.TestAccountVM.NotifyUrlUpdate();
+            ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
         }
 
         public TestEnvironmentViewModel()

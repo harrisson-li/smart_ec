@@ -27,7 +27,7 @@ namespace ET2.ViewModels
         public string QADashbord { get { return "http://jenkins.englishtown.com:8080/"; } }
         public string RedCodeRef { get { return "https://confluence.englishtown.com/display/SMart/S15+Redemptions"; } }
 
-        public void UrlUpdate()
+        public void NotifyUrlUpdate()
         {
             this.NotifyOfPropertyChange(() => this.OBOE);
             this.NotifyOfPropertyChange(() => this.ETwon);

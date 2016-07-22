@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ET2.Models;
+using ET2.ViewModels;
 
 namespace ET2.Views
 {
@@ -30,6 +32,9 @@ namespace ET2.Views
         {
             Hyperlink link = (Hyperlink)e.OriginalSource;
             Process.Start(link.NavigateUri.AbsoluteUri);
+
+            var linkObj = link.DataContext as UsefulLink;
+            ShellViewModel.Instance.UsefulLinkVM.UpdateHits(linkObj);
         }
     }
 }

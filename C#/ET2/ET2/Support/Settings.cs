@@ -17,6 +17,7 @@ namespace ET2.Support
         private static string CurrentTestAccount = "Save.CurrentTestAccount";
         private static string CurrentTestEnvironment = "Save.CurrentTestEnvironment";
         private static string CurrentProduct = "Save.CurrentProduct";
+        private static string HitRecords = "Save.Hits";
         private static string UserLinks = "UsefulLinks.csv";
         private static string ProductList = "ProductList.csv";
         private static string DivisionCode = "DivisionCode.csv";
@@ -253,6 +254,22 @@ namespace ET2.Support
                       IsHide = e["Hide"].ConvertValue<bool>()
                   }).ToList();
             return list;
+        }
+
+        public static Dictionary<string, int> LoadHitRecords()
+        {
+            var obj = LoadPersoanlSetting<Dictionary<string, int>>(HitRecords);
+            if (obj == null)
+            {
+                obj = new Dictionary<string, int>();
+            }
+
+            return obj;
+        }
+
+        public static void SaveHitRecords(Dictionary<string, int> obj)
+        {
+            SavePersoanlSetting<Dictionary<string, int>>(obj, HitRecords);
         }
 
         public static List<Division> LoadDivisionCode()

@@ -1,14 +1,23 @@
 Name,Url,Description,IsHomeLink,Hide,Hits
 Login OBOE,http://$envoboe.ef.com/Oboe2/Login,,TRUE,,0
-Login Etwon,http://uat.englishtown.com/partner/englishcenters,,TRUE,,0
+Login Etwon,http://$env.englishtown.com/partner/englishcenters,,TRUE,,0
 Login Salesforce,https://test.salesforce.com/,,TRUE,,0
 QA Dashboard,http://jenkins.englishtown.com:8080/,,,,0
 Confluence,https://confluence.englishtown.com/,,,,0
 EF Error Log (CN),http://errors-cn.englishtown.com/default.aspx,,TRUE,,0
 EF Error Log,http://errors.englishtown.com/default.aspx,,,,0
-Submit Score 1.0,http://$env.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx?newengine=true&token=,,TRUE,,0
+Submit Score 1.0,http://$env.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx?newengine=true&token=$token,,TRUE,,0
 Submit Score 2.0,http://$env.englishtown.com/services/api/school/_tools/SubmitScoreHelper.aspx,,TRUE,,0
 Create Member v2,http://$env.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz?v=2,,,,0
 Create Member,http://$env.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz,,,,0
 Student Settings,http://$env.englishtown.com/services/ecplatform/Tools/StudentSettings?id=$id,,,,0
 Clear Cache,http://$env.englishtown.com/services/ecplatform/Tools/CacheClear,,,,0
+JIRA,https://jira.englishtown.com/secure/Dashboard.jspa,,,,
+Stash,https://stash.englishtown.com/projects/TEST,,,,
+Code Search (Coodle),http://coodle.englishtown.com/,,,,
+Jenkins,http://jenkins.englishtown.com/,,,,
+Test Link,http://testcenter.englishtown.com/,,,,
+Team City,http://teamcitycn.englishtown.com/,,,,
+OPAL,http://opal.ef.com/SitePages/Home.aspx,,,,
+Jenkins (Mobile Team),http://10.128.42.155:8080/,,,,
+Open Nemo Case,"http://nemo.ef.com/nemo/request.aspx?requestId=0&c=1,1",,,,
