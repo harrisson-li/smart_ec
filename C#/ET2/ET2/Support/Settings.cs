@@ -206,11 +206,7 @@ namespace ET2.Support
             var obj = LoadPersoanlSetting<TestEnvironment>(Data.CurrentTestEnvironment);
             if (obj == null)
             {
-                obj = new TestEnvironment
-                {
-                    Name = "UAT",
-                    UrlReplacement = "uat"
-                };
+                obj = LoadEnvironments().First();
             }
 
             return obj;

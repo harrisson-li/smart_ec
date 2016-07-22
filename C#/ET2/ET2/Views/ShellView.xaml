@@ -46,11 +46,18 @@
                         Content="Staging"
                         GroupName="env" />
                     <RadioButton
-                        Name="live"
+                        Name="livecn"
                         Grid.Column="3"
                         Width="75"
                         Click="ChooseEnv"
-                        Content="Live"
+                        Content="Live CN"
+                        GroupName="env" />
+                    <RadioButton
+                        Name="liveus"
+                        Grid.Column="3"
+                        Width="75"
+                        Click="ChooseEnv"
+                        Content="Live US"
                         GroupName="env" />
                 </StackPanel>
             </Dialog:CustomDialog>

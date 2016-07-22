@@ -38,7 +38,7 @@ namespace ET2.Views
             var currentEnv = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
             var dialog = CurrentDialog as CustomDialog;
             var radio = dialog.FindChildren<RadioButton>()
-                .Where(r => r.Name == currentEnv.ToLower()).First();
+                .Where(r => r.Content.ToString().ToLower() == currentEnv.ToLower()).First();
             radio.IsChecked = true;
             await this.ShowMetroDialogAsync(CurrentDialog);
         }

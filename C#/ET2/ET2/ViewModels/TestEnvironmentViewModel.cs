@@ -14,6 +14,8 @@ namespace ET2.ViewModels
     {
         private TestEnvironment env;
 
+        public List<TestEnvironment> EnvironmentList { get; set; }
+
         public TestEnvironment CurrentEnvironment
         {
             get { return env; }
@@ -41,11 +43,8 @@ namespace ET2.ViewModels
 
         public void UpdateEnvironment(string newEnvironment)
         {
-            this.CurrentEnvironment = new TestEnvironment
-            {
-                Name = newEnvironment,
-                UrlReplacement = newEnvironment.ToLower()
-            };
+            this.CurrentEnvironment = this.EnvironmentList
+                .Where(e => e.Name.ToLower() == newEnvironment.ToLower()).Single();
 
             this.Save();
             ShellViewModel.Instance.TestAccountVM.NotifyUrlUpdate();
@@ -54,6 +53,7 @@ namespace ET2.ViewModels
 
         public TestEnvironmentViewModel()
         {
+            this.EnvironmentList = Settings.LoadEnvironments();
             this.CurrentEnvironment = Settings.LoadCurrentTestEnvironment();
         }
 

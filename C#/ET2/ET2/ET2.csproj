@@ -153,6 +153,7 @@
     <Compile Include="Services\IServiceLocator.cs" />
     <Compile Include="Services\MefServiceLocator.cs" />
     <Compile Include="Support\Settings.cs" />
+    <Compile Include="Support\TokenHelper.cs" />
     <Compile Include="Support\VersionHelper.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />

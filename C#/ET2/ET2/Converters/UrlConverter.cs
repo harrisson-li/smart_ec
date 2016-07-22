@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using ET2.Support;
 using ET2.ViewModels;
 
 namespace ET2.Converters
@@ -30,6 +31,7 @@ namespace ET2.Converters
                 url = url.Replace("$env", envString);
                 url = url.Replace("$id", id);
                 url = url.Replace("$name", name);
+                url = url.Replace("$token", TokenHelper.GetToken(envString));
                 return url;
             }
 
