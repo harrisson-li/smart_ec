@@ -16,7 +16,7 @@ namespace ET2
 
         public AppBootstrapper()
         {
-            Log.Init("log4net.xml");
+            Log.Init();
             Log.Info("Application start.");
             AppDomain.CurrentDomain.UnhandledException += GlobalUnhandleException;
             Initialize();

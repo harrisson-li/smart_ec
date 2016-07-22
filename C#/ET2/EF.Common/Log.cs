@@ -8,6 +8,19 @@ public class Log
 {
     private static ILog logger = null;
 
+    /// <summary>
+    /// Config log4net from app.config.
+    /// </summary>
+    public static void Init()
+    {
+        logger = LogManager.GetLogger(typeof(Log));
+        XmlConfigurator.Configure();
+    }
+
+    /// <summary>
+    /// Config log4net from specified xml file.
+    /// </summary>
+    /// <param name="log4netConfigFile"></param>
     public static void Init(string log4netConfigFile)
     {
         logger = LogManager.GetLogger(typeof(Log));

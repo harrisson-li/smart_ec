@@ -7,10 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ET2.Tests
 {
     [TestClass]
-    public class EFCommonTests
+    public class EFCommonTests : TestBase
     {
-        public TestContext TestContext { get; set; }
-
         [TestMethod]
         public void TestHttpGetPost()
         {

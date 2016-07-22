@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 using JetBrains.Annotations;
 
 namespace ET2.Models
@@ -13,6 +14,9 @@ namespace ET2.Models
     {
         private string _name;
 
+        /// <summary>
+        /// The name of test environment.
+        /// </summary>
         public string Name
         {
             get { return _name; }
@@ -26,6 +30,9 @@ namespace ET2.Models
 
         private string _url;
 
+        /// <summary>
+        /// Replacement string on current environment.
+        /// </summary>
         public string UrlReplacement
         {
             get { return _url; }
@@ -33,6 +40,22 @@ namespace ET2.Models
             {
                 if (value == _url) return;
                 _url = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _mark;
+
+        /// <summary>
+        /// Special mark for this environment.
+        /// </summary>
+        public string Mark
+        {
+            get { return _mark; }
+            set
+            {
+                if (value == _mark) return;
+                _mark = value;
                 OnPropertyChanged();
             }
         }
