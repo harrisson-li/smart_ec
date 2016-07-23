@@ -1,4 +1,9 @@
-﻿v0.0.0.14 - Preview
+﻿v0.0.0.15 - Preview
+
+1. Able to view full log from status bar
+2. Add Test Environment: Live CN and Live US
+
+v0.0.0.14 - Preview
 
 1. Implement useful link, add more links now
 2. Remember your hits on each link
