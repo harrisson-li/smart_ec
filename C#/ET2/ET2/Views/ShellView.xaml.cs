@@ -85,5 +85,12 @@ namespace ET2.Views
         }
 
         #endregion Help Message
+
+        public async Task RunInBackgroud(Action act)
+        {
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;
+            await Task.Run(act).ConfigureAwait(false);
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = false;
+        }
     }
 }

@@ -95,7 +95,6 @@
                     Height="20"
                     Margin="305,5,0,0"
                     HorizontalAlignment="Left"
-                    Click="chkIsV2_Click"
                     Content="?v=2"
                     FontSize="15"
                     FontWeight="Medium"
@@ -110,6 +109,8 @@
                     Controls:ButtonHelper.PreserveTextCase="True"
                     Click="NewAccount"
                     Content="New"
+                    IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                        Converter={StaticResource InverseBoolean}}"
                     Style="{DynamicResource SquareButtonStyle}" />
                 <Button
                     Width="140"
@@ -119,6 +120,8 @@
                     Controls:ButtonHelper.PreserveTextCase="True"
                     Click="NewAndActivate"
                     Content="New + Activate"
+                    IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                        Converter={StaticResource InverseBoolean}}"
                     Style="{DynamicResource AccentedSquareButtonStyle}" />
             </Grid>
         </GroupBox>
@@ -322,7 +325,9 @@
                         Width="120"
                         Margin="0,0,0,5"
                         Click="ActivateAccount"
-                        Content="Activate Account" />
+                        Content="Activate Account"
+                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                            Converter={StaticResource InverseBoolean}}" />
                     <Button
                         Width="120"
                         Margin="0,0,0,5"
@@ -335,6 +340,8 @@
                         Margin="0,0,0,5"
                         Click="ConvertTo20"
                         Content="Convert to 2.0"
+                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                            Converter={StaticResource InverseBoolean}}"
                         ToolTip="IsEcRolloutSchoolPlatform2 = true" />
                     <Button
                         Name="btnSuspendAccount"

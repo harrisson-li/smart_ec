@@ -29,82 +29,36 @@ namespace ET2.Views
 
         private async void NewAccount(object sender, RoutedEventArgs e)
         {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var isV2 = this.chkIsV2.IsChecked.Value;
-            ((Button)sender).IsEnabled = false;
-            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;
-
-            await Task.Run(() =>
-            {
-                ShellViewModel.Instance.TestAccountVM.GenerateAccount(envUrlString, isV2);
-            });
-            //ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
-            ((Button)sender).IsEnabled = true;
-            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = false;
-        }
-
-        private void chkIsV2_Click(object sender, RoutedEventArgs e)
-        {
-            var chk = sender as CheckBox;
-            if (chk.IsChecked.Value)
-            {
-                ShellViewModel.WriteStatus("Platform 2.0 test account.");
-            }
-            else
-            {
-                ShellViewModel.WriteStatus("Platform 1.0 test account.");
-            }
-
-            ShellViewModel.Instance.TestAccountVM.Save();
+            await ShellView.Instance.RunInBackgroud(() =>
+           {
+               ShellViewModel.Instance.TestAccountVM.GenerateAccount();
+           });
         }
 
         private async void ActivateAccount(object sender, RoutedEventArgs e)
         {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var isV2 = this.chkIsV2.IsChecked.Value;
-            ((Button)sender).IsEnabled = false;
-            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;
-
-            await Task.Run(() =>
+            await ShellView.Instance.RunInBackgroud(() =>
             {
-                ShellViewModel.Instance.TestAccountVM.ActivateAccount(envUrlString, isV2);
-                ShellViewModel.Instance.TestAccountVM.Save();
+                ShellViewModel.Instance.TestAccountVM.ActivateAccount();
                 ShellViewModel.Instance.ProductVM.Save();
             });
-            ((Button)sender).IsEnabled = true;
-            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = false;
         }
 
         private async void NewAndActivate(object sender, RoutedEventArgs e)
         {
-            ((Button)sender).IsEnabled = false;
-
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var isV2 = this.chkIsV2.IsChecked.Value;
-
-            await Task.Run(() =>
+            await ShellView.Instance.RunInBackgroud(() =>
             {
-                ShellViewModel.Instance.TestAccountVM.GenerateAccount(envUrlString, isV2);
-            });
-
-            //ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
-
-            await Task.Run(() =>
-            {
-                ShellViewModel.Instance.TestAccountVM.ActivateAccount(envUrlString, isV2);
-                ShellViewModel.Instance.TestAccountVM.Save();
+                ShellViewModel.Instance.TestAccountVM.GenerateAccount();
+                ShellViewModel.Instance.TestAccountVM.ActivateAccount();
                 ShellViewModel.Instance.ProductVM.Save();
             });
-
-            ((Button)sender).IsEnabled = true;
         }
 
         private async void ConvertTo20(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() =>
+            await ShellView.Instance.RunInBackgroud(() =>
             {
-                var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-                ShellViewModel.Instance.TestAccountVM.ConvertTo20(envUrlString);
+                ShellViewModel.Instance.TestAccountVM.ConvertTo20();
             });
         }
 

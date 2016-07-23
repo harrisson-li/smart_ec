@@ -44,6 +44,11 @@ namespace ET2.ViewModels
 
         #region Test account functions
 
+        private const string URL_NEW_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz";
+        private const string URL_ACTIVATE_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ";
+        private const string URL_ACTIVATE_ACCOUNT_V2 = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateV2";
+        private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
+
         private TestAccount _testAccount;
 
         public TestAccount CurrentTestAccount
@@ -64,9 +69,16 @@ namespace ET2.ViewModels
             this.CurrentTestAccount = Settings.LoadCurrentTestAccount();
         }
 
+        public void GenerateAccount()
+        {
+            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var isV2 = this.CurrentTestAccount.IsV2;
+            GenerateAccount(envUrlString, isV2);
+        }
+
         public void GenerateAccount(string envUrlString, bool isV2)
         {
-            var accountUrl = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz".FormatWith(envUrlString);
+            var accountUrl = URL_NEW_ACCOUNT.FormatWith(envUrlString);
             if (isV2)
             {
                 accountUrl += "?v=2";
@@ -90,25 +102,38 @@ namespace ET2.ViewModels
             Save();
         }
 
+        public void ActivateAccount()
+        {
+            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
+            ActivateAccount(envUrlString, isV2);
+        }
+
         public void ActivateAccount(string envUrlString, bool isV2)
         {
             int id = Convert.ToInt32(CurrentTestAccount.MemberId);
-            var url = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ".FormatWith(envUrlString);
+            var url = URL_ACTIVATE_ACCOUNT.FormatWith(envUrlString);
 
             if (isV2)
             {
-                url = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateV2".FormatWith(envUrlString);
+                url = URL_ACTIVATE_ACCOUNT_V2.FormatWith(envUrlString);
             }
 
             var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isV2));
             ShellViewModel.WriteStatus(result);
+            Save();
         }
 
-        public void ConvertTo20(string envUrlString)
+        public void ConvertTo20()
         {
-            int id = Convert.ToInt32(CurrentTestAccount.MemberId);
-            var url = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082"
-                .FormatWith(envUrlString, id);
+            var id = Convert.ToInt32(CurrentTestAccount.MemberId);
+            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            ConvertTo20(id, envUrlString);
+        }
+
+        public void ConvertTo20(int id, string envUrlString)
+        {
+            var url = URL_CONVERT_20.FormatWith(envUrlString, id);
 
             var data = "studentId={0}&flag=12&value=true&IsDBOnly=false".FormatWith(id);
             var result = HttpHelper.Post(url, data);
