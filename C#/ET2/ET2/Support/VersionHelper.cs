@@ -90,8 +90,8 @@ namespace ET2.Support
         /// </summary>
         public static void ShowReleaseNote()
         {
-            Log.InfoFormat("Last version: {0}", GetLastVersion().Build);
-            Log.InfoFormat("Current version: {0}", GetCurrentVersion().Build);
+            Log.InfoFormat("Check version, last version - {0}, current version - {1}",
+                GetLastVersion().Build, GetCurrentVersion().Build);
             if (IsNewVersion() && IsReleaseNoteChanged())
             {
                 System.Diagnostics.Process.Start("notepad.exe", Settings.Data.ReleaseNote);

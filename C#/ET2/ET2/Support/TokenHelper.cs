@@ -32,6 +32,7 @@ namespace ET2.Support
                 CachedTokenHelper.Add(envString, tokenHelper);
             }
 
+            Log.InfoFormat("Get a token for {0}", envString);
             return CachedTokenHelper[envString].CurrentToken.Value;
         }
 
@@ -61,6 +62,7 @@ namespace ET2.Support
                     };
                 }
 
+                Log.InfoFormat("Token: {0}", _token.Value);
                 return _token;
             }
         }
@@ -76,7 +78,8 @@ namespace ET2.Support
                 return match.Groups[1].Value;
             }
 
-            throw new SystemException("Cannot find token from secrect page {0}".FormatWith(secretPage));
+            Log.Warn("Failed to get token from secret page");
+            return "<FailedToGet>";
         }
 
         public class Token

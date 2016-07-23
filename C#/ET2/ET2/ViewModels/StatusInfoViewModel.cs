@@ -9,18 +9,34 @@ namespace ET2.ViewModels
 {
     public class StatusInfoViewModel : PropertyChangedBase
     {
-        private string txt;
+        private string _txt;
 
         public string Text
         {
-            get { return this.txt; }
+            get { return this._txt; }
             set
             {
-                if (value == this.txt)
+                if (value == this._txt)
                 {
                     return;
                 }
-                this.txt = value;
+                this._txt = value;
+                this.NotifyOfPropertyChange();
+            }
+        }
+
+        private bool isBackground;
+
+        public bool HasBackgroundTask
+        {
+            get { return this.isBackground; }
+            set
+            {
+                if (value == this.isBackground)
+                {
+                    return;
+                }
+                this.isBackground = value;
                 this.NotifyOfPropertyChange();
             }
         }

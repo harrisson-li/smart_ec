@@ -22,23 +22,43 @@ namespace ET2.Views
     public partial class ShellView : MetroWindow
     {
         public static ShellView Instance { get; private set; }
+        private BaseMetroDialog CurrentDialog { get; set; }
 
         public ShellView()
         {
             InitializeComponent();
-            this.copyInfoFromStatus.Visibility = Visibility.Collapsed;
             Instance = this;
         }
 
-        private BaseMetroDialog CurrentDialog { get; set; }
+        #region Test Environments
 
         private async void SwitchEnv(object sender, RoutedEventArgs e)
         {
-            CurrentDialog = (BaseMetroDialog)this.Resources["switchEnv"];
-            var currentEnv = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
+            // find the dialog resource
+            CurrentDialog = (BaseMetroDialog)this.Resources["myDialog"];
+
+            // set dialog title
             var dialog = CurrentDialog as CustomDialog;
-            var radio = dialog.FindChildren<RadioButton>()
-                .Where(r => r.Content.ToString().ToLower() == currentEnv.ToLower()).First();
+            dialog.Title = "Switching Test Environment";
+
+            // add controls to the panel
+            var panel = dialog.FindChildren<StackPanel>().Single();
+            var dict = new Dictionary<string, RadioButton>();
+            foreach (var env in ShellViewModel.Instance.TestEnvVM.EnvironmentList)
+            {
+                var button = new RadioButton();
+                button.Name = env.Name;
+                button.Content = env.Name;
+                button.Tag = env;
+                button.Width = 72;
+                button.ToolTip = env.UrlReplacement;
+                button.Click += ChooseEnv;
+                panel.Children.Add(button);
+                dict.Add(env.Name, button);
+            }
+
+            var currentEnv = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
+            var radio = dict[currentEnv];
             radio.IsChecked = true;
             await this.ShowMetroDialogAsync(CurrentDialog);
         }
@@ -46,28 +66,24 @@ namespace ET2.Views
         private async void ChooseEnv(object sender, RoutedEventArgs e)
         {
             var selectedEnv = sender as RadioButton;
-            ShellViewModel.Instance.TestEnvVM.UpdateEnvironment(selectedEnv.Content.ToString());
+            ShellViewModel.Instance.TestEnvVM.UpdateEnvironment(selectedEnv.Name);
             await this.HideMetroDialogAsync(CurrentDialog);
 
             ShellViewModel.WriteStatus(
                 "Current Test Environment: {0}".FormatWith(selectedEnv.Content));
         }
 
+        #endregion Test Environments
+
+        #region Help Message
+
         private void DisplayHelp(object sender, RoutedEventArgs e)
         {
-            var title = "EFEC Testing Tools";
+            var title = "EFEC Testing Tools (ET2)";
             var msg = "Please contact <toby.qin@ef.com> if you have questions or bugs on this tool.";
             this.ShowMessageAsync(title, msg, MessageDialogStyle.Affirmative);
         }
 
-        private void ClickToCopy(object sender, RoutedEventArgs e)
-        {
-            if (sender is Hyperlink)
-            {
-                var txt = ((Hyperlink)sender).FindChildren<TextBlock>().FirstOrDefault();
-                txt.Text.CopyToClipboard();
-                ShellViewModel.WriteStatus("{0} copied.".FormatWith(txt.Text));
-            }
-        }
+        #endregion Help Message
     }
 }

@@ -32,13 +32,15 @@ namespace ET2.Views
             var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
             var isV2 = this.chkIsV2.IsChecked.Value;
             ((Button)sender).IsEnabled = false;
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;
 
             await Task.Run(() =>
             {
                 ShellViewModel.Instance.TestAccountVM.GenerateAccount(envUrlString, isV2);
             });
-            ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
+            //ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
             ((Button)sender).IsEnabled = true;
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = false;
         }
 
         private void chkIsV2_Click(object sender, RoutedEventArgs e)
@@ -61,6 +63,7 @@ namespace ET2.Views
             var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
             var isV2 = this.chkIsV2.IsChecked.Value;
             ((Button)sender).IsEnabled = false;
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;
 
             await Task.Run(() =>
             {
@@ -69,6 +72,7 @@ namespace ET2.Views
                 ShellViewModel.Instance.ProductVM.Save();
             });
             ((Button)sender).IsEnabled = true;
+            ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = false;
         }
 
         private async void NewAndActivate(object sender, RoutedEventArgs e)
@@ -83,7 +87,7 @@ namespace ET2.Views
                 ShellViewModel.Instance.TestAccountVM.GenerateAccount(envUrlString, isV2);
             });
 
-            ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
+            //ShellView.Instance.copyInfoFromStatus.Visibility = Visibility.Visible;
 
             await Task.Run(() =>
             {
