@@ -26,20 +26,29 @@ namespace EF.Common
 
         public static void ExecuteBatch(string batchScriptContent, bool asAdmin)
         {
+            ExecuteBatch(batchScriptContent, asAdmin, false);
+        }
+
+        public static void ExecuteBatch(string batchScriptContent, bool asAdmin, bool waitForExit)
+        {
             var pInfo = new ProcessStartInfo();
             var tempScript = GenerateTempBatch(batchScriptContent);
             pInfo.FileName = tempScript;
             pInfo.UseShellExecute = true;
             pInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            RunProcess(pInfo, asAdmin);
+            var p = RunProcess(pInfo, asAdmin);
+            if (waitForExit)
+            {
+                p.WaitForExit();
+            }
         }
 
-        public static void RunProcess(ProcessStartInfo pInfo)
+        public static Process RunProcess(ProcessStartInfo pInfo)
         {
-            RunProcess(pInfo, asAdmin: false);
+            return RunProcess(pInfo, asAdmin: false);
         }
 
-        public static void RunProcess(ProcessStartInfo pInfo, bool asAdmin)
+        public static Process RunProcess(ProcessStartInfo pInfo, bool asAdmin)
         {
             if (asAdmin)
             {
@@ -47,7 +56,7 @@ namespace EF.Common
                 pInfo.UseShellExecute = true;
             }
 
-            Process.Start(pInfo);
+            return Process.Start(pInfo);
         }
     }
 }

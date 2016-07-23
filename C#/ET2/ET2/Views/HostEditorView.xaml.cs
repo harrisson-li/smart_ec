@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EF.Common;
+using ET2.Models;
+using ET2.Support;
+using ET2.ViewModels;
 
 namespace ET2.Views
 {
@@ -26,28 +30,33 @@ namespace ET2.Views
             InitializeComponent();
         }
 
-        private string GetHostLocation()
+        private void ExploreHostFolder(object sender, RoutedEventArgs e)
         {
-            var windir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-            return System.IO.Path.Combine(windir, @"System32\drivers\etc");
+            Process.Start("explorer.exe", Settings.GetSystemHostLocation());
         }
 
-        private string GetHostFileLocation()
+        private void ViewCurrentHost(object sender, RoutedEventArgs e)
         {
-            return System.IO.Path.Combine(GetHostLocation(), "hosts");
+            var cmd = "cmd /c notepad.exe {0}".FormatWith(Settings.GetSystemHostFile().FullName);
+            CommandHelper.ExecuteBatch(cmd, asAdmin: true);
         }
 
-        private void btnExplore_Click(object sender, RoutedEventArgs e)
+        private void BackupCurrentHost(object sender, RoutedEventArgs e)
         {
-            var batch = "cmd /c Explorer.exe {0}".FormatWith(GetHostLocation());
-            CommandHelper.ExecuteBatch(batch);
+            Settings.BackupSystemHost();
         }
 
-        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        private void ViewHost(object sender, RoutedEventArgs e)
         {
-            // todo: should back up the file at first.
-            var batch = "cmd /c notepad.exe {0}".FormatWith(GetHostFileLocation());
-            CommandHelper.ExecuteBatch(batch);
+            var host = (sender as Button).DataContext as HostFile;
+            host.View();
+        }
+
+        private void ActivateHost(object sender, RoutedEventArgs e)
+        {
+            var host = (sender as FrameworkElement).DataContext as HostFile;
+            host.Activate();
+            ShellViewModel.Instance.HostVM.NotifyHostChanged();
         }
     }
 }

@@ -75,5 +75,13 @@ namespace ET2.Tests
             Log.Info(list.ToJsonString());
             Assert.IsTrue(list.Count > 0);
         }
+
+        [TestMethod]
+        public void TestLoadHostFiles()
+        {
+            var list = Settings.LoadHostFiles();
+            Log.Info(list.ToJsonString());
+            Assert.IsTrue(list.Count > 0);
+        }
     }
 }

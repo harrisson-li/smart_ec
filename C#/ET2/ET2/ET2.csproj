@@ -76,9 +76,7 @@
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
@@ -160,6 +158,7 @@
     <Compile Include="Support\VersionHelper.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
+    <Compile Include="ViewModels\HostEditorViewModel.cs" />
     <Compile Include="ViewModels\StatusInfoViewModel.cs" />
     <Compile Include="ViewModels\TestAccountViewModel.cs" />
     <Compile Include="ViewModels\TestEnvironmentViewModel.cs" />
@@ -221,7 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ActionParameters.cs" />
-    <Compile Include="Models\HostSetting.cs" />
+    <Compile Include="Models\HostFile.cs" />
     <Compile Include="Models\TestAccount.cs" />
     <Compile Include="Models\TestEnvironment.cs" />
     <Compile Include="Models\UsefulLink.cs" />
@@ -248,6 +247,12 @@
     <Content Include="Data\FixLinks.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Hosts\Host - UAT20">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Hosts\Host - UAT25">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -256,6 +261,9 @@
     </None>
     <AppDesigner Include="Properties\" />
     <Content Include="Data\DivisionCode.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Hosts\Host - UAT13">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\ProductList.csv">

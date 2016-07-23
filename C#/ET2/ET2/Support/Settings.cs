@@ -29,6 +29,7 @@ namespace ET2.Support
             public const string Envrionments = "Environments.csv";
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
             public const string ReleaseNote = "ReleaseNote.txt";
+            public const string HostFolder = "Hosts";
         }
 
         #endregion Constants
@@ -361,5 +362,103 @@ namespace ET2.Support
         }
 
         #endregion Useful links
+
+        #region Host files
+
+        public static string GetSystemHostLocation()
+        {
+            var windir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+            return System.IO.Path.Combine(windir, @"System32\drivers\etc");
+        }
+
+        public static HostFile GetSystemHostFile()
+        {
+            return new HostFile
+            {
+                FullName = System.IO.Path.Combine(GetSystemHostLocation(), "hosts"),
+                IsPrivate = true,
+                IsActivated = true
+            };
+        }
+
+        public static void BackupSystemHost()
+        {
+            var bak = "host.bak_on_{0}"
+                .FormatWith(DateTime.Now.ToString("yyyyMMddhhmmss"));
+            bak = Path.Combine(GetSystemHostLocation(), bak);
+
+            // to backup host file, you must run as admin
+            var cmd = "copy \"{0}\" \"{1}\" /y".FormatWith(GetSystemHostFile().FullName, bak);
+            CommandHelper.ExecuteBatch(cmd, asAdmin: true, waitForExit: true);
+        }
+
+        public static List<HostFile> LoadHostFiles()
+        {
+            var builtInHosts = Path.Combine(AppDataFolder, Data.HostFolder);
+            var globalHostFolder = AsGlobalFile(Data.HostFolder);
+            var personalHostFolder = AsPersonalFile(Data.HostFolder);
+
+            // copy all default settings to global folder for first time
+            if (!Directory.Exists(globalHostFolder))
+            {
+                Directory.CreateDirectory(globalHostFolder);
+
+                Directory.GetFiles(builtInHosts).ToList().ForEach(
+                e =>
+                {
+                    File.Copy(e, e.Replace(builtInHosts, globalHostFolder), true);
+                });
+            }
+
+            // Create persoanl host folder if not existed
+            if (!Directory.Exists(personalHostFolder))
+            {
+                Directory.CreateDirectory(personalHostFolder);
+            }
+
+            var list = new List<HostFile>();
+            // Load all global host files
+            Directory.GetFiles(globalHostFolder, "*", SearchOption.TopDirectoryOnly)
+                .ToList().ForEach(e =>
+                {
+                    list.Add(new HostFile
+                    {
+                        FullName = e,
+                        IsPrivate = false
+                    });
+                });
+
+            // Load all personal host files
+            Directory.GetFiles(personalHostFolder, "*", SearchOption.TopDirectoryOnly)
+                .ToList().ForEach(e =>
+                {
+                    list.Add(new HostFile
+                    {
+                        FullName = e,
+                        IsPrivate = true
+                    });
+                });
+
+            // Load current system host file
+            var systemHost = GetSystemHostFile();
+            var isFromSettings = false;
+            foreach (var host in list)
+            {
+                if (host.Content == systemHost.Content)
+                {
+                    host.IsActivated = true;
+                    isFromSettings = true;
+                }
+            }
+
+            if (!isFromSettings)
+            {
+                list.Add(systemHost);
+            }
+
+            return list;
+        }
+
+        #endregion Host files
     }
 }
