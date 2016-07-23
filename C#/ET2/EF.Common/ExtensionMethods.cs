@@ -186,5 +186,19 @@ namespace EF.Common
             var json = obj.ToJsonString();
             return json.ToJsonObject<T>();
         }
+
+        public static void Dump(this object arg)
+        {
+            var type = arg.GetType().FullName;
+            if (arg == null)
+            {
+                Log.DebugFormat("[DUMP]<{0}> => NULL", type);
+            }
+            else
+            {
+                Log.DebugFormat("[DUMP]{0}:\r\n------------------\r\n{1}\r\n------------------",
+                    type, arg.ToJsonString());
+            }
+        }
     }
 }

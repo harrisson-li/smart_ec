@@ -17,6 +17,7 @@ namespace EF.Common.Http
 
         public string Send(ref HttpHeader header)
         {
+            header.Dump();
             HttpWebResponse response = null;
             string responseString = string.Empty;
 
@@ -56,9 +57,11 @@ namespace EF.Common.Http
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
+                response.Dump();
             }
             catch (WebException ex)
             {
+                Log.Error(ex);
                 if (ex.Response != null)
                 {
                     response = (HttpWebResponse)ex.Response;
@@ -91,6 +94,7 @@ namespace EF.Common.Http
                 header.Html = responseString;
             }
 
+            responseString.Dump();
             return responseString;
         }
     }
