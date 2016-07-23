@@ -13,6 +13,7 @@ namespace ET2.ViewModels
         public ProductViewModel ProductVM { get; set; }
         public StatusInfoViewModel StatusInfoVM { get; set; }
         public HostEditorViewModel HostVM { get; set; }
+        public SettingsViewModel SettingsVM { get; set; }
         public static ShellViewModel Instance { get; private set; }
 
         public void Close()
@@ -31,6 +32,7 @@ namespace ET2.ViewModels
             this.StatusInfoVM = new StatusInfoViewModel();
             this.ProductVM = new ProductViewModel();
             this.HostVM = new HostEditorViewModel();
+            this.SettingsVM = new SettingsViewModel();
 
             Instance = this;
             Support.VersionHelper.ShowReleaseNote();

@@ -383,7 +383,7 @@ namespace ET2.Support
 
         public static void BackupSystemHost()
         {
-            var bak = "SystemHost.{0}"
+            var bak = "MyHost.{0}"
                 .FormatWith(DateTime.Now.ToString("yyyyMMdd_HHmmss"));
             bak = Path.Combine(AsPersonalFile(Data.HostFolder), bak);
 
@@ -417,7 +417,14 @@ namespace ET2.Support
             }
 
             // Copy system host file to personal folder
-            File.Copy(GetSystemHostFile().FullName, Path.Combine(personalHostFolder, "SystemHost"), true);
+            File.Copy(GetSystemHostFile().FullName, Path.Combine(personalHostFolder, "SystemHost.Current"), true);
+
+            // Create origin backup if it does not exist
+            var defaultHostBackup = Path.Combine(personalHostFolder, "SystemHost.Origin");
+            if (!File.Exists(defaultHostBackup))
+            {
+                File.Copy(GetSystemHostFile().FullName, defaultHostBackup);
+            }
 
             var list = new List<HostFile>();
             // Load all global host files

@@ -46,7 +46,7 @@
                 <DataGridTextColumn
                     Width="210"
                     Binding="{Binding Name}"
-                    Header="Name">
+                    Header="Host Profile">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="ToolTip" Value="{Binding FullName}" />
@@ -98,6 +98,25 @@
                 Click="BackupCurrentHost"
                 Content="Backup Current"
                 FontSize="13" />
+            <Button
+                Width="120"
+                Height="40"
+                Margin="5"
+                Custom:ButtonHelper.PreserveTextCase="True"
+                Click="OpenHostFolder"
+                Content="Private Hosts"
+                Style="{StaticResource AccentedSquareButtonStyle}"
+                FontSize="13" />
+            <Button
+                Width="120"
+                Height="40"
+                Margin="5"
+                Custom:ButtonHelper.PreserveTextCase="True"
+                Click="OpenHostFolder"
+                Content="Public Hosts"
+                Style="{StaticResource AccentedSquareButtonStyle}"
+                FontSize="13" />
+            <TextBlock Name="txtTips" Margin="5" TextWrapping="WrapWithOverflow" />
         </StackPanel>
     </Grid>
 </UserControl>

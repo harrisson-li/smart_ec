@@ -28,6 +28,7 @@ namespace ET2.Views
         public HostEditorView()
         {
             InitializeComponent();
+            this.txtTips.Text = @"Tips: Add/remove host profiles from personal host folder, or public host folder. Public hosts are shared by all people.";
         }
 
         private void ExploreHostFolder(object sender, RoutedEventArgs e)
@@ -49,7 +50,7 @@ namespace ET2.Views
 
         private void ViewHost(object sender, RoutedEventArgs e)
         {
-            var host = (sender as Button).DataContext as HostFile;
+            var host = (sender as FrameworkElement).DataContext as HostFile;
             host.View();
         }
 
@@ -58,6 +59,25 @@ namespace ET2.Views
             var host = (sender as FrameworkElement).DataContext as HostFile;
             host.Activate();
             ShellViewModel.Instance.HostVM.NotifyHostChanged();
+        }
+
+        private void OpenHostFolder(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn.Content.ToString() == "Private Hosts")
+            {
+                ShellViewModel.Instance.SettingsVM.OpenFolder(
+                    ShellViewModel.Instance.SettingsVM.PrivateHostsFolder);
+            }
+            else if (btn.Content.ToString() == "Public Hosts")
+            {
+                ShellViewModel.Instance.SettingsVM.OpenFolder(
+                   ShellViewModel.Instance.SettingsVM.GlobalHostsFolder);
+            }
+            else
+            {
+                throw new NotSupportedException("Should not bind to this method!");
+            }
         }
     }
 }
