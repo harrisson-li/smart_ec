@@ -4,12 +4,14 @@
 2. Add Test Environment: LiveCN and LiveUS.
 3. Improve host editor, you can switch host according to profiles.
 4. Implement a simple settings dialog.
+5. Support one more token in links: $token
 
 v0.0.0.14 - Preview
 
 1. Implement useful link, add more links now.
-2. Remember your hits on each link.
-3. Show release note for new version.
+2. Support tokens in links: $id, $name, $env
+3. Remember your hits on each link.
+4. Show release note for new version.
 
 v0.0.0.10
 
