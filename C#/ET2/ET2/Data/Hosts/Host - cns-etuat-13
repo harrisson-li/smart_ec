@@ -25,11 +25,11 @@
 # UAT20 = cns-etuat-20
 10.128.34.163    uat20.englishtown.com
 10.128.34.163    uat20oboe.ef.com
- 
+
 # UAT3 = cns-etuat-25
-10.128.34.152   uat3.englishtown.com
-10.128.34.152   uat3oboe.ef.com
+10.128.34.152    uat3.englishtown.com
+10.128.34.152    uat3oboe.ef.com
 
 # UAT25 = cns-etuat-25
-10.128.34.152   uat25.englishtown.com
-10.128.34.152   uat25oboe.ef.com
+10.128.34.152    uat25.englishtown.com
+10.128.34.152    uat25oboe.ef.com

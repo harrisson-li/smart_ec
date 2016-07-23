@@ -36,24 +36,23 @@
 # UAT20 = cns-etuat-20
 10.128.34.163    uat20.englishtown.com
 10.128.34.163    uat20oboe.ef.com
- 
+
 # UAT3 = cns-etuat-25
-10.128.34.152   uat3.englishtown.com
-10.128.34.152   uat3oboe.ef.com
+10.128.34.152    uat3.englishtown.com
+10.128.34.152    uat3oboe.ef.com
 
 # UAT25 = cns-etuat-25
-10.128.34.152   uat25.englishtown.com
-10.128.34.152   uat25oboe.ef.com
+10.128.34.152    uat25.englishtown.com
+10.128.34.152    uat25oboe.ef.com
 
- 
-#---landing page  
-#10.128.34.234 cosam.englishtown.com
-#10.128.34.234 cosamcenter.ef.com.cn
-#10.128.34.234 cosamcache.englishtown.com
-#10.128.34.234 cosam-ak1.englishtown.com
-#10.128.34.234 cosam-ak2.englishtown.com
-#10.128.34.234 devcenter.ef.com.cn
-#10.128.34.234 cosamsecure.englishtown.com
-#10.128.34.234 b2cgrcuat.englishtown.com
-#10.128.34.234 dev.englishtown.com
-#10.128.34.163 1111.englishtown.com
+#---landing page
+#10.128.34.234    cosam.englishtown.com
+#10.128.34.234    cosamcenter.ef.com.cn
+#10.128.34.234    cosamcache.englishtown.com
+#10.128.34.234    cosam-ak1.englishtown.com
+#10.128.34.234    cosam-ak2.englishtown.com
+#10.128.34.234    devcenter.ef.com.cn
+#10.128.34.234    cosamsecure.englishtown.com
+#10.128.34.234    b2cgrcuat.englishtown.com
+#10.128.34.234    dev.englishtown.com
+#10.128.34.163    1111.englishtown.com
