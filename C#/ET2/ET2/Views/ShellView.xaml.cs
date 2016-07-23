@@ -22,7 +22,7 @@ namespace ET2.Views
     public partial class ShellView : MetroWindow
     {
         public static ShellView Instance { get; private set; }
-        private BaseMetroDialog CurrentDialog { get; set; }
+        public BaseMetroDialog CurrentDialog { get; set; }
 
         public ShellView()
         {
@@ -42,7 +42,8 @@ namespace ET2.Views
             dialog.Title = "Switching Test Environment";
 
             // add controls to the panel
-            var panel = dialog.FindChildren<StackPanel>().Single();
+            var panel = dialog.FindChildren<StackPanel>().First();
+            panel.Children.Clear();
             var dict = new Dictionary<string, RadioButton>();
             foreach (var env in ShellViewModel.Instance.TestEnvVM.EnvironmentList)
             {
@@ -85,6 +86,28 @@ namespace ET2.Views
         }
 
         #endregion Help Message
+
+        #region Settings
+
+        private async void DisplaySettings(object sender, RoutedEventArgs e)
+        {
+            // find the dialog resource
+            CurrentDialog = (BaseMetroDialog)this.Resources["myDialog"];
+
+            // set dialog title
+            var dialog = CurrentDialog as CustomDialog;
+            dialog.Title = "Open Settings Folder";
+            dialog.Height = 150;
+
+            // add controls to the panel
+            var panel = dialog.FindChildren<StackPanel>().First();
+            panel.Children.Clear();
+            var settingView = new SettingsView();
+            panel.Children.Add(settingView);
+            await this.ShowMetroDialogAsync(CurrentDialog);
+        }
+
+        #endregion Settings
 
         public async Task RunInBackgroud(Action act)
         {

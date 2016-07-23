@@ -105,8 +105,8 @@
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="OpenHostFolder"
                 Content="Private Hosts"
-                Style="{StaticResource AccentedSquareButtonStyle}"
-                FontSize="13" />
+                FontSize="13"
+                Style="{StaticResource AccentedSquareButtonStyle}" />
             <Button
                 Width="120"
                 Height="40"
@@ -114,9 +114,12 @@
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="OpenHostFolder"
                 Content="Public Hosts"
-                Style="{StaticResource AccentedSquareButtonStyle}"
-                FontSize="13" />
-            <TextBlock Name="txtTips" Margin="5" TextWrapping="WrapWithOverflow" />
+                FontSize="13"
+                Style="{StaticResource AccentedSquareButtonStyle}" />
+            <TextBlock
+                Name="txtTips"
+                Margin="5"
+                TextWrapping="WrapWithOverflow" />
         </StackPanel>
     </Grid>
 </UserControl>
