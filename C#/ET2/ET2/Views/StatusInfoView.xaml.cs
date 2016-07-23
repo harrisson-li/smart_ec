@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EF.Common;
+using ET2.Support;
 using ET2.ViewModels;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -37,6 +38,11 @@ namespace ET2.Views
                 txt.Text.CopyToClipboard();
                 ShellViewModel.WriteStatus("{0} copied.".FormatWith(txt.Text));
             }
+        }
+
+        private void ShowLogFile(object sender, MouseButtonEventArgs e)
+        {
+            LogHelper.OpenCurrentLogFile();
         }
     }
 }

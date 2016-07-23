@@ -15,6 +15,7 @@
             <cvt:InverseBooleanConverter x:Key="InverseBoolean" />
             <cvt:UrlConverter x:Key="ConvertUrl" />
             <cvt:VisibilityConverter x:Key="ConvertVis" />
+            <cvt:LongTextConverter x:Key="CutText" />
         </ResourceDictionary>
     </UserControl.Resources>
     <StatusBar Name="statusBarMain">
@@ -64,7 +65,9 @@
                 Grid.Column="1"
                 Width="auto"
                 Margin="10,0,0,0"
+                MouseLeftButtonDown="ShowLogFile"
                 Text="{Binding Path=StatusInfoVM.Text,
+                               Converter={StaticResource CutText},
                                Mode=OneWay}"
                 ToolTip="{Binding Path=StatusInfoVM.Text,
                                   Mode=OneWay}" />
