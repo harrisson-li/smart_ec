@@ -44,6 +44,7 @@ namespace ET2.Views
         private void BackupCurrentHost(object sender, RoutedEventArgs e)
         {
             Settings.BackupSystemHost();
+            ShellViewModel.WriteStatus("System host had been saved to personal host folder.");
         }
 
         private void ViewHost(object sender, RoutedEventArgs e)

@@ -383,13 +383,13 @@ namespace ET2.Support
 
         public static void BackupSystemHost()
         {
-            var bak = "host.bak_on_{0}"
-                .FormatWith(DateTime.Now.ToString("yyyyMMddhhmmss"));
-            bak = Path.Combine(GetSystemHostLocation(), bak);
+            var bak = "SystemHost.{0}"
+                .FormatWith(DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+            bak = Path.Combine(AsPersonalFile(Data.HostFolder), bak);
 
-            // to backup host file, you must run as admin
+            // backup to personal host folder
             var cmd = "copy \"{0}\" \"{1}\" /y".FormatWith(GetSystemHostFile().FullName, bak);
-            CommandHelper.ExecuteBatch(cmd, asAdmin: true, waitForExit: true);
+            CommandHelper.ExecuteBatch(cmd, asAdmin: false, waitForExit: true);
         }
 
         public static List<HostFile> LoadHostFiles()
@@ -416,6 +416,9 @@ namespace ET2.Support
                 Directory.CreateDirectory(personalHostFolder);
             }
 
+            // Copy system host file to personal folder
+            File.Copy(GetSystemHostFile().FullName, Path.Combine(personalHostFolder, "SystemHost"), true);
+
             var list = new List<HostFile>();
             // Load all global host files
             Directory.GetFiles(globalHostFolder, "*", SearchOption.TopDirectoryOnly)
@@ -439,22 +442,8 @@ namespace ET2.Support
                     });
                 });
 
-            // Load current system host file
-            var systemHost = GetSystemHostFile();
-            var isFromSettings = false;
-            foreach (var host in list)
-            {
-                if (host.Content == systemHost.Content)
-                {
-                    host.IsActivated = true;
-                    isFromSettings = true;
-                }
-            }
-
-            if (!isFromSettings)
-            {
-                list.Add(systemHost);
-            }
+            // Remove duplicate host files
+            list = list.GroupBy(e => e.Content).Select(g => g.First()).ToList();
 
             return list;
         }

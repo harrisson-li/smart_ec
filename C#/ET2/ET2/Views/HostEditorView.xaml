@@ -19,8 +19,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="8*" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <DataGrid
             x:Name="hostFileGrid"
@@ -35,14 +35,16 @@
             Style="{DynamicResource AzureDataGrid}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Binding="{Binding IsActivated}" Header="Activated">
-                    <DataGridCheckBoxColumn.CellStyle>
-                        <Style>
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="CheckBox">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="IsEnabled" Value="False" />
                             <EventSetter Event="CheckBox.Click" Handler="ActivateHost" />
                         </Style>
-                    </DataGridCheckBoxColumn.CellStyle>
+                    </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
                 <DataGridTextColumn
-                    Width="150"
+                    Width="210"
                     Binding="{Binding Name}"
                     Header="Name">
                     <DataGridTextColumn.ElementStyle>
@@ -73,29 +75,29 @@
         </DataGrid>
         <StackPanel Grid.Column="1">
             <Button
-                Width="160"
-                Height="50"
-                Margin="15"
+                Width="120"
+                Height="40"
+                Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="ExploreHostFolder"
                 Content="Open in Explorer"
-                FontSize="16" />
+                FontSize="13" />
             <Button
-                Width="160"
-                Height="50"
-                Margin="15"
+                Width="120"
+                Height="40"
+                Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="ViewCurrentHost"
                 Content="Open in Notepad"
-                FontSize="16" />
+                FontSize="13" />
             <Button
-                Width="160"
-                Height="50"
-                Margin="15"
+                Width="120"
+                Height="40"
+                Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="BackupCurrentHost"
                 Content="Backup Current"
-                FontSize="16" />
+                FontSize="13" />
         </StackPanel>
     </Grid>
 </UserControl>
