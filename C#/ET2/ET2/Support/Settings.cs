@@ -28,7 +28,7 @@ namespace ET2.Support
             public const string FixLinks = "FixLinks.csv";
             public const string Envrionments = "Environments.csv";
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
-            public const string ReleaseNote = "ReleaseNote.txt";
+            public const string ReleaseNote = "ReleaseNote.md";
             public const string HostFolder = "Hosts";
         }
 
