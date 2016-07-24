@@ -5,6 +5,7 @@
 3. Improve host editor, you can switch host according to profiles.
 4. Implement a simple settings dialog.
 5. Support one more token in links: $token
+6. Improve useful links tab loading speed.
 
 ## v0.0.0.14 - Preview
 
