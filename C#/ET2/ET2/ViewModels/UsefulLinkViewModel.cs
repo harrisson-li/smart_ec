@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using EF.Common;
 using ET2.Models;
 using ET2.Support;
 
@@ -13,13 +14,7 @@ namespace ET2.ViewModels
     {
         public List<UsefulLink> AllLinks { get; set; }
 
-        public List<UsefulLink> HomeLinks
-        {
-            get
-            {
-                return AllLinks.Where(e => e.IsHomeLink).ToList();
-            }
-        }
+        public List<FixLink> FixLinks { get; set; }
 
         public List<UsefulLink> GridLinks
         {
@@ -36,6 +31,7 @@ namespace ET2.ViewModels
         {
             this.AllLinks = Settings.LoadUsefulLinks();
             this.HitRecords = Settings.LoadHitRecords();
+            this.FixLinks = Settings.LoadFixLinks();
             this.MergeHits();
         }
 
@@ -73,8 +69,55 @@ namespace ET2.ViewModels
 
         public void NotifyUrlUpdate()
         {
-            this.NotifyOfPropertyChange(() => this.HomeLinks);
             this.NotifyOfPropertyChange(() => this.GridLinks);
+        }
+
+        /// <summary>
+        /// To convert original URL to real URL.
+        /// </summary>
+        /// <param name="originUrl">An URL with token.</param>
+        /// <returns></returns>
+        public string ConvertLink(string originUrl)
+        {
+            var envString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var id = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.MemberId;
+            var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
+            var mark = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Mark;
+
+            if (!originUrl.IsNullOrEmpty())
+            {
+                Log.DebugFormat("Covert URL From: {0}", originUrl);
+                originUrl = originUrl.Replace("$env", envString);
+                originUrl = originUrl.Replace("$id", id);
+                originUrl = originUrl.Replace("$name", name);
+                originUrl = originUrl.Replace("$mark", mark);
+                originUrl = originUrl.Replace("$token", TokenHelper.GetToken(envString));
+                originUrl = TryToFixLink(originUrl);
+
+                Log.DebugFormat("Covert URL To: {0}", originUrl);
+            }
+
+            return originUrl;
+        }
+
+        /// <summary>
+        /// Try to fix link address if found in FixLinks.csv
+        /// </summary>
+        /// <param name="linkAddress">Original link address.</param>
+        /// <returns></returns>
+        public string TryToFixLink(string linkAddress)
+        {
+            var fixedLink = this.FixLinks
+                .Where(e => e.Origin == linkAddress).FirstOrDefault();
+
+            if (fixedLink != null)
+            {
+                return fixedLink.Fixed;
+            }
+            else
+            {
+                return linkAddress;
+            }
         }
     }
 }

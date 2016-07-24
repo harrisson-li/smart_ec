@@ -31,8 +31,6 @@ namespace ET2.Support
                 var tokenHelper = new TokenHelper(envString);
                 CachedTokenHelper.Add(envString, tokenHelper);
             }
-
-            Log.InfoFormat("Get a token for {0}", envString);
             return CachedTokenHelper[envString].CurrentToken.Value;
         }
 
@@ -60,9 +58,8 @@ namespace ET2.Support
                         Value = ExtractTokenValue(result),
                         RefreshHour = DateTime.Now.Hour
                     };
+                    Log.InfoFormat("Secrect token: {0}", _token.Value);
                 }
-
-                Log.InfoFormat("Token: {0}", _token.Value);
                 return _token;
             }
         }
@@ -79,7 +76,7 @@ namespace ET2.Support
             }
 
             Log.Warn("Failed to get token from secret page");
-            return "<FailedToGet>";
+            return "<Unknown>";
         }
 
         public class Token

@@ -340,9 +340,17 @@ namespace ET2.Support
                       Name = e["Name"].ToString(),
                       Hits = e["Hits"].ConvertValue<int>(),
                       IsHomeLink = e["IsHomeLink"].ConvertValue<bool>(),
-                      IsHide = e["Hide"].ConvertValue<bool>()
+                      IsHide = e["Hide"].ConvertValue<bool>(),
+                      Rank = e["Rank"].ConvertValue<int>()
                   }).ToList();
             return list;
+        }
+
+        public static List<UsefulLink> LoadHomeLinks()
+        {
+            return LoadUsefulLinks()
+                .Where(e => e.IsHomeLink)
+                .OrderBy(e => e.Rank).Reverse().ToList();
         }
 
         public static Dictionary<string, int> LoadHitRecords()

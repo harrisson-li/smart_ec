@@ -22,20 +22,8 @@ namespace ET2.Converters
                 throw new InvalidOperationException("The target must be a string");
             }
 
-            var envString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var id = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.MemberId;
-            var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
-            if (value != null)
-            {
-                var url = value as string;
-                url = url.Replace("$env", envString);
-                url = url.Replace("$id", id);
-                url = url.Replace("$name", name);
-                url = url.Replace("$token", TokenHelper.GetToken(envString));
-                return url;
-            }
-
-            return value;
+            var originUrl = value as string;
+            return ShellViewModel.Instance.UsefulLinkVM.ConvertLink(originUrl);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

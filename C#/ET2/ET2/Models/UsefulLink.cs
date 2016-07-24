@@ -89,6 +89,19 @@ namespace ET2.Models
             }
         }
 
+        private int _rank;
+
+        public int Rank
+        {
+            get { return _rank; }
+            set
+            {
+                if (value == _rank) return;
+                _rank = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

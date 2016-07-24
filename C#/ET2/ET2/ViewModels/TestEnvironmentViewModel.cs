@@ -47,7 +47,6 @@ namespace ET2.ViewModels
                 .Where(e => e.Name.ToLower() == newEnvironment.ToLower()).Single();
 
             this.Save();
-            ShellViewModel.Instance.TestAccountVM.NotifyUrlUpdate();
             ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
         }
 

@@ -20,9 +20,11 @@
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
+
             <Style x:Key="FieldLabelStyle" TargetType="Label">
                 <Setter Property="Height" Value="29" />
             </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
@@ -158,10 +160,7 @@
                         Content="FreeRedemptionCode:"
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Collapsed" />
-                    <Label
-                        Content="FreeRedemptionQty: "
-                        Style="{DynamicResource FieldLabelStyle}"
-                        Visibility="Visible" />
+                    <Label Content="FreeRedemptionQty: " Visibility="Visible" />
                     <Label
                         Content="StartLevel: "
                         Style="{DynamicResource FieldLabelStyle}"
@@ -172,17 +171,14 @@
                                             Converter={StaticResource InverseBoolean}}"
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Collapsed" />
-
                     <Label
                         Content="City: "
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Visible" />
-
                     <Label
                         Content="School: "
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Visible" />
-
                     <Label
                         Content="DivisionCode: "
                         Style="{DynamicResource FieldLabelStyle}"
@@ -331,103 +327,38 @@
                     <Button
                         Width="120"
                         Margin="0,0,0,5"
-                        Click="ClickLinkButton"
-                        Content="S15 Redemptions"
-                        ToolTip="{Binding Path=TestAccountVM.RedCodeRef,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,0,5"
                         Click="ConvertTo20"
                         Content="Convert to 2.0"
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}"
                         ToolTip="IsEcRolloutSchoolPlatform2 = true" />
                     <Button
+                        Width="120"
+                        Margin="0,0,0,5"
+                        Click="OpenLink"
+                        Content="S15 Redemptions"
+                        Visibility="Collapsed" />
+                    <Button
                         Name="btnSuspendAccount"
                         Width="120"
                         Margin="0,0,0,5"
-                        Click="ClickLinkButton"
+                        Click="OpenLink"
                         Content="Suspend Account"
-                        ToolTip="{Binding Path=TestAccountVM.Salesforce,
-                                          Converter={StaticResource ConvertUrl}}" />
+                        Visibility="Collapsed" />
                     <Button
                         Name="btnExpireAccount"
                         Width="120"
                         Margin="0,0,0,5"
-                        Click="ClickLinkButton"
+                        Click="OpenLink"
                         Content="Expire Account"
-                        ToolTip="{Binding Path=TestAccountVM.OBOE,
-                                          Converter={StaticResource ConvertUrl}}" />
+                        Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel
+                    Name="homeLinks"
                     Grid.Column="3"
                     Width="180"
                     HorizontalAlignment="Center"
-                    Background="AliceBlue">
-                    <Label
-                        Margin="10,2,35,5"
-                        HorizontalAlignment="Center"
-                        Content="Open Link"
-                        FontSize="16"
-                        Visibility="Collapsed" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Login ETown"
-                        ToolTip="{Binding Path=TestAccountVM.ETwon,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Login OBOE"
-                        ToolTip="{Binding Path=TestAccountVM.OBOE,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Login Salesfore"
-                        ToolTip="{Binding Path=TestAccountVM.Salesforce,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Student Tool"
-                        ToolTip="{Binding Path=TestAccountVM.StudentTool,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Submit Score 1.0"
-                        ToolTip="{Binding Path=TestAccountVM.SubmitScore10,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Submit Score 2.0"
-                        ToolTip="{Binding Path=TestAccountVM.SubmitScore20,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="Clear Cache"
-                        ToolTip="{Binding Path=TestAccountVM.ClearCache,
-                                          Converter={StaticResource ConvertUrl}}" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,20,5"
-                        Click="ClickLinkButton"
-                        Content="EF Error Log"
-                        ToolTip="{Binding Path=TestAccountVM.EFErrorLog,
-                                          Converter={StaticResource ConvertUrl}}" />
-                </StackPanel>
+                    Background="AliceBlue" />
             </Grid>
         </GroupBox>
     </Grid>
