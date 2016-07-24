@@ -80,24 +80,27 @@
                 Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="ExploreHostFolder"
-                Content="Open in Explorer"
-                FontSize="13" />
+                Content="Open Host Folder"
+                FontSize="12"
+                ToolTip="Open System Host Folder" />
             <Button
                 Width="120"
                 Height="40"
                 Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="ViewCurrentHost"
-                Content="Open in Notepad"
-                FontSize="13" />
+                Content="Edit Current Host"
+                FontSize="12"
+                ToolTip="Edit System Host in Notepad" />
             <Button
                 Width="120"
                 Height="40"
                 Margin="5"
                 Custom:ButtonHelper.PreserveTextCase="True"
                 Click="BackupCurrentHost"
-                Content="Backup Current"
-                FontSize="13" />
+                Content="Backup My Host"
+                FontSize="12"
+                ToolTip="Backup System Host to Private Host Folder" />
             <Button
                 Width="120"
                 Height="40"
@@ -106,7 +109,9 @@
                 Click="OpenHostFolder"
                 Content="Private Hosts"
                 FontSize="13"
-                Style="{StaticResource AccentedSquareButtonStyle}" />
+                Style="{StaticResource AccentedSquareButtonStyle}"
+                ToolTip="{Binding Path=SettingsVM.PrivateHostsFolder,
+                                  Mode=OneWay}" />
             <Button
                 Width="120"
                 Height="40"
@@ -115,7 +120,9 @@
                 Click="OpenHostFolder"
                 Content="Public Hosts"
                 FontSize="13"
-                Style="{StaticResource AccentedSquareButtonStyle}" />
+                Style="{StaticResource AccentedSquareButtonStyle}"
+                ToolTip="{Binding Path=SettingsVM.GlobalHostsFolder,
+                                  Mode=OneWay}" />
             <TextBlock
                 Name="txtTips"
                 Margin="5"
