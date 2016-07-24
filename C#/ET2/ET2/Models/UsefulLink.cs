@@ -37,6 +37,29 @@ namespace ET2.Models
             }
         }
 
+        private string _txt;
+
+        public string Text
+        {
+            get
+            {
+                if (_txt == null)
+                {
+                    return _url;
+                }
+                else
+                {
+                    return _txt;
+                }
+            }
+            set
+            {
+                if (value == _txt) return;
+                _txt = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _des;
 
         public string Description

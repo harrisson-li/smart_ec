@@ -13,7 +13,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <cvt:InverseBooleanConverter x:Key="InverseBoolean" />
-            <cvt:UrlConverter x:Key="ConvertUrl" />
             <cvt:VisibilityConverter x:Key="ConvertVis" />
             <cvt:LongTextConverter x:Key="CutText" />
         </ResourceDictionary>

@@ -26,14 +26,5 @@ namespace ET2.Tests
             var target = cvt.Convert(source, typeof(bool), null, null);
             Assert.AreEqual(false, target);
         }
-
-        [TestMethod]
-        public void TestUrlConverter()
-        {
-            var cvt = new UrlConverter();
-            var source = "$env";
-            var target = cvt.Convert(source, typeof(string), null, null);
-            Assert.AreEqual(Shell.TestEnvVM.CurrentEnvironment.UrlReplacement, target);
-        }
     }
 }

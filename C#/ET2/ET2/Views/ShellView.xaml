@@ -31,7 +31,7 @@
     <DockPanel>
         <myControls:StatusInfoView DockPanel.Dock="Bottom" />
         <Grid>
-            <TabControl Margin="10">
+            <TabControl Margin="10" SelectionChanged="Tab_SelectionChanged">
                 <TabItem Header="Test Accounts">
                     <Grid>
                         <myControls:TestAccountView />

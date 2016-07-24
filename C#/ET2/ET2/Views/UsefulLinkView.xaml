@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <cvt:UrlConverter x:Key="ConvertUrl" />
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
@@ -35,13 +35,12 @@
                     Header="Name" />
                 <DataGridHyperlinkColumn
                     Width="*"
-                    Binding="{Binding Url,
-                                      Converter={StaticResource ConvertUrl}}"
+                    Binding="{Binding Text}"
                     Header="Link">
                     <DataGridHyperlinkColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <EventSetter Event="Hyperlink.Click" Handler="Hyperlink_Click" />
-                            <Setter Property="ToolTip" Value="{Binding Url, Converter={StaticResource ConvertUrl}}" />
+                            <Setter Property="ToolTip" Value="{Binding Text}" />
                         </Style>
                     </DataGridHyperlinkColumn.ElementStyle>
                 </DataGridHyperlinkColumn>

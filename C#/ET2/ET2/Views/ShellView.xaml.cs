@@ -109,6 +109,29 @@ namespace ET2.Views
 
         #endregion Settings
 
+        #region Useful Links
+
+        private async void Tab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var tab = sender as TabControl;
+            var currentTabItem = tab.SelectedItem as TabItem;
+            if ((string)currentTabItem.Header == "Useful Links")
+            {
+                ShellViewModel.WriteStatus("Update links...");
+                await RunInBackgroud(() =>
+                {
+                    // Update link template to real link
+                    foreach (var link in ShellViewModel.Instance.UsefulLinkVM.AllLinks)
+                    {
+                        link.Text = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(link.Url);
+                    }
+                });
+                ShellViewModel.WriteStatus("OK.");
+            }
+        }
+
+        #endregion Useful Links
+
         public async Task RunInBackgroud(Action act)
         {
             ShellViewModel.Instance.StatusInfoVM.HasBackgroundTask = true;

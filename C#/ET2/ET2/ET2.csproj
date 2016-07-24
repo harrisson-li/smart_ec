@@ -143,7 +143,6 @@
     <Compile Include="Controls\ViewLocator.cs" />
     <Compile Include="Converters\LongTextConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Converters\UrlConverter.cs" />
     <Compile Include="Converters\InverseConverter.cs" />
     <Compile Include="IShell.cs" />
     <Compile Include="Models\FixLink.cs" />

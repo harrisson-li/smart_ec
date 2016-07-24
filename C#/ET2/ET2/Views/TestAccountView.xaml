@@ -14,7 +14,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <cvt:InverseBooleanConverter x:Key="InverseBoolean" />
-            <cvt:UrlConverter x:Key="ConvertUrl" />
 
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="14" />
