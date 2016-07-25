@@ -48,7 +48,6 @@ namespace ET2.Views
             foreach (var env in ShellViewModel.Instance.TestEnvVM.EnvironmentList)
             {
                 var button = new RadioButton();
-                button.Name = env.Name;
                 button.Content = env.Name;
                 button.Tag = env;
                 button.Width = 72;
@@ -59,7 +58,16 @@ namespace ET2.Views
             }
 
             var currentEnv = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
-            var radio = dict[currentEnv];
+            RadioButton radio;
+            if (!dict.Keys.Contains(currentEnv))
+            {
+                var defaultEnv = ShellViewModel.Instance.TestEnvVM.EnvironmentList.First();
+                radio = dict[defaultEnv.Name];
+            }
+            else
+            {
+                radio = dict[currentEnv];
+            }
             radio.IsChecked = true;
             await this.ShowMetroDialogAsync(CurrentDialog);
         }
@@ -67,7 +75,8 @@ namespace ET2.Views
         private async void ChooseEnv(object sender, RoutedEventArgs e)
         {
             var selectedEnv = sender as RadioButton;
-            ShellViewModel.Instance.TestEnvVM.UpdateEnvironment(selectedEnv.Name);
+            ShellViewModel.Instance.TestEnvVM
+                .UpdateEnvironment((string)selectedEnv.Content);
             await this.HideMetroDialogAsync(CurrentDialog);
 
             ShellViewModel.WriteStatus(

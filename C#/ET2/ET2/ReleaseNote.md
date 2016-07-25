@@ -1,8 +1,8 @@
-﻿## v0.0.0.15 - Preview
+﻿## v0.0.0.16 - Preview
 
 1. Able to view full log by clicking status bar.
 2. Add Test Environments: `LiveCN` and `LiveUS`.
-3. Improve host editor, you can switch host according to profiles.
+3. Improve host editor, able to switch host according to profiles.
 4. Implement a simple settings dialog.
 5. Support more token in links: `$token`, `$mark`
 6. Improve useful links tab loading speed.

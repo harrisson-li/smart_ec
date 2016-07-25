@@ -87,8 +87,14 @@ namespace ET2.Models
 
         public void Activate()
         {
+            // Copy the host file to temp folder via C#
+            var tempHost = Path.Combine(
+                Environment.GetEnvironmentVariable("TEMP"),
+                Path.GetTempFileName());
+            File.Copy(this.FullName, tempHost, true);
+
             // To activate current you must run as admin
-            var cmd = "copy \"{0}\" \"{1}\" /y".FormatWith(this.FullName, Settings.GetSystemHostFile().FullName);
+            var cmd = "copy \"{0}\" \"{1}\" /y".FormatWith(tempHost, Settings.GetSystemHostFile().FullName);
             CommandHelper.ExecuteBatch(cmd, asAdmin: true, waitForExit: true);
 
             // Verify if activated success
