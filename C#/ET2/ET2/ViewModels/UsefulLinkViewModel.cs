@@ -70,6 +70,12 @@ namespace ET2.ViewModels
         public void NotifyUrlUpdate()
         {
             this.NotifyOfPropertyChange(() => this.GridLinks);
+
+            // Update link template to real link
+            foreach (var link in AllLinks)
+            {
+                link.Text = ConvertLink(link.Url);
+            }
         }
 
         /// <summary>

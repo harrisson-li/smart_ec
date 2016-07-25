@@ -74,13 +74,17 @@ namespace ET2.Views
 
         private async void ChooseEnv(object sender, RoutedEventArgs e)
         {
-            var selectedEnv = sender as RadioButton;
-            ShellViewModel.Instance.TestEnvVM
-                .UpdateEnvironment((string)selectedEnv.Content);
+            var selectedEnv = (sender as RadioButton).Content as string;
             await this.HideMetroDialogAsync(CurrentDialog);
 
+            await RunInBackgroud(() =>
+            {
+                ShellViewModel.Instance.TestEnvVM
+               .UpdateEnvironment(selectedEnv);
+            });
+
             ShellViewModel.WriteStatus(
-                "Current Test Environment: {0}".FormatWith(selectedEnv.Content));
+                "Current Test Environment: {0}".FormatWith(selectedEnv));
         }
 
         #endregion Test Environments
@@ -129,11 +133,7 @@ namespace ET2.Views
                 ShellViewModel.WriteStatus("Update links...");
                 await RunInBackgroud(() =>
                 {
-                    // Update link template to real link
-                    foreach (var link in ShellViewModel.Instance.UsefulLinkVM.AllLinks)
-                    {
-                        link.Text = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(link.Url);
-                    }
+                    ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
                 });
                 ShellViewModel.WriteStatus("OK.");
             }
