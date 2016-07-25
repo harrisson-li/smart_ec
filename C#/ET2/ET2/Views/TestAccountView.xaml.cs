@@ -28,6 +28,7 @@ namespace ET2.Views
         {
             InitializeComponent();
             InitLinkButtons();
+            InitQuickActions();
         }
 
         private void InitLinkButtons()
@@ -44,6 +45,36 @@ namespace ET2.Views
                 btn.Tag = link;
                 this.homeLinks.Children.Add(btn);
             }
+        }
+
+        private void InitQuickActions()
+        {
+            foreach (var quickAction in Settings.LoadQuickActions())
+            {
+                var btn = new Button();
+                btn.Content = quickAction.Name;
+                btn.Tag = quickAction;
+                btn.Width = 120;
+                btn.Background = new SolidColorBrush(Colors.LightGray);
+                btn.Margin = new Thickness(0, 0, 0, 5);
+                btn.MouseEnter += RefreshQuickAction;
+                btn.Click += PerformQuickAction;
+                this.quickActionsPanel.Children.Add(btn);
+            }
+        }
+
+        private void PerformQuickAction(object sender, RoutedEventArgs e)
+        {
+            var act = (sender as Button).Tag as QuickAction;
+            act.Perform();
+        }
+
+        private void RefreshQuickAction(object sender, MouseEventArgs e)
+        {
+            var btn = sender as Button;
+            var act = btn.Tag as QuickAction;
+            act.Text = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(act.Parameter);
+            btn.ToolTip = act.Text;
         }
 
         private async void NewAccount(object sender, RoutedEventArgs e)
@@ -97,7 +128,6 @@ namespace ET2.Views
         {
             var btn = sender as Button;
             var link = btn.Tag as UsefulLink;
-
             btn.ToolTip = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(link.Url);
         }
     }

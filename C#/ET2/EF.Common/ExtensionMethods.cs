@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace EF.Common
 {
@@ -25,12 +26,26 @@ namespace EF.Common
             return string.Format(formatedString, args);
         }
 
+        private static JsonSerializerSettings JsonSettings
+        {
+            get
+            {
+                var settings = new JsonSerializerSettings();
+                settings.Formatting = Formatting.Indented;
+                settings.Converters = new List<Newtonsoft.Json.JsonConverter>
+                {
+                    new Newtonsoft.Json.Converters.StringEnumConverter()
+                };
+                return settings;
+            }
+        }
+
         /// <summary>
         /// Convert any object to JSON string.
         /// </summary>
         public static string ToJsonString<T>(this T obj)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, JsonSettings);
         }
 
         /// <summary>
@@ -38,7 +53,7 @@ namespace EF.Common
         /// </summary>
         public static T ToJsonObject<T>(this string jsonString)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString, JsonSettings);
         }
 
         public static void SaveObject<T>(this T obj, string toFile)

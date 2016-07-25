@@ -83,5 +83,13 @@ namespace ET2.Tests
             Log.Info(list.ToJsonString());
             Assert.IsTrue(list.Count > 0);
         }
+
+        [TestMethod]
+        public void TestLoadQuickActions()
+        {
+            var list = Settings.LoadQuickActions();
+            Log.Info(list.ToJsonString());
+            Assert.IsNotNull(list);
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace ET2.Support
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
             public const string ReleaseNote = "ReleaseNote.md";
             public const string HostFolder = "Hosts";
+            public const string QuickActionFolder = "QuickActions";
         }
 
         #endregion Constants
@@ -464,5 +465,27 @@ namespace ET2.Support
         }
 
         #endregion Host files
+
+        #region Quick actions
+
+        public static List<QuickAction> LoadQuickActions()
+        {
+            var actionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
+            var actionList = new List<QuickAction>();
+
+            // Only load action when action found existed
+            if (Directory.Exists(actionFolder))
+            {
+                // file like *.action is self deined actions.
+                foreach (var act in Directory.GetFiles(actionFolder, "*.action", SearchOption.TopDirectoryOnly))
+                {
+                    var json = File.ReadAllText(act);
+                    actionList.Add(json.ToJsonObject<QuickAction>());
+                }
+            }
+            return actionList;
+        }
+
+        #endregion Quick actions
     }
 }

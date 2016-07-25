@@ -315,7 +315,7 @@
                                             Mode=TwoWay}"
                         IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2}" />
                 </StackPanel>
-                <StackPanel Grid.Column="2">
+                <StackPanel Name="quickActionsPanel" Grid.Column="2">
                     <Button
                         Width="120"
                         Margin="0,0,0,5"
@@ -331,26 +331,6 @@
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}"
                         ToolTip="IsEcRolloutSchoolPlatform2 = true" />
-                    <Button
-                        Width="120"
-                        Margin="0,0,0,5"
-                        Click="OpenLink"
-                        Content="S15 Redemptions"
-                        Visibility="Collapsed" />
-                    <Button
-                        Name="btnSuspendAccount"
-                        Width="120"
-                        Margin="0,0,0,5"
-                        Click="OpenLink"
-                        Content="Suspend Account"
-                        Visibility="Collapsed" />
-                    <Button
-                        Name="btnExpireAccount"
-                        Width="120"
-                        Margin="0,0,0,5"
-                        Click="OpenLink"
-                        Content="Expire Account"
-                        Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel
                     Name="homeLinks"

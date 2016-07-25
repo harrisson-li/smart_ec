@@ -155,6 +155,7 @@
     <Compile Include="Support\Settings.cs" />
     <Compile Include="Support\TokenHelper.cs" />
     <Compile Include="Support\VersionHelper.cs" />
+    <Compile Include="ViewModels\QuickActionViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\HostEditorViewModel.cs" />
@@ -226,7 +227,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ActionParameters.cs" />
+    <Compile Include="Models\QuickAction.cs" />
     <Compile Include="Models\HostFile.cs" />
     <Compile Include="Models\TestAccount.cs" />
     <Compile Include="Models\TestEnvironment.cs" />
