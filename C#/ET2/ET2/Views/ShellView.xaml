@@ -1,0 +1,65 @@
+<Controls:MetroWindow
+    x:Class="ET2.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:cal="http://www.caliburnproject.org"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myControls="clr-namespace:ET2.Views"
+    Title="EFEC Testing Tool"
+    Width="700"
+    Height="500"
+    MinWidth="700"
+    MinHeight="500"
+    BorderBrush="{DynamicResource AccentColorBrush}"
+    BorderThickness="1"
+    Icon="../Resources/et2.ico"
+    ResizeMode="CanResizeWithGrip"
+    SaveWindowPosition="False"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Dialog:CustomDialog x:Key="myDialog" Title="EFEC Testing Tool">
+                <StackPanel Orientation="Horizontal" />
+            </Dialog:CustomDialog>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel>
+        <myControls:StatusInfoView DockPanel.Dock="Bottom" />
+        <Grid>
+            <TabControl Margin="10" SelectionChanged="Tab_SelectionChanged">
+                <TabItem Header="Test Accounts">
+                    <Grid>
+                        <myControls:TestAccountView />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Submit Score" Visibility="Collapsed">
+                    <Grid>
+                        <myControls:SubmitScoreView />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Host Editor">
+                    <Grid>
+                        <myControls:HostEditorView />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Useful Links">
+                    <Grid>
+                        <myControls:UsefulLinkView />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Click="SwitchEnv" Content="{Binding Path=TestEnvVM.EnvironmentSwitchText, Mode=OneWay}" />
+            <Button Click="DisplaySettings" Content="Settings" />
+            <Button Click="DisplayHelp" Content="Help" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+</Controls:MetroWindow>

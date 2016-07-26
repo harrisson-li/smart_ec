@@ -1,0 +1,7 @@
+{
+  "ActionType": "Python",
+  "Name": "Sign in ETown",
+  "Parameter": "%UserProfile%\\ET2\\QuickActions\\sign_in_etwon.py $env $name",
+  "AsAdmin": false,
+  "WaitForExit": false
+}

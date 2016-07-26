@@ -1,0 +1,35 @@
+﻿# UAT = cns-etuat-25
+
+# cns-etuat-25
+10.128.34.152	uat.englishtown.com
+10.128.34.152	dev.englishtown.com
+10.128.34.152	devcn.englishtown.com
+10.128.34.152	uatoboe.ef.com
+10.128.34.152	local.englishtown.com
+10.128.34.152	dev-services.englishtown.com
+
+########## Keep bellow settings for all the time ##########
+
+# UAT1 = cns-etuat-13
+10.128.34.240	uat1.englishtown.com
+10.128.34.240	uat1oboe.ef.com
+
+# UAT13 = cns-etuat-13
+10.128.34.240	uat13.englishtown.com
+10.128.34.240	uat13oboe.ef.com
+
+# UAT2 = cns-etuat-20 (smartuat2.englishtown.com)
+10.128.34.163	uat2.englishtown.com
+10.128.34.163	uat2oboe.ef.com
+
+# UAT20 = cns-etuat-20
+10.128.34.163	uat20.englishtown.com
+10.128.34.163	uat20oboe.ef.com
+
+# UAT3 = cns-etuat-25
+10.128.34.152	uat3.englishtown.com
+10.128.34.152	uat3oboe.ef.com
+
+# UAT25 = cns-etuat-25
+10.128.34.152	uat25.englishtown.com
+10.128.34.152	uat25oboe.ef.com
