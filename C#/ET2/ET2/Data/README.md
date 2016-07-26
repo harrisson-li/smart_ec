@@ -25,3 +25,25 @@ Default set to `%UserProfile%\ET2`, you can see application saved state and priv
 
 - Save.XXXX (State file to save XXXX, e.g. Save.CurrentTestAccount)
 - Hosts (Folder to place private host settings)
+
+### 5. Token Replacement
+
+Token replacement is wildly used in ET2, you can set token in useful links or quick actions. Current we supported bellow tokens:
+
+- $id (=> member id)
+- $name (=> student name)
+- $env (=> current test environment)
+- $mark (=> current tet environment mark)
+- $token (=> secrect token to submit score)
+
+### 6. Quick Actions
+
+You can define your own quick actions in `%UserProfile%\ET2\QuickActions` folder. There is a sample action added by default.
+Quick actions can be accessed throught home window of ET2.
+
+Supported quick action types:
+
+- Cmd
+- Python
+- Url
+- Sql (Comming soon)
