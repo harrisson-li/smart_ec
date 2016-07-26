@@ -1,9 +1,9 @@
 import sys
+import os
 
 test_env = sys.argv[1]
 student_name = sys.argv[2]
 student_pass = 1
-
 etwon_url = 'http://{}.englishtown.com/partner/englishcenters'.format(test_env)
 
 from selenium import webdriver
@@ -38,3 +38,6 @@ dismiss_reminder = wait.until(
     EC.presence_of_element_located((By.XPATH, '/html/body/div[7]/a'))
 )
 dismiss_reminder.click()
+
+# kill chromedriver.exe to avoid memory leak
+os.system('taskkill /f /im chromedriver.exe')
