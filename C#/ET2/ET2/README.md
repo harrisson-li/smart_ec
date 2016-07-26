@@ -1,6 +1,6 @@
 ﻿## Guide to configurate ET2
 
-Thanks for choosing ET2. This is a guide to help you configurate this tool. All configration are place in `public` or `private` settings folder.
+Thanks for choosing ET2. This is a guide to help you configurate this tool. All configration are placed in `public` or `private` settings folder.
 
 ### 1. Public Settings Folder
 
@@ -25,6 +25,7 @@ Default set to `%UserProfile%\ET2`, you can see application saved state and priv
 
 - Save.XXXX (State file to save XXXX, e.g. Save.CurrentTestAccount)
 - Hosts (Folder to place private host settings)
+- QuickActions (Folder to place quick actions)
 
 ### 5. Token Replacement
 
@@ -39,7 +40,7 @@ Token replacement is wildly used in ET2, you can set token in useful links or qu
 ### 6. Quick Actions
 
 You can define your own quick actions in `%UserProfile%\ET2\QuickActions` folder. There is a sample action added by default.
-Quick actions can be accessed throught home window of ET2.
+Quick actions can be accessed throught ET2 main window.
 
 Supported quick action types:
 
@@ -47,3 +48,9 @@ Supported quick action types:
 - Python
 - Url
 - Sql (Comming soon)
+
+Tips:
+
+1. You quick action file must be ended with `.action`
+2. You can use program data in %UserProfile%\ET2 folder, they are json file, prefix is 'Save.xxx`
+3. `AsAdmin` and `WatiForExit` in quick action config file are optional to set.
