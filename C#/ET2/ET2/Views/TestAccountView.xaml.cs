@@ -74,6 +74,7 @@ namespace ET2.Views
             var btn = sender as Button;
             var act = btn.Tag as QuickAction;
             act.Text = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(act.Parameter);
+            act.Text = Environment.ExpandEnvironmentVariables(act.Text);
             btn.ToolTip = act.Text;
         }
 
