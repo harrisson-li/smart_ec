@@ -477,6 +477,12 @@ namespace ET2.Support
             if (!Directory.Exists(actionFolder))
             {
                 Directory.CreateDirectory(actionFolder);
+                var builtInActions = Path.Combine(AppDataFolder, Data.QuickActionFolder);
+
+                Directory.GetFiles(builtInActions).ToList().ForEach(e =>
+                {
+                    File.Copy(e, e.Replace(builtInActions, actionFolder), true);
+                });
             }
 
             // Only load action from action folder.
