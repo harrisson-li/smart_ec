@@ -43,6 +43,30 @@ namespace EF.Common
             }
         }
 
+        public static void RunPython(string pythonScript)
+        {
+            RunPython(pythonScript, asAdmin: false);
+        }
+
+        public static void RunPython(string pythonScript, bool asAdmin)
+        {
+            RunPython(pythonScript, asAdmin, false);
+        }
+
+        public static void RunPython(string pythonScript, bool asAdmin, bool waitForExit)
+        {
+            var proc = new ProcessStartInfo();
+            proc.FileName = "python.exe";
+            proc.Arguments = pythonScript;
+            proc.UseShellExecute = true;
+            proc.WindowStyle = ProcessWindowStyle.Hidden;
+            var p = RunProcess(proc, asAdmin);
+            if (waitForExit)
+            {
+                p.WaitForExit();
+            }
+        }
+
         public static Process RunProcess(ProcessStartInfo pInfo)
         {
             return RunProcess(pInfo, asAdmin: false);

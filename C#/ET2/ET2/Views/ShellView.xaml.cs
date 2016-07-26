@@ -128,7 +128,8 @@ namespace ET2.Views
         {
             var tab = sender as TabControl;
             var currentTabItem = tab.SelectedItem as TabItem;
-            if ((string)currentTabItem.Header == "Useful Links")
+            if (currentTabItem != null
+                && (string)currentTabItem.Header == "Useful Links")
             {
                 ShellViewModel.WriteStatus("Update links...");
                 await RunInBackgroud(() =>

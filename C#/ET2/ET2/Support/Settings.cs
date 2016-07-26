@@ -473,7 +473,13 @@ namespace ET2.Support
             var actionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
             var actionList = new List<QuickAction>();
 
-            // Only load action when action found existed
+            // Create personal quick actions folder
+            if (!Directory.Exists(actionFolder))
+            {
+                Directory.CreateDirectory(actionFolder);
+            }
+
+            // Only load action from action folder.
             if (Directory.Exists(actionFolder))
             {
                 // file like *.action is self deined actions.

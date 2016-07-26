@@ -50,6 +50,32 @@ namespace ET2.Models
             }
         }
 
+        private bool _asAdmin;
+
+        public bool AsAdmin
+        {
+            get { return _asAdmin; }
+            set
+            {
+                if (value == _asAdmin) return;
+                _asAdmin = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _waitForExit;
+
+        public bool WaitForExit
+        {
+            get { return _waitForExit; }
+            set
+            {
+                if (value == _waitForExit) return;
+                _waitForExit = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _para;
 
         public string Parameter
@@ -92,7 +118,7 @@ namespace ET2.Models
             switch (this.ActionType)
             {
                 case ActionTypes.Cmd:
-                    CommandHelper.ExecuteBatch(this.Text);
+                    CommandHelper.ExecuteBatch(this.Text, this.AsAdmin, this.WaitForExit);
                     break;
 
                 case ActionTypes.Url:
@@ -100,12 +126,11 @@ namespace ET2.Models
                     break;
 
                 case ActionTypes.Python:
-                    // TODO
+                    CommandHelper.RunPython(this.Text, this.AsAdmin, this.WaitForExit);
                     break;
 
                 case ActionTypes.Sql:
-                    // TODO
-                    break;
+                    throw new NotImplementedException();
 
                 default:
                     break;

@@ -1,4 +1,11 @@
-﻿## v0.0.0.16 - Preview
+﻿## v0.0.0.17 - Preview
+
+1. Able to define quick actions, support `cmd` and `python` scripts
+2. Fix silent crash issue.
+3. Known issue: if host file is hidden, host editor will not work. (By Judy)
+4. Switch test environment will refresh useful links now.
+
+## v0.0.0.16 - Preview
 
 1. Able to view full log by clicking status bar.
 2. Add Test Environments: `LiveCN` and `LiveUS`.

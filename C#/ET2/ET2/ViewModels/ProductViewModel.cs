@@ -87,6 +87,8 @@ namespace ET2.ViewModels
                     .Where(e => e.Name == _name)
                     .Single().DeepCopy();
                 this.CurrentProduct.Id = prod.Id;
+                this.CurrentProduct.Name = prod.Name;
+                this.CurrentProduct.Partner = prod.Partner;
                 this.CurrentProduct.MainRedCode = prod.MainRedCode;
                 this.CurrentProduct.FreeRedCode = prod.FreeRedCode;
                 this.NotifyOfPropertyChange();
