@@ -44,17 +44,31 @@ namespace ET2.ViewModels
         public void GenerateAccount()
         {
             var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var isV2 = this.CurrentTestAccount.IsV2;
-            GenerateAccount(envUrlString, isV2);
+            var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType;
+            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
+            GenerateAccount(envUrlString, accountType, partner);
         }
 
-        public void GenerateAccount(string envUrlString, bool isV2)
+        public void GenerateAccount(string envUrlString, AccountTypes accountType, string partner)
         {
             var accountUrl = URL_NEW_ACCOUNT.FormatWith(envUrlString);
-            if (isV2)
+            switch (accountType)
             {
-                accountUrl += "?v=2";
+                case AccountTypes.E10:
+                    accountUrl = accountUrl.Replace("e14hz", partner);
+                    break;
+
+                case AccountTypes.S15:
+                    break;
+
+                case AccountTypes.S15_V2:
+                    accountUrl += "?v=2";
+                    break;
+
+                default:
+                    throw new NotSupportedException();
             }
+
             var result = HttpHelper.Get(accountUrl);
             ShellViewModel.WriteStatus(result);
 
@@ -77,20 +91,34 @@ namespace ET2.ViewModels
         public void ActivateAccount()
         {
             var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
-            ActivateAccount(envUrlString, isV2);
+            var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType;
+            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
+            ActivateAccount(envUrlString, accountType, partner);
         }
 
-        public void ActivateAccount(string envUrlString, bool isV2)
+        public void ActivateAccount(string envUrlString, AccountTypes accountType, string partner)
         {
             int id = Convert.ToInt32(CurrentTestAccount.MemberId);
             var url = URL_ACTIVATE_ACCOUNT.FormatWith(envUrlString);
 
-            if (isV2)
+            switch (accountType)
             {
-                url = URL_ACTIVATE_ACCOUNT_V2.FormatWith(envUrlString);
+                case AccountTypes.E10:
+                    url = url.Replace("ForE14HZ", "E10");
+                    break;
+
+                case AccountTypes.S15:
+                    break;
+
+                case AccountTypes.S15_V2:
+                    url = URL_ACTIVATE_ACCOUNT_V2.FormatWith(envUrlString);
+                    break;
+
+                default:
+                    throw new NotSupportedException();
             }
 
+            var isV2 = (accountType == AccountTypes.S15_V2);
             var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isV2));
             ShellViewModel.WriteStatus(result);
             Save();

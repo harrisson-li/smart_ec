@@ -263,7 +263,8 @@ namespace ET2.Support
                       Name = e["PackageName"].ToString(),
                       Partner = e["PartnerCode"].ToString().ToLower(),
                       SecurityVerified = true,
-                      StartLevel = "0A"
+                      StartLevel = "0A",
+                      IsE10 = e["E10"].ConvertValue<bool>()
                   }).ToList();
             return list;
         }

@@ -141,6 +141,7 @@
     <Compile Include="Controls\StartupTasks.cs" />
     <Compile Include="Controls\ThemeManager.cs" />
     <Compile Include="Controls\ViewLocator.cs" />
+    <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\LongTextConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\InverseConverter.cs" />
