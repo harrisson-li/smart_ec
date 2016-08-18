@@ -4,7 +4,7 @@ import os
 test_env = sys.argv[1]
 student_name = sys.argv[2]
 student_pass = 1
-etwon_url = 'http://{}.englishtown.com/partner/englishcenters'.format(test_env)
+etown_url = 'http://{}.englishtown.com/partner/englishcenters'.format(test_env)
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 d = webdriver.Chrome()
-d.get(etwon_url)
+d.get(etown_url)
 d.maximize_window()
 wait = WebDriverWait(d, 10)
 
