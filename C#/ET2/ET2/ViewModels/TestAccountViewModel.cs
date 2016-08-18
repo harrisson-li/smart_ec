@@ -18,7 +18,6 @@ namespace ET2.ViewModels
 
         private const string URL_NEW_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz";
         private const string URL_ACTIVATE_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ";
-        private const string URL_ACTIVATE_ACCOUNT_V2 = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateV2";
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
 
         private TestAccount _testAccount;
@@ -111,7 +110,7 @@ namespace ET2.ViewModels
                     break;
 
                 case AccountTypes.S15_V2:
-                    url = URL_ACTIVATE_ACCOUNT_V2.FormatWith(envUrlString);
+                    url = url.Replace("ForE14HZ", "V2");
                     break;
 
                 default:
