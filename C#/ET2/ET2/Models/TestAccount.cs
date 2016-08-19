@@ -9,12 +9,32 @@ using JetBrains.Annotations;
 
 namespace ET2.Models
 {
+    public enum AccountTypes
+    {
+        E10,
+        S15,
+        S15_V2
+    }
+
     public class TestAccount : INotifyPropertyChanged
     {
         private string _userName;
         private string _memberId;
         private string _password;
-        private bool _isV2;
+
+        private AccountTypes _accountTypes = AccountTypes.S15;
+
+        public AccountTypes AccountType
+        {
+            get { return _accountTypes; }
+            set
+            {
+                if (value == _accountTypes) return;
+                _accountTypes = value;
+                OnPropertyChanged();
+                OnPropertyChanged("IsV2");
+            }
+        }
 
         public string UserName
         {
@@ -52,13 +72,7 @@ namespace ET2.Models
 
         public bool IsV2
         {
-            get { return _isV2; }
-            set
-            {
-                if (value == _isV2) return;
-                _isV2 = value;
-                OnPropertyChanged();
-            }
+            get { return this.AccountType == AccountTypes.S15_V2; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

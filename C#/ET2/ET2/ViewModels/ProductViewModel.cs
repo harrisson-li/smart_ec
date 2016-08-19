@@ -306,7 +306,7 @@ namespace ET2.ViewModels
                     postData.Add("ctr", "cn");
                     break;
 
-                case "essp":
+                case "ecsp":
                     postData.Add("ctr", "es");
                     break;
 

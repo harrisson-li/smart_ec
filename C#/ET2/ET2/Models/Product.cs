@@ -9,6 +9,18 @@ namespace ET2.Models
     {
         private int _productId;
         private string _name;
+        private bool _isE10;
+
+        public bool IsE10
+        {
+            get { return _isE10; }
+            set
+            {
+                if (value == _isE10) return;
+                _isE10 = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int Id
         {

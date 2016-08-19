@@ -14,9 +14,10 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <cvt:InverseBooleanConverter x:Key="InverseBoolean" />
+            <cvt:EnumBooleanConverter x:Key="EnumBoolean" />
 
             <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
-                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontSize" Value="13" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
 
@@ -37,93 +38,113 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Margin="0,0,0,5">
             <Grid>
-                <Label
-                    Width="140"
-                    Height="30"
-                    Margin="0,-5"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90*" />
+                    <ColumnDefinition Width="90*" />
+                    <ColumnDefinition Width="90*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="250*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50*" />
+                    <RowDefinition Height="50*" />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Grid.RowSpan="2"
+                    Grid.Column="3"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+                    <CheckBox
+                        Margin="10 0 0 0"
+                        Content="E10"
+                        IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
+                                            Converter={StaticResource EnumBoolean},
+                                            ConverterParameter=E10,
+                                            Mode=TwoWay}" />
+                    <CheckBox
+                        Margin="5 0 0 0"
+                        Content="S15"
+                        IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
+                                            Converter={StaticResource EnumBoolean},
+                                            ConverterParameter=S15,
+                                            Mode=TwoWay}" />
+                    <CheckBox
+                        Name="chkIsV2"
+                        Margin="5 0 0 0"
+                        Content="S15 V2.0"
+                        IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
+                                            Converter={StaticResource EnumBoolean},
+                                            ConverterParameter=S15_V2,
+                                            Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel
+                    Grid.RowSpan="2"
+                    Grid.Column="4"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="70"
+                        Height="30"
+                        Controls:ButtonHelper.PreserveTextCase="True"
+                        Click="NewAccount"
+                        Content="New"
+                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                            Converter={StaticResource InverseBoolean}}"
+                        Style="{DynamicResource SquareButtonStyle}" />
+                    <Button
+                        Width="120"
+                        Height="30"
+                        Margin="10 0 0 0"
+                        Controls:ButtonHelper.PreserveTextCase="True"
+                        Click="NewAndActivate"
+                        Content="New + Activate"
+                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                            Converter={StaticResource InverseBoolean}}"
+                        Style="{DynamicResource AccentedSquareButtonStyle}" />
+                </StackPanel>
+
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
                     Content="Member Id:  "
+                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Content="User Name:"
+                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Content="Password: "
                     Style="{DynamicResource DescriptionHeaderStyle}" />
                 <TextBox
                     Name="txtId"
+                    Grid.Row="1"
+                    Grid.Column="0"
                     Width="80"
-                    Height="20"
-                    Margin="0,23,0,0"
-                    HorizontalAlignment="Left"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.MemberId,
                                    Mode=OneWay}" />
-                <Label
-                    Width="140"
-                    Height="30"
-                    Margin="100,-5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="User Name:"
-                    Style="{DynamicResource DescriptionHeaderStyle}" />
                 <TextBox
                     Name="txtName"
+                    Grid.Row="1"
+                    Grid.Column="1"
                     Width="80"
-                    Height="20"
-                    Margin="100,23,0,0"
-                    HorizontalAlignment="Left"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     IsReadOnly="True"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.UserName,
                                    Mode=OneWay}" />
-                <Label
-                    Width="140"
-                    Height="30"
-                    Margin="200,-5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="Password: "
-                    Style="{DynamicResource DescriptionHeaderStyle}" />
                 <TextBox
                     Name="txtPw"
+                    Grid.Row="1"
+                    Grid.Column="2"
                     Width="80"
-                    Height="20"
-                    Margin="200,23,0,0"
-                    HorizontalAlignment="Left"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     IsReadOnly="True"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.Password,
                                    Mode=OneWay}" />
-                <CheckBox
-                    Name="chkIsV2"
-                    Width="80"
-                    Height="20"
-                    Margin="305,5,0,0"
-                    HorizontalAlignment="Left"
-                    Content="?v=2"
-                    FontSize="15"
-                    FontWeight="Medium"
-                    IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
-                                        Mode=TwoWay}" />
-
-                <Button
-                    Width="70"
-                    Height="30"
-                    Margin="0,10,160,10"
-                    HorizontalAlignment="Right"
-                    Controls:ButtonHelper.PreserveTextCase="True"
-                    Click="NewAccount"
-                    Content="New"
-                    IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
-                                        Converter={StaticResource InverseBoolean}}"
-                    Style="{DynamicResource SquareButtonStyle}" />
-                <Button
-                    Width="140"
-                    Height="30"
-                    Margin="0,10,5,10"
-                    HorizontalAlignment="Right"
-                    Controls:ButtonHelper.PreserveTextCase="True"
-                    Click="NewAndActivate"
-                    Content="New + Activate"
-                    IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
-                                        Converter={StaticResource InverseBoolean}}"
-                    Style="{DynamicResource AccentedSquareButtonStyle}" />
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Margin="0,0,0,-4">

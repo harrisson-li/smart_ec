@@ -1,4 +1,10 @@
-﻿## v0.0.0.17 - Preview
+﻿## v0.0.0.19 - Preview
+
+1. Support test account type: E10, S15 and S15 V2.0
+2. Able to activate E10 test account.
+3. Improve test account page, use flexible grid layout.
+
+## v0.0.0.17 - Preview
 
 1. Able to define quick actions, support `cmd` and `python` scripts
 2. Fix silent crash issue.
