@@ -17,7 +17,6 @@ namespace ET2.Support
 
         internal class Data
         {
-            public const string TestAccountHistory = "Save.TestAccountList";
             public const string CurrentTestAccount = "Save.CurrentTestAccount";
             public const string CurrentTestEnvironment = "Save.CurrentTestEnvironment";
             public const string CurrentProduct = "Save.CurrentProduct";
@@ -170,22 +169,6 @@ namespace ET2.Support
                     UserName = "***",
                     Password = "***"
                 };
-            }
-
-            return obj;
-        }
-
-        public static void SaveTestAccountHistory(List<TestAccount> obj)
-        {
-            SavePersoanlSetting<List<TestAccount>>(obj, Data.TestAccountHistory);
-        }
-
-        public static List<TestAccount> LoadTestAccountHistory()
-        {
-            var obj = LoadPersoanlSetting<List<TestAccount>>(Data.TestAccountHistory);
-            if (obj == null)
-            {
-                return new List<TestAccount>();
             }
 
             return obj;

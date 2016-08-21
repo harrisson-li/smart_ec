@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,37 +19,6 @@ namespace ET2.ViewModels
         private const string URL_NEW_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz";
         private const string URL_ACTIVATE_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ";
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
-        private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
-
-        private List<TestAccount> _historyAccountList;
-
-        public List<TestAccount> HistoryAccountList
-        {
-            get
-            {
-                return _historyAccountList;
-            }
-        }
-
-        public void AddHistoryAccount(TestAccount testAccount = null)
-        {
-            if (testAccount == null)
-            {
-                testAccount = CurrentTestAccount;
-            }
-
-            _historyAccountList = Settings.LoadTestAccountHistory();
-            _historyAccountList.Add(testAccount);
-
-            // remove duplicate accounts by user name
-            _historyAccountList = _historyAccountList
-                .GroupBy(e => e.UserName)
-                .Select(e => e.First()).ToList();
-
-            // Save latest 20 test accounts at most
-            this.NotifyOfPropertyChange(() => this.HistoryAccountList);
-            Settings.SaveTestAccountHistory(_historyAccountList.Take(20).ToList());
-        }
 
         private TestAccount _testAccount;
 
@@ -70,44 +38,6 @@ namespace ET2.ViewModels
         public TestAccountViewModel()
         {
             this.CurrentTestAccount = Settings.LoadCurrentTestAccount();
-            this._historyAccountList = Settings.LoadTestAccountHistory();
-        }
-
-        /// <summary>
-        /// No matter user type in name or id, we all need to get the specific test account.
-        /// Implement this function by sending post data to submit score helper tool.
-        /// </summary>
-        /// <param name="nameOrId">Name or memmber id of the test account.</param>
-        /// <returns>The test account.</returns>
-        public TestAccount GetTestAccountByNameOrId(string nameOrId)
-        {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var url = URL_SUBMIT_SCORE.FormatWith(envUrlString);
-            var data = new Dictionary<string, object>();
-
-            data.Add("cmd", "loadStudentInfo");
-            data.Add("member_id", nameOrId);
-            data.Add("token", TokenHelper.GetToken(envUrlString));
-
-            var result = HttpHelper.Post(url, data);
-            ShellViewModel.WriteStatus(result);
-
-            try
-            {
-                var studentInfo = result.Split(new char[] { '|' });
-                var account = new TestAccount();
-                account.UserName = studentInfo[1];
-                account.MemberId = studentInfo[3];
-                account.AccountType = CurrentTestAccount.AccountType;
-                return account;
-            }
-            catch (IndexOutOfRangeException)
-            {
-                var tips = "Environment = {0}, level initialized?".FormatWith(
-                    ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name);
-                ShellViewModel.WriteStatus("Cannot get student info: {0} ({1})".FormatWith(nameOrId, tips));
-                return null;
-            }
         }
 
         public void GenerateAccount()
@@ -148,9 +78,6 @@ namespace ET2.ViewModels
                 this.CurrentTestAccount.MemberId = match.Groups["id"].Value;
                 this.CurrentTestAccount.UserName = match.Groups["name"].Value;
                 this.CurrentTestAccount.Password = match.Groups["pw"].Value;
-
-                // save current test account to history list
-                AddHistoryAccount();
             }
             else
             {
