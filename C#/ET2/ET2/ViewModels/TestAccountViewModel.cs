@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,6 +22,36 @@ namespace ET2.ViewModels
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
         private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
 
+        private List<TestAccount> _historyAccountList;
+
+        public List<TestAccount> HistoryAccountList
+        {
+            get
+            {
+                return _historyAccountList;
+            }
+        }
+
+        public void AddHistoryAccount(TestAccount testAccount = null)
+        {
+            if (testAccount == null)
+            {
+                testAccount = CurrentTestAccount;
+            }
+
+            _historyAccountList = Settings.LoadTestAccountHistory();
+            _historyAccountList.Add(testAccount);
+
+            // remove duplicate accounts by user name
+            _historyAccountList = _historyAccountList
+                .GroupBy(e => e.UserName)
+                .Select(e => e.First()).ToList();
+
+            // Save latest 20 test accounts at most
+            this.NotifyOfPropertyChange(() => this.HistoryAccountList);
+            Settings.SaveTestAccountHistory(_historyAccountList.Take(20).ToList());
+        }
+
         private TestAccount _testAccount;
 
         public TestAccount CurrentTestAccount
@@ -39,10 +70,12 @@ namespace ET2.ViewModels
         public TestAccountViewModel()
         {
             this.CurrentTestAccount = Settings.LoadCurrentTestAccount();
+            this._historyAccountList = Settings.LoadTestAccountHistory();
         }
 
         /// <summary>
         /// No matter user type in name or id, we all need to get the specific test account.
+        /// Implement this function by sending post data to submit score helper tool.
         /// </summary>
         /// <param name="nameOrId">Name or memmber id of the test account.</param>
         /// <returns>The test account.</returns>
@@ -64,7 +97,6 @@ namespace ET2.ViewModels
                 var studentInfo = result.Split(new char[] { '|' });
                 var account = new TestAccount();
                 account.UserName = studentInfo[1];
-                account.Password = studentInfo[2];
                 account.MemberId = studentInfo[3];
                 account.AccountType = CurrentTestAccount.AccountType;
                 return account;
@@ -116,6 +148,9 @@ namespace ET2.ViewModels
                 this.CurrentTestAccount.MemberId = match.Groups["id"].Value;
                 this.CurrentTestAccount.UserName = match.Groups["name"].Value;
                 this.CurrentTestAccount.Password = match.Groups["pw"].Value;
+
+                // save current test account to history list
+                AddHistoryAccount();
             }
             else
             {

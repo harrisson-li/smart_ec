@@ -146,6 +146,11 @@ namespace ET2.Views
                         // Revert if failed to get student info
                         newAccount = currentAccount;
                     }
+                    else
+                    {
+                        // remember the test account as well
+                        ShellViewModel.Instance.TestAccountVM.AddHistoryAccount(newAccount);
+                    }
 
                     ShellViewModel.Instance.TestAccountVM.CurrentTestAccount = newAccount;
                 });

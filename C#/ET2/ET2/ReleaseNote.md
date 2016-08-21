@@ -1,7 +1,7 @@
 ﻿## v0.0.0.21 - Preview
 
 1. Able to resolve test account when input name or member id of student
-
+2. Remember recent 20 generated test accounts, you can select from user name dropdown list.
 
 ## v0.0.0.19 - Preview
 
