@@ -125,6 +125,7 @@
                     Grid.Column="0"
                     Width="80"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    LostFocus="GetStudentInfo"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.MemberId,
                                    Mode=OneWay}" />
                 <TextBox

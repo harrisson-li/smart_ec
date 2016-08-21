@@ -131,5 +131,22 @@ namespace ET2.Views
             var link = btn.Tag as UsefulLink;
             btn.ToolTip = ShellViewModel.Instance.UsefulLinkVM.ConvertLink(link.Url);
         }
+
+        private void GetStudentInfo(object sender, RoutedEventArgs e)
+        {
+            var name = (sender as TextBox).Text;
+            var currentAccount = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount;
+            if (name != currentAccount.MemberId)
+            {
+                var newAccount = ShellViewModel.Instance.TestAccountVM.GetTestAccountByNameOrId(name);
+                if (newAccount == null)
+                {
+                    // Reset if failed to get student info
+                    newAccount = currentAccount;
+                }
+
+                ShellViewModel.Instance.TestAccountVM.CurrentTestAccount = newAccount;
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace ET2.ViewModels
         private const string URL_NEW_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz";
         private const string URL_ACTIVATE_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ";
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
+        private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
 
         private TestAccount _testAccount;
 
@@ -38,6 +39,43 @@ namespace ET2.ViewModels
         public TestAccountViewModel()
         {
             this.CurrentTestAccount = Settings.LoadCurrentTestAccount();
+        }
+
+        /// <summary>
+        /// No matter user type in name or id, we all need to get the specific test account.
+        /// </summary>
+        /// <param name="nameOrId">Name or memmber id of the test account.</param>
+        /// <returns>The test account.</returns>
+        public TestAccount GetTestAccountByNameOrId(string nameOrId)
+        {
+            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var url = URL_SUBMIT_SCORE.FormatWith(envUrlString);
+            var data = new Dictionary<string, object>();
+
+            data.Add("cmd", "loadStudentInfo");
+            data.Add("member_id", nameOrId);
+            data.Add("token", TokenHelper.GetToken(envUrlString));
+
+            var result = HttpHelper.Post(url, data);
+            ShellViewModel.WriteStatus(result);
+
+            try
+            {
+                var studentInfo = result.Split(new char[] { '|' });
+                var account = new TestAccount();
+                account.UserName = studentInfo[1];
+                account.Password = studentInfo[2];
+                account.MemberId = studentInfo[3];
+                account.AccountType = CurrentTestAccount.AccountType;
+                return account;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                var tips = "Environment = {0}, level initialized?".FormatWith(
+                    ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name);
+                ShellViewModel.WriteStatus("Cannot get student info: {0} ({1})".FormatWith(nameOrId, tips));
+                return null;
+            }
         }
 
         public void GenerateAccount()

@@ -1,4 +1,9 @@
-﻿## v0.0.0.19 - Preview
+﻿## v0.0.0.21 - Preview
+
+1. Able to resolve test account when input name or member id of student
+
+
+## v0.0.0.19 - Preview
 
 1. Support test account type: E10, S15 and S15 V2.0
 2. Able to activate E10 test account.
