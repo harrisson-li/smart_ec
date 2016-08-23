@@ -58,11 +58,11 @@ namespace ET2.Support
 
                 if (File.Exists(versionFile))
                 {
-                    _lastVersion = Settings.LoadPersoanlSetting<ET2Version>(Settings.Data.LastVersion);
+                    _lastVersion = Settings.LoadPersonalSetting<ET2Version>(Settings.Data.LastVersion);
                 }
 
                 var currentVersion = GetCurrentVersion();
-                Settings.SavePersoanlSetting<ET2Version>(currentVersion, Settings.Data.LastVersion);
+                Settings.SavePersonalSetting<ET2Version>(currentVersion, Settings.Data.LastVersion);
             }
 
             return _lastVersion;
