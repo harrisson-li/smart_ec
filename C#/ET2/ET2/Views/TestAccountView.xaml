@@ -40,8 +40,8 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="90*" />
+                    <ColumnDefinition Width="110*" />
+                    <ColumnDefinition Width="80*" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="250*" />
                 </Grid.ColumnDefinitions>
@@ -108,7 +108,8 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Content="Member Id:  "
-                    Style="{DynamicResource DescriptionHeaderStyle}" />
+                    Style="{DynamicResource DescriptionHeaderStyle}"
+                    ToolTip="Input user name or member id then press TAB to resolve it" />
                 <Label
                     Grid.Row="0"
                     Grid.Column="1"
@@ -125,22 +126,31 @@
                     Grid.Column="0"
                     Width="80"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    LostFocus="GetStudentInfo"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.MemberId,
-                                   Mode=OneWay}" />
-                <TextBox
+                                   Mode=OneWay}"
+                    ToolTip="Input user name or member id then press TAB to resolve it" />
+                <ComboBox
                     Name="txtName"
                     Grid.Row="1"
                     Grid.Column="1"
-                    Width="80"
+                    Width="100"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
-                    IsReadOnly="True"
+                    DisplayMemberPath="UserName"
+                    IsEditable="True"
+                    ItemsSource="{Binding Path=TestAccountVM.HistoryAccountList,
+                                          Mode=OneWay}"
+                    MaxDropDownHeight="125"
+                    SelectedItem="{Binding Path=TestAccountVM.CurrentTestAccount,
+                                           Mode=TwoWay}"
+                    Style="{DynamicResource VirtualisedMetroComboBox}"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.UserName,
                                    Mode=OneWay}" />
                 <TextBox
                     Name="txtPw"
                     Grid.Row="1"
                     Grid.Column="2"
-                    Width="80"
+                    Width="50"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     IsReadOnly="True"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.Password,

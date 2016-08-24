@@ -17,6 +17,7 @@ namespace ET2.Support
 
         internal class Data
         {
+            public const string TestAccountHistory = "Save.TestAccountList";
             public const string CurrentTestAccount = "Save.CurrentTestAccount";
             public const string CurrentTestEnvironment = "Save.CurrentTestEnvironment";
             public const string CurrentProduct = "Save.CurrentProduct";
@@ -111,13 +112,13 @@ namespace ET2.Support
             }
         }
 
-        public static void SavePersoanlSetting<T>(T settingsObj, string settingsName)
+        public static void SavePersonalSetting<T>(T settingsObj, string settingsName)
         {
             settingsName = AsPersonalFile(settingsName);
             settingsObj.SaveObject<T>(settingsName);
         }
 
-        public static T LoadPersoanlSetting<T>(string settingsName)
+        public static T LoadPersonalSetting<T>(string settingsName)
         {
             try
             {
@@ -155,12 +156,12 @@ namespace ET2.Support
 
         public static void SaveCurrentTestAccount(TestAccount obj)
         {
-            SavePersoanlSetting<TestAccount>(obj, Data.CurrentTestAccount);
+            SavePersonalSetting<TestAccount>(obj, Data.CurrentTestAccount);
         }
 
         public static TestAccount LoadCurrentTestAccount()
         {
-            var obj = LoadPersoanlSetting<TestAccount>(Data.CurrentTestAccount);
+            var obj = LoadPersonalSetting<TestAccount>(Data.CurrentTestAccount);
             if (obj == null)
             {
                 obj = new TestAccount()
@@ -169,6 +170,22 @@ namespace ET2.Support
                     UserName = "***",
                     Password = "***"
                 };
+            }
+
+            return obj;
+        }
+
+        public static void SaveTestAccountHistory(List<TestAccount> obj)
+        {
+            SavePersonalSetting<List<TestAccount>>(obj, Data.TestAccountHistory);
+        }
+
+        public static List<TestAccount> LoadTestAccountHistory()
+        {
+            var obj = LoadPersonalSetting<List<TestAccount>>(Data.TestAccountHistory);
+            if (obj == null)
+            {
+                return new List<TestAccount>();
             }
 
             return obj;
@@ -200,12 +217,12 @@ namespace ET2.Support
 
         public static void SaveCurrentTestEnvironment(TestEnvironment obj)
         {
-            SavePersoanlSetting<TestEnvironment>(obj, Data.CurrentTestEnvironment);
+            SavePersonalSetting<TestEnvironment>(obj, Data.CurrentTestEnvironment);
         }
 
         public static TestEnvironment LoadCurrentTestEnvironment()
         {
-            var obj = LoadPersoanlSetting<TestEnvironment>(Data.CurrentTestEnvironment);
+            var obj = LoadPersonalSetting<TestEnvironment>(Data.CurrentTestEnvironment);
             if (obj == null)
             {
                 obj = LoadEnvironments().First();
@@ -220,12 +237,12 @@ namespace ET2.Support
 
         public static void SaveCurrentProduct(Product obj)
         {
-            SavePersoanlSetting<Product>(obj, Data.CurrentProduct);
+            SavePersonalSetting<Product>(obj, Data.CurrentProduct);
         }
 
         public static Product LoadCurrentProduct()
         {
-            var obj = LoadPersoanlSetting<Product>(Data.CurrentProduct);
+            var obj = LoadPersonalSetting<Product>(Data.CurrentProduct);
             if (obj == null || obj.Name.IsNullOrEmpty())
             {
                 obj = LoadProductList().First();
@@ -357,7 +374,7 @@ namespace ET2.Support
 
         public static Dictionary<string, int> LoadHitRecords()
         {
-            var obj = LoadPersoanlSetting<Dictionary<string, int>>(Data.HitRecords);
+            var obj = LoadPersonalSetting<Dictionary<string, int>>(Data.HitRecords);
             if (obj == null)
             {
                 obj = new Dictionary<string, int>();
@@ -368,7 +385,7 @@ namespace ET2.Support
 
         public static void SaveHitRecords(Dictionary<string, int> obj)
         {
-            SavePersoanlSetting<Dictionary<string, int>>(obj, Data.HitRecords);
+            SavePersonalSetting<Dictionary<string, int>>(obj, Data.HitRecords);
         }
 
         #endregion Useful links

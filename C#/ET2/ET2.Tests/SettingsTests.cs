@@ -25,8 +25,8 @@ namespace ET2.Tests
             Assert.IsTrue(globalFile.Contains(Settings.GlobalSettingFolder));
 
             var now = DateTime.Now;
-            Settings.SavePersoanlSetting<DateTime>(now, testFileName);
-            var now1 = Settings.LoadPersoanlSetting<DateTime>(testFileName);
+            Settings.SavePersonalSetting<DateTime>(now, testFileName);
+            var now1 = Settings.LoadPersonalSetting<DateTime>(testFileName);
             Assert.AreEqual(now, now1);
             File.Delete(Settings.AsPersonalFile(testFileName));
 
