@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EF.Common;
+using ET2.Models;
 using ET2.ViewModels;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -124,20 +126,14 @@ namespace ET2.Views
 
         #region Useful Links
 
-        private async void Tab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void UsefulLinksTabItem_Selected(object sender, RoutedEventArgs e)
         {
-            var tab = sender as TabControl;
-            var currentTabItem = tab.SelectedItem as TabItem;
-            if (currentTabItem != null
-                && (string)currentTabItem.Header == "Useful Links")
+            ShellViewModel.WriteStatus("Update links...");
+            await RunInBackgroud(() =>
             {
-                ShellViewModel.WriteStatus("Update links...");
-                await RunInBackgroud(() =>
-                {
-                    ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
-                });
-                ShellViewModel.WriteStatus("OK.");
-            }
+                ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
+            });
+            ShellViewModel.WriteStatus("OK.");
         }
 
         #endregion Useful Links

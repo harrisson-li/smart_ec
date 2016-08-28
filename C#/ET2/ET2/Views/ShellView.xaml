@@ -31,7 +31,7 @@
     <DockPanel>
         <myControls:StatusInfoView DockPanel.Dock="Bottom" />
         <Grid>
-            <TabControl Margin="10" SelectionChanged="Tab_SelectionChanged">
+            <TabControl Margin="10">
                 <TabItem Header="Test Accounts">
                     <Grid>
                         <myControls:TestAccountView />
@@ -47,7 +47,7 @@
                         <myControls:HostEditorView />
                     </Grid>
                 </TabItem>
-                <TabItem Header="Useful Links">
+                <TabItem Header="Useful Links" Selector.Selected="UsefulLinksTabItem_Selected">
                     <Grid>
                         <myControls:UsefulLinkView />
                     </Grid>
