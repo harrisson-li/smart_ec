@@ -487,7 +487,7 @@ namespace ET2.Support
         #region Quick actions
 
         /// <summary>
-        /// Synchronizes the public actions to local, all users will share all the actions.
+        /// Synchronizes the public actions to local, all users will share public actions.
         /// </summary>
         public static void SyncPublicActionsToLocal()
         {
