@@ -1,4 +1,11 @@
-﻿## v0.0.0.21 - Preview
+﻿## v0.0.0.23 - Preview
+
+1. Fix bug - need to click twice to open a link.
+2. Fix bug - product filter does not work well sometimes.
+3. Quick actions are shared by all users now, local quick actions will be overwritten by public quick actions.
+4. You need to define and publish quick actions to global settings folder.
+
+## v0.0.0.21 - Preview
 
 1. Able to resolve test account when input name or member id of student
 2. Remember recent 20 generated test accounts, you can select from user name dropdown list.
