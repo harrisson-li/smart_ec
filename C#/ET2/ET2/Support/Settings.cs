@@ -486,8 +486,22 @@ namespace ET2.Support
 
         #region Quick actions
 
+        public static void CopyPublicActionsToLocal()
+        {
+            var publicActionFolder = Path.Combine(GlobalSettingFolder, Data.QuickActionFolder);
+            var localActionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
+
+            if (Directory.Exists(publicActionFolder))
+            {
+                var cmd = @"robocopy ""{0}"" ""{1}"" /e /r:1".FormatWith(publicActionFolder, localActionFolder);
+                CommandHelper.ExecuteBatch(cmd);
+            }
+        }
+
         public static List<QuickAction> LoadQuickActions()
         {
+            CopyPublicActionsToLocal();
+
             var actionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
             var actionList = new List<QuickAction>();
 
