@@ -32,9 +32,6 @@ namespace ET2.ViewModels
                 var prod = ProductList
                     .Where(e => e.Partner == CurrentPartner)
                     .First().DeepCopy();
-                prod.DivisionCode = DivisionCodeList
-                    .Where(e => e.PartnerCode == CurrentPartner)
-                    .First().DivisionCode;
                 CurrentProduct = prod;
                 ProductName = prod.Name;
 
@@ -42,11 +39,8 @@ namespace ET2.ViewModels
                 this.NotifyOfPropertyChange(() => this.ProductNameList);
                 this.NotifyOfPropertyChange(() => this.ProductMainRedCodeList);
                 this.NotifyOfPropertyChange(() => this.ProductFreeRedCodeList);
-                this.NotifyOfPropertyChange(() => this.ProductDivisionCodeList);
                 this.NotifyOfPropertyChange(() => this.ProductCityList);
-                this.NotifyOfPropertyChange(() => this.ProductSchoolList);
                 this.CurrentCity = this.ProductCityList.First();
-                this.CurrentSchool = this.ProductSchoolList.First();
             }
         }
 
@@ -134,11 +128,13 @@ namespace ET2.ViewModels
             }
         }
 
-        public List<object> ProductStartLevelList
+        public List<string> ProductStartLevelList
         {
             get
             {
-                return new List<object>() { "0A", "0B", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+                return new List<string>() { "0A", "0B" }
+                .Concat(Enumerable.Range(1, 14)
+                .Select(e => e.ToString())).ToList();
             }
         }
 
@@ -186,10 +182,10 @@ namespace ET2.ViewModels
                 var div = DivisionCodeList
                     .Where(e => e.City == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
-                CurrentSchool = div.SchoolName;
 
-                this.NotifyOfPropertyChange(() => this.ProductSchoolList);
                 this.NotifyOfPropertyChange();
+                this.NotifyOfPropertyChange(() => this.ProductSchoolList);
+                CurrentSchool = div.SchoolName;
             }
         }
 

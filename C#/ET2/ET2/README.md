@@ -39,8 +39,8 @@ Token replacement is wildly used in ET2, you can set token in useful links or qu
 
 ### 6. Quick Actions
 
-You can define your own quick actions in `%UserProfile%\ET2\QuickActions` folder. There is a sample action added by default.
-Quick actions can be accessed throught ET2 main window.
+You can define quick actions in '[**PublicSettings**]/QuickActions' folder. There is a sample action added by default.
+Quick actions can be accessed throught ET2 main window, and they will be shared by all users.
 
 Supported quick action types:
 

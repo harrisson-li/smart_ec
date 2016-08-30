@@ -326,19 +326,6 @@
                         Style="{DynamicResource VirtualisedMetroComboBox}"
                         Text="{Binding Path=ProductVM.CurrentSchool,
                                        Mode=TwoWay}" />
-                    <ComboBox
-                        Name="divisionCode"
-                        Width="150"
-                        Margin="0,0,0,1"
-                        IsEditable="True"
-                        IsTextSearchCaseSensitive="False"
-                        IsTextSearchEnabled="True"
-                        ItemsSource="{Binding Path=ProductVM.ProductDivisionCodeList}"
-                        MaxDropDownHeight="125"
-                        Style="{DynamicResource VirtualisedMetroComboBox}"
-                        Text="{Binding Path=ProductVM.CurrentProduct.DivisionCode,
-                                       Mode=TwoWay}"
-                        Visibility="Collapsed" />
                     <CheckBox
                         Margin="0,5,0,0"
                         Content="Includes Enroll"

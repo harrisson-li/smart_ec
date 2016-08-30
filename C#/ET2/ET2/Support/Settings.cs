@@ -486,8 +486,25 @@ namespace ET2.Support
 
         #region Quick actions
 
+        /// <summary>
+        /// Synchronizes the public actions to local, all users will share public actions.
+        /// </summary>
+        public static void SyncPublicActionsToLocal()
+        {
+            var publicActionFolder = Path.Combine(GlobalSettingFolder, Data.QuickActionFolder);
+            var localActionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
+
+            if (Directory.Exists(publicActionFolder))
+            {
+                var cmd = @"robocopy ""{0}"" ""{1}"" /mir /r:1".FormatWith(publicActionFolder, localActionFolder);
+                CommandHelper.ExecuteBatch(cmd);
+            }
+        }
+
         public static List<QuickAction> LoadQuickActions()
         {
+            SyncPublicActionsToLocal();
+
             var actionFolder = Path.Combine(PersonalSettingFolder, Data.QuickActionFolder);
             var actionList = new List<QuickAction>();
 
