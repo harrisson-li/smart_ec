@@ -47,9 +47,11 @@ namespace ET2.ViewModels
                 .GroupBy(e => e.UserName)
                 .Select(e => e.First()).ToList();
 
-            // Save latest 20 test accounts at most
             this.NotifyOfPropertyChange(() => this.HistoryAccountList);
-            Settings.SaveTestAccountHistory(_historyAccountList.Take(20).ToList());
+
+            // Save latest 20 test accounts at most
+            var accountToSave = _historyAccountList.Skip(Math.Max(0, _historyAccountList.Count - 20));
+            Settings.SaveTestAccountHistory(accountToSave.ToList());
         }
 
         private TestAccount _testAccount;
@@ -138,6 +140,9 @@ namespace ET2.ViewModels
                     throw new NotSupportedException();
             }
 
+            // append ctr and partner when create new account
+            accountUrl += "&ctr={0}&partner={1}".FormatWith(GetCountryByPartner(partner), partner);
+
             var result = HttpHelper.Get(accountUrl);
             ShellViewModel.WriteStatus(result);
 
@@ -158,6 +163,39 @@ namespace ET2.ViewModels
             }
 
             Save();
+        }
+
+        public string GetCountryByPartner(string partner)
+        {
+            var ctr = string.Empty;
+
+            switch (partner.ToLower())
+            {
+                case "cool":
+                case "mini":
+                    ctr = "cn";
+                    break;
+
+                case "ecsp":
+                    ctr = "es";
+                    break;
+
+                case "cehk":
+                    ctr = "hk";
+                    break;
+
+                case "rupe":
+                    ctr = "ru";
+                    break;
+
+                case "indo":
+                    ctr = "id";
+                    break;
+
+                default:
+                    throw new ArgumentException("Unknown partner: {0}".FormatWith(partner));
+            }
+            return ctr;
         }
 
         public void ActivateAccount()

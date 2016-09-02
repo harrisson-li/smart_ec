@@ -296,37 +296,6 @@ namespace ET2.ViewModels
                 postData.Add("levelQty", CurrentProduct.LevelQty);
             }
 
-            switch (CurrentProduct.Partner)
-            {
-                case "cool":
-                    postData.Add("ctr", "cn");
-                    break;
-
-                case "ecsp":
-                    postData.Add("ctr", "es");
-                    break;
-
-                case "mini":
-                    postData.Add("ctr", "cn");
-                    break;
-
-                case "cehk":
-                    postData.Add("ctr", "hk");
-                    break;
-
-                case "rupe":
-                    postData.Add("ctr", "ru");
-                    break;
-
-                case "indo":
-                    postData.Add("ctr", "id");
-                    break;
-
-                default:
-                    throw new ArgumentException("Unknown partner: {0}".FormatWith(CurrentProduct.Partner));
-            }
-            postData.Add("partner", CurrentProduct.Partner);
-
             return postData;
         }
 
