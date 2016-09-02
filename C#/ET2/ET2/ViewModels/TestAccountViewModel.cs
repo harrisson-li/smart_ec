@@ -123,6 +123,10 @@ namespace ET2.ViewModels
         public void GenerateAccount(string envUrlString, AccountTypes accountType, string partner)
         {
             var accountUrl = URL_NEW_ACCOUNT.FormatWith(envUrlString);
+
+            // append ctr and partner when create new account
+            accountUrl += "?ctr={0}&partner={1}".FormatWith(GetCountryByPartner(partner), partner);
+
             switch (accountType)
             {
                 case AccountTypes.E10:
@@ -133,15 +137,12 @@ namespace ET2.ViewModels
                     break;
 
                 case AccountTypes.S15_V2:
-                    accountUrl += "?v=2";
+                    accountUrl += "&v=2";
                     break;
 
                 default:
                     throw new NotSupportedException();
             }
-
-            // append ctr and partner when create new account
-            accountUrl += "&ctr={0}&partner={1}".FormatWith(GetCountryByPartner(partner), partner);
 
             var result = HttpHelper.Get(accountUrl);
             ShellViewModel.WriteStatus(result);
