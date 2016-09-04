@@ -59,8 +59,10 @@ namespace EF.Common
             proc.FileName = "python.exe";
             proc.Arguments = pythonScript;
             proc.UseShellExecute = true;
-            proc.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.WindowStyle = ProcessWindowStyle.Normal;
+
             var p = RunProcess(proc, asAdmin);
+
             if (waitForExit)
             {
                 p.WaitForExit();
