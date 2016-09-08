@@ -1,4 +1,10 @@
-﻿## v0.0.0.23 - Preview
+﻿## v0.0.0.26 - Preview
+
+1. Fix bug - remember last 20 but not first 20 test accounts.
+2. Append ctr and partner when generating test account but not activating account.
+3. Keep console window and shows output for python quick actions.
+
+## v0.0.0.23 - Preview
 
 1. Fix bug - need to click twice to open a link.
 2. Fix bug - product filter does not work well sometimes.

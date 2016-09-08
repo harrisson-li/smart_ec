@@ -47,9 +47,11 @@ namespace ET2.ViewModels
                 .GroupBy(e => e.UserName)
                 .Select(e => e.First()).ToList();
 
-            // Save latest 20 test accounts at most
             this.NotifyOfPropertyChange(() => this.HistoryAccountList);
-            Settings.SaveTestAccountHistory(_historyAccountList.Take(20).ToList());
+
+            // Save latest 20 test accounts at most
+            var accountToSave = _historyAccountList.Skip(Math.Max(0, _historyAccountList.Count - 20));
+            Settings.SaveTestAccountHistory(accountToSave.ToList());
         }
 
         private TestAccount _testAccount;
@@ -121,6 +123,10 @@ namespace ET2.ViewModels
         public void GenerateAccount(string envUrlString, AccountTypes accountType, string partner)
         {
             var accountUrl = URL_NEW_ACCOUNT.FormatWith(envUrlString);
+
+            // append ctr and partner when create new account
+            accountUrl += "?ctr={0}&partner={1}".FormatWith(GetCountryByPartner(partner), partner);
+
             switch (accountType)
             {
                 case AccountTypes.E10:
@@ -131,7 +137,7 @@ namespace ET2.ViewModels
                     break;
 
                 case AccountTypes.S15_V2:
-                    accountUrl += "?v=2";
+                    accountUrl += "&v=2";
                     break;
 
                 default:
@@ -158,6 +164,39 @@ namespace ET2.ViewModels
             }
 
             Save();
+        }
+
+        public string GetCountryByPartner(string partner)
+        {
+            var ctr = string.Empty;
+
+            switch (partner.ToLower())
+            {
+                case "cool":
+                case "mini":
+                    ctr = "cn";
+                    break;
+
+                case "ecsp":
+                    ctr = "es";
+                    break;
+
+                case "cehk":
+                    ctr = "hk";
+                    break;
+
+                case "rupe":
+                    ctr = "ru";
+                    break;
+
+                case "indo":
+                    ctr = "id";
+                    break;
+
+                default:
+                    throw new ArgumentException("Unknown partner: {0}".FormatWith(partner));
+            }
+            return ctr;
         }
 
         public void ActivateAccount()
