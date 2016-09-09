@@ -497,7 +497,7 @@ namespace ET2.Support
             if (Directory.Exists(publicActionFolder))
             {
                 var cmd = @"robocopy ""{0}"" ""{1}"" /mir /r:1".FormatWith(publicActionFolder, localActionFolder);
-                CommandHelper.ExecuteBatch(cmd);
+                CommandHelper.ExecuteBatch(cmd, asAdmin: false, waitForExit: true);
             }
         }
 
