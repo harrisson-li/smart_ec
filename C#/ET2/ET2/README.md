@@ -34,6 +34,7 @@ Token replacement is wildly used in ET2, you can set token in useful links or qu
 - $id (=> member id)
 - $name (=> student name)
 - $env (=> current test environment)
+- $partner (=> current partner for account)
 - $mark (=> current tet environment mark)
 - $token (=> secrect token to submit score)
 
