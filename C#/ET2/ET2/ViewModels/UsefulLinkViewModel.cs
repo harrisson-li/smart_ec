@@ -89,14 +89,17 @@ namespace ET2.ViewModels
             var id = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.MemberId;
             var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
             var mark = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Mark;
+            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
 
             if (!originUrl.IsNullOrEmpty())
             {
                 Log.DebugFormat("Covert URL From: {0}", originUrl);
+
                 originUrl = originUrl.Replace("$env", envString);
                 originUrl = originUrl.Replace("$id", id);
                 originUrl = originUrl.Replace("$name", name);
                 originUrl = originUrl.Replace("$mark", mark);
+                originUrl = originUrl.Replace("$partner", partner);
                 originUrl = originUrl.Replace("$token", TokenHelper.GetToken(envString));
                 originUrl = TryToFixLink(originUrl);
 
