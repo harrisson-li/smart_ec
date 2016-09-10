@@ -162,8 +162,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="300*" />
                     <ColumnDefinition Width="160" />
-                    <ColumnDefinition Width="180" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <Label Content="Partner: " Style="{DynamicResource FieldLabelStyle}" />
@@ -333,28 +333,28 @@
                                             Mode=TwoWay}"
                         IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2}" />
                 </StackPanel>
-                <StackPanel Name="quickActionsPanel" Grid.Column="2">
+                <WrapPanel Name="quickActionsPanel" Grid.Column="2" HorizontalAlignment="Left" Orientation="Vertical">
                     <Button
-                        Width="120"
-                        Margin="0,0,0,5"
+                        Width="130"
+                        Margin="5,0,5,5"
                         Click="ActivateAccount"
                         Content="Activate Account"
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}" />
                     <Button
-                        Width="120"
-                        Margin="0,0,0,5"
+                        Width="130"
+                        Margin="5,0,5,5"
                         Click="ConvertTo20"
                         Content="Convert to 2.0"
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}"
                         ToolTip="IsEcRolloutSchoolPlatform2 = true" />
-                </StackPanel>
+                </WrapPanel>
                 <StackPanel
                     Name="homeLinks"
                     Grid.Column="3"
                     Width="180"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Left"
                     Background="AliceBlue" />
             </Grid>
         </GroupBox>

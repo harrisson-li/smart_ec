@@ -54,9 +54,9 @@ namespace ET2.Views
                 var btn = new Button();
                 btn.Content = quickAction.Name;
                 btn.Tag = quickAction;
-                btn.Width = 120;
+                btn.Width = 130;
                 btn.Background = new SolidColorBrush(Colors.LightGray);
-                btn.Margin = new Thickness(0, 0, 0, 5);
+                btn.Margin = new Thickness(5, 0, 5, 5);
                 btn.MouseEnter += RefreshQuickAction;
                 btn.Click += PerformQuickAction;
                 this.quickActionsPanel.Children.Add(btn);
