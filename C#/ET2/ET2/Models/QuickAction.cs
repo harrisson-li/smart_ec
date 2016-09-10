@@ -114,7 +114,7 @@ namespace ET2.Models
 
         public void Perform()
         {
-            Log.DebugFormat("Perform Quick Action: {0}", this.ToJsonString());
+            Log.InfoFormat("Perform Quick Action: {0}", this.ToJsonString());
             switch (this.ActionType)
             {
                 case ActionTypes.Cmd:

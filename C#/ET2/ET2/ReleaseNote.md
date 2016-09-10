@@ -1,4 +1,11 @@
-﻿## v0.0.0.26 - Preview
+﻿## v0.0.0.27
+
+1. Fix typo in useful link.
+2. Support `$partner` token in URL.
+3. Separete debug log to another file.
+4. Wait for quick action sync completed then start the application.
+
+## v0.0.0.26 - Preview
 
 1. Fix bug - remember last 20 but not first 20 test accounts.
 2. Append ctr and partner when generating test account but not activating account.
