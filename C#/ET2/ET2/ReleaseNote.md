@@ -1,4 +1,8 @@
-﻿## v0.0.0.27
+﻿## v0.0.0.28
+
+1.Layout changed, now you can add more quick actions.
+
+## v0.0.0.27
 
 1. Fix typo in useful link.
 2. Support `$partner` token in URL.
