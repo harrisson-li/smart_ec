@@ -1,0 +1,7 @@
+Name,domain,server,user,pwd
+UAT,all,CNS-ETDBDEVVS,TestUser,testuserdev
+QA,all,USB-ETOWNQADB,TestUser,testuserqa
+Staging,us,10.43.45.180,etownreader,fishing22
+Staging,cn,10.17.4.56,etownreader,fishing22
+Live,cn,10.17.4.158,etownreader,fishing22
+Live,us,10.43.45.158,etownreader,fishing22
