@@ -18,9 +18,13 @@ class Configuration(Base):
     name = 'ectools'
     env = 'UAT'
     partner = 'Cool'
-    domain = 'cn'
+    domain = 'CN'
+    country_code = 'cn'
     base_dir = '.'
     data_dir = 'data'
+    database = None
+    etown_root = ''
+    oboe_root = ''
 
 
 class Student(Base):
