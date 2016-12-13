@@ -1,4 +1,4 @@
-PartnerCode,Product_id,PackageName,ProductType,MainRedCode,MainOneDay,FreeRedCode,Tags
+Partner,Id,PackageName,ProductType,MainRedCode,MainOneDay,FreeRedCode,Tags
 Cool,63,Smart 15 - School,School,S15SCHOOLMAIN,S15SCHOOLM1D,S15SCHOOLF1D,Major
 Cool,64,Smart 15 - Home PL(20),Home,S15HOMEPL20MAIN,S15HOMEPL20M1D,S15HOMEPL20F1D,Major
 Mini,65,Smart 15 - School - Mini,School,S15SCHOOLMAIN,S15SCHOOLM1D,S15SCHOOLF1D,Major

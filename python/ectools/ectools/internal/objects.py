@@ -14,6 +14,15 @@ class Container(Base):
 Cache = Container()
 
 
+class Configuration(Base):
+    name = 'ectools'
+    env = 'UAT'
+    partner = 'Cool'
+    domain = 'cn'
+    base_dir = '.'
+    data_dir = 'data'
+
+
 class Student(Base):
     member_id = None
     username = None
