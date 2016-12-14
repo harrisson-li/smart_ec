@@ -1,8 +1,8 @@
-import internal.busines.score_helper_v1 as v1
-import internal.busines.score_helper_v2 as v2
+import internal.business.score_helper_v1 as v1
+import internal.business.score_helper_v2 as v2
 from internal.objects import *
 from student_settings_helper import is_v2_student
-from ultility import get_score
+from utility import get_score
 
 
 def is_submit_v2():

@@ -1,10 +1,9 @@
 import re
 from datetime import datetime, timedelta
 
-from config import get_logger
 from database_helper import *
 from student_settings_helper import is_v2_student
-from ultility import get_score, random_date
+from utility import get_score, random_date
 
 
 def achieve_minimum_class_taken(student_id, **kwargs):
