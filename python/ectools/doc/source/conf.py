@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # ectools documentation build configuration file, created by
-# sphinx-quickstart on Wed Dec 14 21:41:41 2016.
+# sphinx-quickstart on Wed Dec 14 22:01:45 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -19,7 +19,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../../ectools'))
+sys.path.insert(0, os.path.abspath('../ectools'))
+
 
 # -- General configuration ------------------------------------------------
 
@@ -34,8 +35,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.intersphinx',
               'sphinx.ext.todo',
-              'sphinx.ext.coverage',
-              'sphinx.ext.mathjax',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode']
 
@@ -82,6 +81,7 @@ pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
 
 # -- Options for HTML output ----------------------------------------------
 
