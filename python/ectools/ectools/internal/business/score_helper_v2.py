@@ -1,13 +1,13 @@
 from assertpy import assert_that
 
-import internal.busines.score_helper_v1 as s15_submit_tool
-from internal.objects import *
+import internal.business.score_helper_v1 as s15_submit_tool
 from config import config, get_logger
-from internal.busines import get_browser
-from token_helper import get_token
-from ultility import get_score
 from infrastructure import wait_for
+from internal.business import get_browser
+from internal.objects import *
 from internal.pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
+from token_helper import get_token
+from utility import get_score
 
 """
 Score submit tools for S15 Platform 2.0 students.

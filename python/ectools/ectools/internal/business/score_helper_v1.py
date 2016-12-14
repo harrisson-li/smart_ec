@@ -1,12 +1,12 @@
 from selenium.webdriver.common.keys import Keys
 
-from internal.busines import get_browser
-from token_helper import get_token
-from internal.objects import *
-from ultility import get_score
-from internal.pages.score_helper_page_v1 import SubmitScoreHelperS15Page as CurrentPage
 from config import get_logger
+from internal.business import get_browser
+from internal.objects import *
 from internal.pages import TIMEOUT_FOR_ELEMENT_WAITING
+from internal.pages.score_helper_page_v1 import SubmitScoreHelperS15Page as CurrentPage
+from token_helper import get_token
+from utility import get_score
 
 """
 Score submit tools for S15 students.
