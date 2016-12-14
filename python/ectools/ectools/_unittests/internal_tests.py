@@ -46,3 +46,10 @@ def test_get_school():
     assert get_any_school() is not None
     assert get_schools_has_tag('TestCenter') is not None
     assert get_any_v2_school() is not None
+
+
+def test_get_random_level():
+    level = get_random_level(min=2, max=16)
+    assert level != get_all_levels()[0]
+    level = get_random_level(min=1, max=2)
+    assert level in get_all_levels()[:2]

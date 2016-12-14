@@ -4,7 +4,6 @@ import requests
 
 from internal.data_helper import *
 from config import get_logger, config
-from internal.objects import *
 
 
 def create_account_without_activation(is_e10=False):
@@ -43,13 +42,6 @@ def create_account_without_activation(is_e10=False):
         raise SystemError('Cannot create new account: {}'.format(result.text))
 
 
-def _merge_activation_data(source_dict, *args):
-    """Merge multiple dictionaries into source_dict dictionary."""
-    for data in args:
-        source_dict.update(data)
-    return source_dict
-
-
 def activate_account(product_id=None, school_name=None, is_v2=True, student=None, **kwargs):
     """
     To activate a test account and return a student object
@@ -63,14 +55,23 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
               freeRedemptionQty = 3
               startLevel        = '0A'
               levelQty          = '16'
-              securityverified  = 'on'
-              includesenroll    = 'on'
+              securityverified  = True
+              includesenroll    = True
 
 
     :return: A student dict with all info.
     :rtype: dict
 
     """
+
+    def merge_activation_data(source_dict, **more):
+        source_dict.update(more)
+
+        for key in ['securityverified', 'includesenroll']:
+            if source_dict.get(key, 'on') != 'on':
+                del source_dict[key]
+
+        return source_dict
 
     def get_link(is_e10):
         url = '{}/services/oboe2/salesforce/test/ActivateV2'
@@ -93,7 +94,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         is_v2 = is_v2_school(school_name)
 
     get_logger().info('Start to activate test account...')
-    assert school['Partner'].lower() == product['Partner'].lower(), "Partner not match for school and product!"
+    assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
 
     if student is None:
         student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
@@ -105,9 +106,9 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     link = get_link(is_item_has_tag(product, 'E10'))
 
     data = get_default_activation_data(product)
-    data = _merge_activation_data(data, kwargs)
+    data = merge_activation_data(data, **kwargs)
     data['memberId'] = student['member_id']
-    data['divisionCode'] = school['DivisionCode']
+    data['divisionCode'] = school['division_code']
 
     if not student['is_e10']:
         del data['levelQty']  # e10 student cannot set 'levelQty'
@@ -121,4 +122,67 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['is_activated'] = True
     student['partner'] = config.partner
     student['country_code'] = config.country_code
+    student.update(kwargs)
     return student
+
+
+def activate_e10_student(product_id=None, school_name=None, **kwargs):
+    if product_id is None:
+        product_id = get_any_e10_product()['id']
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+
+
+def activate_s15_student(product_id=None, school_name=None, **kwargs):
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+
+
+def activate_home_student(school_name=None, **kwargs):
+    product_id = get_any_home_product()['id']
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+
+
+def activate_school_student(school_name=None, **kwargs):
+    product_id = get_any_school_product()['id']
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+
+
+def activate_s15_v2_student(product_id=None, school_name=None, **kwargs):
+    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+
+
+def activate_home_v2_student(school_name=None, **kwargs):
+    product_id = get_any_home_product()['id']
+    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+
+
+def activate_school_v2_student(school_name=None, **kwargs):
+    product_id = get_any_school_product()['id']
+    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+
+
+def activate_school_student_with_random_level(product_id=None,
+                                              school_name=None,
+                                              is_v2=True,
+                                              min_level=1,
+                                              max_level=16,
+                                              **kwargs):
+    level = get_random_level(min_level, max_level)
+    kwargs.update({'startLevel': level})
+    if not product_id:
+        product_id = get_any_school_product()['id']
+
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+
+
+def activate_home_student_with_random_level(product_id=None,
+                                            school_name=None,
+                                            is_v2=True,
+                                            min_level=1,
+                                            max_level=16,
+                                            **kwargs):
+    level = get_random_level(min_level, max_level)
+    kwargs.update({'startLevel': level})
+    if not product_id:
+        product_id = get_any_home_product()['id']
+
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)

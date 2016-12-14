@@ -171,3 +171,8 @@ def get_all_levels():
     level_list = ['0A', '0B']
     level_list.extend(range(1, 15))
     return level_list
+
+
+def get_random_level(min=1, max=16):
+    level_list = get_all_levels()[min - 1:max - 1]
+    return get_random_item(level_list)
