@@ -15,7 +15,8 @@ def main():
         install_requires=[
             'requests',
             'selenium',            
-			'pyodbc'
+			'pyodbc',
+			'pypyodbc'
         ],
         zip_safe=False,
     )

@@ -1,16 +1,33 @@
-import pyodbc
-
 from config import config
 from internal.objects import *
+
+try:
+    import pyodbc
+except ImportError:
+    import pypyodbc as pyodbc
+
+
+def set_connection_string(value=None):
+    if not value:
+        value = "SERVER={};UID={};PWD={}"
+        value = value.format(config.database['server'],
+                             config.database['user'],
+                             config.database['password'])
+        value = "DRIVER={SQL Server};" + value
+
+    Cache.connection_string = value
+
+
+def get_connection_string():
+    if not hasattr(Cache, 'connection_string'):
+        set_connection_string()
+    else:
+        return Cache.connection_string
 
 
 def _connect():
     if not hasattr(Cache, 'connection'):
-        connection_string = "SERVER={};UID={};PWD={}"
-        connection_string = connection_string.format(config.database['Server'],
-                                                     config.database['User'],
-                                                     config.database['Password'])
-        Cache.connection = pyodbc.connect("DRIVER={SQL Server};" + connection_string)
+        Cache.connection = pyodbc.connect(get_connection_string())
         Cache.cursor = Cache.connection.cursor()
     return Cache.connection
 
@@ -38,7 +55,7 @@ def get_cursor():
         return Cache.cursor
 
 
-def connect_db(func=None):
+def connect_database(func=None):
     """To connect to database, can be used as decorator."""
     if func is None:
         return _connect()
@@ -53,7 +70,11 @@ def connect_db(func=None):
         return wrapper
 
 
-@connect_db
+def close_database():
+    _cleanup()
+
+
+@connect_database
 def fetch_one(sql, params=None, as_dict=False):
     """Fetch first row from a sql query."""
     _execute(sql, params)
@@ -67,7 +88,7 @@ def fetch_one(sql, params=None, as_dict=False):
             return row
 
 
-@connect_db
+@connect_database
 def fetch_all(sql, params=None, as_dict=False):
     """Fetch all rows from a sql query."""
     _execute(sql, params)
@@ -85,7 +106,7 @@ def fetch_all(sql, params=None, as_dict=False):
         return rows
 
 
-@connect_db
+@connect_database
 def execute_query(sql, params=None):
     """Execute a sql query and return affected row counts."""
     _execute(sql, params)
