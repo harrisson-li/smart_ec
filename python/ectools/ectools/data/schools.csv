@@ -1,4 +1,4 @@
-Partner,City,Name,DivisionCode,Tags
+partner,city,name,division_code,tags
 cehk,Hong Kong Test City,Test(CEF),CEF,TestCenter
 cehk,Hong Kong Test City,CWB(TEST01),HKTEST1,TestCenter
 CEHK,HongKong,HK_SSC,HKSSC,

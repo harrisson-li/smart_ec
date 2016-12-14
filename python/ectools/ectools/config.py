@@ -16,15 +16,15 @@ def setup(env='UAT', partner='Cool'):
 
 def set_environment(env):
     env = get_environment(env, config.domain)
-    config.env = env['Name']
+    config.env = env['name']
     _setup()
 
 
 def set_partner(partner):
     partner = get_partner(partner)
-    config.partner = partner['Name']
-    config.domain = partner['Domain']
-    config.country_code = partner['Country_Code']
+    config.partner = partner['name']
+    config.domain = partner['domain']
+    config.country_code = partner['country_code']
     _setup()
 
 
@@ -49,8 +49,8 @@ def _setup():
     config.data_dir = join(config.base_dir, config.data_dir)
     config.database = get_database(config.env, config.domain)
     env = get_environment(config.env, config.domain)
-    config.etown_root = env['Etown']
-    config.oboe_root = env['Oboe']
+    config.etown_root = env['etown']
+    config.oboe_root = env['oboe']
 
 
 setup()

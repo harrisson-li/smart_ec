@@ -16,3 +16,8 @@ def test_create_account():
 def test_activate_account():
     student = activate_account()
     get_logger().info(student)
+    assert student is not None
+    student = create_account_without_activation()
+    student = activate_account(product_id=63, school_name='SH_ZJC', student=student)
+    assert student['is_v2']
+    assert student['school']['name'] == 'SH_ZJC'

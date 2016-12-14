@@ -28,8 +28,12 @@ def has_tag(tags, tag):
     return tag.lower() in tag_list
 
 
-def get_item_has_tag(elements, tag):
-    found = [x for x in elements if has_tag(x['Tags'], tag)]
+def is_item_has_tag(item, tag):
+    return has_tag(item['tags'], tag)
+
+
+def get_item_has_tag(items, tag):
+    found = [x for x in items if is_item_has_tag(x, tag)]
     if len(found) == 0:
         raise ValueError('Cannot find any item has tag: {}'.format(tag))
     return found

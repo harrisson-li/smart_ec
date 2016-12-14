@@ -90,25 +90,26 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         school = get_any_v2_school() if is_v2 else get_any_school()
     else:
         school = get_school_by_name(school_name)
+        is_v2 = is_v2_school(school_name)
 
     get_logger().info('Start to activate test account...')
-    assert school['Partner'] == product['Partner'], "Partner not match for school and product!"
+    assert school['Partner'].lower() == product['Partner'].lower(), "Partner not match for school and product!"
 
     if student is None:
-        student = create_account_without_activation(is_e10=product.is_e10)
+        student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
     else:
         assert isinstance(student, dict)
 
-    student.is_v2 = is_v2
-    student.is_e10 = product.is_e10
-    link = get_link(product.is_e10)
+    student['is_v2'] = is_v2
+    student['is_e10'] = is_item_has_tag(product, 'E10')
+    link = get_link(is_item_has_tag(product, 'E10'))
 
     data = get_default_activation_data(product)
     data = _merge_activation_data(data, kwargs)
     data['memberId'] = student['member_id']
     data['divisionCode'] = school['DivisionCode']
 
-    if not student.is_e10:
+    if not student['is_e10']:
         del data['levelQty']  # e10 student cannot set 'levelQty'
 
     get_logger().debug('Activation data: %s', data)
@@ -117,7 +118,6 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     assert result.status_code is 200 and 'success' in result.text, result.text
     student['product'] = product
     student['school'] = school
-    student['data'] = data
     student['is_activated'] = True
     student['partner'] = config.partner
     student['country_code'] = config.country_code
