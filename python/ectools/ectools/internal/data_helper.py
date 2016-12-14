@@ -49,6 +49,7 @@ def get_all_products():
     return Cache.products
 
 
+# noinspection PyShadowingBuiltins
 def get_product_by_id(id):
     found = [x for x in get_all_products() if x['id'] == str(id)]
     assert len(found), "No such product: {}!".format(id)
@@ -169,10 +170,11 @@ def get_any_v2_school(partner=None):
 
 def get_all_levels():
     level_list = ['0A', '0B']
+    # noinspection PyTypeChecker
     level_list.extend(range(1, 15))
     return level_list
 
 
-def get_random_level(min=1, max=16):
-    level_list = get_all_levels()[min - 1:max - 1]
+def get_random_level(min_level=1, max_level=16):
+    level_list = get_all_levels()[min_level - 1:max_level - 1]
     return get_random_item(level_list)

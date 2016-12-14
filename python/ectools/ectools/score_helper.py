@@ -1,7 +1,7 @@
 import internal.busines.score_helper_v1 as v1
 import internal.busines.score_helper_v2 as v2
 from internal.objects import *
-from service_helper import is_platform_20_student
+from student_settings_helper import is_v2_student
 from ultility import get_score
 
 
@@ -10,7 +10,7 @@ def is_submit_v2():
 
 
 def load_student(student_id, reload_page=True):
-    Cache.submit_v2 = is_platform_20_student(student_id)
+    Cache.submit_v2 = is_v2_student(student_id)
     if is_submit_v2():
         v2.load_student(student_id, reload_page)
     else:

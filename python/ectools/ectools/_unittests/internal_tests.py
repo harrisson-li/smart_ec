@@ -49,7 +49,7 @@ def test_get_school():
 
 
 def test_get_random_level():
-    level = get_random_level(min=2, max=16)
+    level = get_random_level(min_level=2, max_level=16)
     assert level != get_all_levels()[0]
-    level = get_random_level(min=1, max=2)
+    level = get_random_level(min_level=1, max_level=2)
     assert level in get_all_levels()[:2]

@@ -1,5 +1,5 @@
 from account_helper import *
-from config import get_logger
+from config import get_logger, set_environment
 from internal.objects import *
 
 
@@ -15,7 +15,8 @@ def test_create_account():
 
 
 def test_activate_account_default():
-    student = activate_account()
+    set_environment('qa')
+    student = activate_account(is_v2=True, mainRedemptionQty=60)
     get_logger().info(student)
     assert student is not None
     student = create_account_without_activation()
@@ -44,6 +45,7 @@ def test_activate_account_more():
     assert student['startLevel'] in ['0B', 1]
 
 
+# noinspection PyUnresolvedReferences
 def test_convert_student_to_object():
     student = activate_account()
 

@@ -9,9 +9,9 @@ from selenium.webdriver.support import expected_conditions as conditions
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
+from config import get_logger
 from infrastructure import detail_on_failure
 from infrastructure import retry_for_error
-from config import get_logger
 
 TIMEOUT_SECONDS = 60
 TIMEOUT_FOR_ELEMENT_WAITING = 120
@@ -31,7 +31,7 @@ class PageBase(object):
 
     def get_page(self, custom_url):
         """Open a custom page by passing in url."""
-        logger.debug("Open {}".format(custom_url))
+        get_logger().debug("Open {}".format(custom_url))
         self.browser.get(custom_url)
         self.wait_for_ready()
 

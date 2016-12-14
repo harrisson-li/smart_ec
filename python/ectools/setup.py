@@ -14,9 +14,9 @@ def main():
         package_data={"ectools": ["data/*.csv"]},
         install_requires=[
             'requests',
-            'selenium',            
-			'pyodbc',
-			'pypyodbc'
+            'selenium',
+            'pyodbc',
+            'pypyodbc'
         ],
         zip_safe=False,
     )

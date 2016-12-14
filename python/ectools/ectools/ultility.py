@@ -1,8 +1,9 @@
 import csv
 import random
-from internal.objects import Configuration
-from os.path import dirname, join
 from datetime import datetime, timedelta
+from os.path import dirname, join
+
+from internal.objects import Configuration
 
 
 def get_data_dir():
@@ -40,12 +41,12 @@ def get_item_has_tag(items, tag):
     return found
 
 
-def get_score(min=70, max=100):
-    """Return a random score in range between min and max."""
-    return random.choice(range(min, max + 1))
+def get_score(min_score=70, max_score=100):
+    """Return a random score in range between min_score and max_score."""
+    return random.choice(range(min_score, max_score + 1))
 
 
-def random_date(start, end, format=None):
+def random_date(start, end, fmt=None):
     """
     If no format specified will treat start and end as datetime object.
 
@@ -58,8 +59,8 @@ def random_date(start, end, format=None):
     """
 
     if format:
-        start = datetime.strptime(start, format)
-        end = datetime.strptime(end, format)
+        start = datetime.strptime(start, fmt)
+        end = datetime.strptime(end, fmt)
 
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds

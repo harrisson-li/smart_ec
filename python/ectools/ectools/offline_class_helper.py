@@ -1,10 +1,10 @@
 import re
 from datetime import datetime, timedelta
 
-from database_helper import *
-from ultility import get_score, random_date
 from config import get_logger
-from service_helper import is_platform_20_student
+from database_helper import *
+from student_settings_helper import is_v2_student
+from ultility import get_score, random_date
 
 
 def achieve_minimum_class_taken(student_id, **kwargs):
@@ -18,7 +18,7 @@ def achieve_minimum_class_taken(student_id, **kwargs):
     if not kwargs:
         kwargs = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
 
-    if is_platform_20_student(student_id):
+    if is_v2_student(student_id):
         achieve_minimum_class_taken_v2(student_id, **kwargs)
     else:
         achieve_minimum_class_taken_v1(student_id, **kwargs)
