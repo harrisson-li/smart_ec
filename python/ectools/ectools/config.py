@@ -4,7 +4,7 @@ from internal.objects import *
 import logging
 import sys
 from os.path import dirname, join, abspath
-from internal.data_helper import *
+from internal.data_helper import get_partner, get_environment, get_database
 
 config = Configuration()
 
@@ -28,16 +28,6 @@ def set_partner(partner):
     _setup()
 
 
-def _setup():
-    set_logger()
-    config.base_dir = dirname(abspath(__file__))
-    config.data_dir = join(config.base_dir, config.data_dir)
-    config.database = get_database(config.env, config.domain)
-    env = get_environment(config.env, config.domain)
-    config.etown_root = env['Etown']
-    config.oboe_root = env['OBOE']
-
-
 def set_logger():
     logger = logging.getLogger(config.name)
     if not logger.handlers:
@@ -51,6 +41,16 @@ def set_logger():
 
 def get_logger():
     return logging.getLogger(config.name)
+
+
+def _setup():
+    set_logger()
+    config.base_dir = dirname(abspath(__file__))
+    config.data_dir = join(config.base_dir, config.data_dir)
+    config.database = get_database(config.env, config.domain)
+    env = get_environment(config.env, config.domain)
+    config.etown_root = env['Etown']
+    config.oboe_root = env['Oboe']
 
 
 setup()

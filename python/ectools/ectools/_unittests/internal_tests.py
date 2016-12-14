@@ -1,7 +1,5 @@
 from internal.data_helper import *
-from config import get_logger
-
-logger = get_logger()
+import logging
 
 
 def test_read_data_csv():
@@ -33,9 +31,19 @@ def test_get_product():
     result = get_all_partners()
     assert len(result) > 0
     assert get_product_by_id(63)['PackageName'] == 'Smart 15 - School'
+    assert get_products_by_partner() is not None
+    assert get_products_has_tag('Major') is not None
+    assert get_any_product() is not None
+    assert get_any_home_product() is not None
+    assert get_any_school_product() is not None
+    assert get_any_e10_product() is not None
 
 
 def test_get_school():
     result = get_all_schools()
     assert len(result) > 0
     assert get_school_by_name('HK_YLC')['DivisionCode'] == 'HKYLC'
+    assert get_schools_by_partner() is not None
+    assert get_any_school() is not None
+    assert get_schools_has_tag('TestCenter') is not None
+    assert get_any_v2_school() is not None

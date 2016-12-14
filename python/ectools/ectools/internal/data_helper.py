@@ -1,7 +1,4 @@
-import csv
-import os
-
-from objects import Cache
+from internal.objects import Cache
 from ultility import *
 
 
@@ -58,6 +55,67 @@ def get_product_by_id(id):
     return found[0]
 
 
+def get_products_has_tag(tag):
+    return get_item_has_tag(get_all_products(), tag)
+
+
+def get_products_by_partner(partner=None, is_e10=False):
+    from config import config
+    if partner is None:
+        partner = config.partner
+    found = [x for x in get_all_products() if
+             x['Partner'].lower() == partner.lower()
+             and has_tag(x['Tags'], 'E10') == is_e10]
+    return found
+
+
+def get_any_product(by_partner=None, is_e10=False, is_major=True):
+    found = get_products_by_partner(by_partner, is_e10)
+
+    if is_major:
+        found = get_item_has_tag(found, 'major')
+
+    return get_random_item(found)
+
+
+def get_any_e10_product(by_partner=None):
+    return get_any_product(by_partner, is_e10=True, is_major=False)
+
+
+def get_any_home_product(by_partner=None, is_major=True):
+    found = [x for x in get_products_by_partner(by_partner) if x['ProductType'] == 'Home']
+
+    if is_major:
+        return get_item_has_tag(found, 'major')[0]
+    else:
+        return get_random_item(found)
+
+
+def get_any_school_product(by_partner=None, is_major=True):
+    found = [x for x in get_products_by_partner(by_partner) if x['ProductType'] == 'School']
+
+    if is_major:
+        return get_item_has_tag(found, 'major')[0]
+    else:
+        return get_random_item(found)
+
+
+def get_default_activation_data(product):
+    from config import config
+    return {'mainRedemptionQty': 3,
+            'freeRedemptionQty': 3,
+            'startLevel': '0A',
+            'levelQty': 16,
+            'securityverified': 'on',
+            'includesenroll': 'on',
+            'productId': product['Id'],
+            'mainRedemptionCode': product['MainRedCode'],
+            'freeRedemptionCode': product['FreeRedCode'],
+            'ctr': config.country_code,
+            'partner': config.partner.lower()
+            }
+
+
 def get_all_schools():
     if not hasattr(Cache, 'schools'):
         Cache.schools = read_csv_as_dict('schools')
@@ -68,3 +126,50 @@ def get_school_by_name(name):
     found = [x for x in get_all_schools() if x['Name'] == name]
     assert len(found), "No such school: {}!".format(name)
     return found[0]
+
+
+def get_schools_has_tag(tag):
+    return get_item_has_tag(get_all_schools(), tag)
+
+
+def get_test_centers():
+    return get_schools_has_tag('TestCenter')
+
+
+def get_all_v2_schools():
+    if not hasattr(Cache, 'school_v2'):
+        Cache.school_v2 = get_schools_has_tag('PC2.0')
+    return Cache.school_v2
+
+
+def get_schools_by_partner(partner=None):
+    from config import config
+    if partner is None:
+        partner = config.partner
+    found = [x for x in get_all_schools() if x['Partner'] == partner.lower()]
+    return found
+
+
+def get_any_school(by_partner=None):
+    found = get_schools_by_partner(by_partner)
+    found = [x for x in found if not is_v2_school(x['Name'])]
+    return get_random_item(found)
+
+
+def is_v2_school(school_name):
+    found = [x for x in get_all_v2_schools() if x['Name'] == school_name]
+    return len(found) != 0
+
+
+def get_any_v2_school(partner=None):
+    from config import config
+    if partner is None:
+        partner = config.partner
+    found = [x for x in get_all_v2_schools() if x['Partner'] == partner.lower()]
+    return get_random_item(found)
+
+
+def get_all_levels():
+    level_list = ['0A', '0B']
+    level_list.extend(range(1, 15))
+    return level_list

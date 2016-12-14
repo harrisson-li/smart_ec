@@ -1,12 +1,16 @@
 import csv
-import os
 import random
+from internal.objects import Configuration
+from os.path import dirname, join
 
-from config import config
+
+def get_data_dir():
+    root = dirname(__file__)
+    return join(root, Configuration.data_dir)
 
 
 def get_csv(csv_name):
-    return os.path.join(config.data_dir, csv_name + '.csv')
+    return join(get_data_dir(), csv_name + '.csv')
 
 
 def read_csv_as_dict(csv_name):
@@ -24,10 +28,10 @@ def has_tag(tags, tag):
     return tag.lower() in tag_list
 
 
-def get_element_has_tag(elements, tag):
+def get_item_has_tag(elements, tag):
     found = [x for x in elements if has_tag(x['Tags'], tag)]
     if len(found) == 0:
-        raise ValueError('Cannot find any element has tag: {}'.format(tag))
+        raise ValueError('Cannot find any item has tag: {}'.format(tag))
     return found
 
 
