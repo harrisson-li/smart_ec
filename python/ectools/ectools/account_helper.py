@@ -186,3 +186,37 @@ def activate_home_student_with_random_level(product_id=None,
         product_id = get_any_home_product()['id']
 
     return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+
+
+def convert_student_to_object(student_dict,
+                              student_object_type,
+                              product_object_type=None,
+                              school_object_type=None):
+    """
+    Method to convert student dict into student object.
+    :param student_dict: Usually get from after activating a test account.
+    :param student_object_type: The class name of student object, must import first.
+    :param product_object_type: The class name of product object, will not convert if none.
+    :param school_object_type: The class name of school object, will not convert if none.
+    :return: A student object in 'student_object_type'
+    """
+    assert isinstance(student_dict, dict), "student_dict must be a dict!"
+    student_object = student_object_type()
+
+    for k, v in student_dict.items():
+        if k == 'product' and product_object_type:
+            product = product_object_type()
+            for pk, pv in v.items():
+                setattr(product, pk, pv)
+            setattr(student_object, 'product', product)
+
+        elif k == 'school' and school_object_type:
+            school = school_object_type()
+            for sk, sv in v.items():
+                setattr(school, sk, sv)
+            setattr(student_object, 'school', school)
+
+        else:
+            setattr(student_object, k, v)
+
+    return student_object
