@@ -2,6 +2,7 @@ import csv
 import random
 from internal.objects import Configuration
 from os.path import dirname, join
+from datetime import datetime, timedelta
 
 
 def get_data_dir():
@@ -40,4 +41,26 @@ def get_item_has_tag(items, tag):
 
 
 def get_score(min=70, max=100):
+    """Return a random score in range between min and max."""
     return random.choice(range(min, max + 1))
+
+
+def random_date(start, end, format=None):
+    """
+    If no format specified will treat start and end as datetime object.
+
+    Example:
+        random_date('2010-1-1', '2012-1-1', '%Y-%m-%d')
+
+        s = datetime.now() + timedelta(days=-29)
+        e = datetime.now() + timedelta(days=-1)
+        random_date(s, e)
+    """
+
+    if format:
+        start = datetime.strptime(start, format)
+        end = datetime.strptime(end, format)
+
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    return start + timedelta(seconds=random.randrange(int_delta))

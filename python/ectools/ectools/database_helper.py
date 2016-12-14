@@ -1,4 +1,4 @@
-from config import config
+from config import config, get_logger
 from internal.objects import *
 
 try:
@@ -13,16 +13,16 @@ def set_connection_string(value=None):
         value = value.format(config.database['server'],
                              config.database['user'],
                              config.database['password'])
-        value = "DRIVER={SQL Server};" + value
-
-    Cache.connection_string = value
+        Cache.connection_string = "DRIVER={SQL Server};" + value
+    else:
+        Cache.connection_string = value
 
 
 def get_connection_string():
     if not hasattr(Cache, 'connection_string'):
         set_connection_string()
-    else:
-        return Cache.connection_string
+
+    return Cache.connection_string
 
 
 def _connect():
@@ -33,6 +33,9 @@ def _connect():
 
 
 def _execute(sql, params=None):
+    if config.env == 'Live':
+        get_logger().warn('Execute query in live: \n{}'.format(sql))
+
     if params:
         get_cursor().execute(sql, params)
     else:
