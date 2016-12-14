@@ -1,5 +1,4 @@
-import config
+import os
+import sys
 
-setup = config.setup
-set_partner = config.set_partner
-set_environment = config.set_environment
+sys.path.insert(0, os.path.abspath(os.path.dirname(__name__)))

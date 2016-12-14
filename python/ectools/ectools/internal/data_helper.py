@@ -1,5 +1,5 @@
-from internal.objects import Cache
-from utility import *
+from ectools.utility import *
+from .objects import Cache
 
 
 def _filter(item, name, domain):

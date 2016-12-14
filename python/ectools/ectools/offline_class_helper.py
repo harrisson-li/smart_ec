@@ -1,9 +1,9 @@
 import re
 from datetime import datetime, timedelta
 
-from database_helper import *
-from student_settings_helper import is_v2_student
-from utility import get_score, random_date
+from ectools.database_helper import *
+from ectools.student_settings_helper import is_v2_student
+from ectools.utility import get_score, random_date
 
 
 def achieve_minimum_class_taken(student_id, **kwargs):

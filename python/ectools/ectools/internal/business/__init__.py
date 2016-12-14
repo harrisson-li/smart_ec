@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from internal.objects import *
+from ..objects import *
 
 instance = Container()
 

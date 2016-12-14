@@ -1,5 +1,6 @@
-from config import setup, set_environment, set_partner, config
 from assertpy import assert_that
+
+from ectools.config import setup, set_environment, set_partner, config
 
 
 def test_setup():

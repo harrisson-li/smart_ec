@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 import requests
 
-from config import config
+from ectools.config import config
 
 
 def is_v2_student(student_id):

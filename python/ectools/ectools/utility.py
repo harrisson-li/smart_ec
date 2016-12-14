@@ -3,7 +3,7 @@ import random
 from datetime import datetime, timedelta
 from os.path import dirname, join
 
-from internal.objects import Configuration
+from .internal.objects import Configuration
 
 
 def get_data_dir():

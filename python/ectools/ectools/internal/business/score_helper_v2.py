@@ -1,13 +1,13 @@
 from assertpy import assert_that
 
-import internal.business.score_helper_v1 as s15_submit_tool
-from config import config, get_logger
-from infrastructure import wait_for
-from internal.business import get_browser
-from internal.objects import *
-from internal.pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
-from token_helper import get_token
-from utility import get_score
+import score_helper_v1 as s15_submit_tool
+from ectools.config import config, get_logger
+from ectools.infrastructure import wait_for
+from ectools.token_helper import get_token
+from ectools.utility import get_score
+from ..business import get_browser
+from ..objects import *
+from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
 
 """
 Score submit tools for S15 Platform 2.0 students.

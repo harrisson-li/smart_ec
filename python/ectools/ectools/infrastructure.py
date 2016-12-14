@@ -2,7 +2,7 @@ import inspect
 import time
 from functools import wraps
 
-from config import get_logger
+from ectools.config import get_logger
 
 TIMEOUT_SECONDS = 60
 POLL_TIME = 1

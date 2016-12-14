@@ -1,6 +1,6 @@
-from account_helper import *
-from config import get_logger, set_environment
-from internal.objects import *
+from ectools.account_helper import *
+from ectools.config import get_logger, set_environment
+from ectools.internal.objects import *
 
 
 def test_create_account():

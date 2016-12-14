@@ -2,8 +2,8 @@ import re
 
 import requests
 
-from internal.data_helper import *
-from config import get_logger, config
+from ectools.config import get_logger, config
+from .internal.data_helper import *
 
 
 def create_account_without_activation(is_e10=False):

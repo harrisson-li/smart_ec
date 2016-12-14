@@ -1,10 +1,11 @@
 """Where to place global settings"""
 
-from internal.objects import *
 import logging
 import sys
 from os.path import dirname, join, abspath
-from internal.data_helper import get_partner, get_environment, get_database
+
+from .internal.data_helper import get_partner, get_environment, get_database
+from .internal.objects import *
 
 config = Configuration()
 

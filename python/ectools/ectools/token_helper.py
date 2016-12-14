@@ -1,6 +1,8 @@
 import re
+
 import requests
-from config import config
+
+from ectools.config import config
 
 token_page_url = '{}/services/oboe2/Areas/ServiceTest/MemberSiteSetting.aspx'
 

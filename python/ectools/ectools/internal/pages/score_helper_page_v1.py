@@ -1,5 +1,5 @@
-from config import config
-from internal.pages import PageBase
+from ectools.config import config
+from . import PageBase
 
 
 class SubmitScoreHelperS15Page(PageBase):

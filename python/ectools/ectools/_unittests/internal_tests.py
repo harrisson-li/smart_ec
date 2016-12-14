@@ -1,4 +1,4 @@
-from internal.data_helper import *
+from ectools.internal.data_helper import *
 
 
 def test_read_data_csv():

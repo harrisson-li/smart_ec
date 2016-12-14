@@ -1,5 +1,5 @@
-from config import config, get_logger
-from internal.objects import *
+from ectools.config import config, get_logger
+from .internal.objects import *
 
 try:
     import pyodbc

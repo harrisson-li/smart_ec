@@ -1,5 +1,5 @@
-from config import get_logger, set_environment
-from student_settings_helper import get_member_site_settings, is_v2_student
+from ectools.config import get_logger, set_environment
+from ectools.student_settings_helper import get_member_site_settings, is_v2_student
 
 
 def test_get_member_site_settings():
