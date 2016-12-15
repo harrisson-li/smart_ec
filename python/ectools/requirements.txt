@@ -1,0 +1,10 @@
+#
+##### Python package requirements for ectools ####
+##### Reference: https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers
+#
+requests
+selenium
+pyodbc
+pypyodbc
+assertpy
+sphinx
