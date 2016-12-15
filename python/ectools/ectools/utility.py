@@ -1,15 +1,12 @@
 import csv
+import inspect
 import random
+import time
 from datetime import datetime, timedelta
+from functools import wraps
 from os.path import dirname, join
 
 from .internal.objects import Configuration
-
-import inspect
-import time
-from functools import wraps
-
-from ectools.config import get_logger
 
 
 def get_data_dir():
@@ -76,6 +73,8 @@ def random_date(start, end, fmt=None):
 def detail_on_failure(func):
     """Decorator to log function and arguments detail when on failure."""
 
+    from ectools.config import get_logger
+
     @wraps(wrapped=func)
     def wrapper(*args, **kwargs):
         try:
@@ -129,6 +128,8 @@ def wait_for(method, message='', timeout=60, poll_time=0.5):
 
 def retry_for_error(error, retry_times=3, poll_time=0.5):
     """Decorator to retry for specified error."""
+
+    from ectools.config import get_logger
 
     def wrapper_(func):
         @wraps(wrapped=func)
