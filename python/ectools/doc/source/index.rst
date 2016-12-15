@@ -31,9 +31,13 @@ The first step you should do is settiing up ectools, you should specify which en
   # setup partner only
   set_partner('Mini')
  
-By default, it is pointing to **UAT** and **Cool** if you didn't specify anything. Please note, the ``env`` and ``partner`` will be cached in runtime once being set, you can change them by call above method multiple times. BTW, the setting value is case-insenstive, so 'uat', 'UAT' and 'Uat' are all acceptable.
+By default, it is pointing to **UAT** and **Cool** if you didn't specify anything. Please note, the ``env`` and ``partner`` will be cached in runtime once being set, you can change them by call above method multiple times. 
 
-The next step is importing a helper that you want, and call the methods it provided, for example::
+.. note::
+
+  The setting value is case-insenstive, so 'uat', 'UAT' and 'Uat' are all acceptable, same as 'mini' and 'MINI'.
+
+The next step is importing a helper that you want, and call the methods it provides, for example::
 
   from ectools.account_helper import activate_account
   
