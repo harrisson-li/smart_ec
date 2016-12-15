@@ -1,6 +1,3 @@
-Module Content
-==============
-
 ectools.config module
 ---------------------
 
