@@ -1,14 +1,14 @@
-import os
-import sys
-from os.path import dirname, join, exists, abspath
-import shutil
-import glob
-import re
 import fileinput
+import glob
+import os
+import re
+import shutil
+import sys
+from os.path import dirname, join, exists
 
 project_dir = dirname(__file__)
 output_dir = join(project_dir, 'output')
-package_dir = join(project_dir, 'dist')
+package_dir = 'dist'
 test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'ectools/_tests')
 pypi_dir = r"\\cns-etnexus\pypi\ectools"
