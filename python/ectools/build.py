@@ -46,7 +46,7 @@ def prepare():
 
 
 def unit_tests():
-    test_modules = [x for x in os.listdir(unit_test_dir) if x == '__init__.py']
+    test_modules = [x for x in os.listdir(unit_test_dir) if x != '__init__.py']
 
     for test_module in test_modules:
         full_path = join(unit_test_dir, test_module)
