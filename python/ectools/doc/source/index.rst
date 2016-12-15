@@ -25,10 +25,10 @@ The first step you should do is settiing up ectools, you should specify which en
   # setup for both
   setup(env='UAT', partner='Cool')
   
-  # set environment only
+  # setup environment only
   set_environment('QA')
   
-  # set_partner only
+  # setup partner only
   set_partner('Mini')
  
 By default, it is pointing to **UAT** and **Cool** if you didn't specify anything. Please note, the ``env`` and ``partner`` will be cached in runtime once being set, you can change them by call above method multiple times. BTW, the setting value is case-insenstive, so 'uat', 'UAT' and 'Uat' are all acceptable.
@@ -42,10 +42,10 @@ The next step is importing a helper that you want, and call the methods it provi
   print(account['member_id']) # get its info
   
   # activate a test account with more paramters
-  account = activate_account(is_v2=True, startLevel='0B')
+  account = activate_account(product_id=63, school_name='SH_BBB', startLevel=12)
   
   for k, v in account.items():
-    print("{}=>{}".format(k, v)) # get detail 
+    print("{}=>{}".format(k, v)) # get all detail 
 
 If you have your own defined class to present a `Student`, you can convert the above `account` to your object like this::
 
@@ -57,6 +57,7 @@ If you have your own defined class to present a `Student`, you can convert the a
   
   # now it is good to use your object attributes
   print(student.member_id)
+  print(student.school.name)
 
 To explore more in **ectools**, please check each module from content table by yourself.
   
@@ -69,4 +70,4 @@ Module Content
 
 Looking for Help?
 -----------------
-If you have any issue or feedback on it, please contact EFEC QA team by email, or find Toby Qin on Skype.
+If you have any issue or feedback, please contact EFEC QA Team<ec_qa@ef.com>, or find Toby Qin on Skype.
