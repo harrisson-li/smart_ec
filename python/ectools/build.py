@@ -63,6 +63,7 @@ def make_package():
 
 
 def upload_package():
+    os.chdir(project_dir)
     for package in os.listdir(package_dir):
         src = join(package_dir, package)
         dst = join(pypi_dir, package)
