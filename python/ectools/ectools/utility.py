@@ -5,6 +5,12 @@ from os.path import dirname, join
 
 from .internal.objects import Configuration
 
+import inspect
+import time
+from functools import wraps
+
+from ectools.config import get_logger
+
 
 def get_data_dir():
     root = dirname(__file__)
@@ -65,3 +71,78 @@ def random_date(start, end, fmt=None):
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
     return start + timedelta(seconds=random.randrange(int_delta))
+
+
+def detail_on_failure(func):
+    """Decorator to log function and arguments detail when on failure."""
+
+    @wraps(wrapped=func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            argspec = inspect.getargspec(func)
+            args_map = {}
+            if argspec.defaults is not None:
+                args_map.update(dict(zip(reversed(argspec.args), reversed(argspec.defaults))))
+
+            args_map.update(dict(zip(argspec.args, args)))
+
+            if argspec.varargs is not None:
+                args_map[argspec.varargs] = args[len(argspec.args):]
+
+            if argspec.keywords is not None:
+                args_map[argspec.keywords] = kwargs
+
+            def dump():
+                detail = ""
+                for key, value in args_map.items():
+                    if key != 'self':  # ignore 'self' as it is not useful
+                        detail += "{}={}, ".format(key, value)
+                return detail[:-2:]
+
+            message = "Failure when calling {}({})".format(func.__name__, dump())
+            get_logger().warn(message)
+            raise
+
+    return wrapper
+
+
+def wait_for(method, message='', timeout=60, poll_time=0.5):
+    """Function to wait for a method with timeout."""
+    stack_trace = None
+    end_time = time.time() + timeout
+    while True:
+        try:
+            value = method()
+            if value:
+                return value
+        except BaseException as exc:
+            stack_trace = getattr(exc, 'stacktrace', None)
+        time.sleep(poll_time)
+        if time.time() > end_time:
+            break
+    message = "{}\nTimeout to wait for {} in {} seconds.\n{}".format(
+        message, method.__name__, timeout, stack_trace)
+    raise Exception(message)
+
+
+def retry_for_error(error, retry_times=3, poll_time=0.5):
+    """Decorator to retry for specified error."""
+
+    def wrapper_(func):
+        @wraps(wrapped=func)
+        def wrapper(*args, **kwargs):
+            retry = 1
+            while retry <= retry_times:
+                try:
+                    return func(*args, **kwargs)
+                except error:
+                    msg = "retry for {} for {} time...".format(error.__name__, retry)
+                    get_logger().info(msg)
+                    retry += 1
+                    time.sleep(poll_time)
+
+        return wrapper
+
+    return wrapper_

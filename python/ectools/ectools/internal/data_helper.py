@@ -61,7 +61,7 @@ def get_products_has_tag(tag):
 
 
 def get_products_by_partner(partner=None, is_e10=False):
-    from config import config
+    from ectools.config import config
     if partner is None:
         partner = config.partner
     found = [x for x in get_all_products() if
@@ -102,7 +102,7 @@ def get_any_school_product(by_partner=None, is_major=True):
 
 
 def get_default_activation_data(product):
-    from config import config
+    from ectools.config import config
     return {'mainRedemptionQty': 3,
             'freeRedemptionQty': 3,
             'startLevel': '0A',
@@ -142,7 +142,7 @@ def get_all_v2_schools():
 
 
 def get_schools_by_partner(partner=None):
-    from config import config
+    from ectools.config import config
     if partner is None:
         partner = config.partner
     found = [x for x in get_all_schools() if x['partner'].lower() == partner.lower()]
@@ -161,7 +161,7 @@ def is_v2_school(school_name):
 
 
 def get_any_v2_school(partner=None):
-    from config import config
+    from ectools.config import config
     if partner is None:
         partner = config.partner
     found = [x for x in get_all_v2_schools() if x['partner'].lower() == partner.lower()]

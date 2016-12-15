@@ -1,10 +1,10 @@
 from assertpy import assert_that
 
-import score_helper_v1 as s15_submit_tool
+import ectools.internal.business.score_helper_v1 as s15_submit_tool
 from ectools.config import config, get_logger
-from ectools.infrastructure import wait_for
 from ectools.token_helper import get_token
 from ectools.utility import get_score
+from ectools.utility import wait_for
 from ..business import get_browser
 from ..objects import *
 from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage

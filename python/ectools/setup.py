@@ -16,7 +16,8 @@ def main():
             'requests',
             'selenium',
             'pyodbc',
-            'pypyodbc'
+            'pypyodbc',
+            'assertpy'
         ],
         zip_safe=False,
     )

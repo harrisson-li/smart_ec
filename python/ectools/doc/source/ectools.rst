@@ -26,13 +26,6 @@ ectools.database_helper module
     :undoc-members:
     :show-inheritance:
 
-ectools.infrastructure module
------------------------------
-
-.. automodule:: ectools.infrastructure
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 ectools.offline_class_helper module
 -----------------------------------
