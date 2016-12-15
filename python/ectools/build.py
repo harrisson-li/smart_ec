@@ -4,9 +4,9 @@ import os
 import re
 import shutil
 import sys
-from os.path import dirname, join, exists
+from os.path import dirname, join, exists, abspath
 
-project_dir = dirname(__file__)
+project_dir = abspath(dirname(__file__))
 output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
