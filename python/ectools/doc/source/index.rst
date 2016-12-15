@@ -1,6 +1,6 @@
 Welcome to ectools's documentation!
 ===================================
-**ectools** is a standalone python package contains helping modules for EFEC testing.
+**ectools** is a standalone python package contains helper modules for EFEC testing.
 
 Overview
 --------
@@ -12,9 +12,9 @@ You may already have ectools installed -- you can check by doing::
 
   python -c 'import ectools'
 
-If that fails grab the latest version of and install it with::
+To install or update to latest version, please run below command::
 
-  pip install ectools --extra-index-url http://jenkins.englishtown.com:8081/pypi --trusted-host jenkins.englishtown.com
+  pip install ectools -U --extra-index-url http://jenkins.englishtown.com:8081/pypi --trusted-host jenkins.englishtown.com
 
 Get Started
 -----------
@@ -69,4 +69,4 @@ Module Content
 
 Looking for Help?
 -----------------
-If you have any issue or feedback on it, please contact EFEC QA team by email.
+If you have any issue or feedback on it, please contact EFEC QA team by email, or find Toby Qin on Skype.
