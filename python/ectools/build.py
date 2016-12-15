@@ -2,12 +2,17 @@ import os
 import sys
 from os.path import dirname, join, exists, abspath
 import shutil
+import glob
+import re
+import fileinput
 
 project_dir = dirname(__file__)
 output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
-unit_test_dir = join(project_dir, 'ectools/_unittests')
+unit_test_dir = join(project_dir, 'ectools/_tests')
+pypi_dir = r"\\cns-etnexus\pypi\ectools"
+setup_py = join(project_dir, 'setup.py')
 
 
 def prepare():
@@ -21,6 +26,7 @@ def prepare():
 
 def unit_tests():
     test_modules = [m for m in os.listdir(unit_test_dir) if m == 'config_tests.py']
+
     for test_module in test_modules:
         full_path = join(unit_test_dir, test_module)
         result_name = full_path.replace(unit_test_dir, "").replace('\\', '_')
@@ -30,12 +36,41 @@ def unit_tests():
         os.system(cmd)
 
 
+def update_version(new_version):
+    def update(match):
+        if int(match.group(2)) == 0 and new_version != 1:  # major version reset, no need to update
+            return ''.join(match.groups())
+
+        else:
+            return '{}{}"'.format(match.group(1), new_version)
+
+    for line in fileinput.input(setup_py, inplace=True):
+        if 'version=' in line:
+            line = re.sub(r'(.*\.)(\d+)(")', update, line)
+
+        sys.stdout.write(line)
+
+
 def make_package():
-    setup_py = join(project_dir, 'setup.py')
+    assert exists(pypi_dir), 'Cannot access to pypi server: {}'.format(pypi_dir)
+
+    if len(os.listdir(pypi_dir)):
+        latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
+        latest_version = re.search(r'-\d+\.\d+\.(\d+)\.tar\.gz', latest_build).group(1)
+        update_version(int(latest_version) + 1)
+
     os.system('python "{}" sdist'.format(setup_py))
+
+
+def upload_package():
+    for package in os.listdir(package_dir):
+        src = join(package_dir, package)
+        dst = join(pypi_dir, package)
+        shutil.copy(src, dst)
 
 
 if __name__ == '__main__':
     prepare()
     unit_tests()
     make_package()
+    upload_package()
