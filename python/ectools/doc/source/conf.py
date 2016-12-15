@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'ectools'
-copyright = u'2016, Author'
-author = u'Author'
+copyright = u'2016, Toby Qin'
+author = u'Toby Qin'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -85,7 +85,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

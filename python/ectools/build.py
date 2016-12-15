@@ -1,3 +1,21 @@
+"""
+Use build.py to create ectools automatically.
+
+Supported options:
+    -h  show help info.
+    -t  run unit tests.
+    -p  generate and upload package.
+    -d  generate and upload document.
+
+Examples:
+    python build.py
+        - run all steps, run tests, generate and upload package, document.
+    python build.py -t
+        - run unit tests only.
+    python build.py -t -p
+        - run unit tests and generate + upload package.
+"""
+
 import fileinput
 import glob
 import os
@@ -13,6 +31,9 @@ test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'ectools/_tests')
 pypi_dir = r"\\cns-etnexus\pypi\ectools"
 setup_py = join(project_dir, 'setup.py')
+doc_dir = join(project_dir, 'doc')
+doc_cmd = join(doc_dir, 'make.bat')
+doc_server = join(pypi_dir, 'doc')
 
 
 def prepare():
@@ -25,7 +46,7 @@ def prepare():
 
 
 def unit_tests():
-    test_modules = [m for m in os.listdir(unit_test_dir) if m == 'config_tests.py']
+    test_modules = [x for x in os.listdir(unit_test_dir) if x == '__init__.py']
 
     for test_module in test_modules:
         full_path = join(unit_test_dir, test_module)
@@ -70,8 +91,37 @@ def upload_package():
         shutil.copy(src, dst)
 
 
+def make_doc():
+    cmd = "{} html".format(doc_cmd)
+    os.system(cmd)
+
+
+def upload_doc():
+    shutil.rmtree(doc_server)
+    src = join(doc_dir, 'build', 'html')
+    shutil.copytree(src, doc_server)
+
+
 if __name__ == '__main__':
+    args = sys.argv
     prepare()
-    unit_tests()
-    make_package()
-    upload_package()
+
+    if len(args) == 1:
+        unit_tests()
+        make_package()
+        upload_package()
+
+    else:
+        if '-t' in args:
+            unit_tests()
+
+        if '-p' in args:
+            make_package()
+            upload_package()
+
+        if '-d' in args:
+            make_doc()
+            upload_doc()
+
+        if '-h' in args:
+            print(__doc__)
