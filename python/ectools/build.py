@@ -107,7 +107,7 @@ def make_doc():
 
 def upload_doc():
     print('Upload document')
-    shutil.rmtree(doc_server)
+    shutil.rmtree(doc_server, ignore_errors=True)
     src = join(doc_dir, 'build', 'html')
     shutil.copytree(src, doc_server)
 
