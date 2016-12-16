@@ -48,7 +48,7 @@ def random_date(start, end, fmt=None):
     """
     If no format specified will treat start and end as datetime object.
 
-    Example:
+    Example::
         random_date('2010-1-1', '2012-1-1', '%Y-%m-%d')
 
         s = datetime.now() + timedelta(days=-29)

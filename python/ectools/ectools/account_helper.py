@@ -191,7 +191,7 @@ def convert_account_to_object(account_dict,
                               product_object_type=None,
                               school_object_type=None):
     """
-    Method to convert account dict into self-defined object.
+    Convert account dict into self-defined object.
 
     :param account_dict: Usually get from after activating a test account.
     :param account_object_type: The class type of student object, must import first.
