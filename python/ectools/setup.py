@@ -6,7 +6,7 @@ def main():
         name="ectools",
         description="Toolbox from EFEC QA team.",
         long_description="library to help with EFEC testing, such as create test account, submit score, get tokens.",
-        version="0.1.18",
+        version="0.1.22",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
         url="https://confluence.englishtown.com/display/SMart/ectools+-+Introduction",

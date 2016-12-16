@@ -11,7 +11,7 @@ def _is_submit_for_v2():
 
 
 def load_student(student_id, reload_page=True):
-    Cache.submit_v2 = is_v2_student(student_id)
+    Cache.submit_for_v2 = is_v2_student(student_id)
     if _is_submit_for_v2():
         v2.load_student(student_id, reload_page)
     else:
