@@ -119,7 +119,9 @@ if __name__ == '__main__':
     if len(args) == 1:
         unit_tests()
         make_package()
+        make_doc()
         upload_package()
+        upload_doc()
 
     else:
         if '-t' in args:
