@@ -56,7 +56,7 @@ def random_date(start, end, fmt=None):
         random_date(s, e)
     """
 
-    if format:
+    if fmt:
         start = datetime.strptime(start, fmt)
         end = datetime.strptime(end, fmt)
 
