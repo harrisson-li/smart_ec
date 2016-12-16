@@ -103,7 +103,6 @@ def make_doc():
     print('Make document')
     os.chdir(doc_dir)
     cmd = '"{}" html'.format(doc_cmd)
-    print(cmd)
     os.system(cmd)
 
 
