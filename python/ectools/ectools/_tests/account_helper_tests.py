@@ -55,7 +55,7 @@ def test_convert_student_to_object():
     class School(Base):
         pass
 
-    student_obj = convert_student_to_object(student, student_object_type=Student, school_object_type=School)
+    student_obj = convert_account_to_object(student, account_object_type=Student, school_object_type=School)
     get_logger().info(student_obj)
     assert isinstance(student_obj, Student)
     assert isinstance(student_obj.product, dict)

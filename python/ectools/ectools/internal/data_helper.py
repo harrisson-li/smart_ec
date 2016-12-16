@@ -1,5 +1,19 @@
 from ectools.utility import *
 from .objects import Cache
+from os.path import dirname, join
+
+
+def get_data_dir():
+    root = dirname(dirname(__file__))
+    return join(root, Configuration.data_dir)
+
+
+def get_csv(csv_name):
+    return join(get_data_dir(), csv_name + '.csv')
+
+
+def read_csv(csv_name):
+    return read_csv_as_dict(get_csv(csv_name))
 
 
 def _filter(item, name, domain):
@@ -9,7 +23,7 @@ def _filter(item, name, domain):
 
 def get_all_environments():
     if not hasattr(Cache, 'environments'):
-        Cache.environments = read_csv_as_dict('environments')
+        Cache.environments = read_csv('environments')
     return Cache.environments
 
 
@@ -21,7 +35,7 @@ def get_environment(env_name, domain):
 
 def get_all_database():
     if not hasattr(Cache, 'databases'):
-        Cache.databases = read_csv_as_dict('database')
+        Cache.databases = read_csv('database')
     return Cache.databases
 
 
@@ -33,7 +47,7 @@ def get_database(env_name, domain):
 
 def get_all_partners():
     if not hasattr(Cache, 'partners'):
-        Cache.partners = read_csv_as_dict('partners')
+        Cache.partners = read_csv('partners')
     return Cache.partners
 
 
@@ -45,7 +59,7 @@ def get_partner(by_name):
 
 def get_all_products():
     if not hasattr(Cache, 'products'):
-        Cache.products = read_csv_as_dict('products')
+        Cache.products = read_csv('products')
     return Cache.products
 
 
@@ -119,7 +133,7 @@ def get_default_activation_data(product):
 
 def get_all_schools():
     if not hasattr(Cache, 'schools'):
-        Cache.schools = read_csv_as_dict('schools')
+        Cache.schools = read_csv('schools')
     return Cache.schools
 
 

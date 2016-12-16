@@ -1,25 +1,20 @@
 import csv
 import inspect
+import logging
 import random
 import time
 from datetime import datetime, timedelta
 from functools import wraps
-from os.path import dirname, join
 
-from .internal.objects import Configuration
+from selenium import webdriver
+from selenium.webdriver.remote.remote_connection import LOGGER
+from selenium.webdriver.remote.webdriver import WebDriver
 
-
-def get_data_dir():
-    root = dirname(__file__)
-    return join(root, Configuration.data_dir)
+from .internal.objects import Cache, Configuration
 
 
-def get_csv(csv_name):
-    return join(get_data_dir(), csv_name + '.csv')
-
-
-def read_csv_as_dict(csv_name):
-    with open(get_csv(csv_name)) as f:
+def read_csv_as_dict(csv_path):
+    with open(csv_path) as f:
         reader = csv.DictReader(f)
         return [row for row in reader]
 
@@ -147,3 +142,31 @@ def retry_for_error(error, retry_times=3, poll_time=0.5):
         return wrapper
 
     return wrapper_
+
+
+def close_browser(browser_id=None):
+    if not browser_id:
+        from ectools.config import config
+        browser_id = config.browser_id
+
+    if hasattr(Cache, browser_id):
+        getattr(Cache, browser_id).quit()
+        delattr(Cache, browser_id)
+
+
+def get_browser(browser_type=Configuration.browser_type, browser_id=None):
+    if not browser_id:
+        from ectools.config import config
+        browser_id = config.browser_id
+
+    if not hasattr(Cache, browser_id):
+        LOGGER.setLevel(logging.WARNING)
+        browser = getattr(webdriver, browser_type)()
+        setattr(Cache, browser_id, browser)
+    else:
+        browser = getattr(Cache, browser_id)
+
+    if isinstance(browser, WebDriver):
+        return browser
+    else:
+        raise EnvironmentError("Failed to get a browser!")

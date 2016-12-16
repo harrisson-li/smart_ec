@@ -24,4 +24,9 @@ class Configuration(Base):
     data_dir = 'data'
     database = None
     etown_root = ''
-    oboe_root = ''
+    oboe_root = '',
+    browser_id = 'internal_browser'
+    browser_type = 'Chrome'
+    default_timeout = 60
+    default_poll_time = 0.5
+    default_retry_times = 3

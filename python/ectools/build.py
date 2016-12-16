@@ -4,8 +4,9 @@ Use build.py to create ectools automatically.
 Supported options:
     -h  show help info.
     -t  run unit tests.
-    -p  generate and upload package.
-    -d  generate and upload document.
+    -p  generate package.
+    -d  generate document.
+    -u  upload package and document to server.
 
 Examples:
     python build.py
@@ -13,7 +14,7 @@ Examples:
     python build.py -t
         - run unit tests only.
     python build.py -t -p
-        - run unit tests and generate + upload package.
+        - run unit tests and generate package.
 """
 
 import fileinput
@@ -46,6 +47,7 @@ def prepare():
 
 
 def unit_tests():
+    print('Run unit tests')
     test_modules = [x for x in os.listdir(unit_test_dir) if x != '__init__.py']
 
     for test_module in test_modules:
@@ -73,17 +75,23 @@ def update_version(new_version):
 
 
 def make_package():
-    assert exists(pypi_dir), 'Cannot access to pypi server: {}'.format(pypi_dir)
+    print('Make package')
+    try:
+        assert exists(pypi_dir)
 
-    if len(os.listdir(pypi_dir)):
-        latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
-        latest_version = re.search(r'-\d+\.\d+\.(\d+)\.tar\.gz', latest_build).group(1)
-        update_version(int(latest_version) + 1)
+        if len(os.listdir(pypi_dir)):
+            latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
+            latest_version = re.search(r'-\d+\.\d+\.(\d+)\.tar\.gz', latest_build).group(1)
+            update_version(int(latest_version) + 1)
+
+    except AssertionError:
+        print('ERROR: Cannot access to pypi server: {}'.format(pypi_dir))
 
     os.system('python "{}" sdist'.format(setup_py))
 
 
 def upload_package():
+    print('Upload package')
     os.chdir(project_dir)
     for package in os.listdir(package_dir):
         src = join(package_dir, package)
@@ -92,11 +100,13 @@ def upload_package():
 
 
 def make_doc():
+    print('Make document')
     cmd = "{} html".format(doc_cmd)
     os.system(cmd)
 
 
 def upload_doc():
+    print('Upload document')
     shutil.rmtree(doc_server)
     src = join(doc_dir, 'build', 'html')
     shutil.copytree(src, doc_server)
@@ -117,10 +127,12 @@ if __name__ == '__main__':
 
         if '-p' in args:
             make_package()
-            upload_package()
 
         if '-d' in args:
             make_doc()
+
+        if '-u' in args:
+            upload_package()
             upload_doc()
 
         if '-h' in args:

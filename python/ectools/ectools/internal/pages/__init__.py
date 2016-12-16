@@ -10,8 +10,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ectools.config import get_logger
-from ectools.utility import detail_on_failure
-from ectools.utility import retry_for_error
+from ectools.utility import detail_on_failure,retry_for_error
 
 TIMEOUT_SECONDS = 60
 TIMEOUT_FOR_ELEMENT_WAITING = 120

@@ -39,29 +39,27 @@ def create_account_without_activation(is_e10=False):
         return student
 
     else:
-        raise SystemError('Cannot create new account: {}'.format(result.text))
+        raise EnvironmentError('Cannot create new account: {}'.format(result.text))
 
 
 def activate_account(product_id=None, school_name=None, is_v2=True, student=None, **kwargs):
     """
-    To activate a test account and return a student object
+    To activate a test account and return a dict with account info.
 
     :param product_id: If not specified will randomly get a major product (home/school) from current partner.
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
     :param student: Specify a student to activate. (student['member_id'] must be valid.).
 
-    :keyword: mainRedemptionQty = 3
-              freeRedemptionQty = 3
-              startLevel        = '0A'
-              levelQty          = '16'
-              securityverified  = True
-              includesenroll    = True
+    :keyword: - mainRedemptionQty = 3
+              - freeRedemptionQty = 3
+              - startLevel        = '0A'
+              - levelQty          = '16'
+              - securityverified  = True
+              - includesenroll    = True
 
 
-    :return: A student dict with all info.
-    :rtype: dict
-
+    :return: A dict with all account info.
     """
 
     def merge_activation_data(source_dict, **more):
@@ -188,22 +186,23 @@ def activate_home_student_with_random_level(product_id=None,
     return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
 
 
-def convert_student_to_object(student_dict,
-                              student_object_type,
+def convert_account_to_object(account_dict,
+                              account_object_type,
                               product_object_type=None,
                               school_object_type=None):
     """
-    Method to convert student dict into student object.
-    :param student_dict: Usually get from after activating a test account.
-    :param student_object_type: The class name of student object, must import first.
-    :param product_object_type: The class name of product object, will not convert if none.
-    :param school_object_type: The class name of school object, will not convert if none.
-    :return: A student object in 'student_object_type'
-    """
-    assert isinstance(student_dict, dict), "student_dict must be a dict!"
-    student_object = student_object_type()
+    Method to convert account dict into self-defined object.
 
-    for k, v in student_dict.items():
+    :param account_dict: Usually get from after activating a test account.
+    :param account_object_type: The class type of student object, must import first.
+    :param product_object_type: (Optional) The class type of product object, will not convert if none.
+    :param school_object_type: (Optional) The class type of school object, will not convert if none.
+    :return: An object in 'student_object_type'
+    """
+    assert isinstance(account_dict, dict), "account_dict must be a dict!"
+    student_object = account_object_type()
+
+    for k, v in account_dict.items():
         if k == 'product' and product_object_type:
             product = product_object_type()
             for pk, pv in v.items():
