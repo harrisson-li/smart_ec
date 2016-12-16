@@ -101,7 +101,7 @@ def upload_package():
 
 def make_doc():
     print('Make document')
-    cmd = 'cmd / c """{}"" html"'.format(doc_cmd)
+    cmd = 'cmd / c "{}" html'.format(doc_cmd)
     print(cmd)
     os.system(cmd)
 
