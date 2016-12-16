@@ -14,6 +14,21 @@ ectools.account_helper module
     :undoc-members:
     :show-inheritance:
 
+ectools.score_helper module
+---------------------------
+
+.. automodule:: ectools.score_helper
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ectools.token_helper module
+---------------------------
+
+.. automodule:: ectools.token_helper
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 ectools.database_helper module
 ------------------------------
@@ -32,26 +47,10 @@ ectools.offline_class_helper module
     :undoc-members:
     :show-inheritance:
 
-ectools.score_helper module
----------------------------
-
-.. automodule:: ectools.score_helper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 ectools.student_settings_helper module
 --------------------------------------
 
 .. automodule:: ectools.student_settings_helper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-ectools.token_helper module
----------------------------
-
-.. automodule:: ectools.token_helper
     :members:
     :undoc-members:
     :show-inheritance:

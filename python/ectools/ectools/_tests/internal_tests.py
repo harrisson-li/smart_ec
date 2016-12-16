@@ -1,10 +1,10 @@
 from ectools.internal.data_helper import *
 
 
-def test_read_data_csv():
+def test_read_csv():
     names = ['products', 'partners', 'schools', 'environments']
     for name in names:
-        rows = read_csv_as_dict(name)
+        rows = read_csv(name)
         assert len(rows) > 0
 
 
