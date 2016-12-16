@@ -1,6 +1,6 @@
 Welcome to ectools's documentation!
 ===================================
-**ectools** is a collection of helper modules for EFEC testing.
+**ectools** is a collection of helper modules for EFEC testing. It works fine with python 2.7.x and python 3.5.x.
 
 Overview
 --------
