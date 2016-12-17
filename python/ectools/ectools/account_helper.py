@@ -1,3 +1,24 @@
+"""
+This module provides methods to create or activate EFEC test accounts.
+Here is a quick example to play with this module::
+
+  from ectools.account_helper import *
+
+  account = activate_account(is_v2=True)  # will return a dict includes all details
+  for k, v in account.items():
+      print("account {0}: {1}".format(k,v))
+
+  # you can convert the account to your self-defined object type
+  from my.objects import Student, School, Product
+  student = convert_account_to_object(account, Student, Product, School)  # Product and School are optional
+  print(student.member_id)
+  print(student.school.name)
+
+For more info about using EFEC test account, please refer to confluence page or ping EC QA team.
+
+-----
+
+"""
 import re
 
 import requests
@@ -7,13 +28,6 @@ from .internal.data_helper import *
 
 
 def create_account_without_activation(is_e10=False):
-    """
-    To create a test account, but not activate it.
-
-    :param is_e10: Use E10 create account url.
-
-    """
-
     def get_link():
         url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
         url = url.format(config.etown_root, config.country_code, config.partner)
@@ -44,14 +58,15 @@ def create_account_without_activation(is_e10=False):
 
 def activate_account(product_id=None, school_name=None, is_v2=True, student=None, **kwargs):
     """
-    To activate a test account and return a dict with account info.
+    Activate a test account and return a dict object with account info.
 
     :param product_id: If not specified will randomly get a major product (home/school) from current partner.
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
-    :param student: Specify a student to activate. (student['member_id'] must be valid.).
+    :param student: Specify a student to activate, `student['member_id']` must be valid.
 
-    :keyword: - mainRedemptionQty = 3
+    :keyword: Can be one or more of below, please refer to account tool page for more detail.
+              - mainRedemptionQty = 3
               - freeRedemptionQty = 3
               - startLevel        = '0A'
               - levelQty          = '16'
@@ -191,10 +206,10 @@ def convert_account_to_object(account_dict,
                               product_object_type=None,
                               school_object_type=None):
     """
-    Convert account dict into self-defined object.
+    Convert account dict(activated from methods in this module) into a self-defined object.
 
-    :param account_dict: Usually get from after activating a test account.
-    :param account_object_type: The class type of student object, must import first.
+    :param account_dict: Usually get after activating a test account.
+    :param account_object_type: The class type of student object, must import it first.
     :param product_object_type: (Optional) The class type of product object, will not convert if none.
     :param school_object_type: (Optional) The class type of school object, will not convert if none.
     :return: An object in 'student_object_type'
