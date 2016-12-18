@@ -46,6 +46,10 @@ However, I would recommend you use `connect_database` as d decorator to make sur
       cursor = get_cursor()
       # do my work with cursor
 
+.. warning::
+
+  You cannot use this module to update database in **Staging** or **Live** environment.
+
 -----
 """
 from ectools.config import config, get_logger

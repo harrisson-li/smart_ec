@@ -16,7 +16,7 @@ Example to use this module::
   # for echk student they have to do 12 GL
   achieve_minimum_class_taken(student_id, online_gl=12)
 
-.. note::
+.. warning::
 
   This module will update or insert data in database, so it is not possible to use
   it in **Staging** or **Live** environment.
