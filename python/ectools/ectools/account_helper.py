@@ -66,6 +66,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     :param student: Specify a student to activate, `student['member_id']` must be valid.
 
     :keyword: Can be one or more of below, please refer to account tool page for more detail.
+
               - mainRedemptionQty = 3
               - freeRedemptionQty = 3
               - startLevel        = '0A'

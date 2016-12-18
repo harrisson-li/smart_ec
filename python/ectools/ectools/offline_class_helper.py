@@ -1,3 +1,28 @@
+"""
+This module will help achieve the minimum class taken to move on to next level. For now, it supports class taken for:
+  - f2f
+  - workshop
+  - apply
+  - life_club
+  - online_gl
+
+Example to use this module::
+
+  from ectools.offline_class_helper import achieve_minimum_class_taken
+
+  student_id = 123456
+  achieve_minimum_class_taken(student_id, f2f=3, workshop=3, apply_or_lc=1)
+
+  # for echk student they have to do 12 GL
+  achieve_minimum_class_taken(student_id, online_gl=12)
+
+.. note::
+
+  This module will update or insert data in database, so it is not possible to use
+  it in **Staging** or **Live** environment.
+
+-----
+"""
 import re
 from datetime import datetime, timedelta
 
@@ -9,8 +34,17 @@ from ectools.utility import get_score, random_date
 def achieve_minimum_class_taken(student_id, **kwargs):
     """
     Achieve minimum class taken to move on to next level.
-    :param student_id: student id.
-    :param kwargs: f2f, workshop, apply_event, life_club, online_gl, apply_or_lc
+
+    :param student_id: the student id.
+    :keyword: specify the class type to be taken, example `f2f=3`.
+
+             - f2f
+             - workshop
+             - apply_event
+             - life_club
+             - online_gl
+             - apply_or_lc
+
     """
     get_logger().info("Minimum classes taken before moving on to next level")
 

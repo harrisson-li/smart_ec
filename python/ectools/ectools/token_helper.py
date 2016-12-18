@@ -1,3 +1,12 @@
+"""
+This module will help you get the token string from below url::
+
+  http://{env}.englishtown.com/services/oboe2/Areas/ServiceTest/MemberSiteSetting.aspx
+
+The **token** is used for submit score helper only as I known.
+
+------
+"""
 import re
 
 import requests

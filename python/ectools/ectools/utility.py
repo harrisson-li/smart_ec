@@ -46,14 +46,16 @@ def get_score(min_score=70, max_score=100):
 
 def random_date(start, end, fmt=None):
     """
-    If no format specified will treat start and end as datetime object.
+    If no format specified will use start and end as datetime object.
 
     Example::
+
         random_date('2010-1-1', '2012-1-1', '%Y-%m-%d')
 
         s = datetime.now() + timedelta(days=-29)
         e = datetime.now() + timedelta(days=-1)
         random_date(s, e)
+
     """
 
     if fmt:

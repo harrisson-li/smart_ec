@@ -59,7 +59,6 @@ To get or set logging behavior, you could take the advantage of `get_logger()` m
 -----
 
 """
-
 import logging
 import sys
 from os.path import dirname, join, abspath
