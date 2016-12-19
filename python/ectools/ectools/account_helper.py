@@ -25,7 +25,7 @@ import requests
 
 from ectools.config import get_logger, config
 from .internal.data_helper import *
-from .internal.constants import HTTP_STATUS_OK
+from .internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 
 
 def create_account_without_activation(is_e10=False):
@@ -42,7 +42,7 @@ def create_account_without_activation(is_e10=False):
     link = get_link()
     result = requests.get(link)
 
-    assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
+    assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
 
     # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
     pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)<br.+'
@@ -132,7 +132,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     get_logger().debug('Activation data: %s', data)
     result = requests.post(link, data=data)
 
-    assert result.status_code == HTTP_STATUS_OK and 'success' in result.text, result.text
+    assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
 
     student['product'] = product
     student['school'] = school
