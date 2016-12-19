@@ -13,7 +13,7 @@ Example to use this module::
   student_id = 123456
   achieve_minimum_class_taken(student_id, f2f=3, workshop=3, apply_or_lc=1)
 
-  # for echk student they have to do 12 GL
+  # for cehk student they have to do 12 GL
   achieve_minimum_class_taken(student_id, online_gl=12)
 
 .. warning::
@@ -159,7 +159,7 @@ def _get_past_class_id(class_category_id):
     AND StartDate < GETDATE() -1
     AND EndDate < GETDATE() -1
     AND IsPublished = 1
-    AND IsDeleted =0
+    AND IsDeleted = 0
     """
 
     return fetch_one(sql, class_category_id).ScheduledClass_id

@@ -11,6 +11,7 @@ from xml.etree import ElementTree
 import requests
 
 from ectools.config import config
+from .internal.constants import HTTP_STATUS_OK
 
 
 def is_v2_student(student_id):
@@ -40,7 +41,7 @@ def get_member_site_settings(student_id, site_area='school'):
                 </s:Body>
             </s:Envelope>"""
     result = requests.post(config.etown_root + service_url, data=data.format(student_id, site_area), headers=headers)
-    assert result.status_code == 200, "Failed to call membersettings.svc: {}".format(result.text)
+    assert result.status_code == HTTP_STATUS_OK, "Failed to call membersettings.svc: {}".format(result.text)
 
     site_settings = {}
     datetime_format = "%Y-%m-%d %H:%M:%S"

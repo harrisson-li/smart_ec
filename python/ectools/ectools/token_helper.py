@@ -26,4 +26,4 @@ def get_token():
             return m.group(1)
 
     else:
-        raise Exception("Cannot get token!")
+        raise EnvironmentError("Cannot get token!")

@@ -25,6 +25,7 @@ import requests
 
 from ectools.config import get_logger, config
 from .internal.data_helper import *
+from .internal.constants import HTTP_STATUS_OK
 
 
 def create_account_without_activation(is_e10=False):
@@ -41,17 +42,18 @@ def create_account_without_activation(is_e10=False):
     link = get_link()
     result = requests.get(link)
 
-    assert result.status_code is 200 and 'Success' in result.text, result.text
-    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)<br.+'
-    match = re.match(pattern, result.text)
+    assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
 
+    # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
+    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)<br.+'
+
+    match = re.match(pattern, result.text)
     if match:
         student['member_id'] = match.group('id')
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
         get_logger().debug('New test account: %s', student)
         return student
-
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
 
@@ -137,6 +139,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['partner'] = config.partner
     student['country_code'] = config.country_code
     student.update(kwargs)
+
     return student
 
 
