@@ -1,6 +1,5 @@
 """
-This module provides methods to get or set student flags and member site settings.
-
+This module provides methods to get or set student flags, as well as member site settings.
 
 -----
 """

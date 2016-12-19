@@ -18,8 +18,8 @@ Example to use this module::
 
 .. warning::
 
-  This module will update or insert data in database, so it is not possible to use
-  it in **Staging** or **Live** environment.
+  This module will update or insert data in database, so call this
+  module in **Staging** or **Live** environment will raise errors.
 
 -----
 """

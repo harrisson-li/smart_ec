@@ -8,7 +8,7 @@ It will check whether the student is v2 or not, then use correct score helper ve
   load_student(student_id)
   submit_current_unit(score=87,skip_activity=1)  # unit move on test
 
-  pass_six_unit(score=95)
+  pass_six_units(score=95)
   pass_level_test()
 
   # close browser at last

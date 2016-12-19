@@ -48,7 +48,7 @@ However, I would recommend you use `connect_database` as d decorator to make sur
 
 .. warning::
 
-  You cannot use this module to update database in **Staging** or **Live** environment.
+  Update database in **Staging** or **Live** environment is not supported.
 
 -----
 """
