@@ -132,7 +132,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     get_logger().debug('Activation data: %s', data)
     result = requests.post(link, data=data)
 
-    assert result.status_code is 200 and 'success' in result.text, result.text
+    assert result.status_code == HTTP_STATUS_OK and 'success' in result.text, result.text
+
     student['product'] = product
     student['school'] = school
     student['is_activated'] = True
