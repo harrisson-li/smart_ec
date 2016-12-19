@@ -1,3 +1,9 @@
+"""
+This module provides methods to get or set student flags and member site settings.
+
+
+-----
+"""
 import re
 from datetime import datetime
 from io import StringIO

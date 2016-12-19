@@ -1,3 +1,8 @@
+"""
+This module contains some handy function, please refer to bellow function list.
+
+-----
+"""
 import csv
 import inspect
 import logging
@@ -21,22 +26,6 @@ def read_csv_as_dict(csv_path):
 
 def get_random_item(in_seq):
     return random.choice(in_seq)
-
-
-def has_tag(tags, tag):
-    tag_list = tags.lower().split()
-    return tag.lower() in tag_list
-
-
-def is_item_has_tag(item, tag):
-    return has_tag(item['tags'], tag)
-
-
-def get_item_has_tag(items, tag):
-    found = [x for x in items if is_item_has_tag(x, tag)]
-    if len(found) == 0:
-        raise ValueError('Cannot find any item has tag: {}'.format(tag))
-    return found
 
 
 def get_score(min_score=70, max_score=100):

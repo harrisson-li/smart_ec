@@ -10,7 +10,7 @@ Installation
 ------------
 You may already have ectools installed -- you can check by doing::
 
-    python -c 'import ectools'
+    python -c "import ectools"
 
 To install or update to latest version, please run below command::
 

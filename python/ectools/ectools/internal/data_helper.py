@@ -3,6 +3,22 @@ from .objects import Cache
 from os.path import dirname, join
 
 
+def has_tag(tags, tag):
+    tag_list = tags.lower().split()
+    return tag.lower() in tag_list
+
+
+def is_item_has_tag(item, tag):
+    return has_tag(item['tags'], tag)
+
+
+def get_item_has_tag(items, tag):
+    found = [x for x in items if is_item_has_tag(x, tag)]
+    if len(found) == 0:
+        raise ValueError('Cannot find any item has tag: {}'.format(tag))
+    return found
+
+
 def get_data_dir():
     root = dirname(dirname(__file__))
     return join(root, Configuration.data_dir)
