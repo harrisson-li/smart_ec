@@ -29,10 +29,10 @@ project_dir = abspath(dirname(__file__))
 output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
-unit_test_dir = join(project_dir, 'ectools/_tests')
+unit_test_dir = join(project_dir, 'tests')
 pypi_dir = r"\\cns-etnexus\pypi\ectools"
 setup_py = join(project_dir, 'setup.py')
-doc_dir = join(project_dir, 'doc')
+doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
 
