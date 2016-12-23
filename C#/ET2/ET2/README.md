@@ -4,7 +4,7 @@ Thanks for choosing ET2. This is a guide to help you configurate this tool. All 
 
 ### 1. Public Settings Folder
 
-Default set to `\\cns-fileserver1\Departments\11 Public\EFEC\ET2\Settings`, you can find configurations about environments, products, userful links and hosts data over there. **Changes in public settings** will impact all ET2 users.
+Default set to `\\cns-qaauto5\Shared\ET2\Settings`, you can find configurations about environments, products, userful links and hosts data over there. **Changes in public settings** will impact all ET2 users.
 
 > Tips: Copy public setting file to private settings folder can overrite it without impact others.
 
