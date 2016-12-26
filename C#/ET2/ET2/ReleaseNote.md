@@ -1,4 +1,8 @@
-﻿## v0.0.0.28
+﻿## v0.0.0.30
+
+1.Change deployment location to lab server.
+
+## v0.0.0.28
 
 1.Layout changed, now you can add more quick actions.
 
@@ -59,7 +63,7 @@
 ## v0.0.0.10 - Preview
 
 1. Personal settings folder `%UserProfile%\ET2`
-2. Global settings folder `\\cns-fileserver1\Departments\11 Public\EFEC\ET2\Settings`
+2. Global settings folder `\\cns-qaauto5\Shared\ET2\Settings`
 3. If you want to run locally, create a global folder at `%UserProfile%\ET2_Global`
 
 ## v0.0.0.5 - Preview
