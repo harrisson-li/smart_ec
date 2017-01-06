@@ -15,8 +15,7 @@ def main():
         install_requires=[
             'requests',
             'selenium',
-            'pyodbc',
-            'pypyodbc',
+            'pymssql',
             'assertpy'
         ],
         zip_safe=False,

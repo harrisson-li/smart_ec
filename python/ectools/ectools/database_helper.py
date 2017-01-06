@@ -55,39 +55,46 @@ However, I would recommend you use `connect_database` as d decorator to make sur
 from ectools.config import config, get_logger
 from .internal.objects import *
 
-try:
-    import pyodbc
-except ImportError:
-    import pypyodbc as pyodbc
+import pymssql
+import collections
 
 
-def set_connection_string(value=None):
+def set_connection_info(server=None, user=None, password=None, database=None):
     """
-    Set connection string if you want to query to another database.
+    Set connection if you want to query to another database.
     By default you do not have to call this method, this module will query in DB according to `ectools.config`.
 
-    :param value: connection string in format:  "DRIVER={SQL Server};SERVER=xxx;UID=xxx;PWD=xxx"
+    :param server: default to server in current environment.
+    :param user: default.
+    :param password: default.
+    :param database: (Optional) default empty.
     """
-    if not value:
-        value = "SERVER={};UID={};PWD={}"
-        value = value.format(config.database['server'],
-                             config.database['user'],
-                             config.database['password'])
-        Cache.connection_string = "DRIVER={SQL Server};" + value
+
+    if not server:
+        server = config.database['server']
+
+    if not user:
+        user = config.database['user']
+
+    if not password:
+        password = config.database['password']
+
+    if database is None:
+        Cache.connection_info = (server, user, password)
     else:
-        Cache.connection_string = value
+        Cache.connection_info = (server, user, password, database)
 
 
-def get_connection_string():
-    if not hasattr(Cache, 'connection_string'):
-        set_connection_string()
+def get_connection_info():
+    if not hasattr(Cache, 'connection_info'):
+        set_connection_info()
 
-    return Cache.connection_string
+    return Cache.connection_info
 
 
 def _connect():
     if not hasattr(Cache, 'connection'):
-        Cache.connection = pyodbc.connect(get_connection_string())
+        Cache.connection = pymssql.connect(*get_connection_info())
         Cache.cursor = Cache.connection.cursor()
     return Cache.connection
 
@@ -112,9 +119,15 @@ def _cleanup():
         del Cache.connection
 
 
+def get_conn():
+    """Get the database connection."""
+    if hasattr(Cache, 'connection') and isinstance(Cache.cursor, pymssql.Connection):
+        return Cache.connection
+
+
 def get_cursor():
     """Get the database cursor."""
-    if hasattr(Cache, 'cursor') and isinstance(Cache.cursor, pyodbc.Cursor):
+    if hasattr(Cache, 'cursor') and isinstance(Cache.cursor, pymssql.Cursor):
         return Cache.cursor
 
 
@@ -145,11 +158,12 @@ def fetch_one(sql, params=None, as_dict=False):
     row = get_cursor().fetchone()
 
     if row:
+        columns = [column[0] for column in get_cursor().description]
         if as_dict:
-            columns = [column[0] for column in get_cursor().description]
             return dict(zip(columns, row))
         else:
-            return row
+            result = collections.namedtuple('result', columns, rename=True)
+            return result(*row)
 
 
 @connect_database
@@ -174,5 +188,5 @@ def fetch_all(sql, params=None, as_dict=False):
 def execute_query(sql, params=None):
     """Execute a sql query and return affected row counts."""
     _execute(sql, params)
-    get_cursor().commit()
+    get_conn().commit()
     return get_cursor().rowcount
