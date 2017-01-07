@@ -31,7 +31,7 @@ You might want to add query parameters somethings, do it like this::
 This module are a simple wrapper on *python dbapi*, you can refer to online resource to learn more.
 If you want to do more flexible work on database, you can try::
 
-  set_connection_string('my database connection string')
+  set_connection_info(server, user, password)
   conn = connect_database()  # now you connect to above db
   cursor = get_cursor()  # now you get the database cursor
 
@@ -171,17 +171,18 @@ def fetch_all(sql, params=None, as_dict=False):
     """Fetch all rows from a sql query."""
     _execute(sql, params)
     rows = get_cursor().fetchall()
+    columns = [column[0] for column in get_cursor().description]
+    result = []
 
-    if as_dict:
-        columns = [column[0] for column in get_cursor().description]
-        result = []
+    for row in rows:
 
-        for row in rows:
+        if as_dict:
             result.append(dict(zip(columns, row)))
+        else:
+            r = collections.namedtuple('row', columns, rename=True)
+            result.append(r(*row))
 
-        return result
-    else:
-        return rows
+    return result
 
 
 @connect_database

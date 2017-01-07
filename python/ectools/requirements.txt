@@ -4,7 +4,6 @@
 #
 requests
 selenium
-pyodbc
-pypyodbc
+pymssql
 assertpy
 sphinx

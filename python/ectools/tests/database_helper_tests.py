@@ -64,5 +64,7 @@ def test_connect_db():
     """
     connect_database()
     get_cursor().execute(sql)
+    get_conn().commit()
+
     assert get_cursor().rowcount == -1
     close_database()
