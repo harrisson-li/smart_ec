@@ -24,7 +24,7 @@ The `fetch_one()`, `fetch_all()` and `execute_query()` should be the major metho
 You might want to add query parameters somethings, do it like this::
 
   student_id, student_name = 13, 'toby'
-  row = fetch_one('select * from oboe.dbo.student where id=? and name=?', (student_id, student_name))
+  row = fetch_one('select * from oboe.dbo.student where id=%s and name=%s', (student_id, student_name))
   for i in row:
       print(i)
 
@@ -121,7 +121,7 @@ def _cleanup():
 
 def get_conn():
     """Get the database connection."""
-    if hasattr(Cache, 'connection') and isinstance(Cache.cursor, pymssql.Connection):
+    if hasattr(Cache, 'connection') and isinstance(Cache.connection, pymssql.Connection):
         return Cache.connection
 
 

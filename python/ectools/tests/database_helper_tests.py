@@ -11,9 +11,9 @@ def test_fetch_one():
     logger.info(row)
     assert row.Name == 'Empty'
 
-    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp Where Name = ?", 'Booked', as_dict=True)
+    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp Where Name = %s", 'Booked', as_dict=True)
     logger.info(row)
-    assert row['name'] == 'Booked'
+    assert row['Name'] == 'Booked'
 
 
 def test_fetch_all():
@@ -24,7 +24,7 @@ def test_fetch_all():
     assert rows[1].Name == "Booked"
     assert len(rows) == 14
 
-    sql = "SELECT * FROM oboe.dbo.ClassCategory_lkp WHERE IsDeleted = ? AND Name=?"
+    sql = "SELECT * FROM oboe.dbo.ClassCategory_lkp WHERE IsDeleted = %s AND Name=%s"
     rows = fetch_all(sql, (0, 'F2F'), as_dict=True)
     logger.info(rows)
     assert len(rows) == 1
