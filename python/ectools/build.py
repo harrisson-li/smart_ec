@@ -73,6 +73,10 @@ def update_version(new_version):
 
         sys.stdout.write(line)
 
+    for line in open(setup_py):
+        if "version=" in line:
+            print("Update to {}".format(line.strip()))
+
 
 def make_package():
     print('Make package')
@@ -81,6 +85,8 @@ def make_package():
 
         if len(os.listdir(pypi_dir)):
             latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
+            print("Latest build on server: {}".format(latest_build))
+
             latest_version = re.search(r'-\d+\.\d+\.(\d+)\.tar\.gz', latest_build).group(1)
             update_version(int(latest_version) + 1)
 
