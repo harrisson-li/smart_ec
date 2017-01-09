@@ -11,7 +11,7 @@ def test_fetch_one():
     logger.info(row)
     assert row.Name == 'Empty'
 
-    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp Where Name = ?", 'Booked', as_dict=True)
+    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp Where Name = %s", 'Booked', as_dict=True)
     logger.info(row)
     assert row['Name'] == 'Booked'
 
@@ -20,13 +20,11 @@ def test_fetch_all():
     set_environment('uat')
     sql = "SELECT * FROM oboe.dbo.BookingStatus_lkp"
     rows = fetch_all(sql)
-    logger.info(rows)
     assert rows[1].Name == "Booked"
     assert len(rows) == 14
 
-    sql = "SELECT * FROM oboe.dbo.ClassCategory_lkp WHERE IsDeleted = ? AND Name=?"
+    sql = "SELECT * FROM oboe.dbo.ClassCategory_lkp WHERE IsDeleted = %s AND Name=%s"
     rows = fetch_all(sql, (0, 'F2F'), as_dict=True)
-    logger.info(rows)
     assert len(rows) == 1
 
 
@@ -64,6 +62,7 @@ def test_connect_db():
     """
     connect_database()
     get_cursor().execute(sql)
-    get_cursor().commit()
+    get_conn().commit()
+
     assert get_cursor().rowcount == -1
     close_database()

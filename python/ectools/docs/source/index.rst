@@ -16,6 +16,14 @@ To install or update to latest version, please run below command::
 
     pip install ectools -U --extra-index-url http://jenkins.englishtown.com:8081/pypi --trusted-host jenkins.englishtown.com
 
+Additional requirements for Ubuntu/Debian::
+
+    sudo apt-get install freetds-dev
+
+Additional requirements for Mac OS X with homebrew::
+
+    brew install homebrew/versions/freetds091
+
 Get Started
 -----------
 The first step you should do is settiing up ectools, you should specify which environment and partner that you are working on::

@@ -69,7 +69,7 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         WHERE StudentCourse_id IN (SELECT
         StudentCourse_id
         FROM SchoolAccount.dbo.StudentCourse
-        WHERE Student_id = ?
+        WHERE Student_id = %s
         AND IsCurrent = 1
         AND IsCurrentForCourseType = 1
         AND IsEnrollable = 1
@@ -83,7 +83,7 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         WHERE StudentCourse_id IN (SELECT
         StudentCourse_id
         FROM SchoolAccount.dbo.StudentCourse
-        WHERE Student_id = ?
+        WHERE Student_id = %s
         AND IsCurrent = 1
         AND IsCurrentForCourseType = 1
         AND IsEnrollable = 1
@@ -99,12 +99,12 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         -- Update level progress start time to previous time
         UPDATE SchoolAccount.dbo.StudentLevelProgress
         SET StartDateTime = @starttime
-        WHERE StudentLevelProgress_id = ?
+        WHERE StudentLevelProgress_id = %s
 
         -- Update unit progress start time to previous time
         UPDATE SchoolAccount.dbo.StudentUnitProgress
         SET StartDateTime = @starttime
-        WHERE StudentUnitProgress_id = ?"""
+        WHERE StudentUnitProgress_id = %s"""
 
         execute_query(sql, (level_progress_id, unit_progress_id))
 
@@ -154,7 +154,7 @@ def _get_class_type_mapping():
 
 def _get_past_class_id(class_category_id):
     sql = """SELECT TOP 1 * FROM [Oboe].[dbo].[ScheduledClass]
-    WHERE ClassCategory_id = ?
+    WHERE ClassCategory_id = %s
     AND StartDate > GETDATE() - 20
     AND StartDate < GETDATE() -1
     AND EndDate < GETDATE() -1
@@ -169,22 +169,22 @@ def _get_coupon_count(student_id, coupon_type_id):
     sql = """SELECT COUNT(*)
     FROM oboe.dbo.Coupon
     WHERE booking_id IS NULL
-    AND student_id = ?
-    AND couponClassCategoryGroup_id = ?"""
+    AND student_id = %s
+    AND couponClassCategoryGroup_id = %s"""
 
     return fetch_one(sql, (student_id, coupon_type_id))[0]
 
 
 def _insert_booking_id(student_id, schedule_id, coupon_category_id):
     sql = """INSERT INTO oboe.dbo.Booking
-    VALUES (?, ?, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
+    VALUES (%s, %s, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
     """
     execute_query(sql, (schedule_id, student_id))
 
     sql = """SELECT booking_id
     FROM oboe.dbo.Booking
-    WHERE student_id = ?
-    AND ScheduledClass_id = ?
+    WHERE student_id = %s
+    AND ScheduledClass_id = %s
     ORDER BY UpdateDate DESC"""
 
     book_id = fetch_one(sql, (student_id, schedule_id))[0]
@@ -193,12 +193,12 @@ def _insert_booking_id(student_id, schedule_id, coupon_category_id):
     SELECT @coupon_id = MIN(coupon_id)
     FROM oboe.dbo.Coupon
     WHERE booking_id IS NULL
-    AND student_id = ?
-    AND couponClassCategoryGroup_id = ?
+    AND student_id = %s
+    AND couponClassCategoryGroup_id = %s
     AND IsActivated = 1
     AND IsDeleted = 0
     UPDATE oboe.dbo.Coupon
-    SET booking_id = ?
+    SET booking_id = %s
     WHERE coupon_id = @coupon_id"""
 
     execute_query(sql, (student_id, coupon_category_id, book_id))
