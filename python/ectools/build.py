@@ -83,7 +83,7 @@ def make_package():
     try:
         assert exists(pypi_dir)
 
-        if len(os.listdir(pypi_dir)):
+        if len(glob.iglob(pypi_dir + '/*.gz')):
             latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
             print("Latest build on server: {}".format(latest_build))
 
