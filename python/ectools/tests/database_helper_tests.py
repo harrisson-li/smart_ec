@@ -20,13 +20,11 @@ def test_fetch_all():
     set_environment('uat')
     sql = "SELECT * FROM oboe.dbo.BookingStatus_lkp"
     rows = fetch_all(sql)
-    logger.info(rows)
     assert rows[1].Name == "Booked"
     assert len(rows) == 14
 
     sql = "SELECT * FROM oboe.dbo.ClassCategory_lkp WHERE IsDeleted = %s AND Name=%s"
     rows = fetch_all(sql, (0, 'F2F'), as_dict=True)
-    logger.info(rows)
     assert len(rows) == 1
 
 

@@ -162,8 +162,8 @@ def fetch_one(sql, params=None, as_dict=False):
         if as_dict:
             return dict(zip(columns, row))
         else:
-            result = collections.namedtuple('result', columns, rename=True)
-            return result(*row)
+            t = collections.namedtuple('row', columns, rename=True)
+            return t(*row)
 
 
 @connect_database
@@ -179,8 +179,8 @@ def fetch_all(sql, params=None, as_dict=False):
         if as_dict:
             result.append(dict(zip(columns, row)))
         else:
-            r = collections.namedtuple('row', columns, rename=True)
-            result.append(r(*row))
+            t = collections.namedtuple('row', columns, rename=True)
+            result.append(t(*row))
 
     return result
 
