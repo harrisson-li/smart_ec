@@ -57,6 +57,7 @@ namespace ET2.Views
                 btn.Width = 130;
                 btn.Background = new SolidColorBrush(Colors.LightGray);
                 btn.Margin = new Thickness(5, 0, 5, 5);
+                btn.HorizontalContentAlignment = HorizontalAlignment.Left;
                 btn.MouseEnter += RefreshQuickAction;
                 btn.Click += PerformQuickAction;
                 this.quickActionsPanel.Children.Add(btn);

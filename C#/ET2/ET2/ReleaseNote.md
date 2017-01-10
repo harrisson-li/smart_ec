@@ -1,10 +1,15 @@
-﻿## v0.0.0.30
+﻿## v0.0.0.31
 
-1.Change deployment location to lab server.
+1. Open help page instead of a useless dialog.
+2. Sort and align quick actions by name.
+
+## v0.0.0.30
+
+1. Change deployment location to lab server.
 
 ## v0.0.0.28
 
-1.Layout changed, now you can add more quick actions.
+1. Layout changed, now you can add more quick actions.
 
 ## v0.0.0.27
 

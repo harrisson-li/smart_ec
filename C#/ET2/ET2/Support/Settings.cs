@@ -530,7 +530,7 @@ namespace ET2.Support
                     actionList.Add(json.ToJsonObject<QuickAction>());
                 }
             }
-            return actionList;
+            return actionList.OrderBy(e => e.Name).ToList();
         }
 
         #endregion Quick actions
