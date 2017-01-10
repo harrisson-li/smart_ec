@@ -5,13 +5,20 @@ It will check whether the student is v2 or not, then use correct score helper ve
   from ectools.score_helper import *
 
   student_id = 123456
+
+  # (recommended) call by with statement, it will help you manage browser
+  with submit_score_helper(student_id)
+      submit_current_unit(score=87,skip_activity=1)  # unit move on test
+      pass_six_units_and_level_test(score=95)
+
+  # (not recommended) load student then do whatever you want
   load_student(student_id)
-  submit_current_unit(score=87,skip_activity=1)  # unit move on test
+  submit_current_unit(score=87,skip_activity=1)
 
   pass_six_units(score=95)
   pass_level_test()
 
-  # close browser at last
+  # you have to close browser by yourself
   close_browser()
 
 You do not have to start browser, if there is no browser, the tool will start one.
@@ -20,6 +27,8 @@ You don't have to give the score every time, the tool will randomly generate a s
 
 -----
 """
+from contextlib import contextmanager
+
 import ectools.utility
 from ectools.student_settings_helper import is_v2_student
 from ectools.utility import get_score
@@ -30,6 +39,15 @@ from .internal.objects import *
 
 def _is_submit_for_v2():
     return getattr(Cache, 'submit_for_v2', False)
+
+
+@contextmanager
+def submit_score_helper(student_id):
+    try:
+        load_student(student_id=student_id)
+        yield
+    finally:
+        close_browser()
 
 
 def load_student(student_id, reload_page=True):

@@ -10,6 +10,7 @@ import random
 import time
 from datetime import datetime, timedelta
 from functools import wraps
+import sys
 
 from selenium import webdriver
 from selenium.webdriver.remote.remote_connection import LOGGER
@@ -93,27 +94,86 @@ def detail_on_failure(func):
     return wrapper
 
 
-def wait_for(method, message='', timeout=60, poll_time=0.5):
-    """Function to wait for a method with timeout."""
-    stack_trace = None
+def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
+    """Wait for a method with timeout, return its result or raise error."""
+
     end_time = time.time() + timeout
+
     while True:
         try:
-            value = method()
-            if value:
-                return value
-        except BaseException as exc:
-            stack_trace = getattr(exc, 'stacktrace', None)
+            return method()
+
+        except Exception as exc:
+            info = (type(exc).__name__, exc.args[0])
+
         time.sleep(poll_time)
         if time.time() > end_time:
             break
-    message = "{}\nTimeout to wait for {} in {} seconds.\n{}".format(
-        message, method.__name__, timeout, stack_trace)
+
+    message = "Timeout to wait for '{}()' in {} seconds.".format(
+        method.__name__, timeout)
+
+    if info:
+        message += " [%s]: %s" % info
+
     raise Exception(message)
 
 
-def retry_for_error(error, retry_times=3, poll_time=0.5):
-    """Decorator to retry for specified error."""
+def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
+    """Try to wait for a method, return its value or return False when failed."""
+
+    from ectools.config import get_logger
+    end_time = time.time() + timeout
+
+    while True:
+        try:
+            return method()
+
+        except Exception as exc:
+            get_logger().debug("Try wait for '{}()'. [{}]: {}".format(
+                method.__name__, type(exc).__name__, exc.args[0]))
+
+            time.sleep(poll_time)
+            if time.time() > end_time:
+                break
+
+    get_logger().info("Failed to wait for '{}()', return False.".format(method.__name__))
+    return False
+
+
+def retry_for_error(error, retry_times=Configuration.default_retry_times, poll_time=Configuration.default_poll_time):
+    """
+    Decorator to retry for specified error.
+
+    Example::
+
+        @retry_for_error(error=RuntimeError)
+        def func():
+            pass
+
+    """
+
+    def wrapper_(func):
+        @retry_for_errors(errors=(error,), retry_times=retry_times, poll_time=poll_time)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return wrapper_
+
+
+def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
+                     poll_time=Configuration.default_poll_time):
+    """
+    Decorator to retry for multiple errors.
+
+    Example::
+
+        @retry_for_errors(errors=(RuntimeError,NameError))
+        def func():
+            pass
+    """
 
     from ectools.config import get_logger
 
@@ -124,8 +184,8 @@ def retry_for_error(error, retry_times=3, poll_time=0.5):
             while retry <= retry_times:
                 try:
                     return func(*args, **kwargs)
-                except error:
-                    msg = "retry for {} for {} time...".format(error.__name__, retry)
+                except errors as exc:
+                    msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
                     get_logger().info(msg)
                     retry += 1
                     time.sleep(poll_time)
@@ -161,3 +221,13 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None):
         return browser
     else:
         raise EnvironmentError("Failed to get a browser!")
+
+
+def convert_to_string(value):
+    if sys.version_info.major == 3:
+        return str(value)
+    else:
+        if type(value) not in (str, unicode):
+            return str(value)
+        else:
+            return value
