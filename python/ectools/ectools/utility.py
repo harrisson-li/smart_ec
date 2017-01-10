@@ -223,7 +223,8 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None):
         raise EnvironmentError("Failed to get a browser!")
 
 
-def convert_to_string(value):
+def convert_to_str(value):
+    """Convert a value to str, to work with python2 and python3."""
     if sys.version_info.major == 3:
         return str(value)
     else:

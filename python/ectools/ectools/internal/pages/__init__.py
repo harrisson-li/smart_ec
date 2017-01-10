@@ -10,7 +10,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ectools.config import get_logger
-from ectools.utility import detail_on_failure, retry_for_error, convert_to_string
+from ectools.utility import detail_on_failure, retry_for_error, convert_to_str
 
 TIMEOUT_SECONDS = 60
 TIMEOUT_FOR_ELEMENT_WAITING = 120
@@ -112,7 +112,7 @@ class PageBase(object):
         """Select option by value attribute with locator."""
         self.wait_for_option_selector_by(by, by_locator_value)
         option = self.get_option_selector_by(by, by_locator_value)
-        option_value = convert_to_string(option_value)
+        option_value = convert_to_str(option_value)
 
         option.select_by_value(option_value)
 
@@ -126,7 +126,7 @@ class PageBase(object):
         """Select option by visible text."""
         self.wait_for_option_selector(selector_xpath)
         option = self.get_option_selector(selector_xpath)
-        text = convert_to_string(text)
+        text = convert_to_str(text)
 
         option.select_by_visible_text(text)
 
