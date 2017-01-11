@@ -95,7 +95,7 @@ namespace ET2.Views
 
         private void DisplayHelp(object sender, RoutedEventArgs e)
         {
-            var helpLink = "https://stash.englishtown.com/projects/TEST/repos/efec_tools/browse/C%23/ET2/ET2/README.md";
+            var helpLink = ConfigHelper.GetAppSettingsValue("HelpLink");
             System.Diagnostics.Process.Start(helpLink);
         }
 
