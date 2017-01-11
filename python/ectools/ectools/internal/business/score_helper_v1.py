@@ -2,7 +2,7 @@ from selenium.webdriver.common.keys import Keys
 
 from ectools.config import get_logger
 from ectools.token_helper import get_token
-from ectools.utility import get_score,get_browser
+from ectools.utility import get_score, get_browser
 from ..objects import *
 from ..pages import TIMEOUT_FOR_ELEMENT_WAITING
 from ..pages.score_helper_page_v1 import SubmitScoreHelperS15Page as CurrentPage
@@ -50,6 +50,17 @@ def submit_current_unit(score=get_score(), skip_activity=0):
     _page().wait_for_ready()
 
 
+def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
+    enroll_to_unit(unit_id=unit_id)
+
+    _page().select_option_by_text(CurrentPage.EXCEPT_ACTIVITY_SELECTOR_XPATH, skip_activity)
+    _page().element_level_test_score_textbox.clear()
+    _page().element_level_test_score_textbox.send_keys(score)
+    _page().element_level_test_batch_submit_score_button.click()
+    _page().close_alert_and_get_its_text()
+    _page().wait_for_ready()
+
+
 def pass_to_unit(unit_id, score=get_score(), skip_activity=0):
     get_logger().info("Pass to unit {} and except {} activities".format(unit_id, skip_activity))
     _page().element_load_all_unit_progress.click()
@@ -61,8 +72,7 @@ def pass_to_unit(unit_id, score=get_score(), skip_activity=0):
     _page().element_batch_submit_all_unit_score_button.click()
     _page().close_alert_and_get_its_text(TIMEOUT_FOR_ELEMENT_WAITING)
     _page().wait_for_ready()
-    enroll_to_unit(unit_id)
-    submit_current_unit(score, skip_activity)
+    submit_for_unit(unit_id=unit_id, score=score, skip_activity=skip_activity)
 
 
 def pass_six_units(score=get_score()):
