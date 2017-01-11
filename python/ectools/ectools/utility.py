@@ -11,7 +11,6 @@ import sys
 import time
 from datetime import datetime, timedelta
 from functools import wraps
-import sys
 
 from selenium import webdriver
 from selenium.webdriver.remote.remote_connection import LOGGER
