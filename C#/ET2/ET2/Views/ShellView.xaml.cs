@@ -95,9 +95,8 @@ namespace ET2.Views
 
         private void DisplayHelp(object sender, RoutedEventArgs e)
         {
-            var title = "EFEC Testing Tools (ET2)";
-            var msg = "Please contact <toby.qin@ef.com> if you have questions or bugs on this tool.";
-            this.ShowMessageAsync(title, msg, MessageDialogStyle.Affirmative);
+            var helpLink = ConfigHelper.GetAppSettingsValue("HelpLink");
+            System.Diagnostics.Process.Start(helpLink);
         }
 
         #endregion Help Message
