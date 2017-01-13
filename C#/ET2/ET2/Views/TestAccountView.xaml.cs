@@ -157,5 +157,13 @@ namespace ET2.Views
                 });
             }
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ShellViewModel.Instance != null)
+            {
+                ShellViewModel.Instance.ProductVM.NotifySchoolUpdate();
+            }
+        }
     }
 }

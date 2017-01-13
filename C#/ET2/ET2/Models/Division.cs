@@ -63,6 +63,16 @@ namespace ET2.Models
             }
         }
 
+        public string Tags { get; set; }
+
+        public bool IsV2
+        {
+            get
+            {
+                return this.Tags.Contains("PC2.0");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="EFSchools.Englishtown.SharedServices.Client.MemberSettings" elementFormDefault="qualified" targetNamespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd2" namespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" />
+  <xs:element name="LoadMemberSiteSettings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="input" nillable="true" type="q1:LoadMemberSiteSettingsParams" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadMemberSiteSettingsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="LoadMemberSiteSettingsResult" nillable="true" type="q2:LoadMemberSiteSettingsResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveMemberSiteSetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="input" nillable="true" type="q3:SaveMemberSiteSettingParams" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveMemberSiteSettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="SaveMemberSiteSettingResult" nillable="true" type="q4:SaveMemberSiteSettingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BatchSaveMemberSiteSetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="memberSiteSettings" nillable="true" type="q5:ArrayOfSaveMemberSiteSettingParams" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BatchSaveMemberSiteSettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" minOccurs="0" name="BatchSaveMemberSiteSettingResult" nillable="true" type="q6:SaveMemberSiteSettingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -15,6 +15,16 @@ namespace ET2.ViewModels
         #region Partner filters
 
         private string _partner = Settings.LoadCurrentProduct().Partner;
+        private bool _isV2 = Settings.LoadCurrentTestAccount().IsV2;
+
+        public void NotifySchoolUpdate()
+        {
+            _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
+            this.NotifyOfPropertyChange(() => this.ProductCityList);
+            this.NotifyOfPropertyChange(() => this.ProductSchoolList);
+            this.NotifyOfPropertyChange(() => this.CurrentCity);
+            this.NotifyOfPropertyChange(() => this.CurrentSchool);
+        }
 
         public string CurrentPartner
         {
@@ -179,7 +189,7 @@ namespace ET2.ViewModels
                 _city = value;
 
                 // when city changed, need to update div code and school list and div list
-                var div = DivisionCodeList
+                var div = DivisionList
                     .Where(e => e.City == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
 
@@ -206,25 +216,25 @@ namespace ET2.ViewModels
                 _school = value;
 
                 // when school changed, need to update div code and div list
-                var div = DivisionCodeList
+                var div = DivisionList
                     .Where(e => e.SchoolName == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
                 ShellViewModel.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
 
-                this.NotifyOfPropertyChange(() => this.DivisionCodeList);
+                //this.NotifyOfPropertyChange(() => this.DivisionList);
                 this.NotifyOfPropertyChange();
             }
         }
 
         private List<Division> _divList;
 
-        public List<Division> DivisionCodeList
+        public List<Division> DivisionList
         {
             get
             {
                 if (_divList == null)
                 {
-                    _divList = Settings.LoadDivisionCode();
+                    _divList = Settings.LoadDivision();
                 }
                 return _divList;
             }
@@ -234,7 +244,7 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
                     .Where(e => e.City == CurrentCity)
                     .Select(e => e.DivisionCode).ToList();
             }
@@ -244,8 +254,9 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
                     .Where(e => e.PartnerCode == CurrentPartner)
+                    .Where(e => e.IsV2 == _isV2)
                     .Select(e => e.City).Distinct().ToList();
             }
         }
@@ -254,8 +265,9 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
                     .Where(e => e.City == CurrentCity)
+                    .Where(e => e.IsV2 == _isV2)
                     .Select(e => e.SchoolName).Distinct().ToList();
             }
         }

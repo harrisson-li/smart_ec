@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="EFSchools.Englishtown.SharedServices.Client.MemberSettings" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings/Imports">
+      <xsd:import schemaLocation="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd0" namespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings" />
+      <xsd:import schemaLocation="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd2" namespace="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts" />
+      <xsd:import schemaLocation="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IMemberSettingsService_LoadMemberSiteSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:LoadMemberSiteSettings" />
+  </wsdl:message>
+  <wsdl:message name="IMemberSettingsService_LoadMemberSiteSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LoadMemberSiteSettingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMemberSettingsService_SaveMemberSiteSetting_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveMemberSiteSetting" />
+  </wsdl:message>
+  <wsdl:message name="IMemberSettingsService_SaveMemberSiteSetting_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveMemberSiteSettingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMemberSettingsService_BatchSaveMemberSiteSetting_InputMessage">
+    <wsdl:part name="parameters" element="tns:BatchSaveMemberSiteSetting" />
+  </wsdl:message>
+  <wsdl:message name="IMemberSettingsService_BatchSaveMemberSiteSetting_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BatchSaveMemberSiteSettingResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IMemberSettingsService">
+    <wsdl:documentation>&lt;summary&gt;
+            
+            &lt;/summary&gt;</wsdl:documentation>
+    <wsdl:operation name="LoadMemberSiteSettings">
+      <wsdl:documentation>&lt;summary&gt;
+            
+            &lt;/summary&gt;
+            &lt;param name="input"&gt;&lt;/param&gt;
+            &lt;returns&gt;&lt;/returns&gt;</wsdl:documentation>
+      <wsdl:input wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/LoadMemberSiteSettings" message="tns:IMemberSettingsService_LoadMemberSiteSettings_InputMessage" />
+      <wsdl:output wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/LoadMemberSiteSettingsResponse" message="tns:IMemberSettingsService_LoadMemberSiteSettings_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveMemberSiteSetting">
+      <wsdl:documentation>&lt;summary&gt;
+            
+            &lt;/summary&gt;
+            &lt;param name="input"&gt;&lt;/param&gt;
+            &lt;returns&gt;&lt;/returns&gt;</wsdl:documentation>
+      <wsdl:input wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/SaveMemberSiteSetting" message="tns:IMemberSettingsService_SaveMemberSiteSetting_InputMessage" />
+      <wsdl:output wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/SaveMemberSiteSettingResponse" message="tns:IMemberSettingsService_SaveMemberSiteSetting_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="BatchSaveMemberSiteSetting">
+      <wsdl:documentation>&lt;summary&gt;
+            
+            &lt;/summary&gt;
+            &lt;param name="input"&gt;&lt;/param&gt;
+            &lt;returns&gt;&lt;/returns&gt;</wsdl:documentation>
+      <wsdl:input wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/BatchSaveMemberSiteSetting" message="tns:IMemberSettingsService_BatchSaveMemberSiteSetting_InputMessage" />
+      <wsdl:output wsaw:Action="EFSchools.Englishtown.SharedServices.Client.MemberSettings/IMemberSettingsService/BatchSaveMemberSiteSettingResponse" message="tns:IMemberSettingsService_BatchSaveMemberSiteSetting_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>
