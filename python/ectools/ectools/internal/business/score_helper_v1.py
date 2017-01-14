@@ -2,7 +2,7 @@ from selenium.webdriver.common.keys import Keys
 
 from ectools.config import get_logger
 from ectools.token_helper import get_token
-from ectools.utility import get_score, get_browser
+from ectools.utility import get_score, get_browser, retry_for_error
 from ..objects import *
 from ..pages import TIMEOUT_FOR_ELEMENT_WAITING
 from ..pages.score_helper_page_v1 import SubmitScoreHelperS15Page as CurrentPage
@@ -96,6 +96,7 @@ def pass_six_units_and_level_test(score=get_score()):
     pass_level_test(score)
 
 
+@retry_for_error(error=AssertionError)
 def enroll_to_unit(unit_id, course_level=None):
     get_logger().info("Enroll to unit {}".format(unit_id))
     if course_level is not None:
@@ -104,3 +105,9 @@ def enroll_to_unit(unit_id, course_level=None):
     _page().select_option_by_index(CurrentPage.CURRENT_UNIT_SELECTOR_XPATH, unit_id - 1)
     _page().element_enroll_to_selected_unit_button.click()
     wait_for_submit_ready()
+
+    # reload to ensure enrollment changed
+    student_id = _page().element_member_textbox.get_attribute('value')
+    load_student(student_id, reload_page=False)
+    current_unit = _page().first_selected_option(CurrentPage.CURRENT_UNIT_SELECTOR_XPATH)
+    assert "Unit {}".format(unit_id) in current_unit.text
