@@ -16,17 +16,26 @@ namespace ET2.ViewModels
 
         private string _partner = Settings.LoadCurrentProduct().Partner;
         private bool _isV2 = Settings.LoadCurrentTestAccount().IsV2;
+        private bool _isE10 = Settings.LoadCurrentTestAccount().AccountType == AccountTypes.E10;
 
-        public void NotifySchoolUpdate()
+        public void NotifyAccountTypeChanged()
         {
             _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
+            _isE10 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType == AccountTypes.E10;
+
             this.NotifyOfPropertyChange(() => this.ProductCityList);
             this.NotifyOfPropertyChange(() => this.ProductSchoolList);
 
-            // update current city and school
+            // update current city and school for v2 student
             var div = this.DivisionList.Where(e => e.SchoolName == this.ProductSchoolList.First()).Single();
             this.CurrentCity = div.City;
             this.CurrentSchool = div.SchoolName;
+
+            // update product for e10 student
+            this.NotifyOfPropertyChange(() => this.ProductList);
+            this.NotifyOfPropertyChange(() => this.ProductNameList);            
+            this.ProductName = this.ProductNameList.First();
+            this.CurrentProduct = this.ProductList.Where(e => e.Name == this.ProductNameList.First()).Single();
         }
 
         public string CurrentPartner
@@ -112,7 +121,7 @@ namespace ET2.ViewModels
                 {
                     _productList = Settings.LoadProductList();
                 }
-                return _productList;
+                return _productList.Where(e => e.IsE10 == _isE10).ToList();
             }
         }
 
