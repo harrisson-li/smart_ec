@@ -22,8 +22,11 @@ namespace ET2.ViewModels
             _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
             this.NotifyOfPropertyChange(() => this.ProductCityList);
             this.NotifyOfPropertyChange(() => this.ProductSchoolList);
-            this.NotifyOfPropertyChange(() => this.CurrentCity);
-            this.NotifyOfPropertyChange(() => this.CurrentSchool);
+
+            // update current city and school
+            var div = this.DivisionList.Where(e => e.SchoolName == this.ProductSchoolList.First()).Single();
+            this.CurrentCity = div.City;
+            this.CurrentSchool = div.SchoolName;
         }
 
         public string CurrentPartner
@@ -190,7 +193,7 @@ namespace ET2.ViewModels
 
                 // when city changed, need to update div code and school list and div list
                 var div = DivisionList
-                    .Where(e => e.City == value).First();
+                    .Where(e => e.City == value && e.IsV2 == _isV2).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
 
                 this.NotifyOfPropertyChange();
@@ -221,7 +224,6 @@ namespace ET2.ViewModels
                 CurrentProduct.DivisionCode = div.DivisionCode;
                 ShellViewModel.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
 
-                //this.NotifyOfPropertyChange(() => this.DivisionList);
                 this.NotifyOfPropertyChange();
             }
         }
@@ -266,6 +268,7 @@ namespace ET2.ViewModels
             get
             {
                 return DivisionList
+                    .Where(e => e.PartnerCode == CurrentPartner)
                     .Where(e => e.City == CurrentCity)
                     .Where(e => e.IsV2 == _isV2)
                     .Select(e => e.SchoolName).Distinct().ToList();
