@@ -1,4 +1,9 @@
-﻿## v0.0.0.31
+﻿## v0.0.0.32
+
+1. The E10/S15/S15_V2 checkbox is for account type now, but not service version.
+2. Activate S15 account with V2 service by default.
+
+## v0.0.0.31
 
 1. Open help page instead of a useless dialog.
 2. Sort and align quick actions by name.

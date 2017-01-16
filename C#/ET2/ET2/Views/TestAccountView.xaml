@@ -195,15 +195,15 @@
                         Visibility="Collapsed" />
                     <Label Content="FreeRedemptionQty: " Visibility="Visible" />
                     <Label
-                        Content="StartLevel: "
+                        Content="LevelQty:"
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsE10,
+                                            Converter={StaticResource InverseBoolean}}"
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Visible" />
                     <Label
-                        Content="LevelQty:"
-                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
-                                            Converter={StaticResource InverseBoolean}}"
+                        Content="StartLevel: "
                         Style="{DynamicResource FieldLabelStyle}"
-                        Visibility="Collapsed" />
+                        Visibility="Visible" />
                     <Label
                         Content="City: "
                         Style="{DynamicResource FieldLabelStyle}"
@@ -244,7 +244,7 @@
                         SelectedItem="{Binding Path=ProductVM.ProductName,
                                                Mode=TwoWay}"
                         Style="{DynamicResource VirtualisedMetroComboBox}"
-                        ToolTip="{Binding Path=ProductVM.CurrentProduct.Name,
+                        ToolTip="{Binding Path=ProductVM.ProductName,
                                           Mode=TwoWay}" />
                     <TextBox
                         Name="freeRedemptionCode"
@@ -285,11 +285,11 @@
                         ButtonsAlignment="Right"
                         HasDecimals="False"
                         Interval="1"
-                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2,
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsE10,
                                             Converter={StaticResource InverseBoolean}}"
                         TextAlignment="Left"
                         ToolTip="LevelQty"
-                        Visibility="Collapsed"
+                        Visibility="Visible"
                         Value="{Binding Path=ProductVM.CurrentProduct.LevelQty,
                                         Mode=TwoWay}" />
                     <ComboBox
@@ -334,7 +334,8 @@
                         Content="Includes Enroll"
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
                                             Mode=TwoWay}"
-                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsV2}" />
+                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsE10,
+                                            Converter={StaticResource InverseBoolean}}" />
                 </StackPanel>
                 <WrapPanel
                     Name="quickActionsPanel"
