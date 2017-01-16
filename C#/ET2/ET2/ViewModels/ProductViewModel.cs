@@ -108,9 +108,8 @@ namespace ET2.ViewModels
                 }
 
                 this._name = value;
-                var prod = ProductList
-                    .Where(e => e.Name == _name)
-                    .Single();
+                var prod = ProductList.Where(e => e.Name == _name).Single();
+
                 this.CurrentProduct.Id = prod.Id;
                 this.CurrentProduct.Name = prod.Name;
                 this.CurrentProduct.Partner = prod.Partner;
@@ -186,13 +185,14 @@ namespace ET2.ViewModels
                 _city = value;
 
                 // when city changed, need to update div code and school list and div list
-                var div = DivisionList
-                    .Where(e => e.City == value && e.IsV2 == _isV2).First();
-                CurrentProduct.DivisionCode = div.DivisionCode;
+                var school = DivisionList
+                    .Where(e => e.City == value)
+                    .Where(e => e.IsV2 == _isV2).First();
 
+                CurrentProduct.DivisionCode = school.DivisionCode;
                 this.NotifyOfPropertyChange();
                 this.NotifyOfPropertyChange(() => this.ProductSchoolList);
-                CurrentSchool = div.SchoolName;
+                CurrentSchool = school.SchoolName;
             }
         }
 
