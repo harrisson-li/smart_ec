@@ -110,7 +110,7 @@ def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configurat
                 return value
 
         except Exception as exc:
-            info = (type(exc).__name__, exc.args[0])
+            info = (type(exc).__name__, ','.join(exc.args))
 
         time.sleep(poll_time)
         if time.time() > end_time:
@@ -139,7 +139,7 @@ def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Config
 
         except Exception as exc:
             get_logger().debug("Try wait for '{}()'. [{}]: {}".format(
-                method.__name__, type(exc).__name__, exc.args[0]))
+                method.__name__, type(exc).__name__, ','.join(exc.args)))
 
             time.sleep(poll_time)
             if time.time() > end_time:
