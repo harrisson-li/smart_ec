@@ -139,6 +139,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['is_activated'] = True
     student['partner'] = config.partner
     student['country_code'] = config.country_code
+    student['domain'] = config.domain
     student.update(kwargs)
 
     return student
