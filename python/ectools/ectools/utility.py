@@ -97,7 +97,7 @@ def detail_on_failure(func):
 def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
     """
     Wait for a method with timeout, return its result or raise error.
-    The expected result of method should not be False or equal to False.
+    The expecting result should NOT be False or equal to False.
     """
 
     end_time = time.time() + timeout
