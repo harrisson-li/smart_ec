@@ -95,13 +95,19 @@ def detail_on_failure(func):
 
 
 def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
-    """Wait for a method with timeout, return its result or raise error."""
+    """
+    Wait for a method with timeout, return its result or raise error.
+    The expecting result should NOT be False or equal to False.
+    """
 
     end_time = time.time() + timeout
+    info = None
 
     while True:
         try:
-            return method()
+            value = method()
+            if value:
+                return value
 
         except Exception as exc:
             info = (type(exc).__name__, exc.args[0])
@@ -127,7 +133,9 @@ def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Config
 
     while True:
         try:
-            return method()
+            value = method()
+            if value:
+                return value
 
         except Exception as exc:
             get_logger().debug("Try wait for '{}()'. [{}]: {}".format(
