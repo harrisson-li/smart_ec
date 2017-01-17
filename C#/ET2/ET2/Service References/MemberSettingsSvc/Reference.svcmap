@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="97cccbb7-3cf4-4ec1-8212-93c77d9f0795" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://uat.englishtown.com/services/shared/1.0/membersettings.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="membersettings.xsd" MetadataType="Schema" ID="3c500621-794a-4db0-a60c-14dc8ec13ca5" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd1" />
+    <MetadataFile FileName="membersettings1.xsd" MetadataType="Schema" ID="c9f0cdb5-f954-4eb9-8b21-27d584837f8c" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd0" />
+    <MetadataFile FileName="membersettings2.xsd" MetadataType="Schema" ID="0412fcab-11e0-4c42-80da-a587aac9bf0b" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd3" />
+    <MetadataFile FileName="membersettings3.xsd" MetadataType="Schema" ID="da78fe62-0ba2-40fb-a214-4c5d8370c5a5" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?xsd=xsd2" />
+    <MetadataFile FileName="membersettings.disco" MetadataType="Disco" ID="413151e3-5f60-4618-9612-e1fc4474c1e8" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?disco" />
+    <MetadataFile FileName="membersettings.wsdl" MetadataType="Wsdl" ID="5785940f-1802-46cf-bab3-d2326f581e97" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="MemberSettingsService.wsdl" MetadataType="Wsdl" ID="7b2d8f3c-e934-4a58-a58d-0b157487ef1a" SourceId="1" SourceUrl="http://cns-etuat-20.ef.com/services/shared/1.0/membersettings.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

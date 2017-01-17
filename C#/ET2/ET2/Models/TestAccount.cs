@@ -33,6 +33,7 @@ namespace ET2.Models
                 _accountTypes = value;
                 OnPropertyChanged();
                 OnPropertyChanged("IsV2");
+                OnPropertyChanged("IsE10");
             }
         }
 
@@ -73,6 +74,11 @@ namespace ET2.Models
         public bool IsV2
         {
             get { return this.AccountType == AccountTypes.S15_V2; }
+        }
+
+        public bool IsE10
+        {
+            get { return this.AccountType == AccountTypes.E10; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -12,9 +12,46 @@ namespace ET2.ViewModels
 {
     public class ProductViewModel : PropertyChangedBase
     {
-        #region Partner filters
-
         private string _partner = Settings.LoadCurrentProduct().Partner;
+        private bool _isV2 = Settings.LoadCurrentTestAccount().IsV2;
+        private bool _isE10 = Settings.LoadCurrentTestAccount().IsE10;
+
+        /// <summary>
+        /// When account type changed, will call this method.
+        /// </summary>
+        public void NotifyAccountTypeChanged()
+        {
+            // get current account status
+            _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
+            _isE10 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsE10;
+
+            // update city list
+            this.NotifyOfPropertyChange(() => this.ProductCityList);
+            var existSchool = this.DivisionList
+                .Where(e => e.PartnerCode == CurrentPartner)
+                .Where(e => e.City == CurrentCity)
+                .Where(e => e.IsV2 == _isV2)
+                .Count() > 0;
+
+            // update current city only if there is matched schools
+            if (!existSchool)
+            {
+                var school = this.DivisionList
+                    .Where(e => e.PartnerCode == CurrentPartner)
+                    .Where(e => e.IsV2 == _isV2).First();
+                this.CurrentCity = school.City;
+            }
+
+            // update school list and school name
+            this.NotifyOfPropertyChange(() => this.ProductSchoolList);
+            this.CurrentSchool = this.ProductSchoolList.First();
+
+            // update product for e10 student
+            this.NotifyOfPropertyChange(() => this.ProductNameList);
+            this.ProductName = this.ProductNameList.First();
+        }
+
+        #region Partner filters
 
         public string CurrentPartner
         {
@@ -29,18 +66,12 @@ namespace ET2.ViewModels
                     return;
                 }
                 _partner = value;
-                var prod = ProductList
-                    .Where(e => e.Partner == CurrentPartner)
-                    .First().DeepCopy();
-                CurrentProduct = prod;
-                ProductName = prod.Name;
 
                 this.NotifyOfPropertyChange();
                 this.NotifyOfPropertyChange(() => this.ProductNameList);
-                this.NotifyOfPropertyChange(() => this.ProductMainRedCodeList);
-                this.NotifyOfPropertyChange(() => this.ProductFreeRedCodeList);
                 this.NotifyOfPropertyChange(() => this.ProductCityList);
                 this.CurrentCity = this.ProductCityList.First();
+                this.ProductName = this.ProductNameList.First();
             }
         }
 
@@ -77,9 +108,8 @@ namespace ET2.ViewModels
                 }
 
                 this._name = value;
-                var prod = ProductList
-                    .Where(e => e.Name == _name)
-                    .Single().DeepCopy();
+                var prod = ProductList.Where(e => e.Name == _name).Single();
+
                 this.CurrentProduct.Id = prod.Id;
                 this.CurrentProduct.Name = prod.Name;
                 this.CurrentProduct.Partner = prod.Partner;
@@ -111,11 +141,6 @@ namespace ET2.ViewModels
             {
                 return _prod;
             }
-            set
-            {
-                _prod = value;
-                this.NotifyOfPropertyChange(() => this.CurrentProduct);
-            }
         }
 
         public List<string> ProductNameList
@@ -124,6 +149,7 @@ namespace ET2.ViewModels
             {
                 return ProductList
                     .Where(e => e.Partner == CurrentPartner)
+                    .Where(e => e.IsE10 == _isE10)
                     .Select(e => e.Name).ToList();
             }
         }
@@ -135,26 +161,6 @@ namespace ET2.ViewModels
                 return new List<string>() { "0A", "0B" }
                 .Concat(Enumerable.Range(1, 14)
                 .Select(e => e.ToString())).ToList();
-            }
-        }
-
-        public List<string> ProductMainRedCodeList
-        {
-            get
-            {
-                return ProductList
-                    .Where(e => e.Partner == CurrentPartner)
-                    .Select(e => e.MainRedCode).ToList();
-            }
-        }
-
-        public List<string> ProductFreeRedCodeList
-        {
-            get
-            {
-                return ProductList
-                    .Where(e => e.Partner == CurrentPartner)
-                    .Select(e => e.FreeRedCode).ToList();
             }
         }
 
@@ -179,13 +185,14 @@ namespace ET2.ViewModels
                 _city = value;
 
                 // when city changed, need to update div code and school list and div list
-                var div = DivisionCodeList
-                    .Where(e => e.City == value).First();
-                CurrentProduct.DivisionCode = div.DivisionCode;
+                var school = DivisionList
+                    .Where(e => e.City == value)
+                    .Where(e => e.IsV2 == _isV2).First();
 
+                CurrentProduct.DivisionCode = school.DivisionCode;
                 this.NotifyOfPropertyChange();
                 this.NotifyOfPropertyChange(() => this.ProductSchoolList);
-                CurrentSchool = div.SchoolName;
+                CurrentSchool = school.SchoolName;
             }
         }
 
@@ -206,25 +213,24 @@ namespace ET2.ViewModels
                 _school = value;
 
                 // when school changed, need to update div code and div list
-                var div = DivisionCodeList
+                var div = DivisionList
                     .Where(e => e.SchoolName == value).First();
                 CurrentProduct.DivisionCode = div.DivisionCode;
                 ShellViewModel.WriteStatus("Division Code = {0}".FormatWith(div.DivisionCode));
 
-                this.NotifyOfPropertyChange(() => this.DivisionCodeList);
                 this.NotifyOfPropertyChange();
             }
         }
 
         private List<Division> _divList;
 
-        public List<Division> DivisionCodeList
+        public List<Division> DivisionList
         {
             get
             {
                 if (_divList == null)
                 {
-                    _divList = Settings.LoadDivisionCode();
+                    _divList = Settings.LoadDivision();
                 }
                 return _divList;
             }
@@ -234,7 +240,7 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
                     .Where(e => e.City == CurrentCity)
                     .Select(e => e.DivisionCode).ToList();
             }
@@ -244,8 +250,9 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
                     .Where(e => e.PartnerCode == CurrentPartner)
+                    .Where(e => e.IsV2 == _isV2)
                     .Select(e => e.City).Distinct().ToList();
             }
         }
@@ -254,8 +261,10 @@ namespace ET2.ViewModels
         {
             get
             {
-                return DivisionCodeList
+                return DivisionList
+                    .Where(e => e.PartnerCode == CurrentPartner)
                     .Where(e => e.City == CurrentCity)
+                    .Where(e => e.IsV2 == _isV2)
                     .Select(e => e.SchoolName).Distinct().ToList();
             }
         }
@@ -264,10 +273,16 @@ namespace ET2.ViewModels
 
         public ProductViewModel()
         {
-            this.CurrentProduct = Settings.LoadCurrentProduct();
+            _prod = Settings.LoadCurrentProduct();
         }
 
-        public Dictionary<string, object> GetPostData(int memberId, bool isV2)
+        /// <summary>
+        /// Gets the post data to activate a student, it is not the same for E10 and S15.
+        /// </summary>
+        /// <param name="memberId">The member id.</param>
+        /// <param name="isE10">if set to <c>true</c> [is e10 student].</param>
+        /// <returns></returns>
+        public Dictionary<string, object> GetPostData(int memberId, bool isE10)
         {
             var postData = new Dictionary<string, object>();
 
@@ -284,21 +299,24 @@ namespace ET2.ViewModels
                 postData.Add("securityverified", "on");
             }
 
-            if (isV2)
+            if (isE10)
+            {
+                postData.Add("levelQty", CurrentProduct.LevelQty);
+            }
+            else
             {
                 if (CurrentProduct.IncludesEnroll)
                 {
                     postData.Add("includesenroll", "on");
                 }
             }
-            else
-            {
-                postData.Add("levelQty", CurrentProduct.LevelQty);
-            }
 
             return postData;
         }
 
+        /// <summary>
+        /// Saves current product info to disk.
+        /// </summary>
         public void Save()
         {
             Settings.SaveCurrentProduct(CurrentProduct);

@@ -219,8 +219,6 @@ namespace ET2.ViewModels
                     break;
 
                 case AccountTypes.S15:
-                    break;
-
                 case AccountTypes.S15_V2:
                     url = url.Replace("ForE14HZ", "V2");
                     break;
@@ -229,8 +227,8 @@ namespace ET2.ViewModels
                     throw new NotSupportedException();
             }
 
-            var isV2 = (accountType == AccountTypes.S15_V2);
-            var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isV2));
+            var isE10 = (accountType == AccountTypes.E10);
+            var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isE10));
             ShellViewModel.WriteStatus(result);
             Save();
         }
