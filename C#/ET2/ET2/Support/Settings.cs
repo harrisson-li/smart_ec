@@ -250,7 +250,7 @@ namespace ET2.Support
 
             if (obj.DivisionCode.IsNullOrEmpty())
             {
-                obj.DivisionCode = LoadDivisionCode().Where(e =>
+                obj.DivisionCode = LoadDivision().Where(e =>
                 e.PartnerCode == obj.Partner).First().DivisionCode;
             }
 
@@ -292,12 +292,16 @@ namespace ET2.Support
 
         public static Division LoadCurrentDivision()
         {
-            return LoadDivisionCode()
-                .Where(e => e.DivisionCode == LoadCurrentProduct().DivisionCode)
+            var isV2 = LoadCurrentTestAccount().IsV2;
+            var partner = LoadCurrentProduct().Partner.ToLower();
+
+            return LoadDivision()
+                .Where(e => e.IsV2 == isV2)
+                .Where(e => e.PartnerCode.ToLower() == partner)
                 .First();
         }
 
-        public static List<Division> LoadDivisionCode()
+        public static List<Division> LoadDivision()
         {
             var dataFile = Path.Combine(AppDataFolder, Data.DivisionCode);
             var globalFile = AsGlobalFile(Data.DivisionCode);
@@ -313,7 +317,8 @@ namespace ET2.Support
                       PartnerCode = e["PartnerCode"].ToString().ToLower(),
                       City = e["City"].ToString(),
                       SchoolName = e["SchoolName"].ToString(),
-                      DivisionCode = e["DivisionCode"].ToString()
+                      DivisionCode = e["DivisionCode"].ToString(),
+                      Tags = e["Tags"].ToString()
                   }).ToList();
             return list;
         }

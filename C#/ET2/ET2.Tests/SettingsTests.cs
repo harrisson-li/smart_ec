@@ -55,7 +55,7 @@ namespace ET2.Tests
         [TestMethod]
         public void TestLoadDivisionCode()
         {
-            var list = Settings.LoadDivisionCode();
+            var list = Settings.LoadDivision();
             Log.Info(list.ToJsonString());
             Assert.IsTrue(list.Count > 0);
         }

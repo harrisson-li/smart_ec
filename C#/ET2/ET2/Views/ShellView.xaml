@@ -12,7 +12,7 @@
     Width="780"
     Height="500"
     MinWidth="780"
-    MinHeight="500"
+    MinHeight="520"
     BorderBrush="{DynamicResource AccentColorBrush}"
     BorderThickness="1"
     Icon="../Resources/et2.ico"
