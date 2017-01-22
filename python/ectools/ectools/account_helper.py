@@ -179,6 +179,17 @@ def activate_school_v2_student(school_name=None, **kwargs):
     return activate_account(product_id=product_id, school_name=school_name, **kwargs)
 
 
+def activate_student_with_random_level(product_id=None,
+                                       school_name=None,
+                                       is_v2=True,
+                                       min_level=1,
+                                       max_level=16,
+                                       **kwargs):
+    level = get_random_level(min_level, max_level)
+    kwargs.update({'startLevel': level})
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+
+
 def activate_school_student_with_random_level(product_id=None,
                                               school_name=None,
                                               is_v2=True,
