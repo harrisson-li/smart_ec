@@ -23,11 +23,11 @@ def read_csv(csv_path, as_dict=False, skip_header=True):
     """
     Read a csv file then return as dict or list. Example::
 
-    for id, name in read_csv('path/to/csv'):
-      print(id, name)
+        for id, name in read_csv('path/to/csv'):
+          print(id, name)
 
-    for row in read_csv('path/to/csv', as_dict=True):
-      print(row['id'], row['name'])
+        for row in read_csv('path/to/csv', as_dict=True):
+          print(row['id'], row['name'])
 
     :param csv_path: the path to a csv file
     :param as_dict: return as dict instead of list
