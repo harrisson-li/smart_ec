@@ -1,10 +1,10 @@
 from ectools.internal.data_helper import *
 
 
-def test_read_csv():
+def test_read_data():
     names = ['products', 'partners', 'schools', 'environments']
     for name in names:
-        rows = read_csv(name)
+        rows = read_data(name)
         assert len(rows) > 0
 
 
@@ -29,7 +29,7 @@ def test_get_partner():
 def test_get_product():
     result = get_all_partners()
     assert len(result) > 0
-    assert get_product_by_id(63)['package_name'] == 'Smart 15 - School'
+    assert get_product_by_id(63)['name'] == 'Smart 15 - School'
     assert get_products_by_partner() is not None
     assert get_products_has_tag('Major') is not None
     assert get_any_product() is not None

@@ -341,7 +341,7 @@ class PageBase(object):
             get_logger().warn("Timeout while waiting for '{}' in {} seconds.".format(xpath, timeout))
             return False
         except Exception as e:
-            get_logger().warn("Error occurred while waiting for '{}': {}".format(xpath, e.args[0]))
+            get_logger().warn("Error occurred while waiting for '{}': {}".format(xpath, ','.join(e.args)))
             return False
 
     @detail_on_failure

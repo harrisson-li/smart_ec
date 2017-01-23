@@ -1,6 +1,10 @@
-from ectools.utility import *
+from os import remove
+from tempfile import NamedTemporaryFile
 from time import sleep
+
 from ectools.config import get_logger
+from ectools.internal.data_helper import get_csv_path
+from ectools.utility import *
 
 
 def test_get_browser():
@@ -82,3 +86,56 @@ def test_retry_for_error():
 
     try_me = retry_for_error(error=RuntimeError)(try_me)
     try_me()
+
+
+def test_read_csv():
+    csv_path = get_csv_path('partners')
+    for name, domain, country in read_csv(csv_path, as_dict=False):
+        print(name, domain, country)
+        assert name == 'Cool'
+        assert domain == 'CN'
+        break
+
+    for row in read_csv(csv_path, as_dict=True):
+        print(row)
+        assert row['name'] == 'Cool'
+        assert row['domain'] == 'CN'
+        break
+
+
+def test_write_csv_list():
+    header = ['first', 'last']
+    row = ['toby', 'qin']
+    csv_path = NamedTemporaryFile(delete=False).name
+    write_csv_row(header, csv_path)
+    write_csv_row(row, csv_path)
+
+    for first, last in read_csv(csv_path):
+        assert first == 'toby'
+
+    rows = [['toby', 'qin'], ['ef', 'labs']]
+    write_csv_rows(rows, csv_path, header)
+
+    result = list(read_csv(csv_path))
+    assert result[1][0] == 'ef'
+    assert result[1][1] == 'labs'
+
+    remove(csv_path)
+
+
+def test_write_csv_dict():
+    row = {'first': 'toby', 'last': 'qin'}
+    csv_path = NamedTemporaryFile(delete=False).name
+    write_csv_row(row, csv_path, from_dict=True)
+
+    for row in read_csv(csv_path, as_dict=True):
+        assert row['first'] == 'toby'
+
+    rows = [{'first': 'toby', 'last': 'qin'}, {'first': 'ef', 'last': 'labs'}]
+    write_csv_rows(rows, csv_path, from_dict=True)
+
+    result = list(read_csv(csv_path, as_dict=True))
+    assert result[1]['first'] == 'ef'
+    assert result[1]['last'] == 'labs'
+
+    remove(csv_path)

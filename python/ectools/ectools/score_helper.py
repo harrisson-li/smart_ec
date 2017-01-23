@@ -65,6 +65,13 @@ def submit_current_unit(score=get_score(), skip_activity=0):
         v1.submit_current_unit(score, skip_activity)
 
 
+def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
+    if _is_submit_for_v2():
+        v2.submit_for_unit(unit_id, score, skip_activity)
+    else:
+        v1.submit_for_unit(unit_id, score, skip_activity)
+
+
 def pass_to_unit(unit_id, score=get_score(), skip_activity=0):
     if _is_submit_for_v2():
         v2.pass_to_unit(unit_id, score, skip_activity)

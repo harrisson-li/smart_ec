@@ -3,7 +3,7 @@ from assertpy import assert_that
 import ectools.internal.business.score_helper_v1 as s15_submit_tool
 from ectools.config import config, get_logger
 from ectools.token_helper import get_token
-from ectools.utility import wait_for,get_browser,get_score
+from ectools.utility import get_browser, get_score, retry_for_error
 from ..objects import *
 from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
 
@@ -46,15 +46,6 @@ def load_student(student_id, reload_page=True):
     _page().wait_until_element_visible(_page().element_unit_info_text)
 
 
-def verify_enroll_to_unit(expected_unit_id):
-    def checking():
-        load_student(Cache.current_student, reload_page=False)
-        current_unit = get_current_unit_id()
-        return current_unit == expected_unit_id
-
-    wait_for(checking)
-
-
 def submit_current_unit(score=get_score(), skip_activity=0):
     _page().wait_until_element_visible(_page().element_unit_score_textbox)
     _page().element_unit_score_textbox.clear()
@@ -62,13 +53,25 @@ def submit_current_unit(score=get_score(), skip_activity=0):
     _page().select_option_by_text(CurrentPage.ACTIVITY_SKIP_SELECTOR_XPATH, skip_activity)
     _page().element_unit_score_submit_button.click()
 
+    if skip_activity == 0:
+        verify_unit_status(expected_status=PASSED)
 
+
+def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
+    enroll_to_unit(target_unit_id=unit_id)
+    submit_current_unit(score=score, skip_activity=skip_activity)
+
+
+@retry_for_error(error=AssertionError)
 def enroll_to_unit(target_unit_id):
     get_logger().info("Enroll to unit {}".format(target_unit_id))
     _page().select_option_by_index(CurrentPage.UNIT_LIST_SELECTOR_XPATH, target_unit_id - 1)
     _page().wait_until_xpath_clickable(_page().ENROLL_BUTTON_XPATH)
     _page().element_enroll_button.click()
-    verify_enroll_to_unit(target_unit_id)
+
+    load_student(Cache.current_student, reload_page=False)
+    current_unit = get_current_unit_id()
+    assert current_unit == target_unit_id
 
 
 def get_current_unit_id():
@@ -84,19 +87,10 @@ def pass_to_unit(unit_id, score=get_score(), skip_activity=0):
 
     for unit in range(int(current_unit), unit_id + 1):
 
-        if unit == MAX_UNIT_NUMBER and verify_unit_status(expected_status=PASSED):
-            break
-
         if unit == unit_id:
-            submit_current_unit(score, skip_activity)
+            submit_for_unit(unit_id=unit, score=score, skip_activity=skip_activity)
         else:
-            submit_current_unit(score=score)
-            load_student(Cache.current_student, reload_page=False)
-
-        if unit < unit_id:
-            enroll_to_unit(unit + 1)
-        elif skip_activity == 0:
-            assert verify_unit_status(expected_status=PASSED)
+            submit_for_unit(unit_id=unit, score=score)
 
 
 def pass_six_units(score=get_score()):

@@ -139,6 +139,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['is_activated'] = True
     student['partner'] = config.partner
     student['country_code'] = config.country_code
+    student['domain'] = config.domain
     student.update(kwargs)
 
     return student
@@ -176,6 +177,17 @@ def activate_home_v2_student(school_name=None, **kwargs):
 def activate_school_v2_student(school_name=None, **kwargs):
     product_id = get_any_school_product()['id']
     return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+
+
+def activate_student_with_random_level(product_id=None,
+                                       school_name=None,
+                                       is_v2=True,
+                                       min_level=1,
+                                       max_level=16,
+                                       **kwargs):
+    level = get_random_level(min_level, max_level)
+    kwargs.update({'startLevel': level})
+    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
 
 
 def activate_school_student_with_random_level(product_id=None,

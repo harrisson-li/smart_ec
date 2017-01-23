@@ -19,10 +19,80 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from .internal.objects import Cache, Configuration
 
 
-def read_csv_as_dict(csv_path):
+def read_csv(csv_path, as_dict=False, skip_header=True):
+    """
+    Read a csv file then return as dict or list. Example::
+
+        for id, name in read_csv('path/to/csv'):
+          print(id, name)
+
+        for row in read_csv('path/to/csv', as_dict=True):
+          print(row['id'], row['name'])
+
+    :param csv_path: the path to a csv file
+    :param as_dict: return as dict instead of list
+    :param skip_header: skip the header row
+    :return:
+    """
     with open(csv_path) as f:
-        reader = csv.DictReader(f)
-        return [row for row in reader]
+
+        if as_dict:
+            reader = csv.DictReader(f)
+        else:
+            reader = csv.reader(f)
+            if skip_header:
+                next(reader)
+
+        for row in reader:
+            yield row
+
+
+def _get_csv_open_args(csv_path, mode):
+    """
+    http://stackoverflow.com/questions/3348460/csv-file-written-with-python-has-blank-lines-between-each-row
+    """
+    args = {'name': csv_path, 'mode': mode}
+
+    if sys.version_info[0] == 3:
+        args['newline'] = ''
+    else:
+        args['mode'] = mode + 'b'
+
+    return args
+
+
+def write_csv_row(row, csv_path, from_dict=False):
+    """Write a row of data to csv from list or dict, append if existed."""
+    with open(**_get_csv_open_args(csv_path, 'a')) as f:
+
+        if from_dict:
+            headers = row.keys()
+            writer = csv.DictWriter(f, headers)
+            writer.writeheader()
+        else:
+            writer = csv.writer(f)
+
+        writer.writerow(row)
+
+
+def write_csv_rows(rows, csv_path, headers=None, from_dict=False):
+    """Write many rows of data to csv, always overwrite existed file."""
+    with open(**_get_csv_open_args(csv_path, 'w')) as f:
+
+        if from_dict:
+            if not headers:
+                headers = rows[0].keys()
+
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+
+        else:
+            writer = csv.writer(f)
+
+            if headers:
+                writer.writerow(headers)
+
+        writer.writerows(rows)
 
 
 def get_random_item(in_seq):
@@ -110,7 +180,7 @@ def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configurat
                 return value
 
         except Exception as exc:
-            info = (type(exc).__name__, exc.args[0])
+            info = (type(exc).__name__, ','.join(exc.args))
 
         time.sleep(poll_time)
         if time.time() > end_time:
@@ -139,7 +209,7 @@ def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Config
 
         except Exception as exc:
             get_logger().debug("Try wait for '{}()'. [{}]: {}".format(
-                method.__name__, type(exc).__name__, exc.args[0]))
+                method.__name__, type(exc).__name__, ','.join(exc.args)))
 
             time.sleep(poll_time)
             if time.time() > end_time:
