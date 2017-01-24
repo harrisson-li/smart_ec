@@ -90,6 +90,10 @@ namespace ET2.ViewModels
             var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
             var mark = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Mark;
             var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
+            var school = ShellViewModel.Instance.ProductVM.CurrentSchool;
+            var level = ShellViewModel.Instance.ProductVM.CurrentProduct.StartLevel;
+            var productId = ShellViewModel.Instance.ProductVM.CurrentProduct.Id;
+            var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType.ToString();
 
             if (!originUrl.IsNullOrEmpty())
             {
@@ -100,6 +104,10 @@ namespace ET2.ViewModels
                 originUrl = originUrl.Replace("$name", name);
                 originUrl = originUrl.Replace("$mark", mark);
                 originUrl = originUrl.Replace("$partner", partner);
+                originUrl = originUrl.Replace("$school", school);
+                originUrl = originUrl.Replace("$level", level);
+                originUrl = originUrl.Replace("$productId", productId.ToString());
+                originUrl = originUrl.Replace("$accountType", accountType.ToString());
                 originUrl = originUrl.Replace("$token", TokenHelper.GetToken(envString));
                 originUrl = TryToFixLink(originUrl);
 
