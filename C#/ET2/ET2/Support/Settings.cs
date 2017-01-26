@@ -237,7 +237,8 @@ namespace ET2.Support
             }
             else
             {
-                // for users who launch et2 in live environment, but now he is not white list
+                // load default value for users who use et2 in live environment previously
+                // but he is not white list now
                 if (!IsWhiteListUser() && obj.Name.ToLower().Contains("live"))
                 {
                     obj = LoadEnvironments().First();
