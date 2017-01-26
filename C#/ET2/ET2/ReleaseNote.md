@@ -1,4 +1,8 @@
-﻿## v0.0.0.33
+﻿## v0.0.0.34
+
+1. Add white list feature, only people in white list can access live environment.
+
+## v0.0.0.33
 
 1. Support new tokens for quick actions: $school, $level, $productId, $accountType
 

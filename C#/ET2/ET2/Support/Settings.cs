@@ -28,6 +28,7 @@ namespace ET2.Support
             public const string DivisionCode = "DivisionCode.csv";
             public const string FixLinks = "FixLinks.csv";
             public const string Envrionments = "Environments.csv";
+            public const string WhiteList = "WhiteList.csv";
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
             public const string ReleaseNote = "ReleaseNote.md";
             public const string HostFolder = "Hosts";
@@ -212,6 +213,12 @@ namespace ET2.Support
                       UrlReplacement = (string)e["Replacement"],
                       Mark = (string)e["Mark"]
                   }).ToList();
+
+            // remove live environment for users not in white list
+            if (!IsWhiteListUser())
+            {
+                list = list.Where(e => !e.Name.ToLower().Contains("live")).ToList();
+            }
             return list;
         }
 
@@ -223,9 +230,18 @@ namespace ET2.Support
         public static TestEnvironment LoadCurrentTestEnvironment()
         {
             var obj = LoadPersonalSetting<TestEnvironment>(Data.CurrentTestEnvironment);
+
             if (obj == null)
             {
                 obj = LoadEnvironments().First();
+            }
+            else
+            {
+                // for users who launch et2 in live environment, but now he is not white list
+                if (!IsWhiteListUser() && obj.Name.ToLower().Contains("live"))
+                {
+                    obj = LoadEnvironments().First();
+                }
             }
 
             return obj;
@@ -539,5 +555,30 @@ namespace ET2.Support
         }
 
         #endregion Quick actions
+
+        #region WhiteList
+
+        public static List<string> LoadWhiteList()
+        {
+            var dataFile = Path.Combine(AppDataFolder, Data.WhiteList);
+            var globalFile = AsGlobalFile(Data.WhiteList);
+            if (!File.Exists(globalFile))
+            {
+                File.Copy(dataFile, globalFile);
+            }
+
+            var table = CsvHelper.LoadDataFromCsv(globalFile);
+            var list = table.Rows.Cast<DataRow>()
+                  .Select(e => e["UserName"].ToString().ToLower())
+                  .ToList();
+            return list;
+        }
+
+        public static bool IsWhiteListUser()
+        {
+            return LoadWhiteList().Contains(Environment.UserName.ToLower());
+        }
+
+        #endregion
     }
 }
