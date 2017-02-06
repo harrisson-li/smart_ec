@@ -47,5 +47,22 @@ namespace ET2.Tests
             var account = Shell.TestAccountVM.GetTestAccountByNameOrId(id);
             Assert.AreEqual(null, account);
         }
+
+        [TestMethod]
+        public void TestTokenReplacement()
+        {
+            Shell.TestEnvVM.UpdateEnvironment("qa");
+            var originText = "$env $id $name $partner $school $level $accountType";
+            var actualReplacedTo = Shell.UsefulLinkVM.ConvertLink(originText);
+            var currentAccount = Shell.TestAccountVM.CurrentTestAccount;
+            var currentProduct = Shell.ProductVM.CurrentProduct;
+
+            Log.Info(actualReplacedTo);
+            Assert.IsTrue(actualReplacedTo.Contains(currentAccount.MemberId));
+            Assert.IsTrue(actualReplacedTo.Contains(currentAccount.UserName));
+            Assert.IsTrue(actualReplacedTo.Contains(currentProduct.StartLevel));
+            Assert.IsTrue(actualReplacedTo.Contains(currentProduct.Partner));
+            Assert.IsTrue(actualReplacedTo.Contains(Shell.ProductVM.CurrentSchool));
+        }
     }
 }
