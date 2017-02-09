@@ -1,4 +1,12 @@
-﻿## v0.0.0.32
+﻿## v0.0.0.34
+
+1. Add white list feature, only people in white list can access live environment.
+
+## v0.0.0.33
+
+1. Support new tokens for quick actions: $school, $level, $productId, $accountType
+
+## v0.0.0.32
 
 1. The E10/S15/S15_V2 checkbox is for account type now, but not service version.
 2. Activate S15 account with V2 service by default.

@@ -33,7 +33,7 @@
     <PublisherName>EF Labs</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>ET2.html</WebPage>
-    <ApplicationRevision>33</ApplicationRevision>
+    <ApplicationRevision>35</ApplicationRevision>
     <ApplicationVersion>0.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -255,6 +255,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Data\WhiteList.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Service References\MemberSettingsSvc\ET2.MemberSettingsSvc.LoadMemberSiteSettingsResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

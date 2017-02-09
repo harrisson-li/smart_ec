@@ -63,7 +63,11 @@ Token replacement is wildly used in ET2, you can set token in useful links or qu
 - $id (=> member id)
 - $name (=> student name)
 - $env (=> current test environment)
-- $partner (=> current partner for account)
+- $partner (=> current selected partner)
+- $school (=> current selected school)
+- $school (=> current selected start level)
+- $productId (=> current selected product id)
+- $accountType (=> current selected accountType)
 
 #### 3.6 Quick Actions
 
@@ -80,8 +84,8 @@ Please remember do not manually publish quick action, Jenkins will remove it if 
 
 **Quick action types:**
 
-- Cmd
 - Python (recommended)
+- Cmd
 - Url
 
 **Tips:**
