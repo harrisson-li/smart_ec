@@ -99,7 +99,7 @@ def write_csv_rows(rows, csv_path, headers=None, from_dict=False):
 
 
 def get_random_item(in_seq):
-    return random.choice(in_seq)
+    return random.choice(list(in_seq))
 
 
 def get_score(min_score=70, max_score=100):
