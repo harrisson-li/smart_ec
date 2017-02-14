@@ -51,12 +51,15 @@ def _get_csv_open_args(csv_path, mode):
     """
     http://stackoverflow.com/questions/3348460/csv-file-written-with-python-has-blank-lines-between-each-row
     """
-    args = {'name': csv_path, 'mode': mode}
+    args = {'mode': mode}
 
     if sys.version_info[0] == 3:
         args['newline'] = ''
+        args['file'] = csv_path
+        args['encoding'] = 'utf-8'
     else:
         args['mode'] = mode + 'b'
+        args['name'] = csv_path
 
     return args
 
@@ -96,7 +99,7 @@ def write_csv_rows(rows, csv_path, headers=None, from_dict=False):
 
 
 def get_random_item(in_seq):
-    return random.choice(in_seq)
+    return random.choice(list(in_seq))
 
 
 def get_score(min_score=70, max_score=100):
@@ -180,7 +183,8 @@ def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configurat
                 return value
 
         except Exception as exc:
-            info = (type(exc).__name__, ','.join(exc.args))
+            args_as_str = [convert_to_str(x) for x in exc.args]
+            info = (type(exc).__name__, ','.join(args_as_str))
 
         time.sleep(poll_time)
         if time.time() > end_time:
@@ -208,8 +212,9 @@ def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Config
                 return value
 
         except Exception as exc:
+            args_as_str = [convert_to_str(x) for x in exc.args]
             get_logger().debug("Try wait for '{}()'. [{}]: {}".format(
-                method.__name__, type(exc).__name__, ','.join(exc.args)))
+                method.__name__, type(exc).__name__, ','.join(args_as_str)))
 
             time.sleep(poll_time)
             if time.time() > end_time:
