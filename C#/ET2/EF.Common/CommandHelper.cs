@@ -58,7 +58,7 @@ namespace EF.Common
             var proc = new ProcessStartInfo();
             proc.FileName = "python.exe";
             proc.Arguments = pythonScript;
-            proc.UseShellExecute = true;
+            proc.UseShellExecute = false;
             proc.WindowStyle = ProcessWindowStyle.Normal;
 
             var p = RunProcess(proc, asAdmin);

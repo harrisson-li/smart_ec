@@ -1,4 +1,8 @@
-﻿## v0.0.0.34
+﻿## v0.0.0.35
+
+1. Bug fix: use python.exe from PATH environment variable but not shell.
+
+## v0.0.0.34
 
 1. Add white list feature, only people in white list can access live environment.
 
