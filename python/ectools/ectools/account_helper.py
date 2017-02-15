@@ -24,8 +24,9 @@ import re
 import requests
 
 from ectools.config import get_logger, config
-from .internal.data_helper import *
+from ectools.student_settings_helper import is_v2_student
 from .internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
+from .internal.data_helper import *
 
 
 def create_account_without_activation(is_e10=False):
@@ -52,7 +53,6 @@ def create_account_without_activation(is_e10=False):
         student['member_id'] = match.group('id')
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
-        get_logger().debug('New test account: %s', student)
         return student
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
@@ -129,9 +129,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     if not student['is_e10']:
         del data['levelQty']  # e10 student cannot set 'levelQty'
 
-    get_logger().debug('Activation data: %s', data)
     result = requests.post(link, data=data)
-
     assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
 
     student['product'] = product
@@ -141,6 +139,12 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['country_code'] = config.country_code
     student['domain'] = config.domain
     student.update(kwargs)
+
+    get_logger().debug('New test account: {}'.format(student))
+
+    # school.csv might have incorrect school data so we verify before return
+    if is_v2 != is_v2_student(student['member_id']):
+        raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
 
     return student
 

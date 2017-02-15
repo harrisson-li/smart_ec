@@ -51,12 +51,15 @@ def _get_csv_open_args(csv_path, mode):
     """
     http://stackoverflow.com/questions/3348460/csv-file-written-with-python-has-blank-lines-between-each-row
     """
-    args = {'name': csv_path, 'mode': mode}
+    args = {'mode': mode}
 
     if sys.version_info[0] == 3:
         args['newline'] = ''
+        args['file'] = csv_path
+        args['encoding'] = 'utf-8'
     else:
         args['mode'] = mode + 'b'
+        args['name'] = csv_path
 
     return args
 
@@ -96,7 +99,7 @@ def write_csv_rows(rows, csv_path, headers=None, from_dict=False):
 
 
 def get_random_item(in_seq):
-    return random.choice(in_seq)
+    return random.choice(list(in_seq))
 
 
 def get_score(min_score=70, max_score=100):
