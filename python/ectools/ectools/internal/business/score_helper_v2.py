@@ -55,6 +55,8 @@ def submit_current_unit(score=get_score(), skip_activity=0):
 
     if skip_activity == 0:
         verify_unit_status(expected_status=PASSED)
+    else:
+        verify_unit_status(expected_status=ONGOING)
 
 
 def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
