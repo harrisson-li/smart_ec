@@ -77,3 +77,14 @@ def test_create_and_use_table():
     row = db_helper.read_rows('test')
     get_logger().info(row)
     assert row[1]['note'] == 'another'
+
+    search_dict = {'id': 2, 'name': 'bbb'}
+    update_dict = {'name': 'aaa', 'note': 'new note'}
+    db_helper.update_rows('test', search_dict, update_dict)
+    row = db_helper.read_rows('test')
+    assert row[1]['note'] == 'new note'
+
+    search_dict = {'id': 2, 'name': 'aaa'}
+    db_helper.delete_rows('test', search_dict)
+    row = db_helper.read_rows('test')
+    assert len(row) == 1

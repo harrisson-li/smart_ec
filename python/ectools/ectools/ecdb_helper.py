@@ -22,7 +22,7 @@ _local_db_path = path.join(path.expanduser('~'), _db_name)
 
 
 def _get_db_path():
-    """First try to use remote shared db, if not able to connect use local db."""
+    """First try to use remote shared db, if not able to connect then use local db."""
     if path.exists(_remote_db_path) and path.isfile(_remote_db_path):
         config.db_path = _remote_db_path
     else:
@@ -34,8 +34,11 @@ def _get_db_path():
 def _build_db():
     """
     1. Build the db if it does not exist on remote server.
-    2. Always build local db to ensure it is up to date
+    2. Always build local db to ensure it is up to date.
     """
+    if getattr(Cache, 'db_has_built', False):
+        return
+
     if not path.exists(_get_db_path()) or config.db_path == _local_db_path:
         sql = read_text(path.join(get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(config.db_path)
@@ -44,6 +47,7 @@ def _build_db():
         conn.commit()
         cur.close()
         conn.close()
+        Cache.db_has_built = True
 
 
 def _connect():
@@ -149,6 +153,7 @@ def execute_query(sql, params=None):
 
 
 def read_rows(table_name, row_limit=500, order_by_column=None, order_desc=False, as_dict=True):
+    """Read all rows from a table."""
     if order_by_column:
         order_statement = 'ORDER BY {}'.format(order_by_column)
         if order_desc:
@@ -170,17 +175,20 @@ def drop_table(table_name):
     execute_query(sql)
 
 
-def _to_insert_values(values):
-    converted = []
-    for v in values:
-        if isinstance(v, int):
-            converted.append(str(v))
-        elif v is None:
-            converted.append("''")
-        else:
-            value = convert_to_str(v).replace("'", "''")
-            converted.append("'{}'".format(value))
+def _escape_value(v):
+    if isinstance(v, int):
+        return str(v)
 
+    elif v is None:
+        return "''"
+
+    else:
+        value = convert_to_str(v).replace("'", "''")
+        return "'{}'".format(value)
+
+
+def _to_insert_values(values):
+    converted = [_escape_value(v) for v in values]
     return ','.join(converted)
 
 
@@ -196,9 +204,23 @@ def add_row_as_dict(table_name, row_dict):
     execute_query(sql)
 
 
+def _to_query_clause(d, sep='AND'):
+    clause = []
+
+    for k, v in d.items():
+        text = " {}={} ".format(k, _escape_value(v))
+        clause.append(text)
+
+    return sep.join(clause)
+
+
 def update_rows(table_name, search_dict, update_dict):
-    pass
+    sql = "UPDATE {} set {} WHERE {}".format(table_name,
+                                             _to_query_clause(update_dict, ','),
+                                             _to_query_clause(search_dict))
+    execute_query(sql)
 
 
 def delete_rows(table_name, search_dict):
-    pass
+    sql = "DELETE FROM {} WHERE {}".format(table_name, _to_query_clause(search_dict))
+    execute_query(sql)
