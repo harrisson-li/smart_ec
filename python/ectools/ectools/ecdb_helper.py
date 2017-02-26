@@ -42,10 +42,8 @@ def _build_db():
     if not path.exists(_get_db_path()) or config.db_path == _local_db_path:
         sql = read_text(path.join(get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(config.db_path)
-        cur = conn.cursor()
-        cur.executescript(sql)
+        conn.executescript(sql)
         conn.commit()
-        cur.close()
         conn.close()
         Cache.db_has_built = True
 
