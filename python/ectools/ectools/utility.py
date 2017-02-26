@@ -315,3 +315,11 @@ def convert_to_str(value):
             return str(value)
         else:
             return value
+
+
+def read_text(path, encoding=None, errors=None):
+    """
+    Open the file in text mode, read it, and close the file.
+    """
+    with open(path, mode='r', encoding=encoding, errors=errors) as f:
+        return f.read()
