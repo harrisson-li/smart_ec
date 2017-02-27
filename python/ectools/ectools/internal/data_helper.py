@@ -72,7 +72,7 @@ def get_all_products():
 
 # noinspection PyShadowingBuiltins
 def get_product_by_id(id):
-    found = [x for x in get_all_products() if str(x['id']) == str(id)]
+    found = [x for x in get_all_products() if int(x['id']) == int(id)]
     assert len(found), "No such product: {}!".format(id)
     return found[0]
 
