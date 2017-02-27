@@ -21,7 +21,7 @@ _remote_db_path = "//cns-qaauto5/Shared/Automation/" + _db_name
 _local_db_path = path.join(path.expanduser('~'), _db_name)
 
 
-def get_data_dir():
+def _get_data_dir():
     root = dirname(__file__)
     return join(root, Configuration.data_dir)
 
@@ -45,7 +45,7 @@ def _build_db():
         return
 
     if not path.exists(_get_db_path()) or Configuration.db_path == _local_db_path:
-        sql = read_text(path.join(get_data_dir(), _db_source_sql))
+        sql = read_text(path.join(_get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(Configuration.db_path)
         conn.executescript(sql)
         conn.commit()

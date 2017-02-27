@@ -1,5 +1,3 @@
-from os import remove, path
-
 import ectools.ecdb_helper as db_helper
 from ectools.config import get_logger
 
@@ -12,9 +10,6 @@ def test_get_db_path():
 
 
 def test_build_db():
-    if path.exists(db_helper._get_db_path()):
-        remove(db_helper._get_db_path())
-
     db_helper._remote_db_path = "//some/where"
     db_helper._build_db()
 
