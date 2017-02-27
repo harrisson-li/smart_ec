@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS database;
 
 CREATE TABLE database
 (
-    env TEXT,
+    name TEXT,
     domain TEXT,
     server TEXT,
     user TEXT,

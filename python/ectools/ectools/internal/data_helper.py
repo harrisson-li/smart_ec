@@ -1,5 +1,4 @@
-from os.path import dirname, join
-
+from ectools.ecdb_helper import read_rows
 from ectools.utility import *
 from .objects import Cache
 
@@ -20,17 +19,8 @@ def get_item_has_tag(items, tag):
     return found
 
 
-def get_data_dir():
-    root = dirname(dirname(__file__))
-    return join(root, Configuration.data_dir)
-
-
-def get_csv_path(csv_name):
-    return join(get_data_dir(), csv_name + '.csv')
-
-
-def read_data(csv_name):
-    return list(read_csv(get_csv_path(csv_name), as_dict=True))
+def read_data(table_name):
+    return read_rows(table_name)
 
 
 def _filter(item, name, domain):
@@ -82,7 +72,7 @@ def get_all_products():
 
 # noinspection PyShadowingBuiltins
 def get_product_by_id(id):
-    found = [x for x in get_all_products() if x['id'] == str(id)]
+    found = [x for x in get_all_products() if str(x['id']) == str(id)]
     assert len(found), "No such product: {}!".format(id)
     return found[0]
 

@@ -10,25 +10,30 @@ build a local db in your user profile directory.
 import collections
 import sqlite3
 from os import path
+from os.path import join, dirname
 
 from ectools.utility import read_text, convert_to_str
-from .config import config, get_logger, Cache
-from .internal.data_helper import get_data_dir
+from .internal.objects import Configuration, Cache
 
-_db_name = 'ec.db'
+_db_name = 'ec.sqlite'
 _db_source_sql = 'ecdb.sql'
 _remote_db_path = "//cns-qaauto5/Shared/Automation/" + _db_name
 _local_db_path = path.join(path.expanduser('~'), _db_name)
 
 
+def get_data_dir():
+    root = dirname(__file__)
+    return join(root, Configuration.data_dir)
+
+
 def _get_db_path():
     """First try to use remote shared db, if not able to connect then use local db."""
     if path.exists(_remote_db_path) and path.isfile(_remote_db_path):
-        config.db_path = _remote_db_path
+        Configuration.db_path = _remote_db_path
     else:
-        config.db_path = _local_db_path
+        Configuration.db_path = _local_db_path
 
-    return config.db_path
+    return Configuration.db_path
 
 
 def _build_db():
@@ -39,9 +44,9 @@ def _build_db():
     if getattr(Cache, 'db_has_built', False):
         return
 
-    if not path.exists(_get_db_path()) or config.db_path == _local_db_path:
+    if not path.exists(_get_db_path()) or Configuration.db_path == _local_db_path:
         sql = read_text(path.join(get_data_dir(), _db_source_sql))
-        conn = sqlite3.connect(config.db_path)
+        conn = sqlite3.connect(Configuration.db_path)
         conn.executescript(sql)
         conn.commit()
         conn.close()
@@ -51,7 +56,7 @@ def _build_db():
 def _connect():
     _build_db()
     if not hasattr(Cache, 'ecdb_conn'):
-        Cache.ecdb_conn = sqlite3.connect(config.db_path)
+        Cache.ecdb_conn = sqlite3.connect(Configuration.db_path)
         Cache.ecdb_cur = Cache.ecdb_conn.cursor()
     return Cache.ecdb_conn
 
@@ -94,9 +99,10 @@ def connect_database(func=None):
             try:
                 _connect()
                 return func(*args, **kwargs)
-            except:
-                get_logger().exception("Error occurred! Please check DB @ {} (sqlite)".format(config.db_path))
-                raise
+            except Exception as e:
+                msg = "Please check DB @ {}!".format(Configuration.db_path)
+                e.args = e.args + (msg,)
+                raise e
             finally:
                 _cleanup()
 
