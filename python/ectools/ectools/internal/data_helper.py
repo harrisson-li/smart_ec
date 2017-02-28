@@ -1,4 +1,4 @@
-from ectools.ecdb_helper import read_rows
+from ectools.ecdb_helper import read_table
 from ectools.utility import *
 from .objects import Cache
 
@@ -20,7 +20,7 @@ def get_item_has_tag(items, tag):
 
 
 def read_data(table_name):
-    return read_rows(table_name)
+    return read_table(table_name)
 
 
 def _filter(item, name, domain):

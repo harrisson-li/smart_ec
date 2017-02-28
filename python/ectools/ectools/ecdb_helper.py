@@ -156,7 +156,7 @@ def execute_query(sql, params=None):
     return get_cursor().rowcount
 
 
-def read_rows(table_name, row_limit=500, order_by_column=None, order_desc=False, as_dict=True):
+def read_table(table_name, row_limit=500, order_by_column=None, order_desc=False, as_dict=True):
     """Read all rows from a table."""
     if order_by_column:
         order_statement = 'ORDER BY {}'.format(order_by_column)
@@ -176,7 +176,7 @@ def create_table(table_name, *columns):
 
 def drop_table(table_name):
     sql = "DROP TABLE IF EXISTS {}".format(table_name)
-    execute_query(sql)
+    return execute_query(sql)
 
 
 def _escape_value(v):
@@ -192,20 +192,20 @@ def _escape_value(v):
 
 
 def _to_insert_values(values):
-    converted = [_escape_value(v) for v in values]
-    return ','.join(converted)
+    escaped = [_escape_value(v) for v in values]
+    return ','.join(escaped)
 
 
 def add_row(table_name, *values):
     sql = "INSERT INTO {} VALUES ({})".format(table_name, _to_insert_values(values))
-    execute_query(sql)
+    return execute_query(sql)
 
 
 def add_row_as_dict(table_name, row_dict):
     columns = list(row_dict.keys())
     values = list(row_dict.values())
     sql = "INSERT INTO {} ({}) VALUES ({})".format(table_name, ','.join(columns), _to_insert_values(values))
-    execute_query(sql)
+    return execute_query(sql)
 
 
 def _to_query_clause(d, sep='AND'):
@@ -227,4 +227,4 @@ def update_rows(table_name, search_dict, update_dict):
 
 def delete_rows(table_name, search_dict):
     sql = "DELETE FROM {} WHERE {}".format(table_name, _to_query_clause(search_dict))
-    execute_query(sql)
+    return execute_query(sql)
