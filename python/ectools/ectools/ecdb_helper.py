@@ -17,8 +17,8 @@ from .internal.objects import Configuration, Cache
 
 _db_name = 'ec.sqlite'
 _db_source_sql = 'ecdb.sql'
-_remote_db_path = "//cns-qaauto5/Shared/Automation/" + _db_name
-_local_db_path = path.join(path.expanduser('~'), _db_name)
+_remote_db_dir = "//cns-qaauto5/Shared/Automation/"
+_local_db_dir = path.expanduser('~')
 
 
 def _get_data_dir():
@@ -28,10 +28,10 @@ def _get_data_dir():
 
 def _get_db_path():
     """First try to use remote shared db, if not able to connect then use local db."""
-    if path.exists(_remote_db_path) and path.isfile(_remote_db_path):
-        Configuration.db_path = _remote_db_path
+    if path.exists(_remote_db_dir):
+        Configuration.db_path = join(_remote_db_dir, _db_name)
     else:
-        Configuration.db_path = _local_db_path
+        Configuration.db_path = join(_local_db_dir, _db_name)
 
     return Configuration.db_path
 
@@ -44,7 +44,7 @@ def _build_db():
     if getattr(Cache, 'db_has_built', False):
         return
 
-    if not path.exists(_get_db_path()) or Configuration.db_path == _local_db_path:
+    if not path.exists(_get_db_path()) or Configuration.db_path == join(_local_db_dir, _db_name):
         sql = read_text(path.join(_get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(Configuration.db_path)
         conn.executescript(sql)
