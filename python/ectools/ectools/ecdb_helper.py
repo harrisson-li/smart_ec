@@ -9,8 +9,7 @@ build a local db in your user profile directory.
 
 import collections
 import sqlite3
-from os import path
-from os.path import join, dirname
+from os.path import join, dirname, exists, expanduser
 
 from ectools.utility import read_text, convert_to_str
 from .internal.objects import Configuration, Cache
@@ -18,7 +17,7 @@ from .internal.objects import Configuration, Cache
 _db_name = 'ec.sqlite'
 _db_source_sql = 'ecdb.sql'
 _remote_db_dir = "//cns-qaauto5/Shared/Automation/"
-_local_db_dir = path.expanduser('~')
+_local_db_dir = expanduser('~')
 
 
 def _get_data_dir():
@@ -28,7 +27,7 @@ def _get_data_dir():
 
 def _get_db_path():
     """First try to use remote shared db, if not able to connect then use local db."""
-    if path.exists(_remote_db_dir):
+    if exists(_remote_db_dir):
         Configuration.db_path = join(_remote_db_dir, _db_name)
     else:
         Configuration.db_path = join(_local_db_dir, _db_name)
@@ -44,8 +43,8 @@ def _build_db():
     if getattr(Cache, 'db_has_built', False):
         return
 
-    if not path.exists(_get_db_path()) or Configuration.db_path == join(_local_db_dir, _db_name):
-        sql = read_text(path.join(_get_data_dir(), _db_source_sql))
+    if not exists(_get_db_path()) or Configuration.db_path == join(_local_db_dir, _db_name):
+        sql = read_text(join(_get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(Configuration.db_path)
         conn.executescript(sql)
         conn.commit()
