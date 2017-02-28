@@ -102,6 +102,7 @@ def upload_package():
     for package in os.listdir(package_dir):
         src = join(package_dir, package)
         dst = join(pypi_dir, package)
+        print("-> {}...".format(package))
         shutil.copy(src, dst)
 
 
