@@ -11,7 +11,7 @@ def main():
         author_email="toby.qin@ef.com",
         url="https://confluence.englishtown.com/display/SMart/ectools+-+Introduction",
         packages=find_packages(exclude=['tests', 'tests.*']),
-        package_data={"ectools": ["data/*.csv"]},
+        package_data={"ectools": ["data/*.csv", "data/*.sql"]},
         install_requires=[
             'requests',
             'selenium',
