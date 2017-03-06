@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 from time import sleep
 
 from ectools.config import get_logger
-from ectools.internal.data_helper import get_csv_path, get_data_dir
+from ectools.ecdb_helper import _get_data_dir
 from ectools.utility import *
 
 
@@ -88,22 +88,7 @@ def test_retry_for_error():
     try_me()
 
 
-def test_read_csv():
-    csv_path = get_csv_path('partners')
-    for name, domain, country in read_csv(csv_path, as_dict=False):
-        print(name, domain, country)
-        assert name == 'Cool'
-        assert domain == 'CN'
-        break
-
-    for row in read_csv(csv_path, as_dict=True):
-        print(row)
-        assert row['name'] == 'Cool'
-        assert row['domain'] == 'CN'
-        break
-
-
-def test_write_csv_list():
+def test_read_write_csv_list():
     header = ['first', 'last']
     row = ['toby', 'qin']
     csv_path = NamedTemporaryFile(delete=False).name
@@ -120,10 +105,16 @@ def test_write_csv_list():
     assert result[1][0] == 'ef'
     assert result[1][1] == 'labs'
 
+    for first, last in read_csv(csv_path, as_dict=False):
+        print(first, last)
+        assert first == 'toby'
+        assert last == 'qin'
+        break
+
     remove(csv_path)
 
 
-def test_write_csv_dict():
+def test_read_write_csv_dict():
     row = {'first': 'toby', 'last': 'qin'}
     csv_path = NamedTemporaryFile(delete=False).name
     write_csv_row(row, csv_path, from_dict=True)
@@ -138,10 +129,16 @@ def test_write_csv_dict():
     assert result[1]['first'] == 'ef'
     assert result[1]['last'] == 'labs'
 
+    for row in read_csv(csv_path, as_dict=True):
+        print(row)
+        assert row['first'] == 'toby'
+        assert row['last'] == 'qin'
+        break
+
     remove(csv_path)
 
 
 def test_read_text():
-    ecdbsql = path.join(get_data_dir(), 'ecdb.sql')
+    ecdbsql = path.join(_get_data_dir(), 'ecdb.sql')
     content = read_text(ecdbsql)
     assert "DROP TABLE IF EXISTS environment" in content

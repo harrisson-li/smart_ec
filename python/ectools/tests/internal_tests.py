@@ -17,7 +17,7 @@ def test_get_environment():
 def test_get_database():
     result = get_all_database()
     assert len(result) > 0
-    assert get_database('qa', 'cn')['server'] == 'USB-ETOWNQADB'
+    assert get_database('qa', 'cn')['server'] == 'USB-ETQADB'
 
 
 def test_get_partner():
