@@ -30,7 +30,7 @@ CREATE TABLE database
 );
 
 INSERT INTO database VALUES ('UAT', 'all', 'CNS-ETDEVDB', 'TestUser', 'testuserdev');
-INSERT INTO database VALUES ('QA', 'all', 'USB-ETOWNQADB', 'TestUser', 'testuserqa');
+INSERT INTO database VALUES ('QA', 'all', 'USB-ETQADB', 'TestUser', 'testuserqa');
 INSERT INTO database VALUES ('Staging', 'all', '10.43.45.180', 'etownreader', 'fishing22');
 INSERT INTO database VALUES ('Live', 'cn', '10.17.4.158', 'etownreader', 'fishing22');
 INSERT INTO database VALUES ('Live', 'us', '10.43.45.158', 'etownreader', 'fishing22');
