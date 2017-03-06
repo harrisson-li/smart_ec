@@ -1,6 +1,0 @@
-name,domain,prefix,etown,oboe,salesforce
-UAT,all,uat,http://uat.englishtown.com,http://uatoboe.ef.com/oboe2/,https://test.salesforce.com
-QA,all,qa,http://qa.englishtown.com,http://qaoboe.ef.com/oboe2/,https://test.salesforce.com
-Staging,all,staging,http://staging.englishtown.com,http://stagingoboe.ef.com/oboe2/,https://test.salesforce.com
-Live,cn,cn1web1,http://cn1web1.englishtown.com,http://oboecn.ef.com/oboe2/,https://login.salesforce.com
-Live,us,webus1,http://webus1.englishtown.com,http://oboeus.ef.com/oboe2,https://login.salesforce.com

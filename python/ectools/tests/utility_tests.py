@@ -1,9 +1,9 @@
-from os import remove
+from os import remove, path
 from tempfile import NamedTemporaryFile
 from time import sleep
 
 from ectools.config import get_logger
-from ectools.internal.data_helper import get_csv_path
+from ectools.internal.data_helper import get_csv_path, get_data_dir
 from ectools.utility import *
 
 
@@ -139,3 +139,9 @@ def test_write_csv_dict():
     assert result[1]['last'] == 'labs'
 
     remove(csv_path)
+
+
+def test_read_text():
+    ecdbsql = path.join(get_data_dir(), 'ecdb.sql')
+    content = read_text(ecdbsql)
+    assert "DROP TABLE IF EXISTS environment" in content

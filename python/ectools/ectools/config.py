@@ -125,8 +125,8 @@ def _setup():
     config.data_dir = join(config.base_dir, config.data_dir)
     config.database = get_database(config.env, config.domain)
     env = get_environment(config.env, config.domain)
-    config.etown_root = env['etown']
-    config.oboe_root = env['oboe']
+    config.etown_root = env['etown_url']
+    config.oboe_root = env['oboe_url']
 
 
 setup()

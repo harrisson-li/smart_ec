@@ -30,3 +30,4 @@ class Configuration(Base):
     default_timeout = 60
     default_poll_time = 0.5
     default_retry_times = 3
+    db_path = 'to_be_set'
