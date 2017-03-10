@@ -9,7 +9,8 @@ def has_tag(tags, tag):
 
 
 def is_item_has_tag(item, tag):
-    return has_tag(item['tags'], tag)
+    tags = item.get('tags', '')
+    return has_tag(tags, tag)
 
 
 def get_item_has_tag(items, tag):
@@ -20,7 +21,9 @@ def get_item_has_tag(items, tag):
 
 
 def read_data(table_name):
-    return read_table(table_name)
+    rows = read_table(table_name)
+    # filter out all items tag by 'ignore'
+    return [r for r in rows if not is_item_has_tag(r, 'ignore')]
 
 
 def _filter(item, name, domain):
