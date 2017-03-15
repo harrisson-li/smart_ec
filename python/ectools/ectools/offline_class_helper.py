@@ -27,7 +27,7 @@ import re
 from datetime import datetime, timedelta
 
 from ectools.database_helper import *
-from ectools.student_settings_helper import is_v2_student
+from ectools.service_helper import is_v2_student
 from ectools.utility import get_score, random_date
 
 

@@ -38,6 +38,13 @@ ectools.database_helper module
     :undoc-members:
     :show-inheritance:
 
+ectools.ecdb_helper module
+--------------------------
+
+.. automodule:: ectools.ecdb_helper
+:members:
+        :undoc-members:
+        :show-inheritance:
 
 ectools.offline_class_helper module
 -----------------------------------
@@ -47,10 +54,10 @@ ectools.offline_class_helper module
     :undoc-members:
     :show-inheritance:
 
-ectools.student_settings_helper module
---------------------------------------
+ectools.service_helper module
+-----------------------------
 
-.. automodule:: ectools.student_settings_helper
+.. automodule:: ectools.service_helper
     :members:
     :undoc-members:
     :show-inheritance:

@@ -24,7 +24,7 @@ import re
 import requests
 
 from ectools.config import get_logger, config
-from ectools.student_settings_helper import is_v2_student
+from ectools.service_helper import is_v2_student
 from .internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 from .internal.data_helper import *
 
