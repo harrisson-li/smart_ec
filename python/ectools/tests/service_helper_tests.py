@@ -19,12 +19,18 @@ def test_get_student_info():
     set_environment('uat')
     student_id = 23904718
     result = get_student_info(student_id)
-    assert result['username'] == 'stest24561'
+    assert result['user_name'] == 'stest24561'
     assert result['email'] == "te636251605203525074@qp1.org"
     assert result['member_id'] == student_id
-    assert result['partner'] == 'Mini'
-    assert result['current_level'] == 'GE2013 Level3'
-    assert result['current_unit'] == 'Unit 6'
+    assert result['oboe_partner'] == 'Mini'
+    assert result['current_unit'] == 6
+    assert result['current_level_name'] == '3'
+    assert result['current_level_code'] == '1'
+    assert result['elite_code'] == 'te23904718'
+    assert result['school_id'] == 143
+    assert result['product_id'] == 65
+    assert result['oboe_division_code'] == 'CNMNCD5'
+    assert result['is_home'] == False
 
 
 def test_load_student_via_ecplatform_service():

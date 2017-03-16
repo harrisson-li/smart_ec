@@ -16,6 +16,7 @@ import requests
 from ectools.config import config
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.token_helper import get_token
+from ectools.utility import camelcase_to_underscore
 
 
 def is_v2_student(student_id):
@@ -69,7 +70,7 @@ def get_member_site_settings(student_id, site_area='school'):
 
 def get_student_info(student_id):
     """
-    Will return a dict contains username, email, member_id, level, unit info for the student.
+    Will return a dict contains student information.
     """
 
     def get_name_and_email(student_id):
@@ -83,8 +84,10 @@ def get_student_info(student_id):
             raise ValueError("Failed to get student name and email!")
 
     username, email = get_name_and_email(student_id)
-    info = {'username': username, 'email': email}
-    info.update(score_helper_load_student(student_id))
+    info = {'user_name': username, 'email': email, 'member_id': student_id}
+    more_info = {camelcase_to_underscore(k): v for k, v in ecplatform_load_student(student_id).items()}
+    info.update(more_info)
+    info = {k: v for k, v in info.items() if v is not None}
 
     return info
 
