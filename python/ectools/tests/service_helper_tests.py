@@ -24,13 +24,31 @@ def test_get_student_info():
     assert result['member_id'] == student_id
     assert result['oboe_partner'] == 'Mini'
     assert result['current_unit'] == 6
-    assert result['current_level_name'] == '3'
-    assert result['current_level_code'] == '1'
+    assert result['current_level_name'] == '1'
+    assert result['current_level_code'] == 3
     assert result['elite_code'] == 'te23904718'
     assert result['school_id'] == 143
     assert result['product_id'] == 65
     assert result['oboe_division_code'] == 'CNMNCD5'
     assert result['is_home'] == False
+
+
+def test_score_helper_load_student():
+    set_environment('uat')
+    student_id = 23904718
+    result = score_helper_load_student(student_id)
+    assert result['user_name'] == 'stest24561'
+    assert result['current_level_name'] == '1'
+    assert result['current_level_code'] == 3
+    assert result['current_unit'] == 6
+
+    set_environment('qa')
+    student_id = 11257646
+    result = score_helper_load_student(student_id)
+    assert result['user_name'] == 'stest79207'
+    assert result['current_level_name'] == 'A'
+    assert result['current_level_code'] == 1
+    assert result['current_unit'] == 3
 
 
 def test_load_student_via_ecplatform_service():
