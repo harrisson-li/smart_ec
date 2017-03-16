@@ -67,24 +67,26 @@ def get_member_site_settings(student_id, site_area='school'):
     return site_settings
 
 
-def get_student_name_and_email(student_id):
-    """Will return name and email as a tuple if found, else raise error."""
-    target_url = "{}/services/ecplatform/Tools/StudentView?id={}".format(config.etown_root, student_id)
-    response = requests.get(target_url)
+def get_student_info(student_id):
+    """
+    Will return a dict contains username, email, member_id, level, unit info for the student.
+    """
 
-    if response.status_code == HTTP_STATUS_OK:
-        result = re.findall('\[Name\] : (.*) \[Email\] : (.*)', response.text)
-        return result[0][0].strip(), result[0][1].strip()
-    else:
-        raise ValueError("Failed to get student name and email: {}".format(response.text))
+    def get_name_and_email(student_id):
+        target_url = "{}/services/ecplatform/Tools/StudentView?id={}".format(config.etown_root, student_id)
+        response = requests.get(target_url)
 
+        if response.status_code == HTTP_STATUS_OK:
+            result = re.findall('\[Name\] : (.*) \[Email\] : (.*)', response.text)
+            return result[0][0].strip(), result[0][1].strip()
+        else:
+            raise ValueError("Failed to get student name and email!")
 
-def get_student_name(student_id):
-    return get_student_name_and_email(student_id)[0]
+    username, email = get_name_and_email(student_id)
+    info = {'username': username, 'email': email}
+    info.update(score_helper_load_student(student_id))
 
-
-def get_student_email(student_id):
-    return get_student_name_and_email(student_id)[1]
+    return info
 
 
 def call_ecplatform_service(service_url, payload):
@@ -100,28 +102,29 @@ def call_ecplatform_service(service_url, payload):
         raise ValueError(response.text)
 
 
-def load_student(student_id):
+def ecplatform_load_student(student_id):
     """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudent"""
     service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudent"
     payload = {"StudentId": "{}".format(student_id)}
     return call_ecplatform_service(service_url, payload)
 
 
-def load_student_basic_info(student_id):
+def ecplatform_load_student_basic_info(student_id):
     """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudentBasicInfo"""
     service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudentBasicInfo"
     payload = {"StudentId": "{}".format(student_id)}
     return call_ecplatform_service(service_url, payload)
 
 
-def load_student_status_flag(student_id):
+def ecplatform_load_student_status_flag(student_id):
     """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudentStatusFlag"""
     service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudentStatusFlag"
     payload = {"StudentId": "{}".format(student_id)}
     return call_ecplatform_service(service_url, payload)
 
 
-def load_student_info_via_score_helper(student_name_or_id):
+def score_helper_load_student(student_name_or_id):
+    """Get student info via S15 submit score helper."""
     token = get_token()
     data = {'cmd': 'loadStudentInfo',
             'member_id': student_name_or_id,
@@ -129,8 +132,9 @@ def load_student_info_via_score_helper(student_name_or_id):
     target_url = "/services/school/_tools/progress/SubmitScoreHelper.aspx"
     response = requests.post(config.etown_root + target_url, data=data)
     match_char = u'★'
+    result = {}
 
-    if response.status_code == 200:
+    if response.status_code == 200 and '|' in response.text:
         raw = response.text.split('|')
         result = {'username': raw[1], 'member_id': int(raw[3]), 'partner': raw[4]}
         levels = raw[5].split('#')
@@ -140,9 +144,4 @@ def load_student_info_via_score_helper(student_name_or_id):
         result['current_level'] = current_level[current_level.index(match_char) + 1:]
         result['current_unit'] = current_unit.split(' - ')[1]
 
-        return result
-
-
-
-    else:
-        raise ValueError("Failed to load student info: {}".format(response.text))
+    return result
