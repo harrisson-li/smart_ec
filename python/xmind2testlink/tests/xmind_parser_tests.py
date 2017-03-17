@@ -4,6 +4,8 @@ from xmind2testlink.xmind_parser import *
 
 xml_dir = dirname(__file__)
 root_node = xmind_xml_to_etree(join(xml_dir, content_xml))
+
+# download from https://confluence.englishtown.com/display/QA/Convert+Xmind+to+TestLink
 xmind_file = join(xml_dir, 'tests.xmind')
 
 with open(join(xml_dir, content_xml)) as f:
