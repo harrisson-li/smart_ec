@@ -101,6 +101,7 @@ def get_student_info(student_id):
     del info['oboe_partner']
     del info['user_name']
     del info['oboe_division_code']
+    del info['is_success']
 
     return info
 
