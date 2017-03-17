@@ -7,6 +7,7 @@ import csv
 import inspect
 import logging
 import random
+import re
 import sys
 import time
 from datetime import datetime, timedelta
@@ -323,3 +324,9 @@ def read_text(path, encoding=None, errors=None):
     """
     with open(path, mode='r', encoding=encoding, errors=errors) as f:
         return f.read()
+
+
+def camelcase_to_underscore(name):
+    """Convert a string from CamelCase to camel_case, which will be useful for dict keys."""
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()

@@ -30,7 +30,7 @@ You don't have to give the score every time, the tool will randomly generate a s
 from contextlib import contextmanager
 
 import ectools.utility
-from ectools.student_settings_helper import is_v2_student
+from ectools.service_helper import is_v2_student
 from ectools.utility import get_score
 from .internal.business import score_helper_v1
 from .internal.business import score_helper_v2

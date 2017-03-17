@@ -1,68 +1,68 @@
 DROP TABLE IF EXISTS environments;
 
-CREATE TABLE environments
-(
-    name TEXT,
-    domain TEXT,
-    replace_to TEXT,
-    description TEXT,
-    mark TEXT,
-    etown_url TEXT,
-    oboe_url TEXT,
-    salesforce_url TEXT
+CREATE TABLE environments (
+  name           TEXT,
+  domain         TEXT,
+  replace_to     TEXT,
+  description    TEXT,
+  mark           TEXT,
+  etown_url      TEXT,
+  oboe_url       TEXT,
+  salesforce_url TEXT,
+  tags           TEXT
+
 );
 
-INSERT INTO environments VALUES ('UAT', 'all', 'uat', 'UAT', '', 'http://uat.englishtown.com', 'http://uatoboe.ef.com/oboe2/', 'https://test.salesforce.com');
-INSERT INTO environments VALUES ('QA', 'all', 'qa', 'QA', '', 'http://qa.englishtown.com', 'http://qaoboe.ef.com/oboe2/', 'https://test.salesforce.com');
-INSERT INTO environments VALUES ('Staging', 'all', 'staging', 'Staging', '', 'http://staging.englishtown.com', 'http://stagingoboe.ef.com/oboe2/', 'https://test.salesforce.com');
-INSERT INTO environments VALUES ('Live', 'cn', 'cn1web1', 'LiveCN', 'livecn', 'http://cn1web1.englishtown.com', 'http://oboecn.ef.com/oboe2/', 'https://login.salesforce.com');
-INSERT INTO environments VALUES ('Live', 'us', 'webus1', 'LiveUS', 'liveus', 'http://webus1.englishtown.com', 'http://oboeus.ef.com/oboe2', 'https://login.salesforce.com');
+INSERT INTO environments VALUES ('UAT', 'all', 'uat', 'UAT', '', 'http://uat.englishtown.com', 'http://uatoboe.ef.com/oboe2/', 'https://test.salesforce.com', '');
+INSERT INTO environments VALUES ('QA', 'all', 'qa', 'QA', '', 'http://qa.englishtown.com', 'http://qaoboe.ef.com/oboe2/', 'https://test.salesforce.com', '');
+INSERT INTO environments VALUES ('Staging', 'all', 'staging', 'Staging', '', 'http://staging.englishtown.com', 'http://stagingoboe.ef.com/oboe2/', 'https://test.salesforce.com', '');
+INSERT INTO environments VALUES ('Live', 'cn', 'cn1web1', 'LiveCN', 'livecn', 'http://cn1web1.englishtown.com', 'http://oboecn.ef.com/oboe2/', 'https://login.salesforce.com', '');
+INSERT INTO environments VALUES ('Live', 'us', 'webus1', 'LiveUS', 'liveus', 'http://webus1.englishtown.com', 'http://oboeus.ef.com/oboe2', 'https://login.salesforce.com', '');
 
 DROP TABLE IF EXISTS database;
 
-CREATE TABLE database
-(
-    name TEXT,
-    domain TEXT,
-    server TEXT,
-    user TEXT,
-    password TEXT
+CREATE TABLE database (
+  name     TEXT,
+  domain   TEXT,
+  server   TEXT,
+  user     TEXT,
+  password TEXT,
+  tags     TEXT
 );
 
-INSERT INTO database VALUES ('UAT', 'all', 'CNS-ETDEVDB', 'TestUser', 'testuserdev');
-INSERT INTO database VALUES ('QA', 'all', 'USB-ETQADB', 'TestUser', 'testuserqa');
-INSERT INTO database VALUES ('Staging', 'all', '10.43.45.180', 'etownreader', 'fishing22');
-INSERT INTO database VALUES ('Live', 'cn', '10.17.4.158', 'etownreader', 'fishing22');
-INSERT INTO database VALUES ('Live', 'us', '10.43.45.158', 'etownreader', 'fishing22');
+INSERT INTO database VALUES ('UAT', 'all', 'CNS-ETDEVDB', 'TestUser', 'testuserdev', '');
+INSERT INTO database VALUES ('QA', 'all', 'USB-ETQADB', 'TestUser', 'testuserqa', '');
+INSERT INTO database VALUES ('Staging', 'all', '10.43.45.180', 'etownreader', 'fishing22', '');
+INSERT INTO database VALUES ('Live', 'cn', '10.17.4.158', 'etownreader', 'fishing22', '');
+INSERT INTO database VALUES ('Live', 'us', '10.43.45.158', 'etownreader', 'fishing22', '');
 
 DROP TABLE IF EXISTS partners;
 
-CREATE TABLE partners
-(
-    name TEXT,
-    domain TEXT,
-    country_code TEXT
+CREATE TABLE partners (
+  name         TEXT,
+  domain       TEXT,
+  country_code TEXT,
+  tags         TEXT
 );
 
-INSERT INTO partners VALUES ('Cool', 'CN', 'cn');
-INSERT INTO partners VALUES ('Mini', 'CN', 'cn');
-INSERT INTO partners VALUES ('Rupe', 'US', 'ru');
-INSERT INTO partners VALUES ('Indo', 'US', 'id');
-INSERT INTO partners VALUES ('Ecsp', 'US', 'es');
-INSERT INTO partners VALUES ('Cehk', 'US', 'hk');
+INSERT INTO partners VALUES ('Cool', 'CN', 'cn', '');
+INSERT INTO partners VALUES ('Mini', 'CN', 'cn', '');
+INSERT INTO partners VALUES ('Rupe', 'US', 'ru', '');
+INSERT INTO partners VALUES ('Indo', 'US', 'id', '');
+INSERT INTO partners VALUES ('Ecsp', 'US', 'es', '');
+INSERT INTO partners VALUES ('Cehk', 'US', 'hk', '');
 
 DROP TABLE IF EXISTS products;
 
-CREATE TABLE products
-(
-    partner TEXT,
-    id INTEGER,
-    name TEXT,
-    product_type TEXT,
-    main_code TEXT,
-    main_one_day TEXT,
-    free_code TEXT,
-    tags TEXT
+CREATE TABLE products (
+  partner      TEXT,
+  id           INTEGER,
+  name         TEXT,
+  product_type TEXT,
+  main_code    TEXT,
+  main_one_day TEXT,
+  free_code    TEXT,
+  tags         TEXT
 );
 
 INSERT INTO products VALUES ('Cool', 63, 'Smart 15 - School', 'School', 'S15SCHOOLMAIN', 'S15SCHOOLM1D', 'S15SCHOOLF1D', 'Major');
@@ -103,24 +103,23 @@ INSERT INTO products VALUES ('Mini', 37, 'Private 24(School)with F2F', 'School',
 INSERT INTO products VALUES ('Cehk', 97, 'Intensive PXLC', 'School', 'HKINTPXLCMAIN', '', 'HKINTPXLCMAIN1D', 'E10');
 INSERT INTO products VALUES ('Rupe', 39, 'Interactive English Language Course', 'School', 'Rissiamain3Mschool', '', 'Russiafree1dayschool', 'E10');
 INSERT INTO products VALUES ('Indo', 50, 'Smart English', 'School', 'IndoSMARTMAIN', '', 'IndoSMARTFREE', 'E10');
+INSERT INTO products VALUES ('Rupe', 142, 'EF F2F/PL20 Interactive English Language 15', 'School', 'R15SCHOOLF2FPL20MAIN', 'R15SCHOOLF2FPL20M1D', 'R15SCHOOLF2FPL20F1D', '');
+INSERT INTO products VALUES ('Mini', 143, 'Smart 15 - EC Lite', 'Home', 'S15SCHOOLLTMAIN', 'S15SCHOOLLTM1D', 'S15SCHOOLLTF1D', 'LITE');
 
 DROP TABLE IF EXISTS schools;
 
-CREATE TABLE schools
-(
-    partner TEXT,
-    city TEXT,
-    name TEXT,
-    division_code TEXT,
-    tags TEXT
+CREATE TABLE schools (
+  partner       TEXT,
+  city          TEXT,
+  name          TEXT,
+  division_code TEXT,
+  tags          TEXT
 );
 
 INSERT INTO schools VALUES ('Cehk', 'Hong Kong Test City', 'Test(CEF)', 'CEF', 'TestCenter');
 INSERT INTO schools VALUES ('Cehk', 'Hong Kong Test City', 'CWB(TEST01)', 'HKTEST1', 'TestCenter');
 INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_SSC', 'HKSSC', '');
 INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_YLC', 'HKYLC', '');
-INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_SS2', 'HKSS2', '');
-INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_TSQ', 'HKTSQ', '');
 INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_WHC', 'HKWHC', '');
 INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_MKC', 'HKMKC', '');
 INSERT INTO schools VALUES ('Cehk', 'HongKong', 'HK_TWC', 'HKTWC', '');
@@ -163,7 +162,7 @@ INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_CHC', 'SSCNSZ4', '');
 INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_KJY', 'SSCNSZ5', '');
 INSERT INTO schools VALUES ('Cool', 'TestCity', 'Tcenter(notselect)', 'SSCNTE1', 'TestCenter');
 INSERT INTO schools VALUES ('Cool', 'TestCity', 'BJ_Testing_Center', 'TEST', 'TestCenter');
-INSERT INTO schools VALUES ('Cool', 'TestCity', 'TCenterS14_(DO_NOT_SELECT)', 'SSCNTE2', 'TestCenter PC2.0');
+INSERT INTO schools VALUES ('Cool', 'TestCity', 'TCenterS14_(DO_NOT_SELECT)', 'SSCNTE2', 'TestCenter PC2.0 Ignore');
 INSERT INTO schools VALUES ('Cool', 'Tianjin', 'TJ_NJR', 'SSCNTJ1', '');
 INSERT INTO schools VALUES ('Ecsp', 'Barcelona', 'BC_BLM', 'SPBC1', '');
 INSERT INTO schools VALUES ('Ecsp', 'Madrid', 'MD_MDM', 'SPMD1', '');
@@ -203,3 +202,7 @@ INSERT INTO schools VALUES ('Rupe', 'Novosibirsk', 'NS_LEN', 'LEN', '');
 INSERT INTO schools VALUES ('Rupe', 'Russia Test City', 'Russia_Test', 'Rupe', 'TestCenter PC2.0');
 INSERT INTO schools VALUES ('Rupe', 'St. Petersburg', 'SP_NEV', 'SNI', '');
 INSERT INTO schools VALUES ('Rupe', 'St. Petersburg', 'SP_TEK', 'TEK', '');
+INSERT INTO schools VALUES ('Mini', 'Wuhan_Lite', 'WH_LITE', 'CNMNWH4', 'PC2.0');
+INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_CBD', 'SSCNSZ6', '');
+INSERT INTO schools VALUES ('Mini', 'Nanjing', 'NJ_WDC', 'CNMNNJ4', '');
+INSERT INTO schools VALUES ('Cehk', 'No 2.0 Center', 'Invalid School', 'INVALID', 'PC2.0 Ignore');
