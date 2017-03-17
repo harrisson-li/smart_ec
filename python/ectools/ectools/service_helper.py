@@ -84,7 +84,7 @@ def get_student_info(student_id):
             raise ValueError("Failed to get student name and email!")
 
     username, email = get_name_and_email(student_id)
-    info = {'user_name': username, 'email': email, 'member_id': student_id}
+    info = {'username': username, 'email': email, 'member_id': student_id}
 
     more_info = {camelcase_to_underscore(k): v for k, v in ecplatform_load_student(student_id).items()}
     info.update(more_info)
@@ -93,6 +93,14 @@ def get_student_info(student_id):
     info.update(more_info)
 
     info = {k: v for k, v in info.items() if v is not None}
+
+    # dict key name refine
+    info['partner'] = info['oboe_partner']
+    info['division_code'] = info['oboe_division_code']
+
+    del info['oboe_partner']
+    del info['user_name']
+    del info['oboe_division_code']
 
     return info
 
@@ -144,14 +152,20 @@ def score_helper_load_student(student_name_or_id):
 
     if response.status_code == 200 and '|' in response.text:
         raw = response.text.split('|')
-        result = {'user_name': raw[1], 'member_id': int(raw[3]), 'partner': raw[4]}
+        result = {'username': raw[1], 'member_id': int(raw[3]), 'partner': raw[4]}
         levels = raw[5].split('#')
         units = raw[6].split('#')
 
         current_level = [l for l in levels if match_char in l][0]  # e.g. '378$★GE2013 Level3'
         current_unit = [l for l in units if match_char in l][0]  # e.g. '1803$★Level 1 - Unit 6'
-        result['current_level_code'] = int(re.findall('Level(.+)', current_level)[0].strip())  # 1~16
-        result['current_level_name'] = re.findall('Level(.+)-', current_unit)[0].strip()  # A, B, 1~14
-        result['current_unit'] = int(re.findall('Unit(.+)', current_unit)[0].strip())  # 1~6
+        if 'Level' not in current_level:
+            result['current_level_code'] = current_level[current_level.index(match_char) + 1:]
+            result['current_level_name'] = result['current_level_code']
+            result['current_unit'] = current_unit[current_unit.index(match_char) + 1:]
+
+        else:
+            result['current_level_code'] = int(re.findall(r'Level([\d ]+)', current_level)[0].strip())  # 1~16
+            result['current_level_name'] = re.findall(r'Level(.+)-', current_unit)[0].strip()  # A, B, 1~14
+            result['current_unit'] = int(re.findall(r'Unit([\d ]+)', current_unit)[0].strip())  # 1~6
 
     return result
