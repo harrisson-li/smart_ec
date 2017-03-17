@@ -95,3 +95,4 @@ uploads/
 # sqlite
 *.sqlite3
 *.db3
+*.xmind
