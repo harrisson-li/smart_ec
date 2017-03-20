@@ -42,9 +42,9 @@ ectools.ecdb_helper module
 --------------------------
 
 .. automodule:: ectools.ecdb_helper
-:members:
-        :undoc-members:
-        :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 ectools.offline_class_helper module
 -----------------------------------
