@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Oboe" Class="OboeDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=CNS-ETDEVDB;Initial Catalog=Oboe;Integrated Security=True" SettingsObjectName="CAS.Core.Properties.Settings" SettingsPropertyName="OboeConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ClassTopic_lkp" Member="ClassTopic_lkps">
+    <Type Name="ClassTopic_lkp">
+      <Column Name="ClassTopic_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ClassType_id" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="Name_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsHidden" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PrepareFileUri" Type="System.String" DbType="NVarChar(2048)" CanBeNull="true" />
+      <Association Name="ClassTopic_lkp_ScheduledClass" Member="ScheduledClasses" ThisKey="ClassTopic_id" OtherKey="ClassTopic_id" Type="ScheduledClass" />
+      <Association Name="ClassTopic_lkp_ScheduledClassTopic" Member="ScheduledClassTopics" ThisKey="ClassTopic_id" OtherKey="ClassTopic_id" Type="ScheduledClassTopic" />
+      <Association Name="ClassType_lkp_ClassTopic_lkp" Member="ClassType_lkp" ThisKey="ClassType_id" OtherKey="ClassType_id" Type="ClassType_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Classroom_lkp" Member="Classroom_lkps">
+    <Type Name="Classroom_lkp">
+      <Column Name="Classroom_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ClassroomName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Classroom_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DefaultPhysicalCapacity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayOrder" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsHidden" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Classroom_lkp_ScheduledClass" Member="ScheduledClasses" ThisKey="Classroom_id" OtherKey="ClassRoom_id" Type="ScheduledClass" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClassCategory_lkp" Member="ClassCategory_lkps">
+    <Type Name="ClassCategory_lkp">
+      <Column Name="ClassCategory_id" Type="System.Int16" DbType="SmallInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="IsStudentVisible" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayOrder" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsHidden" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ClassCategory_lkp_ClassType_lkp" Member="ClassType_lkps" ThisKey="ClassCategory_id" OtherKey="ClassCategory_id" Type="ClassType_lkp" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClass" Member="ScheduledClasses">
+    <Type Name="ScheduledClass">
+      <Column Name="ScheduledClass_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsVirtualSchool" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ClassRoom_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ClassroomPhysicalCapacity" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="ClassCategory_id" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="ClassType_id" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="ClassTopic_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsDynamicTopic" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Teacher_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsPublished" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PublishDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ScheduledClassTopic_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="ScheduledClass_ScheduledClassVariableValue" Member="ScheduledClassVariableValues" ThisKey="ScheduledClass_id" OtherKey="ScheduledClass_id" Type="ScheduledClassVariableValue" />
+      <Association Name="Classroom_lkp_ScheduledClass" Member="Classroom_lkp" ThisKey="ClassRoom_id" OtherKey="Classroom_id" Type="Classroom_lkp" IsForeignKey="true" />
+      <Association Name="ClassTopic_lkp_ScheduledClass" Member="ClassTopic_lkp" ThisKey="ClassTopic_id" OtherKey="ClassTopic_id" Type="ClassTopic_lkp" IsForeignKey="true" />
+      <Association Name="ScheduledClassTopic_ScheduledClass" Member="ScheduledClassTopic" ThisKey="ScheduledClassTopic_id" OtherKey="ScheduledClassTopic_id" Type="ScheduledClassTopic" IsForeignKey="true" />
+      <Association Name="Teacher_ScheduledClass" Member="Teacher" ThisKey="Teacher_id" OtherKey="Teacher_id" Type="Teacher" IsForeignKey="true" />
+      <Association Name="School_lkp_ScheduledClass" Member="School_lkp" ThisKey="School_id" OtherKey="School_id" Type="School_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClassTopic" Member="ScheduledClassTopics">
+    <Type Name="ScheduledClassTopic">
+      <Column Name="ScheduledClassTopic_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ClassTopic_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ClassType_id" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ScheduledClassTopicPackage_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AvailableWeekDayType" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="Parent_ScheduledClassTopic_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsLocal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="ScheduledClassTopic_ScheduledClass" Member="ScheduledClasses" ThisKey="ScheduledClassTopic_id" OtherKey="ScheduledClassTopic_id" Type="ScheduledClass" />
+      <Association Name="ClassTopic_lkp_ScheduledClassTopic" Member="ClassTopic_lkp" ThisKey="ClassTopic_id" OtherKey="ClassTopic_id" Type="ClassTopic_lkp" IsForeignKey="true" />
+      <Association Name="School_lkp_ScheduledClassTopic" Member="School_lkp" ThisKey="School_id" OtherKey="School_id" Type="School_lkp" IsForeignKey="true" />
+      <Association Name="ClassType_lkp_ScheduledClassTopic" Member="ClassType_lkp" ThisKey="ClassType_id" OtherKey="ClassType_id" Type="ClassType_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OboeConfigValue" Member="OboeConfigValues">
+    <Type Name="OboeConfigValue">
+      <Column Name="Value_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SiteVersion" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Variable_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="City_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Product_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ActiveDateFrom" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="ActiveDateTo" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="KeyValue" Type="System.String" DbType="VarChar(1024) NOT NULL" CanBeNull="false" />
+      <Column Name="Development" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="OboeConfigVariable_OboeConfigValue" Member="OboeConfigVariable" ThisKey="Variable_id,SiteVersion" OtherKey="Variable_id,SiteVersion" Type="OboeConfigVariable" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OboeConfigVariable" Member="OboeConfigVariables">
+    <Type Name="OboeConfigVariable">
+      <Column Name="Variable_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SiteVersion" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="KeyName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="DefaultValue" Type="System.String" DbType="VarChar(1024) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Development" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="OboeConfigVariable_OboeConfigValue" Member="OboeConfigValues" ThisKey="Variable_id,SiteVersion" OtherKey="Variable_id,SiteVersion" Type="OboeConfigValue" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Teacher" Member="Teachers">
+    <Type Name="Teacher">
+      <Column Name="Teacher_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TeacherType_id" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="TeachingHourPerWeek" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BreakDay" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Teacher_Name" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="HomeSchool_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Teacher_ScheduledClass" Member="ScheduledClasses" ThisKey="Teacher_id" OtherKey="Teacher_id" Type="ScheduledClass" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClassVariableName_lkp" Member="ScheduledClassVariableName_lkps">
+    <Type Name="ScheduledClassVariableName_lkp">
+      <Column Name="VariableName_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="VariableName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="VariableName_Blurb_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="VariableType_id" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="ScheduledClassVariableName_lkp_ScheduledClassVariableValue" Member="ScheduledClassVariableValues" ThisKey="VariableName_id" OtherKey="VariableName_id" Type="ScheduledClassVariableValue" />
+      <Association Name="ScheduledClassVariableType_lkp_ScheduledClassVariableName_lkp" Member="ScheduledClassVariableType_lkp" ThisKey="VariableType_id" OtherKey="VariableType_id" Type="ScheduledClassVariableType_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClassVariableValue" Member="ScheduledClassVariableValues">
+    <Type Name="ScheduledClassVariableValue">
+      <Column Name="VariableValue_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ScheduledClass_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="VariableName_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="VariableValue" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="ScheduledClass_ScheduledClassVariableValue" Member="ScheduledClass" ThisKey="ScheduledClass_id" OtherKey="ScheduledClass_id" Type="ScheduledClass" IsForeignKey="true" />
+      <Association Name="ScheduledClassVariableName_lkp_ScheduledClassVariableValue" Member="ScheduledClassVariableName_lkp" ThisKey="VariableName_id" OtherKey="VariableName_id" Type="ScheduledClassVariableName_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClassVariableType_lkp" Member="ScheduledClassVariableType_lkps">
+    <Type Name="ScheduledClassVariableType_lkp">
+      <Column Name="VariableType_id" Type="System.Byte" DbType="TinyInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="VariableType" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="ScheduledClassVariableType_lkp_ScheduledClassVariableName_lkp" Member="ScheduledClassVariableName_lkps" ThisKey="VariableType_id" OtherKey="VariableType_id" Type="ScheduledClassVariableName_lkp" />
+    </Type>
+  </Table>
+  <Table Name="dbo.School_lkp" Member="School_lkps">
+    <Type Name="School_lkp">
+      <Column Name="School_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SchoolName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="SchoolName_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Address_blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="City_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Country_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayOrder" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="Division_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DivisionCode" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="IsVirtualSchool" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="VirtualSchoolTypeCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="NumberofTeacher" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="LocationPictureUrl" Type="System.String" DbType="VarChar(2048)" CanBeNull="true" />
+      <Column Name="Telephone_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OpenTime_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Traffic_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PartnerCode" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="SchoolFullName" Type="System.String" DbType="VarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="CallCenterTelephone_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CenterPicture_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="GpsLocation_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CenterWebSiteUrl_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Association Name="School_lkp_ScheduledClass" Member="ScheduledClasses" ThisKey="School_id" OtherKey="School_id" Type="ScheduledClass" />
+      <Association Name="School_lkp_ScheduledClassTopic" Member="ScheduledClassTopics" ThisKey="School_id" OtherKey="School_id" Type="ScheduledClassTopic" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClassType_lkp" Member="ClassType_lkps">
+    <Type Name="ClassType_lkp">
+      <Column Name="ClassType_id" Type="System.Int16" DbType="SmallInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Name_Blurb_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ClassCategory_id" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PartnerCode" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="IsHidden" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsEditable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsWeeklyCentralScheduling" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsCountedInTeachingHour" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsSupportingPreview" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="ClassType_lkp_ClassTopic_lkp" Member="ClassTopic_lkps" ThisKey="ClassType_id" OtherKey="ClassType_id" Type="ClassTopic_lkp" />
+      <Association Name="ClassType_lkp_ScheduledClassTopic" Member="ScheduledClassTopics" ThisKey="ClassType_id" OtherKey="ClassType_id" Type="ScheduledClassTopic" />
+      <Association Name="ClassCategory_lkp_ClassType_lkp" Member="ClassCategory_lkp" ThisKey="ClassCategory_id" OtherKey="ClassCategory_id" Type="ClassCategory_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserRoleSchool_lnk" Member="UserRoleSchool_lnks">
+    <Type Name="UserRoleSchool_lnk">
+      <Column Name="UserRoleSchool_lnk_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="User_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Role_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="InsertBy" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateBy" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Role_lkp_UserRoleSchool_lnk" Member="Role_lkp" ThisKey="Role_id" OtherKey="Role_id" Type="Role_lkp" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Role_lkp" Member="Role_lkps">
+    <Type Name="Role_lkp">
+      <Column Name="Role_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RoleCode" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerCode" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayOrder" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="InsertBy" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateBy" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AllowedActualSchool" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AllowedCWGroupSchool" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AllowedSCTGroupSchool" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AllowedCAGroupSchool" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Role_lkp_UserRoleSchool_lnk" Member="UserRoleSchool_lnks" ThisKey="Role_id" OtherKey="Role_id" Type="UserRoleSchool_lnk" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduledClassForecast" Member="ScheduledClassForecasts">
+    <Type Name="ScheduledClassForecast">
+      <Column Name="ScheduledClass_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="StartTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EndTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="School_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsVirtualSchool" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ClassRoom_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ClassroomPhysicalCapacity" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="ClassCategory_id" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="ClassType_id" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="ClassTopic_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsDynamicTopic" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Teacher_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsPublished" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PublishDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="InsertDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Insertby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Updateby" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ScheduledClassTopic_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ReferenceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ReferenceClass_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsFixedClass" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsRandomTopic" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsPreview" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ReferenceAttendance" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Function Name="dbo.Teacher_LoadBySchool_V2_p" Method="Teacher_LoadBySchool_V2_p">
+    <Parameter Name="school_id" Type="System.Int32" DbType="Int" />
+    <ElementType Name="Teacher_LoadBySchool_V2_pResult">
+      <Column Name="Teacher_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TeacherType_id" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="TeachingHourPerWeek" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BreakDay" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Teacher_Name" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="HomeSchool_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>
