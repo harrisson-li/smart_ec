@@ -120,10 +120,15 @@ namespace CAS.Core
             var roleCodes = new List<string>() { "TCR", "LCTCR", "CATCR" };
             var roles = OBOE.Role_lkps
                 .Where(e => roleCodes.Contains(e.RoleCode)
-                && !e.IsDeleted).Select(e => e.Role_id).ToList();
+                && !e.IsDeleted)
+                .Select(e => e.Role_id)
+                .ToList();
+
             var userRoleSchools = OBOE.UserRoleSchool_lnks
-                .Where(e => e.School_id == schoolId && roles.Contains(e.Role_id)
+                .Where(e => e.School_id == schoolId
+                && roles.Contains(e.Role_id)
                 && !(bool)e.IsDeleted);
+
             var userIds = userRoleSchools.Select(e => e.User_id).ToList();
             var teachers = OBOE.Teachers.Where(e => userIds.Contains(e.Teacher_id)).ToList();
             return teachers;
@@ -139,6 +144,7 @@ namespace CAS.Core
         {
             var timeslotSeq = Math.Ceiling(seq / 2.0);
             var timeslot = GetTimeslot(day, (int)timeslotSeq);
+
             if (seq % 2 == 0)
             {
                 timeslot.StartDate += new TimeSpan(0, 25, 0);
@@ -220,6 +226,7 @@ namespace CAS.Core
                 && e.School_id == DbHelper.PartnerSchoolId
                 && e.ClassType_id == classTypeId)
                 .OrderBy(e => e.StartDate);
+
             return found.First();
         }
 
