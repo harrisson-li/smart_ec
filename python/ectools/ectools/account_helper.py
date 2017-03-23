@@ -19,14 +19,16 @@ For more info about using EFEC test account, please refer to confluence page or 
 -----
 
 """
-import re
+import getpass
+import json
 
+import arrow
 import requests
 
 from ectools.config import get_logger, config
+from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
+from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
-from .internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
-from .internal.data_helper import *
 
 
 def create_account_without_activation(is_e10=False):
@@ -53,6 +55,8 @@ def create_account_without_activation(is_e10=False):
         student['member_id'] = match.group('id')
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
+
+        save_account_to_db(student, 'not_activated')
         return student
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
@@ -140,7 +144,17 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['domain'] = config.domain
     student.update(kwargs)
 
+    tags = [config.partner]
+    if student['is_e10']:
+        tags.append('E10')
+    else:
+        tags.append('S15')
+
+    if is_v2:
+        tags.append('V2')
+
     get_logger().debug('New test account: {}'.format(student))
+    save_account_to_db(student, *tags)
 
     # school.csv might have incorrect school data so we verify before return
     if is_v2 != is_v2_student(student['member_id']):
@@ -255,3 +269,24 @@ def convert_account_to_object(account_dict,
             setattr(student_object, k, v)
 
     return student_object
+
+
+def save_account_to_db(account_dict, *tags):
+    from ectools.ecdb_helper import add_row, delete_rows
+    target_table = 'test_accounts'
+    search_by = {'member_id': account_dict['member_id'], 'environment': config.env}
+    delete_rows(target_table, search_by)
+
+    tags = list(tags)
+    tags.append('ectools')
+    tags = ','.join(tags)
+
+    detail = json.dumps(account_dict)
+    add_row(target_table,
+            config.env,
+            account_dict['member_id'],
+            account_dict['username'],
+            detail,
+            str(arrow.utcnow()),
+            getpass.getuser(),
+            tags)

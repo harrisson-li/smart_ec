@@ -206,3 +206,13 @@ INSERT INTO schools VALUES ('Mini', 'Wuhan_Lite', 'WH_LITE', 'CNMNWH4', 'PC2.0')
 INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_CBD', 'SSCNSZ6', '');
 INSERT INTO schools VALUES ('Mini', 'Nanjing', 'NJ_WDC', 'CNMNNJ4', '');
 INSERT INTO schools VALUES ('Cehk', 'No 2.0 Center', 'Invalid School', 'INVALID', 'PC2.0 Ignore');
+
+CREATE TABLE IF NOT EXISTS test_accounts (
+  environment TEXT NOT NULL,
+  member_id   INT  NOT NULL,
+  username    TEXT,
+  detail      TEXT,
+  created_on  TEXT,
+  created_by  TEXT,
+  note        TEXT
+)
