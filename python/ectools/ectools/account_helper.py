@@ -56,7 +56,7 @@ def create_account_without_activation(is_e10=False):
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
 
-        save_account_to_db(student, 'not_activated')
+        save_account_to_db(student, config.env, 'not_activated')
         return student
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
@@ -144,7 +144,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['domain'] = config.domain
     student.update(kwargs)
 
-    tags = [config.partner]
+    tags = [config.env, config.partner]
     if student['is_e10']:
         tags.append('E10')
     else:
