@@ -75,6 +75,10 @@ def test_create_and_use_table():
     assert row[1]['note'] == 'another'
 
     search_dict = {'id': 2, 'name': 'bbb'}
+    rows = db_helper.search_rows(test_table, search_dict)
+    assert len(rows) == 1
+    assert rows[0]['name'] == 'bbb'
+
     update_dict = {'name': 'aaa', 'note': 'new note'}
     db_helper.update_rows(test_table, search_dict, update_dict)
     row = db_helper.read_table(test_table)
