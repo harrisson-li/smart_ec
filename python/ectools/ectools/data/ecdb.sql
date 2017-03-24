@@ -214,5 +214,5 @@ CREATE TABLE IF NOT EXISTS test_accounts (
   detail      TEXT,
   created_on  TEXT,
   created_by  TEXT,
-  note        TEXT
+  tags        TEXT
 )
