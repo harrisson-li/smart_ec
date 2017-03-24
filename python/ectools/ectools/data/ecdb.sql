@@ -160,7 +160,7 @@ INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_HQB', 'SSCNSZ3', '');
 INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_DWG', 'SSCNSZ1', '');
 INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_CHC', 'SSCNSZ4', '');
 INSERT INTO schools VALUES ('Cool', 'ShenZhen', 'SZ_KJY', 'SSCNSZ5', '');
-INSERT INTO schools VALUES ('Cool', 'TestCity', 'Tcenter(notselect)', 'SSCNTE1', 'TestCenter');
+INSERT INTO schools VALUES ('Cool', 'TestCity', 'Tcenter(notselect)', 'SSCNTE1', 'TestCenter Ignore');
 INSERT INTO schools VALUES ('Cool', 'TestCity', 'BJ_Testing_Center', 'TEST', 'TestCenter');
 INSERT INTO schools VALUES ('Cool', 'TestCity', 'TCenterS14_(DO_NOT_SELECT)', 'SSCNTE2', 'TestCenter PC2.0 Ignore');
 INSERT INTO schools VALUES ('Cool', 'Tianjin', 'TJ_NJR', 'SSCNTJ1', '');
