@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Oboe">
+  <DataContextMoniker Name="/OboeDataContext" />
+  <nestedChildShapes>
+    <classShape Id="f5934007-4bb3-44de-8647-7007781df37a" isExpanded="false" absoluteBounds="2, 2.5, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ClassTopic_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bcab451c-7d95-4c0f-91f8-c5801000c982" absoluteBounds="2.015, 2.96, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1ec79048-1c4e-4418-a63e-8cb317d6b467" isExpanded="false" absoluteBounds="2.125, 1.875, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/Classroom_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="38e946e1-6070-4720-b7ab-eea59e9bfee7" absoluteBounds="2.14, 2.335, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="5b9db73b-042b-4d6f-8c09-cf24e076bfa2" isExpanded="false" absoluteBounds="2.875, 1.25, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ClassCategory_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0de4cdbd-3495-4f0f-b7d8-d368c30842fe" absoluteBounds="2.89, 1.71, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9c94e184-baeb-4c57-8a00-27c94425353f" isExpanded="false" absoluteBounds="3.625, 4.375, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClass" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dea0ffad-8c8f-4e07-85d5-203ce8ef196e" absoluteBounds="3.64, 4.835, 1.9700000000000002, 4.4800211588541661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3.3125005 : 2.325); (3.3125005 : 2.4375); (5.32291666666667 : 2.4375 : JumpStart); (5.48958333333333 : 2.4375 : JumpEnd); (5.9375 : 2.4375); (5.9375 : 4.6); (5.625 : 4.6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/Classroom_lkp/Classroom_lkp_ScheduledClass" />
+      <nodes>
+        <classShapeMoniker Id="1ec79048-1c4e-4418-a63e-8cb317d6b467" />
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.9062505 : 2.95); (2.9062505 : 3.25); (3.04166666666667 : 3.25 : JumpStart); (3.20833333333333 : 3.25 : JumpEnd); (3.25 : 3.25); (3.25 : 4.6); (3.38541666666667 : 4.6 : JumpStart); (3.55208333333333 : 4.6 : JumpEnd); (3.625 : 4.6)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ClassTopic_lkp/ClassTopic_lkp_ScheduledClass" />
+      <nodes>
+        <classShapeMoniker Id="f5934007-4bb3-44de-8647-7007781df37a" />
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="3ab7244f-9e2b-47ac-abc3-1e04a5d6c836" isExpanded="false" absoluteBounds="2.75, 6.5, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClassTopic" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e1fcc23c-b72a-4974-9dd0-36bc4e5d0176" absoluteBounds="2.765, 6.96, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(4.1875 : 6.5); (4.1875 : 4.825)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ScheduledClassTopic/ScheduledClassTopic_ScheduledClass" />
+      <nodes>
+        <classShapeMoniker Id="3ab7244f-9e2b-47ac-abc3-1e04a5d6c836" />
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3.46875 : 2.95); (3.46875 : 6.5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ClassTopic_lkp/ClassTopic_lkp_ScheduledClassTopic" />
+      <nodes>
+        <classShapeMoniker Id="f5934007-4bb3-44de-8647-7007781df37a" />
+        <classShapeMoniker Id="3ab7244f-9e2b-47ac-abc3-1e04a5d6c836" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="868d2ce5-0145-4441-a5f3-4150aa38c58b" isExpanded="false" absoluteBounds="1.5, 1, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/OboeConfigValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b7f78f26-c7c9-4ad2-8291-ad2c5b5053f0" absoluteBounds="1.5150000000000001, 1.46, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0eef74bd-9242-447f-b90e-850360596d3e" isExpanded="false" absoluteBounds="0.5, 2.25, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/OboeConfigVariable" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e823d124-133b-402e-a4df-92e3e0018e06" absoluteBounds="0.515, 2.71, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.78125 : 2.25); (1.78125 : 1.45)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/OboeConfigVariable/OboeConfigVariable_OboeConfigValue" />
+      <nodes>
+        <classShapeMoniker Id="0eef74bd-9242-447f-b90e-850360596d3e" />
+        <classShapeMoniker Id="868d2ce5-0145-4441-a5f3-4150aa38c58b" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="21d1aedd-4705-4071-bfed-6e1d8f2f18c0" isExpanded="false" absoluteBounds="0.75, 5.875, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/Teacher" />
+      <nestedChildShapes>
+        <elementListCompartment Id="19a7c4fd-66e4-40d8-a54a-ff54310ac0df" absoluteBounds="0.765, 6.335, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 6.1); (3.04166666666667 : 6.1 : JumpStart); (3.20833333333333 : 6.1 : JumpEnd); (3.38541666666667 : 6.1 : JumpStart); (3.55208333333333 : 6.1 : JumpEnd); (4.10416666666667 : 6.1 : JumpStart); (4.27083333333333 : 6.1 : JumpEnd); (4.9375025 : 6.1); (4.9375025 : 4.825)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/Teacher/Teacher_ScheduledClass" />
+      <nodes>
+        <classShapeMoniker Id="21d1aedd-4705-4071-bfed-6e1d8f2f18c0" />
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="68295397-ac7a-404b-bda6-760fb36a8d5a" isExpanded="false" absoluteBounds="1, 3.5, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClassVariableName_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2961a003-6598-4e91-92f3-ebd53a920688" absoluteBounds="1.0150000000000001, 3.96, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8f75d4a1-feb5-4465-9809-b2ae0f0ff700" isExpanded="false" absoluteBounds="0.75, 5, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClassVariableValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ee869a98-2edb-4a30-888b-aa4c09aebbb7" absoluteBounds="0.765, 5.46, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3.625 : 4.825); (3.55046505630758 : 4.83990698873848 : JumpStart); (3.38703494369242 : 4.87259301126151 : JumpEnd); (3.20671505630758 : 4.90865698873848 : JumpStart); (3.04328494369242 : 4.94134301126152 : JumpEnd); (2.75 : 5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OboeDataContext/ScheduledClass/ScheduledClass_ScheduledClassVariableValue" />
+      <nodes>
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+        <classShapeMoniker Id="8f75d4a1-feb5-4465-9809-b2ae0f0ff700" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.71875 : 3.95); (2.71875 : 5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ScheduledClassVariableName_lkp/ScheduledClassVariableName_lkp_ScheduledClassVariableValue" />
+      <nodes>
+        <classShapeMoniker Id="68295397-ac7a-404b-bda6-760fb36a8d5a" />
+        <classShapeMoniker Id="8f75d4a1-feb5-4465-9809-b2ae0f0ff700" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="bd996f0a-75c5-4c92-afbf-5e3a596e3b37" isExpanded="false" absoluteBounds="0.625, 4.375, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClassVariableType_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="165e3406-59a7-4a9a-8e4f-4f654c62835b" absoluteBounds="0.64, 4.835, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.8125 : 4.375); (1.8125 : 3.95)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ScheduledClassVariableType_lkp/ScheduledClassVariableType_lkp_ScheduledClassVariableName_lkp" />
+      <nodes>
+        <classShapeMoniker Id="bd996f0a-75c5-4c92-afbf-5e3a596e3b37" />
+        <classShapeMoniker Id="68295397-ac7a-404b-bda6-760fb36a8d5a" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="cdf9e2b0-b725-48fc-b07e-ebacbe9f0ed3" isExpanded="false" absoluteBounds="1.125, 7.375, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/School_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="09e93aea-2630-4843-9359-16de84a587c7" absoluteBounds="1.1400000000000001, 7.835, 1.9700000000000002, 5.6338297526041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3.125 : 7.6); (5.31250375 : 7.6); (5.31250375 : 4.825)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/School_lkp/School_lkp_ScheduledClass" />
+      <nodes>
+        <classShapeMoniker Id="cdf9e2b0-b725-48fc-b07e-ebacbe9f0ed3" />
+        <classShapeMoniker Id="9c94e184-baeb-4c57-8a00-27c94425353f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3.09375 : 7.375); (3.09375 : 6.95)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/School_lkp/School_lkp_ScheduledClassTopic" />
+      <nodes>
+        <classShapeMoniker Id="cdf9e2b0-b725-48fc-b07e-ebacbe9f0ed3" />
+        <classShapeMoniker Id="3ab7244f-9e2b-47ac-abc3-1e04a5d6c836" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="83fb0cfc-35fb-4e7b-821f-9c46730d7470" isExpanded="false" absoluteBounds="1, 6.875, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ClassType_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e65a529a-e23c-4669-9a1c-fdcc32fbf4f8" absoluteBounds="1.0150000000000001, 7.335, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(3 : 7.1687495); (3.01041666666667 : 7.1687495 : JumpStart); (3.17708333333333 : 7.1687495 : JumpEnd); (5.125 : 7.1687495); (5.125 : 6.25); (4.27083333333333 : 6.25 : JumpStart); (4.10416666666667 : 6.25 : JumpEnd); (3.55208333333333 : 6.25 : JumpStart); (3.38541666666667 : 6.25 : JumpEnd); (3.125 : 6.25); (3.125 : 3.075); (2.98958383333333 : 3.075 : JumpStart); (2.82291716666667 : 3.075 : JumpEnd); (2.42187325 : 3.075); (2.42187325 : 2.95)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ClassType_lkp/ClassType_lkp_ClassTopic_lkp" />
+      <nodes>
+        <classShapeMoniker Id="83fb0cfc-35fb-4e7b-821f-9c46730d7470" />
+        <classShapeMoniker Id="f5934007-4bb3-44de-8647-7007781df37a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3 : 7.16853846153846); (3.01041666666667 : 7.16853846153846 : JumpStart); (3.17708333333333 : 7.16853846153846 : JumpEnd); (3.953127 : 7.16853846153846); (3.953127 : 6.95)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ClassType_lkp/ClassType_lkp_ScheduledClassTopic" />
+      <nodes>
+        <classShapeMoniker Id="83fb0cfc-35fb-4e7b-821f-9c46730d7470" />
+        <classShapeMoniker Id="3ab7244f-9e2b-47ac-abc3-1e04a5d6c836" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3.875 : 1.7); (3.875 : 1.79375); (1.86458333333333 : 1.79375 : JumpStart); (1.69791666666667 : 1.79375 : JumpEnd); (0.4375 : 1.79375); (0.4375 : 6.956248); (1 : 6.956248)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/ClassCategory_lkp/ClassCategory_lkp_ClassType_lkp" />
+      <nodes>
+        <classShapeMoniker Id="5b9db73b-042b-4d6f-8c09-cf24e076bfa2" />
+        <classShapeMoniker Id="83fb0cfc-35fb-4e7b-821f-9c46730d7470" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="2f1da92e-0155-4a3c-9591-7ff297d8c202" isExpanded="false" absoluteBounds="3.875, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/UserRoleSchool_lnk" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8a7b6674-902a-4ff7-916c-b5da29563711" absoluteBounds="3.8899999999999997, 3.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d0739df5-c869-4c63-85f5-af63acfa6b96" isExpanded="false" absoluteBounds="4.625, 0.875, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/Role_lkp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="28057529-7eb4-4ace-8efb-fe4dde8cc8c2" absoluteBounds="4.64, 1.335, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.40625 : 1.325); (5.40625 : 2.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/OboeDataContext/Role_lkp/Role_lkp_UserRoleSchool_lnk" />
+      <nodes>
+        <classShapeMoniker Id="d0739df5-c869-4c63-85f5-af63acfa6b96" />
+        <classShapeMoniker Id="2f1da92e-0155-4a3c-9591-7ff297d8c202" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="8d07070e-8e05-4bdc-a4fc-ca6aa5b46612" isExpanded="false" absoluteBounds="3.625, 3.625, 2, 0.45">
+      <DataClassMoniker Name="/OboeDataContext/ScheduledClassForecast" />
+      <nestedChildShapes>
+        <elementListCompartment Id="def16fe4-6ace-4a5a-9201-4a45b7711350" absoluteBounds="3.6399999999999997, 4.085, 1.9700000000000002, 5.6338297526041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
