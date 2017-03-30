@@ -60,14 +60,14 @@ def test_get_random_level():
 def test_troop_send_login_request():
     set_environment('qa')
     username, password = 'stest82330', 1
-    cookies = troop.send_login_request(username, password)
+    cookies = troop.login(username, password)
     assert cookies is not None
 
 
 def test_troop_get_current_context():
     set_environment('qa')
     username, password = 'stest82330', 1
-    troop.send_login_request(username, password)
+    troop.login(username, password)
     context = troop.query_current_context(username)
     assert context is not None
     print(context)
@@ -85,8 +85,8 @@ def test_troop_get_member_site_settings():
     site_area = 'school'
     query_string = 'q=member_site_setting!"{};{}"'.format(site_area, key)
 
-    troop.send_login_request(username, password)
-    result = troop.query_troop_service(username, query_string)
+    troop.login(username, password)
+    result = troop.query(username, query_string)
     print(result)
     assert result['value'] == 'True'
 
@@ -96,13 +96,13 @@ def test_troop_get_current_user_info():
     username, password = 'stest82330', 1
 
     query_string = 'q=user!current'
-    troop.send_login_request(username, password)
-    result = troop.query_troop_service(username, query_string)
+    troop.login(username, password)
+    result = troop.query(username, query_string)
     print(result)
     assert result['lastName'] == 'test'
     assert result['member_id'] == 11262083
 
-    result = troop.query_troop_service(username, query_string, url_with_context=False)
+    result = troop.query(username, query_string, url_with_context=False)
     print(result)
     assert result['lastName'] == 'test'
     assert result['firstName'] == 's14hz'

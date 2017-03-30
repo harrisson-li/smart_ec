@@ -174,13 +174,13 @@ def score_helper_load_student(student_name_or_id):
     return result
 
 
-def call_troop_service(student_name, query_string, login_required=True, password=DEFAULT_PASSWORD):
+def query_troop_service(student_name, query_string, login_required=True, password=DEFAULT_PASSWORD):
     if login_required:
-        troop_service_helper.send_login_request(student_name, password)
+        troop_service_helper.login(student_name, password)
 
-    return troop_service_helper.query_troop_service(student_name, query_string)
+    return troop_service_helper.query(student_name, query_string)
 
 
 def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
     query_string = 'q=user!current'
-    return call_troop_service(student_name, query_string=query_string, password=password)
+    return query_troop_service(student_name, query_string=query_string, password=password)

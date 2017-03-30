@@ -10,16 +10,15 @@ TROOP_SERVICE_URL = "{}/services/school/queryproxy?"
 DEFAULT_PASSWORD = 1
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
 
-
 # other options
-# troop_service_url = "{}/services/shared/queryproxy?"
-# troop_service_url = "{}/services/api/proxy/queryproxy?"
+# TROOP_SERVICE_URL = "{}/services/shared/queryproxy?"
+# TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
 
 def _get_default_header():
     return {"Content-Type": DEFAULT_HEADER_CONTENT_TYPE}
 
 
-def send_login_request(username, password=DEFAULT_PASSWORD):
+def login(username, password=DEFAULT_PASSWORD):
     url = LOGIN_SERVICE_URL.format(config.etown_root)
 
     parameters = {
@@ -41,7 +40,7 @@ def send_login_request(username, password=DEFAULT_PASSWORD):
 
 def query_current_context(username):
     query_string = 'q=context!current'
-    context = query_troop_service(username, query_string, url_with_context=False)['values']
+    context = query(username, query_string, url_with_context=False)['values']
     return context
 
 
@@ -59,7 +58,7 @@ def _build_context(username):
     return CONTEXT_QUERY_STRING_PATTERN % (country_code, culture_code, partner_code, site_version)
 
 
-def query_troop_service(username, query_string, url=None, url_with_context=True):
+def query(username, query_string, url=None, url_with_context=True):
     if not url:
         url = TROOP_SERVICE_URL.format(config.etown_root)
 
