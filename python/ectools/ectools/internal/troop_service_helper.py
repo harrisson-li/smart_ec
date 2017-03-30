@@ -62,11 +62,11 @@ def query(username, query_string, url_with_context=True):
     url = TROOP_SERVICE_URL.format(config.etown_root)
     cookies = None
 
-    if url_with_context:
-        url += _build_context(username)
-
     if username:
         cookies = getattr(Cache, username + '_cookies', None)
+
+        if url_with_context:
+            url += _build_context(username)
 
     headers = _get_default_header()
     response = requests.post(url, headers=headers, data=query_string, cookies=cookies)
