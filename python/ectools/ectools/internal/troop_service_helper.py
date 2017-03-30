@@ -7,8 +7,9 @@ from ectools.internal.objects import Cache
 
 LOGIN_SERVICE_URL = "{}/login/handler.ashx"
 TROOP_SERVICE_URL = "{}/services/school/queryproxy?"
-DEFAULT_PASSWORD = 1
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
+CONTEXT_QUERY_STRING_PATTERN = "c=countrycode=%s|culturecode=%s|partnercode=%s|siteversion=%s"
+DEFAULT_PASSWORD = 1
 
 
 # other options
@@ -34,22 +35,19 @@ def login(username, password=DEFAULT_PASSWORD):
 
     if response.status_code == 200 and response.text == 'success':
         setattr(Cache, username + '_cookies', response.cookies)
-        return response.cookies
     else:
         raise ValueError('Failed to login troop service by {}/{}'.format(username, password))
 
 
 def query_current_context(username):
     query_string = 'q=context!current'
-    context = query(username, query_string, url_with_context=False)['values']
-    return context
+    return query(username, query_string, url_with_context=False)['values']
 
 
 def _build_context(username):
     if not getattr(Cache, username + '_troop_service_context', None):
         Cache.troop_service_context = query_current_context(username)
 
-    CONTEXT_QUERY_STRING_PATTERN = "c=countrycode=%s|culturecode=%s|partnercode=%s|siteversion=%s"
     context = Cache.troop_service_context
     country_code = context['studentcountrycode']['value']
     culture_code = context['culturecode']['value']
