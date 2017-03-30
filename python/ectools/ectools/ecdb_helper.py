@@ -217,6 +217,11 @@ def _to_query_clause(d, sep='AND'):
     return sep.join(clause)
 
 
+def search_rows(table_name, search_dict):
+    sql = "SELECT * FROM {} WHERE {}".format(table_name, _to_query_clause(search_dict))
+    return fetch_all(sql, as_dict=True)
+
+
 def update_rows(table_name, search_dict, update_dict):
     sql = "UPDATE {} set {} WHERE {}".format(table_name,
                                              _to_query_clause(update_dict, ','),

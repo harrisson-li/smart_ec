@@ -16,7 +16,8 @@ def main():
             'requests',
             'selenium',
             'pymssql',
-            'assertpy'
+            'assertpy',
+            'arrow'
         ],
         zip_safe=False,
     )
