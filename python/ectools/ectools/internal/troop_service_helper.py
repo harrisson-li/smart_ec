@@ -6,15 +6,16 @@ from ectools.config import config
 from ectools.internal.objects import Cache
 
 LOGIN_SERVICE_URL = "{}/login/handler.ashx"
-TROOP_SERVICE_URL = "{}/services/school/queryproxy?"
+TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
+
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
-CONTEXT_QUERY_STRING_PATTERN = "c=countrycode=%s|culturecode=%s|partnercode=%s|siteversion=%s"
+CONTEXT_QUERY_STRING_PATTERN = "c=countrycode={}|culturecode={}|partnercode={}|siteversion={}"
 DEFAULT_PASSWORD = 1
 
 
 # other options
 # TROOP_SERVICE_URL = "{}/services/shared/queryproxy?"
-# TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
+# TROOP_SERVICE_URL = "{}/services/school/queryproxy?"
 
 def _get_default_header():
     return {"Content-Type": DEFAULT_HEADER_CONTENT_TYPE}
@@ -54,7 +55,7 @@ def _build_context(username):
     partner_code = context['partnercode']['value']
     site_version = context['siteversion']['value']
 
-    return CONTEXT_QUERY_STRING_PATTERN % (country_code, culture_code, partner_code, site_version)
+    return CONTEXT_QUERY_STRING_PATTERN.format(country_code, culture_code, partner_code, site_version)
 
 
 def query(username, query_string, url_with_context=True):
