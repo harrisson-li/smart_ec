@@ -46,10 +46,13 @@ def query_current_context(username):
 
 
 def _build_context(username):
-    if not getattr(Cache, username + '_troop_service_context', None):
-        Cache.troop_service_context = query_current_context(username)
+    context_id = username + '_troop_service_context'
 
-    context = Cache.troop_service_context
+    # try to get from cache, if not found then query from troop
+    if not getattr(Cache, context_id, None):
+        setattr(Cache, context_id, query_current_context(username))
+
+    context = getattr(Cache, context_id)
     country_code = context['studentcountrycode']['value']
     culture_code = context['culturecode']['value']
     partner_code = context['partnercode']['value']
