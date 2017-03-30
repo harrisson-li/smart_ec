@@ -83,7 +83,7 @@ def test_load_status_flag():
 
 def test_troop_load_student():
     set_environment('qa')
-    student_name = 'stest82334'
+    student_name = 'stest82330'
     result = troop_service_load_student(student_name)
     assert result['lastName'] == 'test'
     assert result['firstName'] == 's14hz'
@@ -92,3 +92,9 @@ def test_troop_load_student():
     assert result['lastName'] == 'test'
     assert result['partnerCode'] == 'Cool'
     assert result['divisionCode'] == 'SSCNBJ5'
+
+
+def test_troop_translate_blurb():
+    blurb_id = '498117'
+    result = troop_service_translate_blurb(blurb_id)
+    assert result == 'Live Teacher Feedback'

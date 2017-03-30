@@ -178,7 +178,13 @@ def query_troop_service(student_name, query_string, login_required=True, passwor
     if login_required:
         troop_service_helper.login(student_name, password)
 
-    return troop_service_helper.query(student_name, query_string)
+    url_with_context = True if student_name else False
+    return troop_service_helper.query(student_name, query_string, url_with_context=url_with_context)
+
+
+def troop_service_translate_blurb(blurb_id, culture_code='en'):
+    query_string = 'q=blurb!{}&c=culturecode={}'.format(blurb_id, culture_code)
+    return query_troop_service(None, query_string, login_required=False)['translation']
 
 
 def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):

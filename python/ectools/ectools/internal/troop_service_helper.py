@@ -10,6 +10,7 @@ TROOP_SERVICE_URL = "{}/services/school/queryproxy?"
 DEFAULT_PASSWORD = 1
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
 
+
 # other options
 # TROOP_SERVICE_URL = "{}/services/shared/queryproxy?"
 # TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
@@ -58,14 +59,16 @@ def _build_context(username):
     return CONTEXT_QUERY_STRING_PATTERN % (country_code, culture_code, partner_code, site_version)
 
 
-def query(username, query_string, url=None, url_with_context=True):
-    if not url:
-        url = TROOP_SERVICE_URL.format(config.etown_root)
+def query(username, query_string, url_with_context=True):
+    url = TROOP_SERVICE_URL.format(config.etown_root)
+    cookies = None
 
     if url_with_context:
         url += _build_context(username)
 
-    cookies = getattr(Cache, username + '_cookies', None)
+    if username:
+        cookies = getattr(Cache, username + '_cookies', None)
+
     headers = _get_default_header()
     response = requests.post(url, headers=headers, data=query_string, cookies=cookies)
 
