@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace CAS.Core
 {
@@ -62,7 +63,8 @@ namespace CAS.Core
 
         private DbHelper()
         {
-            this.oboe = new OboeDataContext();
+            var conn = ConfigurationManager.ConnectionStrings["DB"];
+            this.oboe = new OboeDataContext(conn.ConnectionString);
         }
 
         public static DbHelper Instance
