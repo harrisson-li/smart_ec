@@ -79,3 +79,22 @@ def test_load_status_flag():
     result = ecplatform_load_student_status_flag(student_id)
     assert result['StatusFlags'][0]['Key'] == 5
     assert result['StatusFlags'][0]['Value'] == 'True'
+
+
+def test_troop_load_student():
+    set_environment('qa')
+    student_name = 'stest82330'
+    result = troop_service_load_student(student_name)
+    assert result['lastName'] == 'test'
+    assert result['firstName'] == 's14hz'
+    assert result['userName'] == 'stest82330'
+    assert result['email'] == 'te636257602331089480@qp1.org'
+    assert result['lastName'] == 'test'
+    assert result['partnerCode'] == 'Cool'
+    assert result['divisionCode'] == 'SSCNBJ5'
+
+
+def test_troop_translate_blurb():
+    blurb_id = '498117'
+    result = troop_service_translate_blurb(blurb_id)
+    assert result == 'Live Teacher Feedback'
