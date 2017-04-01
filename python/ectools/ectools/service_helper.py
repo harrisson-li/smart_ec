@@ -14,7 +14,9 @@ from xml.etree import ElementTree
 import requests
 
 from ectools.config import config
+from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
+from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
 from ectools.token_helper import get_token
 from ectools.utility import camelcase_to_underscore
 
@@ -170,3 +172,21 @@ def score_helper_load_student(student_name_or_id):
             result['current_unit'] = int(re.findall(r'Unit([\d ]+)', current_unit)[0].strip())  # 1~6
 
     return result
+
+
+def query_troop_service(student_name, query_string, login_required=True, password=DEFAULT_PASSWORD):
+    if login_required:
+        troop_service_helper.login(student_name, password)
+
+    url_with_context = True if student_name else False
+    return troop_service_helper.query(student_name, query_string, url_with_context=url_with_context)
+
+
+def troop_service_translate_blurb(blurb_id, culture_code='en'):
+    query_string = 'q=blurb!{}&c=culturecode={}'.format(blurb_id, culture_code)
+    return query_troop_service(None, query_string, login_required=False)['translation']
+
+
+def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
+    query_string = 'q=user!current'
+    return query_troop_service(student_name, query_string=query_string, password=password)
