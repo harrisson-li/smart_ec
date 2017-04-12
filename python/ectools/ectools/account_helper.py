@@ -24,7 +24,6 @@ import json
 
 import arrow
 import requests
-
 from ectools.config import get_logger, config
 from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 from ectools.internal.data_helper import *
@@ -48,7 +47,7 @@ def create_account_without_activation(is_e10=False):
     assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
 
     # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
-    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)<br.+'
+    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>[^<br]+)'
 
     match = re.match(pattern, result.text)
     if match:
