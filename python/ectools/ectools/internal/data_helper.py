@@ -1,5 +1,6 @@
 from ectools.ecdb_helper import read_table
 from ectools.utility import *
+
 from .objects import Cache
 
 
@@ -126,7 +127,6 @@ def get_any_school_product(by_partner=None, is_major=True):
 
 
 def get_default_activation_data(product):
-    from ectools.config import config
     return {'mainRedemptionQty': 3,
             'freeRedemptionQty': 3,
             'startLevel': '0A',
@@ -135,9 +135,7 @@ def get_default_activation_data(product):
             'includesenroll': 'on',
             'productId': product['id'],
             'mainRedemptionCode': product['main_code'],
-            'freeRedemptionCode': product['free_code'],
-            'ctr': config.country_code,
-            'partner': config.partner.lower()
+            'freeRedemptionCode': product['free_code']
             }
 
 
