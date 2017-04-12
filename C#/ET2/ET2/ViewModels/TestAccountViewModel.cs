@@ -17,11 +17,10 @@ namespace ET2.ViewModels
     {
         #region Test account functions
 
-        private const string URL_NEW_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/CreateMemberFore14hz";
-        private const string URL_ACTIVATE_ACCOUNT = "http://{0}.englishtown.com/services/oboe2/salesforce/test/ActivateForE14HZ";
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
         private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
 
+        private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiUrl");
         private List<TestAccount> _historyAccountList;
 
         public List<TestAccount> HistoryAccountList
@@ -112,124 +111,109 @@ namespace ET2.ViewModels
             }
         }
 
-        public void GenerateAccount()
+        private string GetCurrentEnvironment()
         {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType;
-            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
-            GenerateAccount(envUrlString, accountType, partner);
+            var env = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
+            if (env.StartsWith("Live"))
+            {
+                env = "Live";
+            }
+
+            return env;
         }
 
-        public void GenerateAccount(string envUrlString, AccountTypes accountType, string partner)
+        public void GenerateAccount()
         {
-            var accountUrl = URL_NEW_ACCOUNT.FormatWith(envUrlString);
+            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
+            var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType;
 
-            // append ctr and partner when create new account
-            accountUrl += "?ctr={0}&partner={1}".FormatWith(GetCountryByPartner(partner), partner);
+            GenerateAccount(accountType, partner);
+        }
 
-            switch (accountType)
+        public void GenerateAccount(AccountTypes accountType, string partner)
+        {
+            var api = ApiHost + "new_account";
+            var isE10 = (accountType == AccountTypes.E10);
+            var requestData = new { env = GetCurrentEnvironment(), partner = partner, is_e10 = isE10 };
+
+            try
             {
-                case AccountTypes.E10:
-                    accountUrl = accountUrl.Replace("e14hz", partner);
-                    break;
+                var response = HttpHelper.PostJson(api, requestData);
 
-                case AccountTypes.S15:
-                    break;
+                var account = response.ToJObject();
+                if (account["member_id"] != null)
+                {
+                    ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
 
-                case AccountTypes.S15_V2:
-                    accountUrl += "&v=2";
-                    break;
+                    this.CurrentTestAccount.MemberId = (string)account["member_id"];
+                    this.CurrentTestAccount.UserName = (string)account["username"];
+                    this.CurrentTestAccount.Password = (string)account["password"];
 
-                default:
-                    throw new NotSupportedException();
+                    // save current test account to history list
+                    AddHistoryAccount();
+                }
+                else
+                {
+                    ShellViewModel.WriteStatus("Failed: {0}".FormatWith(response));
+                }
             }
-
-            var result = HttpHelper.Get(accountUrl);
-            ShellViewModel.WriteStatus(result);
-
-            var pattern = @".+studentId\: (?<id>\d+), username\: (?<name>.+), password\: (?<pw>.+)<br.+";
-            var match = Regex.Match(result, pattern);
-            if (match.Success)
+            catch (Exception ex)
             {
-                this.CurrentTestAccount.MemberId = match.Groups["id"].Value;
-                this.CurrentTestAccount.UserName = match.Groups["name"].Value;
-                this.CurrentTestAccount.Password = match.Groups["pw"].Value;
-
-                // save current test account to history list
-                AddHistoryAccount();
-            }
-            else
-            {
-                ShellViewModel.WriteStatus(result);
+                ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
             }
 
             Save();
         }
 
-        public string GetCountryByPartner(string partner)
-        {
-            var ctr = string.Empty;
-
-            switch (partner.ToLower())
-            {
-                case "cool":
-                case "mini":
-                    ctr = "cn";
-                    break;
-
-                case "ecsp":
-                    ctr = "es";
-                    break;
-
-                case "cehk":
-                    ctr = "hk";
-                    break;
-
-                case "rupe":
-                    ctr = "ru";
-                    break;
-
-                case "indo":
-                    ctr = "id";
-                    break;
-
-                default:
-                    throw new ArgumentException("Unknown partner: {0}".FormatWith(partner));
-            }
-            return ctr;
-        }
-
         public void ActivateAccount()
         {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
             var accountType = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.AccountType;
-            var partner = ShellViewModel.Instance.ProductVM.CurrentPartner;
-            ActivateAccount(envUrlString, accountType, partner);
+            ActivateAccount(accountType);
         }
 
-        public void ActivateAccount(string envUrlString, AccountTypes accountType, string partner)
+        public void ActivateAccount(AccountTypes accountType)
         {
-            int id = Convert.ToInt32(CurrentTestAccount.MemberId);
-            var url = URL_ACTIVATE_ACCOUNT.FormatWith(envUrlString);
+            var api = ApiHost + "activate_account";
 
-            switch (accountType)
+            var id = Convert.ToInt32(CurrentTestAccount.MemberId);
+            var username = CurrentTestAccount.UserName;
+            var data = ShellViewModel.Instance.ProductVM;
+
+            var requestData = new
             {
-                case AccountTypes.E10:
-                    url = url.Replace("ForE14HZ", "E10");
-                    break;
+                env = GetCurrentEnvironment(),
+                partner = data.CurrentPartner,
+                is_e10 = (accountType == AccountTypes.E10),
+                is_v2 = (accountType == AccountTypes.S15_V2),
+                product_id = data.CurrentProduct.Id,
+                school_name = data.CurrentSchool,
+                student = new { member_id = id, username = username },
+                startLevel = data.CurrentProduct.StartLevel,
+                mainRedemptionQty = data.CurrentProduct.MainRedQty,
+                freeRedemptionQty = data.CurrentProduct.FreeRedQty,
+                securityverified = data.CurrentProduct.SecurityVerified ? "on" : "off",
+                includesenroll = data.CurrentProduct.IncludesEnroll ? "on" : "off"
+            };
 
-                case AccountTypes.S15:
-                case AccountTypes.S15_V2:
-                    url = url.Replace("ForE14HZ", "V2");
-                    break;
+            try
+            {
+                var response = HttpHelper.PostJson(api, requestData);
+                var account = response.ToJObject();
 
-                default:
-                    throw new NotSupportedException();
+                if (account["member_id"] != null)
+                {
+                    ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+                }
+                else
+                {
+                    ShellViewModel.WriteStatus("Failed: {0}".FormatWith(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
             }
 
-            var isE10 = (accountType == AccountTypes.E10);
-            var result = HttpHelper.Post(url, ShellViewModel.Instance.ProductVM.GetPostData(id, isE10));
-            ShellViewModel.WriteStatus(result);
             Save();
         }
 
@@ -252,6 +236,27 @@ namespace ET2.ViewModels
         public void Save()
         {
             Settings.SaveCurrentTestAccount(CurrentTestAccount);
+
+            try
+            {
+                int id = Convert.ToInt32(CurrentTestAccount.MemberId);
+                var requestData = new
+                {
+                    env = GetCurrentEnvironment(),
+                    member_id = id,
+                    created_by = Environment.UserName,
+                    add_tags = "ET2",
+                    remove_tags = "ectools"
+                };
+
+                var api = ApiHost + "save_account";
+                var response = HttpHelper.PostJson(api, requestData);
+                ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+            }
+            catch (Exception ex)
+            {
+                ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
+            }
         }
 
         #endregion Test account functions

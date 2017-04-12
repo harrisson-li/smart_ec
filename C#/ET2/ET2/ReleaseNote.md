@@ -1,4 +1,10 @@
-﻿## v0.0.0.35
+﻿## v0.0.0.36
+
+1. Use ectools to activate test account.
+2. Save new test accounts to http://cns-qaauto5/test_accounts
+3. You don't have to update host in your local machine to use this tool now.
+
+## v0.0.0.35
 
 1. Bug fix: use python.exe from PATH environment variable but not shell.
 

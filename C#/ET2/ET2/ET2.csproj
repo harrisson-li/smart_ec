@@ -315,7 +315,6 @@
     <Content Include="Data\ProductList.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Data\ProductList_origin.csv" />
     <Content Include="Data\UsefulLinks.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

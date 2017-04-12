@@ -48,6 +48,7 @@ namespace ET2.Tests
             Console.WriteLine(response);
             var obj = response.ToJObject();
             Assert.AreEqual(obj["result"][0]["member_id"], 23907713);
+            Assert.AreEqual(obj["result"][0]["invalid"], null);
         }
     }
 }
