@@ -157,7 +157,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     save_account_to_db(student, *tags)
 
     # school.csv might have incorrect school data so we verify before return
-    if is_v2 != is_v2_student(student['member_id']):
+    enrollment = kwargs.get('includesenroll', False)
+    if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
         raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
 
     return student
