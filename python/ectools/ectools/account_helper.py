@@ -271,6 +271,7 @@ def convert_account_to_object(account_dict,
     return student_object
 
 
+@ignore_error
 def save_account_to_db(account_dict, *tags):
     tags = list(tags)
     tags.append('ectools')
