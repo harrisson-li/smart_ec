@@ -21,13 +21,18 @@ _local_db_dir = expanduser('~')
 
 
 def _get_data_dir():
+    """Get the real path for ectools/data directory."""
     root = dirname(__file__)
     return join(root, Configuration.data_dir)
 
 
+def _using_remote_db():
+    return exists(_remote_db_dir)
+
+
 def _get_db_path():
     """First try to use remote shared db, if not able to connect then use local db."""
-    if exists(_remote_db_dir):
+    if _using_remote_db():
         Configuration.db_path = join(_remote_db_dir, _db_name)
     else:
         Configuration.db_path = join(_local_db_dir, _db_name)
