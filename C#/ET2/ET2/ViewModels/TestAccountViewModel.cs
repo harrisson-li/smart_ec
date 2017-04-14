@@ -132,6 +132,7 @@ namespace ET2.ViewModels
 
         public void GenerateAccount(AccountTypes accountType, string partner)
         {
+            ShellViewModel.WriteStatus("Working");
             var api = ApiHost + "new_account";
             var isE10 = (accountType == AccountTypes.E10);
             var requestData = new { env = GetCurrentEnvironment(), partner = partner, is_e10 = isE10 };
@@ -139,11 +140,11 @@ namespace ET2.ViewModels
             try
             {
                 var response = HttpHelper.PostJson(api, requestData);
-
                 var account = response.ToJObject();
+
                 if (account["member_id"] != null)
                 {
-                    ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+                    ShellViewModel.WriteStatus(response);
 
                     this.CurrentTestAccount.MemberId = (string)account["member_id"];
                     this.CurrentTestAccount.UserName = (string)account["username"];
@@ -151,6 +152,7 @@ namespace ET2.ViewModels
 
                     // save current test account to history list
                     AddHistoryAccount();
+                    Save();
                 }
                 else
                 {
@@ -161,8 +163,6 @@ namespace ET2.ViewModels
             {
                 ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
             }
-
-            Save();
         }
 
         public void ActivateAccount()
@@ -173,8 +173,9 @@ namespace ET2.ViewModels
 
         public void ActivateAccount(AccountTypes accountType)
         {
-            var api = ApiHost + "activate_account";
+            ShellViewModel.WriteStatus("Working");
 
+            var api = ApiHost + "activate_account";
             var id = Convert.ToInt32(CurrentTestAccount.MemberId);
             var username = CurrentTestAccount.UserName;
             var data = ShellViewModel.Instance.ProductVM;
@@ -202,7 +203,8 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
-                    ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+                    ShellViewModel.WriteStatus(response);
+                    Save();
                 }
                 else
                 {
@@ -213,8 +215,6 @@ namespace ET2.ViewModels
             {
                 ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
             }
-
-            Save();
         }
 
         public void ConvertTo20()

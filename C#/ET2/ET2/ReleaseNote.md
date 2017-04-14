@@ -1,4 +1,9 @@
-﻿## v0.0.0.36
+﻿## v0.0.0.37
+
+1. Minor bug fixing and status message refine.
+2. Test account activation timeout to 5 minutes.
+
+## v0.0.0.36
 
 1. Use ectools to activate test account.
 2. Save new test accounts to http://cns-qaauto5/test_accounts
