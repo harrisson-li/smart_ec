@@ -139,20 +139,23 @@ def get_default_activation_data(product):
             }
 
 
-def get_all_schools():
-    if not hasattr(Cache, 'schools'):
-        Cache.schools = read_data('schools')
-    return Cache.schools
+def get_all_schools(cached=True):
+    if cached:
+        if not hasattr(Cache, 'schools'):
+            Cache.schools = read_data('schools')
+        return Cache.schools
+    else:
+        return read_data('schools')
 
 
 def get_school_by_name(name):
-    found = [x for x in get_all_schools() if x['name'] == name]
+    found = [x for x in get_all_schools(cached=False) if x['name'] == name]
     assert len(found), "No such school: {}!".format(name)
     return found[0]
 
 
 def get_schools_has_tag(tag):
-    return get_item_has_tag(get_all_schools(), tag)
+    return get_item_has_tag(get_all_schools(cached=False), tag)
 
 
 def get_test_centers():
