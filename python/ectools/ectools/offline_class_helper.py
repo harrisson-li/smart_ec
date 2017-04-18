@@ -33,7 +33,7 @@ from ectools.service_helper import is_v2_student
 from ectools.utility import get_score, random_date
 
 
-class Config(Base):
+class HelperConfig(Base):
     LevelMustComplete = True  # the level must be completed before class taken
     LevelEnrollDateShift = {'days': -30}
     ClassTakenSince = {'days': -29}
@@ -59,7 +59,7 @@ def achieve_minimum_class_taken(student_id, **kwargs):
     get_logger().info("Minimum classes taken before moving on to next level")
 
     if not kwargs:
-        kwargs = Config.DefaultMinimumClassTaken
+        kwargs = HelperConfig.DefaultMinimumClassTaken
 
     if is_v2_student(student_id):
         achieve_minimum_class_taken_v2(student_id, **kwargs)
@@ -116,7 +116,7 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         SET StartDateTime = @starttime
         WHERE StudentUnitProgress_id = {}"""
 
-        execute_query(sql.format(Config.LevelEnrollDateShift['days'], level_progress_id, unit_progress_id))
+        execute_query(sql.format(HelperConfig.LevelEnrollDateShift['days'], level_progress_id, unit_progress_id))
 
     update_progress_start_time(get_level_progress_id(), get_unit_progress_id())
     _main(student_id, **kwargs)
@@ -139,7 +139,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
         AND sci.ExtraData LIKE '%levelCode"%'
         ORDER BY sci.SeqNo DESC"""
 
-        if not Config.LevelMustComplete:
+        if not HelperConfig.LevelMustComplete:
             sql = sql.replace('AND CompleteDate IS NOT NULL', '')
 
         db_suffix = str(student_id)[-1]
@@ -151,7 +151,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
 
         if match:
             original_date = arrow.get(match.group(1))
-            enroll_date = original_date.shift(**Config.LevelEnrollDateShift).format('YYYY-MM-DDTHH:mm:ss')
+            enroll_date = original_date.shift(**HelperConfig.LevelEnrollDateShift).format('YYYY-MM-DDTHH:mm:ss')
             extra_data = re.sub(r'("enrollDate":"[\d\-T\:]*")', '"enrollDate":"{}"'.format(enroll_date), extra_data)
 
         sql = """UPDATE school_{0}.dbo.StudentCourseItem
@@ -181,8 +181,8 @@ def _get_past_class_id(class_category_id):
     """
 
     return fetch_one(sql.format(class_category_id,
-                                Config.ClassTakenSince['days'],
-                                Config.ClassTakenUntil['days'])
+                                HelperConfig.ClassTakenSince['days'],
+                                HelperConfig.ClassTakenUntil['days'])
                      ).ScheduledClass_id
 
 
@@ -292,8 +292,8 @@ def _class_taken_for_gl(student_id, count):
           )"""
 
     get_logger().info("Class taken for online GL: {}".format(count))
-    start = datetime.now() + timedelta(**Config.ClassTakenSince)
-    end = datetime.now() + timedelta(**Config.ClassTakenUntil)
+    start = datetime.now() + timedelta(**HelperConfig.ClassTakenSince)
+    end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
 
     for i in range(count):
         execute_query(sql.format(student_id, random_date(start, end), get_score()))
