@@ -29,6 +29,7 @@ from ectools.config import get_logger, config
 from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
+from ectools.internal import sf_service_helper
 
 
 def create_account_without_activation(is_e10=False):
@@ -290,3 +291,11 @@ def save_account_to_db(account_dict, *tags):
             str(arrow.utcnow()),
             getpass.getuser(),
             tags)
+
+
+def sf_suspend_student(student_id, suspend_date, resume_date):
+    return sf_service_helper. suspend_student(student_id, suspend_date, resume_date)
+
+
+def sf_resume_student(student_id):
+    return sf_service_helper. resume_student(student_id)
