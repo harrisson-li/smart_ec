@@ -299,6 +299,55 @@ def _class_taken_for_gl(student_id, count):
         execute_query(sql.format(student_id, random_date(start, end), get_score()))
 
 
+def _class_taken_for_pl(student_id, count):
+    if count is None:
+        return
+
+    sql = """INSERT INTO SchoolAccount.dbo.StudentClassAttendance
+         ( Student_id,
+           Class_id,
+           ServiceTypeCode,
+           SchoolCode,
+           EntryDate,
+           StatusCode,
+           TeacherMember_id,
+           Grade,
+           Comment,
+           StudentCourse_id,
+           Course_id,
+           CourseUnit_id,
+           InsertDate,
+           UpdateDate,
+           Topic,
+           Topic_id
+          )
+        VALUES
+         ( '{0}',
+           '700000',
+           'PL',
+           'Courseware',
+           '{1:%Y-%m-%d %I:%M}',
+           'Attended',
+           '15000000',
+           '{2}',
+           'automation testing by ectools',
+           '1000000',
+           '378',
+           '1798',
+           GETDATE(),
+           GETDATE(),
+           'Cities and countries',
+           '191'
+          )"""
+
+    get_logger().info("Class taken for online PL: {}".format(count))
+    start = datetime.now() + timedelta(**HelperConfig.ClassTakenSince)
+    end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
+
+    for i in range(count):
+        execute_query(sql.format(student_id, random_date(start, end), get_score()))
+
+
 def _main(student_id, **kwargs):
     """Taken specific count for each type of class."""
     assert len(kwargs) > 0
@@ -308,11 +357,13 @@ def _main(student_id, **kwargs):
     apply_event = kwargs.get('apply_event')
     life_club = kwargs.get('life_club')
     online_gl = kwargs.get('online_gl')
+    online_pl = kwargs.get('online_pl')
     apply_or_lc = kwargs.get('apply_or_lc')
 
     _class_taken(student_id, 'f2f', f2f)
     _class_taken(student_id, 'workshop', workshop)
     _class_taken_for_gl(student_id, online_gl)
+    _class_taken_for_pl(student_id, online_pl)
 
     if apply_or_lc:
         _class_taken(student_id, 'apply', apply_or_lc, True)
