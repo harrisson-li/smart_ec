@@ -10,7 +10,7 @@ def test_use_config():
     # default setting if not args passed in minimum class taken function
     assert HelperConfig.DefaultMinimumClassTaken == {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
 
-    # default value for level progress start date / enroll date
+    # default shift value for level progress start date / enroll date
     assert HelperConfig.LevelEnrollDateShift == {'days': -30}
 
     # update it to whatever you want
