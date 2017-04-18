@@ -7,7 +7,7 @@ def test_use_config():
     # set it to false if you do not want to check
     HelperConfig.LevelMustComplete = False
 
-    # default setting if not args passed in for minimum class taken function
+    # default setting if not args passed in minimum class taken function
     assert HelperConfig.DefaultMinimumClassTaken == {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
 
     # default value for level progress start date / enroll date
