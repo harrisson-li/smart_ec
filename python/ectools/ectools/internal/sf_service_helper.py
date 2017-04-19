@@ -71,7 +71,7 @@ def suspend_student(member_id, suspend_date, resume_date):
 
     if doc.find('IsSuccess').string == 'true':
         suspend_external_id = doc.find('SuspendExternalId').string
-        add_row('suspend_info', member_id, resume_date, suspend_date, suspend_external_id)
+        add_row('suspend_info', member_id, suspend_date, resume_date, suspend_external_id)
 
         return suspend_external_id
     else:
@@ -86,7 +86,7 @@ def resume_student(member_id):
     result = search_rows('suspend_info', {'member_id': member_id})
 
     if result:
-        external_id = result[0]['suspend_enternal_id']
+        external_id = result[0]['suspend_external_id']
     else:
         raise Exception("Cannot find valid external id and cannot resume student, or this student "
                         "has already been resumed.")
