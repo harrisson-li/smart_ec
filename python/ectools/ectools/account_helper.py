@@ -49,7 +49,7 @@ def create_account_without_activation(is_e10=False):
     assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
 
     # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
-    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)<br.+'
+    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>[^<br]+)'
 
     match = re.match(pattern, result.text)
     if match:
@@ -158,7 +158,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     save_account_to_db(student, *tags)
 
     # school.csv might have incorrect school data so we verify before return
-    if is_v2 != is_v2_student(student['member_id']):
+    enrollment = kwargs.get('includesenroll', False)
+    if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
         raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
 
     return student
@@ -272,25 +273,38 @@ def convert_account_to_object(account_dict,
     return student_object
 
 
+@ignore_error
 def save_account_to_db(account_dict, *tags):
-    from ectools.ecdb_helper import add_row, delete_rows
-    target_table = 'test_accounts'
-    search_by = {'member_id': account_dict['member_id'], 'environment': config.env}
-    delete_rows(target_table, search_by)
-
     tags = list(tags)
     tags.append('ectools')
     tags = ','.join(tags)
+    created_by = getpass.getuser()
 
-    detail = json.dumps(account_dict)
-    add_row(target_table,
-            config.env,
-            account_dict['member_id'],
-            account_dict['username'],
-            detail,
-            str(arrow.utcnow()),
-            getpass.getuser(),
-            tags)
+    from ectools.ecdb_helper import _using_remote_db, add_row, delete_rows, search_rows
+    if not _using_remote_db():
+        data = {'add_tags': tags, 'created_by': created_by, 'detail': account_dict, 'env': config.env,
+                'member_id': account_dict['member_id']}
+
+        requests.post(Configuration.remote_api + 'save_account', json=data)
+
+    else:
+        target_table = 'test_accounts'
+        search_by = {'member_id': account_dict['member_id'], 'environment': config.env}
+
+        found = search_rows(target_table, search_by)
+        if found:
+            account_dict.update(json.loads(found[0]['detail']))
+
+        delete_rows(target_table, search_by)
+
+        add_row(target_table,
+                config.env,
+                account_dict['member_id'],
+                account_dict['username'],
+                json.dumps(account_dict),
+                str(arrow.utcnow()),
+                created_by,
+                tags)
 
 
 def sf_suspend_student(student_id, suspend_date, resume_date):

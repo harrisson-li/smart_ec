@@ -277,44 +277,6 @@ namespace ET2.ViewModels
         }
 
         /// <summary>
-        /// Gets the post data to activate a student, it is not the same for E10 and S15.
-        /// </summary>
-        /// <param name="memberId">The member id.</param>
-        /// <param name="isE10">if set to <c>true</c> [is e10 student].</param>
-        /// <returns></returns>
-        public Dictionary<string, object> GetPostData(int memberId, bool isE10)
-        {
-            var postData = new Dictionary<string, object>();
-
-            postData.Add("memberId", memberId);
-            postData.Add("startLevel", CurrentProduct.StartLevel);
-            postData.Add("mainRedemptionCode", CurrentProduct.MainRedCode);
-            postData.Add("mainRedemptionQty", CurrentProduct.MainRedQty);
-            postData.Add("freeRedemptionCode", CurrentProduct.FreeRedCode);
-            postData.Add("freeRedemptionQty", CurrentProduct.FreeRedQty);
-            postData.Add("divisionCode", CurrentProduct.DivisionCode);
-            postData.Add("productId", CurrentProduct.Id);
-            if (CurrentProduct.SecurityVerified)
-            {
-                postData.Add("securityverified", "on");
-            }
-
-            if (isE10)
-            {
-                postData.Add("levelQty", CurrentProduct.LevelQty);
-            }
-            else
-            {
-                if (CurrentProduct.IncludesEnroll)
-                {
-                    postData.Add("includesenroll", "on");
-                }
-            }
-
-            return postData;
-        }
-
-        /// <summary>
         /// Saves current product info to disk.
         /// </summary>
         public void Save()

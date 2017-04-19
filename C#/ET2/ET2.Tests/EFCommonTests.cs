@@ -38,5 +38,17 @@ namespace ET2.Tests
                 Assert.Fail("Can not get new test account");
             }
         }
+
+        [TestMethod]
+        public void TestHttpPostJson()
+        {
+            var url = "http://cns-qaauto5/api/get_account";
+            var jsonObj = new { env = "UAT", member_id = 23907713 };
+            var response = HttpHelper.PostJson(url, jsonObj);
+            Console.WriteLine(response);
+            var obj = response.ToJObject();
+            Assert.AreEqual(obj["result"][0]["member_id"], 23907713);
+            Assert.AreEqual(obj["result"][0]["invalid"], null);
+        }
     }
 }

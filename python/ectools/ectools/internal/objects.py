@@ -31,3 +31,4 @@ class Configuration(Base):
     default_poll_time = 0.5
     default_retry_times = 3
     db_path = 'to_be_set'
+    remote_api = 'http://cns-qaauto5/api/'

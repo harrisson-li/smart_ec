@@ -35,6 +35,15 @@ namespace EF.Common.Http
             return new HttpRequest().Send(ref header);
         }
 
+        public static string PostJson(string url, object jsonObject)
+        {
+            var header = GetDefaultHeader(url);
+            header.Method = "POST";
+            header.ContentType = "application/json";
+            header.PostData = jsonObject.ToJsonString();
+            return new HttpRequest().Send(ref header);
+        }
+
         /// <summary>
         /// To send a POST request with dict post data.
         /// </summary>

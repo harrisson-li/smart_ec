@@ -279,6 +279,21 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
     return wrapper_
 
 
+def ignore_error(func):
+    """Decorator to ignore all errors for a function."""
+
+    @wraps(wrapped=func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            from ectools.config import get_logger
+            get_logger().warn("Ignore error for function: {} - [{}]:{}"
+                              .format(func.__name__, type(e).__name__, e.args))
+
+    return wrapper
+
+
 def close_browser(browser_id=None):
     if not browser_id:
         from ectools.config import config
