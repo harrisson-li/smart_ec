@@ -43,7 +43,7 @@ namespace ET2.ViewModels
         public static void WriteStatus(string message)
         {
             Log.InfoFormat("Status: {0}", message);
-            Instance.StatusInfoVM.Text = message;
+            Instance.StatusInfoVM.Text = message.Replace("\n", "");
         }
 
         public static void InitForTest()
