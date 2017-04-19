@@ -19,3 +19,19 @@ def test_use_config():
     # default date range to pick a class to taken
     assert HelperConfig.ClassTakenSince == {'days': -29}
     assert HelperConfig.ClassTakenUntil == {'days': -1}
+
+    # default PL class type code
+    assert HelperConfig.DefaultPLCode == 'CP20'
+
+    # you can change it to PL40
+    HelperConfig.DefaultPLCode = 'PL'
+
+
+def test_class_taken():
+    from ectools.config import setup
+    from ectools.offline_class_helper import achieve_minimum_class_taken, HelperConfig
+
+    student_id = 23909095
+    setup('uat')
+    HelperConfig.LevelMustComplete = False
+    achieve_minimum_class_taken(student_id, online_pl=1)

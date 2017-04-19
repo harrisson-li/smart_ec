@@ -39,6 +39,7 @@ class HelperConfig(Base):
     ClassTakenSince = {'days': -29}
     ClassTakenUntil = {'days': -1}
     DefaultMinimumClassTaken = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    DefaultPLCode = 'CP20'
 
 
 def achieve_minimum_class_taken(student_id, **kwargs):
@@ -250,7 +251,7 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
         count -= 1
 
 
-def _class_taken_for_gl(student_id, count):
+def _class_taken_for_online_class(student_id, count, type_code):
     if count is None:
         return
 
@@ -275,12 +276,12 @@ def _class_taken_for_gl(student_id, count):
         VALUES
          ( '{0}',
            '700000',
-           'GL',
+           '{1}',
            'Courseware',
-           '{1:%Y-%m-%d %I:%M}',
+           '{2:%Y-%m-%d %I:%M}',
            'Attended',
            '15000000',
-           '{2}',
+           '{3}',
            'automation testing by ectools',
            '1000000',
            '378',
@@ -291,61 +292,12 @@ def _class_taken_for_gl(student_id, count):
            '191'
           )"""
 
-    get_logger().info("Class taken for online GL: {}".format(count))
+    get_logger().info("Class taken for online {}: {}".format(type_code, count))
     start = datetime.now() + timedelta(**HelperConfig.ClassTakenSince)
     end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
 
     for i in range(count):
-        execute_query(sql.format(student_id, random_date(start, end), get_score()))
-
-
-def _class_taken_for_pl(student_id, count):
-    if count is None:
-        return
-
-    sql = """INSERT INTO SchoolAccount.dbo.StudentClassAttendance
-         ( Student_id,
-           Class_id,
-           ServiceTypeCode,
-           SchoolCode,
-           EntryDate,
-           StatusCode,
-           TeacherMember_id,
-           Grade,
-           Comment,
-           StudentCourse_id,
-           Course_id,
-           CourseUnit_id,
-           InsertDate,
-           UpdateDate,
-           Topic,
-           Topic_id
-          )
-        VALUES
-         ( '{0}',
-           '700000',
-           'PL',
-           'Courseware',
-           '{1:%Y-%m-%d %I:%M}',
-           'Attended',
-           '15000000',
-           '{2}',
-           'automation testing by ectools',
-           '1000000',
-           '378',
-           '1798',
-           GETDATE(),
-           GETDATE(),
-           'Cities and countries',
-           '191'
-          )"""
-
-    get_logger().info("Class taken for online PL: {}".format(count))
-    start = datetime.now() + timedelta(**HelperConfig.ClassTakenSince)
-    end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
-
-    for i in range(count):
-        execute_query(sql.format(student_id, random_date(start, end), get_score()))
+        execute_query(sql.format(student_id, type_code, random_date(start, end), get_score()))
 
 
 def _main(student_id, **kwargs):
@@ -362,8 +314,8 @@ def _main(student_id, **kwargs):
 
     _class_taken(student_id, 'f2f', f2f)
     _class_taken(student_id, 'workshop', workshop)
-    _class_taken_for_gl(student_id, online_gl)
-    _class_taken_for_pl(student_id, online_pl)
+    _class_taken_for_online_class(student_id, online_gl, type_code='GL')
+    _class_taken_for_online_class(student_id, online_pl, type_code=HelperConfig.DefaultPLCode)
 
     if apply_or_lc:
         _class_taken(student_id, 'apply', apply_or_lc, True)
