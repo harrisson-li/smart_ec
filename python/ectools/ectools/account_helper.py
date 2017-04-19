@@ -294,8 +294,8 @@ def save_account_to_db(account_dict, *tags):
 
 
 def sf_suspend_student(student_id, suspend_date, resume_date):
-    return sf_service_helper. suspend_student(student_id, suspend_date, resume_date)
+    return sf_service_helper.suspend_student(student_id, suspend_date, resume_date)
 
 
 def sf_resume_student(student_id):
-    return sf_service_helper. resume_student(student_id)
+    return sf_service_helper.resume_student(student_id)
