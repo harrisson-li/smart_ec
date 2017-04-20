@@ -72,6 +72,7 @@ def test_convert_student_to_object():
 
 
 def test_sf_suspend_student():
+    set_environment('qa')
     import datetime
     now = datetime.datetime.now()
     further = now + timedelta(days=5)
