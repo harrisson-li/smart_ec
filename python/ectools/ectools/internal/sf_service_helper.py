@@ -22,8 +22,8 @@ def suspend_student(member_id, suspend_date, resume_date):
     """
 
     :param member_id: student's member id
-    :param suspend_date: format like 'yyyy-mm-dd'
-    :param resume_date: format like 'yyyy-mm-dd'
+    :param suspend_date: format like 'yyyy-mm-dd', e.g. '2017-04-02'
+    :param resume_date: format like 'yyyy-mm-dd', e.g. '2017-04-02'
     :return:
     """
     reason_code = 'Internal Test'
@@ -65,7 +65,7 @@ def suspend_student(member_id, suspend_date, resume_date):
                            format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, member_id, reason_code, resume_date,
                                   suspend_date, transaction_id), headers=headers, verify=False)
 
-    assert result.status_code == HTTP_STATUS_OK
+    assert result.status_code == HTTP_STATUS_OK, result.text
 
     doc = bs(result.content, 'xml')
 
@@ -126,7 +126,7 @@ def resume_student(member_id):
                            format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, external_id, member_id, resume_date,
                                   transaction_id), headers=headers, verify=False)
 
-    assert result.status_code == HTTP_STATUS_OK
+    assert result.status_code == HTTP_STATUS_OK, result.text
 
     doc = bs(result.content, 'xml')
 
