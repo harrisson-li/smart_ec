@@ -78,14 +78,5 @@ def test_sf_suspend_student():
     suspend_date = now.strftime('%Y-%m-%d')
     resume_date = further.strftime('%Y-%m-%d')
 
-    try:
-        return sf_service_helper.suspend_student('11275862', suspend_date, resume_date)
-    except Exception as e:
-        print(e)
-
-
-def test_sf_resume_student():
-    try:
-        return sf_service_helper.resume_student('11275862')
-    except Exception as e:
-        print(e)
+    sf_service_helper.suspend_student('11276463', suspend_date, resume_date)
+    sf_service_helper.resume_student('11276463')

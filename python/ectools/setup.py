@@ -17,7 +17,9 @@ def main():
             'selenium',
             'pymssql',
             'assertpy',
-            'arrow'
+            'arrow',
+            'bs4',
+            'lxml'
         ],
         zip_safe=False,
     )
