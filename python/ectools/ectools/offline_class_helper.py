@@ -26,9 +26,20 @@ Example to use this module::
 import re
 from datetime import datetime, timedelta
 
+import arrow
+
 from ectools.database_helper import *
 from ectools.service_helper import is_v2_student
 from ectools.utility import get_score, random_date
+
+
+class HelperConfig(Base):
+    LevelMustComplete = True  # the level must be completed before class taken
+    LevelEnrollDateShift = {'days': -30}
+    ClassTakenSince = {'days': -29}
+    ClassTakenUntil = {'days': -1}
+    DefaultMinimumClassTaken = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    DefaultPLCode = 'CP20'
 
 
 def achieve_minimum_class_taken(student_id, **kwargs):
@@ -49,7 +60,7 @@ def achieve_minimum_class_taken(student_id, **kwargs):
     get_logger().info("Minimum classes taken before moving on to next level")
 
     if not kwargs:
-        kwargs = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+        kwargs = HelperConfig.DefaultMinimumClassTaken
 
     if is_v2_student(student_id):
         achieve_minimum_class_taken_v2(student_id, **kwargs)
@@ -95,18 +106,18 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         get_logger().info("Update level and unit progress start time")
 
         sql = """DECLARE @starttime as datetime
-        SET @starttime = GETDATE() - 30
+        SET @starttime = GETDATE() + {}
         -- Update level progress start time to previous time
         UPDATE SchoolAccount.dbo.StudentLevelProgress
         SET StartDateTime = @starttime
-        WHERE StudentLevelProgress_id = %s
+        WHERE StudentLevelProgress_id = {}
 
         -- Update unit progress start time to previous time
         UPDATE SchoolAccount.dbo.StudentUnitProgress
         SET StartDateTime = @starttime
-        WHERE StudentUnitProgress_id = %s"""
+        WHERE StudentUnitProgress_id = {}"""
 
-        execute_query(sql, (level_progress_id, unit_progress_id))
+        execute_query(sql.format(HelperConfig.LevelEnrollDateShift['days'], level_progress_id, unit_progress_id))
 
     update_progress_start_time(get_level_progress_id(), get_unit_progress_id())
     _main(student_id, **kwargs)
@@ -129,12 +140,20 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
         AND sci.ExtraData LIKE '%levelCode"%'
         ORDER BY sci.SeqNo DESC"""
 
+        if not HelperConfig.LevelMustComplete:
+            sql = sql.replace('AND CompleteDate IS NOT NULL', '')
+
         db_suffix = str(student_id)[-1]
         row = fetch_one(sql.format(db_suffix, student_id))
         extra_data = row.ExtraData
         course_item_id = row.StudentCourseItem_id
-        last_year = datetime.now().year - 1
-        extra_data = re.sub(r'("enrollDate":"\d{4})', '"enrollDate":"{}'.format(last_year), extra_data)
+        pattern = r'.*enrollDate":"([\d\-T\:]*)"'
+        match = re.match(pattern, extra_data)
+
+        if match:
+            original_date = arrow.get(match.group(1))
+            enroll_date = original_date.shift(**HelperConfig.LevelEnrollDateShift).format('YYYY-MM-DDTHH:mm:ss')
+            extra_data = re.sub(r'("enrollDate":"[\d\-T\:]*")', '"enrollDate":"{}"'.format(enroll_date), extra_data)
 
         sql = """UPDATE school_{0}.dbo.StudentCourseItem
         SET ExtraData = '{1}'
@@ -154,40 +173,43 @@ def _get_class_type_mapping():
 
 def _get_past_class_id(class_category_id):
     sql = """SELECT TOP 1 * FROM [Oboe].[dbo].[ScheduledClass]
-    WHERE ClassCategory_id = %s
-    AND StartDate > GETDATE() - 20
-    AND StartDate < GETDATE() -1
-    AND EndDate < GETDATE() -1
+    WHERE ClassCategory_id = {0}
+    AND StartDate > GETDATE() + {1}
+    AND StartDate < GETDATE() + {2}
+    AND EndDate < GETDATE() + {2}
     AND IsPublished = 1
     AND IsDeleted = 0
     """
 
-    return fetch_one(sql, class_category_id).ScheduledClass_id
+    return fetch_one(sql.format(class_category_id,
+                                HelperConfig.ClassTakenSince['days'],
+                                HelperConfig.ClassTakenUntil['days'])
+                     ).ScheduledClass_id
 
 
 def _get_coupon_count(student_id, coupon_type_id):
     sql = """SELECT COUNT(*)
     FROM oboe.dbo.Coupon
     WHERE booking_id IS NULL
-    AND student_id = %s
-    AND couponClassCategoryGroup_id = %s"""
+    AND student_id = {}
+    AND couponClassCategoryGroup_id = {}"""
 
-    return fetch_one(sql, (student_id, coupon_type_id))[0]
+    return fetch_one(sql.format(student_id, coupon_type_id))[0]
 
 
 def _insert_booking_id(student_id, schedule_id, coupon_category_id):
     sql = """INSERT INTO oboe.dbo.Booking
-    VALUES (%s, %s, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
+    VALUES ({}, {}, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
     """
-    execute_query(sql, (schedule_id, student_id))
+    execute_query(sql.format(schedule_id, student_id))
 
     sql = """SELECT booking_id
     FROM oboe.dbo.Booking
-    WHERE student_id = %s
-    AND ScheduledClass_id = %s
+    WHERE student_id = {}
+    AND ScheduledClass_id = {}
     ORDER BY UpdateDate DESC"""
 
-    book_id = fetch_one(sql, (student_id, schedule_id))[0]
+    book_id = fetch_one(sql.format(student_id, schedule_id))[0]
 
     sql = """DECLARE @coupon_id AS INT
     SELECT @coupon_id = MIN(coupon_id)
@@ -229,7 +251,7 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
         count -= 1
 
 
-def _class_taken_for_gl(student_id, count):
+def _class_taken_for_online_class(student_id, count, type_code):
     if count is None:
         return
 
@@ -254,12 +276,12 @@ def _class_taken_for_gl(student_id, count):
         VALUES
          ( '{0}',
            '700000',
-           'GL',
+           '{1}',
            'Courseware',
-           '{1:%Y-%m-%d %I:%M}',
+           '{2:%Y-%m-%d %I:%M}',
            'Attended',
            '15000000',
-           '{2}',
+           '{3}',
            'automation testing by ectools',
            '1000000',
            '378',
@@ -270,12 +292,12 @@ def _class_taken_for_gl(student_id, count):
            '191'
           )"""
 
-    get_logger().info("Class taken for online GL: {}".format(count))
-    start = datetime.now() + timedelta(days=-29)
-    end = datetime.now() + timedelta(days=-1)
+    get_logger().info("Class taken for online {}: {}".format(type_code, count))
+    start = datetime.now() + timedelta(**HelperConfig.ClassTakenSince)
+    end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
 
     for i in range(count):
-        execute_query(sql.format(student_id, random_date(start, end), get_score()))
+        execute_query(sql.format(student_id, type_code, random_date(start, end), get_score()))
 
 
 def _main(student_id, **kwargs):
@@ -287,11 +309,13 @@ def _main(student_id, **kwargs):
     apply_event = kwargs.get('apply_event')
     life_club = kwargs.get('life_club')
     online_gl = kwargs.get('online_gl')
+    online_pl = kwargs.get('online_pl')
     apply_or_lc = kwargs.get('apply_or_lc')
 
     _class_taken(student_id, 'f2f', f2f)
     _class_taken(student_id, 'workshop', workshop)
-    _class_taken_for_gl(student_id, online_gl)
+    _class_taken_for_online_class(student_id, online_gl, type_code='GL')
+    _class_taken_for_online_class(student_id, online_pl, type_code=HelperConfig.DefaultPLCode)
 
     if apply_or_lc:
         _class_taken(student_id, 'apply', apply_or_lc, True)
