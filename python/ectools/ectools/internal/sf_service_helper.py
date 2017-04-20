@@ -26,7 +26,7 @@ def suspend_student(member_id, suspend_date, resume_date):
     :param resume_date: format like 'yyyy-mm-dd'
     :return:
     """
-    reason_code = 'Sick/Pregnant'
+    reason_code = 'Internal Test'
     transaction_id = uuid.uuid4()
 
     headers = {
@@ -57,9 +57,9 @@ def suspend_student(member_id, suspend_date, resume_date):
 
     search_result = search_rows('suspend_info', {'member_id': member_id})
     if search_result:
-        raise Exception("This student {} has been suspended on {} and will resume on {}, no need to suspend again. "
-                        "Please resume first".format(member_id, search_result[0]['suspend_date'],
-                                                     search_result[0]['resume_date']))
+        raise ValueError("This student {} has been suspended on {} and will resume on {}, no need to suspend again. "
+                         "Please resume first".format(member_id, search_result[0]['suspend_date'],
+                                                      search_result[0]['resume_date']))
 
     result = requests.post(config.etown_root.replace('http', 'https') + SF_NEW_ORG_SERVICE_URL, data=data.
                            format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, member_id, reason_code, resume_date,
@@ -78,7 +78,7 @@ def suspend_student(member_id, suspend_date, resume_date):
         error_code = doc.find('ErrorCode').string
         error_message = doc.find('ErrorMessage').string
 
-        raise Exception('Error code and error message are: \n{}.\n{}'.format(error_code, error_message))
+        raise SystemError('Error code and error message are: \n{}.\n{}'.format(error_code, error_message))
 
 
 def resume_student(member_id):
@@ -88,8 +88,8 @@ def resume_student(member_id):
     if result:
         external_id = result[0]['suspend_external_id']
     else:
-        raise Exception("Cannot find valid external id and cannot resume student, or this student "
-                        "has already been resumed.")
+        raise ValueError("Cannot find valid external id and cannot resume student, or this student "
+                         "has already been resumed.")
 
     resume_date = datetime.now().strftime('%Y-%m-%d')
 
@@ -131,6 +131,6 @@ def resume_student(member_id):
     doc = bs(result.content, 'xml')
 
     if doc.find('IsSuccess').string != 'true':
-        raise Exception("Resume student {} failed.".format(member_id))
+        raise SystemError(result.content)
     else:
         delete_rows('suspend_info', {'member_id': member_id})
