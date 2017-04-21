@@ -69,3 +69,15 @@ def test_convert_student_to_object():
     assert isinstance(student_obj.product, dict)
     assert student_obj.is_e10 == student['is_e10']
     assert student['member_id'] == student_obj.member_id
+
+
+def test_sf_suspend_student():
+    set_environment('qa')
+    import datetime
+    now = datetime.datetime.now()
+    further = now + timedelta(days=5)
+    suspend_date = now.strftime('%Y-%m-%d')
+    resume_date = further.strftime('%Y-%m-%d')
+
+    sf_service_helper.suspend_student('11276463', suspend_date, resume_date)
+    sf_service_helper.resume_student('11276463')
