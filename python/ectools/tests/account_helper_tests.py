@@ -15,11 +15,17 @@ def test_create_account():
 
     # test save account via api
     import ectools.ecdb_helper as db_helper
-    db_helper._remote_db_dir = '//not/exist/path'
-    student = create_account_without_activation(is_e10=True)
-    get_logger().info(student)
-    assert student is not None
-    assert student['is_e10']
+    original = db_helper._remote_db_dir
+
+    try:
+        db_helper._remote_db_dir = '//not/exist/path'
+        student = create_account_without_activation(is_e10=True)
+        get_logger().info(student)
+        assert student is not None
+        assert student['is_e10']
+
+    finally:
+        db_helper._remote_db_dir = original
 
 
 def test_activate_account_default():

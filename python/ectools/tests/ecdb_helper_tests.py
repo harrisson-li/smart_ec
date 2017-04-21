@@ -1,17 +1,21 @@
 import ectools.ecdb_helper as db_helper
 from ectools.config import get_logger
 
+original = db_helper._remote_db_dir
+
 
 def test_get_db_path():
-    db_helper._remote_db_path = "//some/where"
+    db_helper._remote_db_dir = "//some/where"
     db_path = db_helper._get_db_path()
     get_logger().info(db_path)
     assert "some" not in db_path
+    db_helper._remote_db_dir = original
 
 
 def test_build_db():
-    db_helper._remote_db_path = "//some/where"
+    db_helper._remote_db_dir = "//some/where"
     db_helper._build_db()
+    db_helper._remote_db_dir = original
 
 
 def test_fetchone():
