@@ -60,8 +60,7 @@ def test_get_random_level():
 def test_troop_send_login_request():
     set_environment('qa')
     username, password = 'stest82330', 1
-    cookies = troop.login(username, password)
-    assert cookies is not None
+    troop.login(username, password)
 
 
 def test_troop_get_current_context():
