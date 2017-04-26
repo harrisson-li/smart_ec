@@ -40,7 +40,7 @@ namespace ET2.Tests
         }
 
         [TestMethod]
-        public void TestHttpPostJson()
+        public void TestHttpPostJsonObject()
         {
             var url = "http://cns-qaauto5/api/get_account";
             var jsonObj = new { env = "UAT", member_id = 23907713 };
@@ -49,6 +49,22 @@ namespace ET2.Tests
             var obj = response.ToJObject();
             Assert.AreEqual(obj["result"][0]["member_id"], 23907713);
             Assert.AreEqual(obj["result"][0]["invalid"], null);
+        }
+
+        [TestMethod]
+        public void TestHttpPostJsonArray()
+        {
+            var url = "http://cns-qaauto5/rest/schools";
+            var response = HttpHelper.Get(url);
+            Console.WriteLine(response);
+
+            var arr = response.ToJArray();
+            Assert.IsTrue(arr.Count > 0);
+
+            foreach (var item in arr)
+            {
+                Console.WriteLine("{0}: {1}", item["city"], item["name"]);
+            }
         }
     }
 }
