@@ -8,3 +8,6 @@ pymssql
 assertpy
 sphinx
 pytest
+arrow
+bs4
+lxml

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EF.Common
 {
@@ -54,6 +55,14 @@ namespace EF.Common
         public static T ToJsonObject<T>(this string jsonString)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString, JsonSettings);
+        }
+
+        /// <summary>
+        /// Convert JSON string to JObject.
+        /// </summary>
+        public static JObject ToJObject(this string jsonString)
+        {
+            return JObject.Parse(jsonString);
         }
 
         public static void SaveObject<T>(this T obj, string toFile)

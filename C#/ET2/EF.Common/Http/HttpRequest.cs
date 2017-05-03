@@ -26,7 +26,7 @@ namespace EF.Common.Http
             request.Referer = header.Referer;
             request.Accept = "*/*";
             request.CookieContainer = this.Cookies;
-            request.Timeout = 100000;
+            request.Timeout = 1000 * 60 * 5; // 5 mins
             request.Headers.Add("Accept-Language", "en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4");
             request.Headers.Add("Origin", header.Origin);
             request.KeepAlive = true;

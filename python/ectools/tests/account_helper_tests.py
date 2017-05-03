@@ -8,10 +8,24 @@ def test_create_account():
     get_logger().info(student)
     assert student is not None
     assert student['password'] == '1'
-    student = create_account_without_activation(is_e10=True)
-    get_logger().info(student)
-    assert student is not None
-    assert student['is_e10']
+
+    student = {'member_id': student['member_id']}
+    student = activate_account(student=student)
+    assert student['member_id'] is not None
+
+    # test save account via api
+    import ectools.ecdb_helper as db_helper
+    original = db_helper._remote_db_dir
+
+    try:
+        db_helper._remote_db_dir = '//not/exist/path'
+        student = create_account_without_activation(is_e10=True)
+        get_logger().info(student)
+        assert student is not None
+        assert student['is_e10']
+
+    finally:
+        db_helper._remote_db_dir = original
 
 
 def test_activate_account_default():
@@ -61,3 +75,15 @@ def test_convert_student_to_object():
     assert isinstance(student_obj.product, dict)
     assert student_obj.is_e10 == student['is_e10']
     assert student['member_id'] == student_obj.member_id
+
+
+def test_sf_suspend_student():
+    set_environment('qa')
+    import datetime
+    now = datetime.datetime.now()
+    further = now + timedelta(days=5)
+    suspend_date = now.strftime('%Y-%m-%d')
+    resume_date = further.strftime('%Y-%m-%d')
+
+    sf_service_helper.suspend_student('11276463', suspend_date, resume_date)
+    sf_service_helper.resume_student('11276463')
