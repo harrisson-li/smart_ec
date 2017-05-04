@@ -199,6 +199,14 @@ def activate_school_v2_student(school_name=None, **kwargs):
     return activate_account(product_id=product_id, school_name=school_name, **kwargs)
 
 
+def activate_eclite_student(school_name=None):
+    if school_name is None:
+        school_name = get_any_lite_school()['name']
+        print(school_name)
+    return activate_account(product_id=143, school_name=school_name)
+
+activate_eclite_student()
+
 def activate_student_with_random_level(product_id=None,
                                        school_name=None,
                                        is_v2=True,

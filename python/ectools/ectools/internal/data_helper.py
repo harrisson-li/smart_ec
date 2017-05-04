@@ -165,6 +165,8 @@ def get_test_centers():
 def get_all_v2_schools():
     return get_schools_has_tag('PC2.0')
 
+def get_eclite_centers():
+    return get_schools_has_tag('Lite')
 
 def get_schools_by_partner(partner=None):
     from ectools.config import config
@@ -190,6 +192,11 @@ def get_any_v2_school(partner=None):
     if partner is None:
         partner = config.partner
     found = [x for x in get_all_v2_schools() if x['partner'].lower() == partner.lower()]
+    return get_random_item(found)
+
+
+def get_any_lite_school():
+    found = [x for x in get_eclite_centers()]
     return get_random_item(found)
 
 
