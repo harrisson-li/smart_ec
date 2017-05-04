@@ -20,7 +20,7 @@ namespace ET2.ViewModels
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
         private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
 
-        private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiUrl");
+        private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiHost") + "api/";
         private List<TestAccount> _historyAccountList;
 
         public List<TestAccount> HistoryAccountList
