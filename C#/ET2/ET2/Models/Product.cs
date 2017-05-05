@@ -148,6 +148,19 @@ namespace ET2.Models
             }
         }
 
+        private string _tags;
+
+        public string Tags
+        {
+            get { return _tags; }
+            set
+            {
+                if (value == _tags) return;
+                _tags = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _isSecurityVerified;
 
         public bool SecurityVerified

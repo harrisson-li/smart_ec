@@ -1,4 +1,9 @@
-﻿## v0.0.0.37
+﻿## v0.0.0.38
+
+1. Retire CSV config files, load data via http://cns-qaauto5/api/
+2. Global configuration was saved in sqlite @ \\cns-qaauto5\Shared\Automation\ec.sqlite
+
+## v0.0.0.37
 
 1. Minor bug fixing and status message refine.
 2. Test account activation timeout to 5 minutes.

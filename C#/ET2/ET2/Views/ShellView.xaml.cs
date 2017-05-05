@@ -101,6 +101,16 @@ namespace ET2.Views
 
         #endregion Help Message
 
+        #region Web Edition
+
+        private void OpenWebEdition(object sender, RoutedEventArgs e)
+        {
+            var helpLink = ConfigHelper.GetAppSettingsValue("WebEdition");
+            System.Diagnostics.Process.Start(helpLink);
+        }
+
+        #endregion Help Message
+
         #region Settings
 
         private async void DisplaySettings(object sender, RoutedEventArgs e)

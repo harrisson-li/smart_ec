@@ -65,6 +65,14 @@ namespace EF.Common
             return JObject.Parse(jsonString);
         }
 
+        /// <summary>
+        /// Convert JSON string to JArray.
+        /// </summary>
+        public static JArray ToJArray(this string jsonString)
+        {
+            return JArray.Parse(jsonString);
+        }
+
         public static void SaveObject<T>(this T obj, string toFile)
         {
             var json = obj.ToJsonString<T>();

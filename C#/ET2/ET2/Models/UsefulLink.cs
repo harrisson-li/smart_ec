@@ -60,19 +60,6 @@ namespace ET2.Models
             }
         }
 
-        private string _des;
-
-        public string Description
-        {
-            get { return _des; }
-            set
-            {
-                if (value == _des) return;
-                _des = value;
-                OnPropertyChanged();
-            }
-        }
-
         private int _hits;
 
         public int Hits

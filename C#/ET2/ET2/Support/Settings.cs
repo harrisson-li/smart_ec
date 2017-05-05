@@ -8,12 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using EF.Common;
 using ET2.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using EF.Common.Http;
 
 namespace ET2.Support
 {
     public static class Settings
     {
         #region Constants
+
+        private static string REST_HOST = ConfigHelper.GetAppSettingsValue("ApiHost") + "rest/";
 
         internal class Data
         {
@@ -23,21 +28,32 @@ namespace ET2.Support
             public const string CurrentProduct = "Save.CurrentProduct";
             public const string LastVersion = "Save.LastVersion";
             public const string HitRecords = "Save.Hits";
-            public const string UserLinks = "UsefulLinks.csv";
-            public const string ProductList = "ProductList.csv";
-            public const string DivisionCode = "DivisionCode.csv";
-            public const string FixLinks = "FixLinks.csv";
-            public const string Envrionments = "Environments.csv";
-            public const string WhiteList = "WhiteList.csv";
             public const string GlobalFolderForDebug = @"%UserProfile%\ET2_Global";
             public const string ReleaseNote = "ReleaseNote.md";
             public const string HostFolder = "Hosts";
             public const string QuickActionFolder = "QuickActions";
         }
 
+        internal class ApiEndpoint
+        {
+            public const string Partners = "partners";
+            public const string Environments = "environments";
+            public const string Schools = "schools";
+            public const string UsefulLinks = "useful_links";
+            public const string Products = "products";
+            public const string WhiteList = "white_lists";
+        }
+
         #endregion Constants
 
         #region Common settings
+
+        public static JArray ReadApiData(string apiName)
+        {
+            var url = "{0}{1}/".FormatWith(REST_HOST, apiName);
+            var response = HttpHelper.Get(url);
+            return response.ToJArray();
+        }
 
         public static string AppFolder
         {
@@ -196,30 +212,28 @@ namespace ET2.Support
 
         #region Test environment
 
+        private static List<TestEnvironment> _environments = null;
+
         public static List<TestEnvironment> LoadEnvironments()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.Envrionments);
-            var globalFile = AsGlobalFile(Data.Envrionments);
-            if (!File.Exists(globalFile))
+            if (_environments == null)
             {
-                File.Copy(dataFile, globalFile);
-            }
+                var data = ReadApiData(ApiEndpoint.Environments);
 
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new TestEnvironment
-                  {
-                      Name = (string)e["Name"],
-                      UrlReplacement = (string)e["Replacement"],
-                      Mark = (string)e["Mark"]
-                  }).ToList();
+                _environments = data.Select(e => new TestEnvironment
+                {
+                    Name = (string)e["description"],
+                    UrlReplacement = (string)e["replace_to"],
+                    Mark = (string)e["mark"]
+                }).ToList();
 
-            // remove live environment for users not in white list
-            if (!IsWhiteListUser())
-            {
-                list = list.Where(e => !e.Name.ToLower().Contains("live")).ToList();
+                // remove live environment for users not in white list
+                if (!IsWhiteListUser())
+                {
+                    _environments = _environments.Where(e => !e.Name.ToLower().Contains("live")).ToList();
+                }
             }
-            return list;
+            return _environments;
         }
 
         public static void SaveCurrentTestEnvironment(TestEnvironment obj)
@@ -262,45 +276,45 @@ namespace ET2.Support
             var obj = LoadPersonalSetting<Product>(Data.CurrentProduct);
             if (obj == null || obj.Name.IsNullOrEmpty())
             {
-                obj = LoadProductList().First();
+                obj = LoadProductList()
+                    .Where(e => e.Tags.Contains("default")).First();
             }
 
             if (obj.DivisionCode.IsNullOrEmpty())
             {
-                obj.DivisionCode = LoadDivision().Where(e =>
-                e.PartnerCode == obj.Partner).First().DivisionCode;
+                obj.DivisionCode = LoadDivision()
+                    .Where(e => e.PartnerCode == obj.Partner)
+                    .First().DivisionCode;
             }
 
             return obj;
         }
 
+        private static List<Product> _productList = null;
+
         public static List<Product> LoadProductList()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.ProductList);
-            var globalFile = AsGlobalFile(Data.ProductList);
-            if (!File.Exists(globalFile))
+            if (_productList == null)
             {
-                File.Copy(dataFile, globalFile);
+                var data = ReadApiData(ApiEndpoint.Products);
+                _productList = data.Select(e => new Product
+                {
+                    FreeRedCode = e["free_code"].ToString(),
+                    FreeRedQty = 3,
+                    Id = Convert.ToInt32(e["id"]),
+                    IncludesEnroll = true,
+                    LevelQty = 16,
+                    MainRedCode = e["main_code"].ToString(),
+                    MainRedQty = 3,
+                    Name = "{0}>{1}".FormatWith(e["id"], e["name"]),
+                    Partner = e["partner"].ToString().ToLower(),
+                    SecurityVerified = true,
+                    StartLevel = "0A",
+                    IsE10 = e["tags"].ToString().Contains("E10"),
+                    Tags = e["tags"].ToString()
+                }).ToList();
             }
-
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new Product
-                  {
-                      FreeRedCode = e["FreeRedCode"].ToString(),
-                      FreeRedQty = 3,
-                      Id = Convert.ToInt32(e["Product_id"]),
-                      IncludesEnroll = true,
-                      LevelQty = 16,
-                      MainRedCode = e["MainRedCode"].ToString(),
-                      MainRedQty = 3,
-                      Name = e["PackageName"].ToString(),
-                      Partner = e["PartnerCode"].ToString().ToLower(),
-                      SecurityVerified = true,
-                      StartLevel = "0A",
-                      IsE10 = e["E10"].ConvertValue<bool>()
-                  }).ToList();
-            return list;
+            return _productList;
         }
 
         #endregion Products
@@ -318,72 +332,80 @@ namespace ET2.Support
                 .First();
         }
 
+        private static List<Division> _divisionList = null;
+
         public static List<Division> LoadDivision()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.DivisionCode);
-            var globalFile = AsGlobalFile(Data.DivisionCode);
-            if (!File.Exists(globalFile))
+            if (_divisionList == null)
             {
-                File.Copy(dataFile, globalFile);
+                var data = ReadApiData(ApiEndpoint.Schools);
+                _divisionList = data.Select(e => new Division
+                {
+                    PartnerCode = e["partner"].ToString().ToLower(),
+                    City = e["city"].ToString(),
+                    SchoolName = e["name"].ToString(),
+                    DivisionCode = e["division_code"].ToString(),
+                    Tags = e["tags"].ToString()
+                }).ToList();
             }
-
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new Division
-                  {
-                      PartnerCode = e["PartnerCode"].ToString().ToLower(),
-                      City = e["City"].ToString(),
-                      SchoolName = e["SchoolName"].ToString(),
-                      DivisionCode = e["DivisionCode"].ToString(),
-                      Tags = e["Tags"].ToString()
-                  }).ToList();
-            return list;
+            return _divisionList;
         }
 
         #endregion Division code
 
         #region Useful links
 
+        private static JArray _links = null;
+
+        private static JArray LoadLinks()
+        {
+            if (_links == null)
+            {
+                _links = ReadApiData(ApiEndpoint.UsefulLinks);
+            }
+            return _links;
+        }
+
         public static List<FixLink> LoadFixLinks()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.FixLinks);
-            var globalFile = AsGlobalFile(Data.FixLinks);
-            if (!File.Exists(globalFile))
+            var data = LoadLinks().Where(e => e["tags"].ToString().Contains("fix_link"));
+            var list = data.Select(e => new FixLink
             {
-                File.Copy(dataFile, globalFile);
-            }
+                Origin = e["name"].ToString(),
+                Fixed = e["url"].ToString()
+            }).ToList();
 
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new FixLink
-                  {
-                      Origin = e["Origin"].ToString(),
-                      Fixed = e["Fixed"].ToString()
-                  }).ToList();
             return list;
+        }
+
+        private static T GetJsonProperty<T>(string json, string propertyName, T defaultValue)
+        {
+            var obj = json.ToJObject();
+            var value = obj[propertyName];
+
+            if (value == null)
+            {
+                return defaultValue;
+            }
+            else
+            {
+                return value.Value<T>();
+            }
         }
 
         public static List<UsefulLink> LoadUsefulLinks()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.UserLinks);
-            var globalFile = AsGlobalFile(Data.UserLinks);
-            if (!File.Exists(globalFile))
+            var data = LoadLinks().Where(e => e["tags"].ToString().Contains("et2"));
+            var list = data.Select(e => new UsefulLink
             {
-                File.Copy(dataFile, globalFile);
-            }
+                Url = e["url"].ToString(),
+                Name = e["name"].ToString(),
+                Hits = 0,
+                IsHomeLink = e["tags"].ToString().Contains("home"),
+                IsHide = false,
+                Rank = GetJsonProperty<int>(e["detail"].ToString(), "rank", 0)
+            }).ToList();
 
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => new UsefulLink
-                  {
-                      Url = e["URL"].ToString(),
-                      Description = e["Description"].ToString(),
-                      Name = e["Name"].ToString(),
-                      Hits = e["Hits"].ConvertValue<int>(),
-                      IsHomeLink = e["IsHomeLink"].ConvertValue<bool>(),
-                      IsHide = e["Hide"].ConvertValue<bool>(),
-                      Rank = e["Rank"].ConvertValue<int>()
-                  }).ToList();
             return list;
         }
 
@@ -559,20 +581,17 @@ namespace ET2.Support
 
         #region WhiteList
 
+        private static List<string> _whiteList = null;
+
         public static List<string> LoadWhiteList()
         {
-            var dataFile = Path.Combine(AppDataFolder, Data.WhiteList);
-            var globalFile = AsGlobalFile(Data.WhiteList);
-            if (!File.Exists(globalFile))
+            if (_whiteList == null)
             {
-                File.Copy(dataFile, globalFile);
+                var data = ReadApiData(ApiEndpoint.WhiteList);
+                _whiteList = data.Select(e => e["username"].ToString().ToLower()).ToList();
             }
 
-            var table = CsvHelper.LoadDataFromCsv(globalFile);
-            var list = table.Rows.Cast<DataRow>()
-                  .Select(e => e["UserName"].ToString().ToLower())
-                  .ToList();
-            return list;
+            return _whiteList;
         }
 
         public static bool IsWhiteListUser()

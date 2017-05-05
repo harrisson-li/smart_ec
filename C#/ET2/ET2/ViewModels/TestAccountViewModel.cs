@@ -20,7 +20,8 @@ namespace ET2.ViewModels
         private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
         private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
 
-        private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiUrl");
+        private bool IsClientInfoUpdated = false;
+        private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiHost") + "api/";
         private List<TestAccount> _historyAccountList;
 
         public List<TestAccount> HistoryAccountList
@@ -252,10 +253,32 @@ namespace ET2.ViewModels
                 var api = ApiHost + "save_account";
                 var response = HttpHelper.PostJson(api, requestData);
                 ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+
+                // save client info for ET2 web
+                UpdateClientInfo();
             }
             catch (Exception ex)
             {
                 ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
+            }
+        }
+
+        private void UpdateClientInfo()
+        {
+            if (!IsClientInfoUpdated)
+            {
+                var clientData = new
+                {
+                    hostname = Environment.MachineName,
+                    username = Environment.UserName,
+                    source = "ET2",
+                    tags = Environment.OSVersion.VersionString
+                };
+
+                var api = ApiHost + "update_client";
+                HttpHelper.PostJson(api, clientData);
+
+                IsClientInfoUpdated = true;
             }
         }
 

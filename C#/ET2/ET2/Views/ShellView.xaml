@@ -57,6 +57,7 @@
     </DockPanel>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button Click="OpenWebEdition" Content="Web Edition" />
             <Button Click="SwitchEnv" Content="{Binding Path=TestEnvVM.EnvironmentSwitchText, Mode=OneWay}" />
             <Button Click="DisplaySettings" Content="Settings" />
             <Button Click="DisplayHelp" Content="Help" />
