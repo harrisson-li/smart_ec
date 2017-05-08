@@ -189,6 +189,11 @@ def is_v2_school(school_name):
     return len(found) != 0
 
 
+def is_lite_school(school_name):
+    found = [x for x in get_eclite_centers() if x['name'] == school_name]
+    return len(found) != 0
+
+
 def get_any_v2_school(partner=None):
     from ectools.config import config
     if partner is None:
