@@ -55,13 +55,13 @@ def test_activate_eclite_account():
 
     set_partner('mini')
     account = activate_eclite_student()
-    assert "Lite" in account["product"]["name"]
+    assert "EC Lite" in account["product"]["name"]
 
 
 def test_ignore_eclite_school_when_activate_normal_student():
     set_partner('mini')
     account = activate_school_v2_student(is_major=False)
-    assert "Lite" not in account["product"]["name"]
+    assert "EC Lite" not in account["product"]["name"]
 
 
 def test_activate_account_more():

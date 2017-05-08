@@ -209,7 +209,7 @@ def activate_eclite_student(product_id=None, school_name=None):
         product_id = 143
 
     if school_name is None:
-        school_name = get_any_lite_school()['name']
+        school_name = get_any_eclite_school()['name']
     return activate_account(product_id=product_id, school_name=school_name)
 
 
