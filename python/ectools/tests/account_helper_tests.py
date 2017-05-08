@@ -1,5 +1,5 @@
 from ectools.account_helper import *
-from ectools.config import get_logger, set_environment
+from ectools.config import get_logger, set_environment, set_partner
 from ectools.internal.objects import *
 
 
@@ -44,6 +44,24 @@ def test_activate_account_kwargs():
     assert student['startLevel'] == 3
     assert student['mainRedemptionQty'] == 1
     assert not student['securityverified']
+
+
+def test_activate_eclite_account():
+    try:
+        set_partner('cool')
+        activate_eclite_student()
+    except Exception as e:
+        assert e.args[0] == "Cannot choose from an empty sequence"
+
+    set_partner('mini')
+    account = activate_eclite_student()
+    assert "Lite" in account["product"]["name"]
+
+
+def test_ignore_eclite_school_when_activate_normal_student():
+    set_partner('mini')
+    account = activate_school_v2_student(is_major=False)
+    assert "Lite" not in account["product"]["name"]
 
 
 def test_activate_account_more():
