@@ -145,7 +145,7 @@ def get_all_schools(cached=True):
             Cache.schools = read_data('schools')
         return Cache.schools
     else:
-        return read_data('schools')
+        return read_table('schools')
 
 
 def get_school_by_name(name):

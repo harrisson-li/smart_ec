@@ -48,6 +48,7 @@ def test_get_school():
     assert get_any_school() is not None
     assert get_schools_has_tag('TestCenter') is not None
     assert get_any_v2_school() is not None
+    assert get_school_by_name('TCenterS14_(DO_NOT_SELECT)') is not None
 
 
 def test_get_random_level():
