@@ -214,11 +214,25 @@ def is_lite_product(product_id):
     return len(found) != 0
 
 
-def get_any_v2_school(partner=None):
+def get_all_normal_v2_schools(partner=None):
+    # not include eclite school
     from ectools.config import config
     if partner is None:
         partner = config.partner
-    found = [x for x in get_all_v2_schools() if x['partner'].lower() == partner.lower()]
+    found = [x for x in get_all_v2_schools()
+             if x['partner'].lower() == partner.lower()
+             and not is_item_has_tag(x, 'ECLite')]
+    return found
+
+
+def get_any_v2_school(partner=None):
+    # not include eclite school
+    from ectools.config import config
+    if partner is None:
+        partner = config.partner
+    found = [x for x in get_all_v2_schools()
+             if x['partner'].lower() == partner.lower()
+             and not is_item_has_tag(x, 'ECLite')]
     return get_random_item(found)
 
 

@@ -70,11 +70,10 @@ def test_activate_eclite_account():
     assert "EC Lite" in account["product"]["name"]
 
 
-def test_ignore_eclite_school_when_activate_normal_student():
-    set_partner('mini')
-    account = activate_school_v2_student(is_major=False)
-
-    assert "EC Lite" not in account["product"]["name"]
+def test_ignore_eclite_school():
+    school_tags = [s['tags'] for s in get_all_normal_v2_schools('mini')]
+    for tag in school_tags:
+        assert 'ECLite' not in tag
 
 
 def test_activate_account_more():

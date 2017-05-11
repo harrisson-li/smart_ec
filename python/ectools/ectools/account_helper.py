@@ -202,7 +202,7 @@ def activate_home_v2_student(school_name=None, **kwargs):
 
 
 def activate_school_v2_student(school_name=None, **kwargs):
-    product_id = get_any_school_product(**kwargs)['id']
+    product_id = get_any_school_product()['id']
     return activate_account(product_id=product_id, school_name=school_name, **kwargs)
 
 
