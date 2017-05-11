@@ -126,6 +126,21 @@ def get_any_school_product(by_partner=None, is_major=True):
         return get_random_item(found)
 
 
+def get_eclite_products(partner=None):
+    from ectools.config import config
+    if partner is None:
+        partner = config.partner
+
+    found = [x for x in get_products_by_partner(partner) if x['product_type'] == 'School' and x['tags'] == 'ECLite']
+
+    return found
+
+
+def get_any_eclite_product(by_partner=None):
+    found = get_eclite_products(by_partner)
+    return get_random_item(found)
+
+
 def get_default_activation_data(product):
     return {'mainRedemptionQty': 3,
             'freeRedemptionQty': 3,
@@ -191,6 +206,11 @@ def is_v2_school(school_name):
 
 def is_lite_school(school_name):
     found = [x for x in get_eclite_centers() if x['name'] == school_name]
+    return len(found) != 0
+
+
+def is_lite_product(product_id):
+    found = [x for x in get_eclite_products() if x['id'] == product_id]
     return len(found) != 0
 
 

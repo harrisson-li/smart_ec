@@ -47,6 +47,18 @@ def test_activate_account_kwargs():
 
 
 def test_activate_eclite_account():
+    # should raise error with message like mismatch school and product
+    set_partner('mini')
+    try:
+        activate_account(65, 'WH_GGC')
+    except AssertionError as e:
+        assert e.args[0] == "Miss match product <65> and school <WH_GGC> for ECLite account!"
+
+    try:
+        activate_account(143, 'FS_ZUM')
+    except AssertionError as e:
+        assert e.args[0] == "Miss match product <143> and school <FS_ZUM> for ECLite account!"
+
     try:
         set_partner('cool')
         activate_eclite_student()
@@ -61,6 +73,7 @@ def test_activate_eclite_account():
 def test_ignore_eclite_school_when_activate_normal_student():
     set_partner('mini')
     account = activate_school_v2_student(is_major=False)
+
     assert "EC Lite" not in account["product"]["name"]
 
 
