@@ -19,7 +19,7 @@ def test_build_db():
 
 
 def test_fetchone():
-    sql = "select * from partners"
+    sql = "SELECT * FROM partners"
     row = db_helper.fetch_one(sql)
     get_logger().info(row)
     assert row.name == 'Cool'
@@ -30,7 +30,7 @@ def test_fetchone():
 
 
 def test_fetchall():
-    sql = "select * from environments"
+    sql = "SELECT * FROM environments"
     rows = db_helper.fetch_all(sql)
     assert len(rows) > 3
     assert rows[0].name == 'UAT'
@@ -41,7 +41,7 @@ def test_fetchall():
 
 
 def test_sql_with_parameters():
-    sql = "select * from partners where name = ?"
+    sql = "SELECT * FROM partners WHERE name = ?"
     row = db_helper.fetch_one(sql, ('Cool',))
     get_logger().info(row)
     assert row.domain == 'CN'

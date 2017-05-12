@@ -1,4 +1,4 @@
-from ectools.config import set_environment, setup
+from ectools.config import set_environment
 from ectools.database_helper import *
 
 logger = get_logger()
