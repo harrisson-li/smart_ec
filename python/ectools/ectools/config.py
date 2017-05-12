@@ -119,8 +119,17 @@ def get_logger():
     return logging.getLogger(config.name)
 
 
+def _reset_cache():
+    keys_to_reset = ['connection_info']
+    for key in keys_to_reset:
+        if hasattr(Cache, key):
+            delattr(Cache, key)
+
+
 def _setup():
     _set_logger()
+    _reset_cache()
+
     config.base_dir = dirname(abspath(__file__))
     config.data_dir = join(config.base_dir, config.data_dir)
     config.database = get_database(config.env, config.domain)
