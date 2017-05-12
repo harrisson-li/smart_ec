@@ -86,9 +86,7 @@ def set_connection_info(server=None, user=None, password=None, database=None):
 
 
 def get_connection_info():
-    if not hasattr(Cache, 'connection_info'):
-        set_connection_info()
-
+    set_connection_info()
     return Cache.connection_info
 
 
