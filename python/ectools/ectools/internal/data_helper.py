@@ -118,12 +118,29 @@ def get_any_home_product(by_partner=None, is_major=True):
 
 
 def get_any_school_product(by_partner=None, is_major=True):
-    found = [x for x in get_products_by_partner(by_partner) if x['product_type'] == 'School']
+    found = [x for x in get_products_by_partner(by_partner) 
+             if x['product_type'] == 'School' and not is_item_has_tag(x, 'ECLite')]
 
     if is_major:
         return get_item_has_tag(found, 'major')[0]
     else:
         return get_random_item(found)
+
+
+def get_eclite_products(partner=None):
+    from ectools.config import config
+    if partner is None:
+        partner = config.partner
+
+    found = [x for x in get_products_by_partner(partner)
+             if x['product_type'] == 'School' and is_item_has_tag(x, 'ECLite')]
+
+    return found
+
+
+def get_any_eclite_product(by_partner=None):
+    found = get_eclite_products(by_partner)
+    return get_random_item(found)
 
 
 def get_default_activation_data(product):
@@ -166,6 +183,10 @@ def get_all_v2_schools():
     return get_schools_has_tag('PC2.0')
 
 
+def get_eclite_schools():
+    return get_schools_has_tag('ECLite')
+
+
 def get_schools_by_partner(partner=None):
     from ectools.config import config
     if partner is None:
@@ -185,11 +206,39 @@ def is_v2_school(school_name):
     return len(found) != 0
 
 
-def get_any_v2_school(partner=None):
+def is_lite_school(school_name):
+    found = [x for x in get_eclite_schools() if x['name'] == school_name]
+    return len(found) != 0
+
+
+def is_lite_product(product_id):
+    found = [x for x in get_eclite_products() if x['id'] == product_id]
+    return len(found) != 0
+
+
+def get_all_normal_v2_schools(partner=None):
+    # not include eclite school
     from ectools.config import config
     if partner is None:
         partner = config.partner
-    found = [x for x in get_all_v2_schools() if x['partner'].lower() == partner.lower()]
+    found = [x for x in get_all_v2_schools()
+             if x['partner'].lower() == partner.lower()
+             and not is_item_has_tag(x, 'ECLite')]
+    return found
+
+
+def get_any_v2_school(partner=None):
+    # not include eclite school
+    found = get_all_normal_v2_schools(partner)
+    return get_random_item(found)
+
+
+def get_any_eclite_school(partner=None):
+    from ectools.config import config
+    if partner is None:
+        partner = config.partner
+
+    found = [x for x in get_eclite_schools() if x['partner'].lower() == partner.lower()]
     return get_random_item(found)
 
 
