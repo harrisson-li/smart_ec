@@ -118,7 +118,8 @@ def get_any_home_product(by_partner=None, is_major=True):
 
 
 def get_any_school_product(by_partner=None, is_major=True):
-    found = [x for x in get_products_by_partner(by_partner) if x['product_type'] == 'School' and x['tags'] != 'ECLite']
+    found = [x for x in get_products_by_partner(by_partner) 
+             if x['product_type'] == 'School' and not is_item_has_tag(x, 'ECLite')]
 
     if is_major:
         return get_item_has_tag(found, 'major')[0]
@@ -131,7 +132,8 @@ def get_eclite_products(partner=None):
     if partner is None:
         partner = config.partner
 
-    found = [x for x in get_products_by_partner(partner) if x['product_type'] == 'School' and x['tags'] == 'ECLite']
+    found = [x for x in get_products_by_partner(partner)
+             if x['product_type'] == 'School' and is_item_has_tag(x, 'ECLite')]
 
     return found
 
@@ -181,7 +183,7 @@ def get_all_v2_schools():
     return get_schools_has_tag('PC2.0')
 
 
-def get_eclite_centers():
+def get_eclite_schools():
     return get_schools_has_tag('ECLite')
 
 
@@ -205,7 +207,7 @@ def is_v2_school(school_name):
 
 
 def is_lite_school(school_name):
-    found = [x for x in get_eclite_centers() if x['name'] == school_name]
+    found = [x for x in get_eclite_schools() if x['name'] == school_name]
     return len(found) != 0
 
 
@@ -227,12 +229,7 @@ def get_all_normal_v2_schools(partner=None):
 
 def get_any_v2_school(partner=None):
     # not include eclite school
-    from ectools.config import config
-    if partner is None:
-        partner = config.partner
-    found = [x for x in get_all_v2_schools()
-             if x['partner'].lower() == partner.lower()
-             and not is_item_has_tag(x, 'ECLite')]
+    found = get_all_normal_v2_schools(partner)
     return get_random_item(found)
 
 
@@ -241,7 +238,7 @@ def get_any_eclite_school(partner=None):
     if partner is None:
         partner = config.partner
 
-    found = [x for x in get_eclite_centers() if x['partner'].lower() == partner.lower()]
+    found = [x for x in get_eclite_schools() if x['partner'].lower() == partner.lower()]
     return get_random_item(found)
 
 
