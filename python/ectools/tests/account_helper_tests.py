@@ -1,5 +1,5 @@
 from ectools.account_helper import *
-from ectools.config import get_logger, set_environment
+from ectools.config import get_logger, set_environment, set_partner
 from ectools.internal.objects import *
 
 
@@ -44,6 +44,36 @@ def test_activate_account_kwargs():
     assert student['startLevel'] == 3
     assert student['mainRedemptionQty'] == 1
     assert not student['securityverified']
+
+
+def test_activate_eclite_account():
+    # should raise error with message like mismatch school and product
+    set_partner('mini')
+    try:
+        activate_account(65, 'WH_GGC')
+    except AssertionError as e:
+        assert e.args[0] == "Miss match product <65> and school <WH_GGC> for ECLite account!"
+
+    try:
+        activate_account(143, 'FS_ZUM')
+    except AssertionError as e:
+        assert e.args[0] == "Miss match product <143> and school <FS_ZUM> for ECLite account!"
+
+    try:
+        set_partner('cool')
+        activate_eclite_student()
+    except Exception as e:
+        assert e.args[0] == "Cannot choose from an empty sequence"
+
+    set_partner('mini')
+    account = activate_eclite_student()
+    assert "EC Lite" in account["product"]["name"]
+
+
+def test_ignore_eclite_school():
+    school_tags = [s['tags'] for s in get_all_normal_v2_schools('mini')]
+    for tag in school_tags:
+        assert 'ECLite' not in tag
 
 
 def test_activate_account_more():

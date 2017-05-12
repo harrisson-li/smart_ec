@@ -114,6 +114,10 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         school = get_school_by_name(school_name)
         is_v2 = is_v2_school(school_name)
 
+    is_lite = is_lite_product(product_id)
+    assert is_lite == is_lite_school(school_name), "Miss match product <{}> and school <{}> for ECLite account!".format(
+        product_id, school_name)
+
     get_logger().info('Start to activate test account...')
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
 
@@ -153,6 +157,9 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
 
     if is_v2:
         tags.append('V2')
+
+    if is_lite:
+        tags.append('ECLite')
 
     get_logger().debug('New test account: {}'.format(student))
     save_account_to_db(student, *tags)
@@ -197,6 +204,15 @@ def activate_home_v2_student(school_name=None, **kwargs):
 def activate_school_v2_student(school_name=None, **kwargs):
     product_id = get_any_school_product()['id']
     return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+
+
+def activate_eclite_student(product_id=None, school_name=None):
+    if product_id is None:
+        product_id = get_any_eclite_product()['id']
+
+    if school_name is None:
+        school_name = get_any_eclite_school()['name']
+    return activate_account(product_id=product_id, school_name=school_name)
 
 
 def activate_student_with_random_level(product_id=None,
