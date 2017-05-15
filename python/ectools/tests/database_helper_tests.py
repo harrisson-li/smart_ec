@@ -11,7 +11,7 @@ def test_fetch_one():
     logger.info(row)
     assert row.Name == 'Empty'
 
-    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp Where Name = %s", 'Booked', as_dict=True)
+    row = fetch_one("SELECT * FROM oboe.dbo.BookingStatus_lkp WHERE Name = %s", 'Booked', as_dict=True)
     logger.info(row)
     assert row['Name'] == 'Booked'
 
@@ -66,3 +66,13 @@ def test_connect_db():
 
     assert get_cursor().rowcount == -1
     close_database()
+
+
+def test_switch_db_connection():
+    set_environment('uat')
+    uat_conn = get_connection_info()
+
+    set_environment('qa')
+    qa_conn = get_connection_info()
+
+    assert uat_conn != qa_conn
