@@ -118,7 +118,7 @@ def get_any_home_product(by_partner=None, is_major=True):
 
 
 def get_any_school_product(by_partner=None, is_major=True):
-    found = [x for x in get_products_by_partner(by_partner) 
+    found = [x for x in get_products_by_partner(by_partner)
              if x['product_type'] == 'School' and not is_item_has_tag(x, 'ECLite')]
 
     if is_major:
@@ -196,8 +196,15 @@ def get_schools_by_partner(partner=None):
 
 
 def get_any_school(by_partner=None):
+    from ectools.config import config
+
     found = get_schools_by_partner(by_partner)
     found = [x for x in found if not is_v2_school(x['name'])]
+
+    # only return test center for live
+    if config.env == 'Live':
+        found = [x for x in found if is_item_has_tag(x, 'TestCenter')]
+
     return get_random_item(found)
 
 
@@ -228,8 +235,15 @@ def get_all_normal_v2_schools(partner=None):
 
 
 def get_any_v2_school(partner=None):
+    from ectools.config import config
+
     # not include eclite school
     found = get_all_normal_v2_schools(partner)
+
+    # only return test center for live
+    if config.env == 'Live':
+        found = [x for x in found if is_item_has_tag(x, 'TestCenter')]
+
     return get_random_item(found)
 
 
