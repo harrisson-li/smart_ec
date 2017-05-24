@@ -50,7 +50,7 @@ def test_sql_with_parameters():
 def test_read_rows():
     rows = db_helper.read_table('products')
     assert len(rows) > 10
-    assert rows[0]['id'] == 63
+    assert rows[0]['id'] != 0
 
     rows = db_helper.read_table('schools', row_limit=3, order_by_column='city', order_desc=True)
     get_logger().info(rows)
