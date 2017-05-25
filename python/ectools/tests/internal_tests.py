@@ -50,6 +50,13 @@ def test_get_school():
     assert get_any_v2_school() is not None
     assert get_school_by_name('TCenterS14_(DO_NOT_SELECT)') is not None
 
+    set_environment('live')
+    school = get_any_school()
+    assert 'TestCenter' in school['tags']
+
+    school = get_any_v2_school()
+    assert 'TestCenter' in school['tags']
+
 
 def test_get_random_level():
     level = get_random_level(min_level=2, max_level=16)
