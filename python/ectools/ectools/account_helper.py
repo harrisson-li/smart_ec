@@ -159,7 +159,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         tags.append('ECLite')
 
     get_logger().debug('New test account: {}'.format(student))
-    save_account(student, add_tags=tags)
+    save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
     # school.csv might have incorrect school data so we verify before return
     enrollment = kwargs.get('includesenroll', False)
