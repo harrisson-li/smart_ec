@@ -32,6 +32,17 @@ from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
 
 
+def get_or_activate_account(tag, expire_days=365, **kwargs):
+    """
+    To get an account with specified tag, if not exist or expired will activate a new one.
+    
+    :param tag: Specified tag to search a test account.
+    :param expire_days: Will activate a new one if cannot find one within expiration days.
+    :param kwargs: Arguments for method **activate_account**.  
+    """
+    pass
+
+
 def create_account_without_activation(is_e10=False):
     def get_link():
         url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
