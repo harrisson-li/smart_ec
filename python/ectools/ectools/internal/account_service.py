@@ -67,6 +67,7 @@ def merge_activation_data(source_dict, **more):
 
 
 def _refine_account(ecdb_account):
+    """Merge the detail fields into account itself, original it is a json string."""
     ecdb_account.update(json.loads(ecdb_account['detail']))
     del ecdb_account['detail']
     return ecdb_account
@@ -76,7 +77,7 @@ def _refine_account(ecdb_account):
 def get_accounts_by_tag(tag, expiration_days=None):
     """
     Get test accounts with specified tag
-    If expiration day provided, will return accounts within expired days.
+    If expiration days provided, will return accounts within expired days.
     """
 
     if not ecdb._using_remote_db() and is_api_available():

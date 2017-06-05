@@ -14,7 +14,7 @@ Here is a quick example to play with this module::
   print(student.member_id)
   print(student.school.name)
   
-  # or you might want to reuse an account, default expired day = 365
+  # or you might want to reuse an account, default expiration days = 365
   account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will activate one if not existed
   account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will return same one if not expired
 
