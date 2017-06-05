@@ -13,48 +13,50 @@ Here is a quick example to play with this module::
   student = convert_account_to_object(account, Student, Product, School)  # Product and School are optional
   print(student.member_id)
   print(student.school.name)
+  
+  # or you might want to reuse an account, default expired day = 365
+  account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will activate one if not existed
+  account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will return same one if not expired
 
 For more info about using EFEC test account, please refer to confluence page or ping EC QA team.
 
 -----
 
 """
-import getpass
-import json
 
-import arrow
-import requests
-
-from ectools.config import get_logger, config, is_api_available
+from ectools.config import get_logger
 from ectools.internal import sf_service_helper
+from ectools.internal.account_service import *
 from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
 
 
-def get_or_activate_account(tag, expire_days=365, **kwargs):
+def get_or_activate_account(tag, expiration_days=365, **kwargs):
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
     
     :param tag: Specified tag to search a test account.
-    :param expire_days: Will activate a new one if cannot find one within expiration days.
+    :param expiration_days: Will activate a new one if cannot get within expiration days.
     :param kwargs: Arguments for method **activate_account**.  
     """
-    pass
+    accounts = get_accounts_by_tag(tag)
+
+    if accounts and not is_account_expired(accounts[0], expiration_days):
+        return accounts[0]
+
+    else:
+        # the account activation days should be larger than expiration day
+        kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
+
+        account = activate_account(**kwargs)
+        save_account(account, tag)
+        return account
 
 
 def create_account_without_activation(is_e10=False):
-    def get_link():
-        url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
-        url = url.format(config.etown_root, config.country_code, config.partner)
-
-        if is_e10:
-            return url.replace('e14hz', config.partner)
-        else:
-            return "{}&v=2".format(url)
-
     student = {'is_e10': is_e10, 'environment': config.env}
-    link = get_link()
+    link = get_new_account_link(is_e10)
     result = requests.get(link)
 
     assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
@@ -68,7 +70,7 @@ def create_account_without_activation(is_e10=False):
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
 
-        save_account_to_db(student, config.env, 'not_activated')
+        save_account(student, config.env, 'not_activated')
         return student
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
@@ -96,24 +98,6 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     :return: A dict with all account info.
     """
 
-    def merge_activation_data(source_dict, **more):
-        source_dict.update(more)
-
-        for key in ['securityverified', 'includesenroll']:
-            if source_dict.get(key, 'on') != 'on':
-                del source_dict[key]
-
-        return source_dict
-
-    def get_link(is_e10):
-        url = '{}/services/oboe2/salesforce/test/ActivateV2'
-        url = url.format(config.etown_root)
-
-        if is_e10:
-            return url.replace('V2', 'E10')
-        else:
-            return url
-
     if product_id is None:
         product = get_any_product()
     else:
@@ -123,11 +107,11 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         school = get_any_v2_school() if is_v2 else get_any_school()
     else:
         school = get_school_by_name(school_name)
-        is_v2 = is_v2_school(school_name)
+        is_v2 = is_v2_school(school_name)  # fix account version according to school
 
     is_lite = is_lite_product(product_id)
-    assert is_lite == is_lite_school(school_name), "Miss match product <{}> and school <{}> for ECLite account!".format(
-        product_id, school_name)
+    assert is_lite == is_lite_school(school_name), \
+        "Miss match product <{}> and school <{}> for ECLite account!".format(product_id, school_name)
 
     get_logger().info('Start to activate test account...')
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
@@ -139,7 +123,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
 
     student['is_v2'] = is_v2
     student['is_e10'] = is_item_has_tag(product, 'E10')
-    link = get_link(is_item_has_tag(product, 'E10'))
+    link = get_activate_account_link(student['is_e10'])
 
     data = get_default_activation_data(product)
     data = merge_activation_data(data, **kwargs)
@@ -173,7 +157,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         tags.append('ECLite')
 
     get_logger().debug('New test account: {}'.format(student))
-    save_account_to_db(student, *tags)
+    save_account(student, *tags)
 
     # school.csv might have incorrect school data so we verify before return
     enrollment = kwargs.get('includesenroll', False)
@@ -298,41 +282,6 @@ def convert_account_to_object(account_dict,
             setattr(student_object, k, v)
 
     return student_object
-
-
-@ignore_error
-def save_account_to_db(account_dict, *tags):
-    tags = list(tags)
-    tags.append('ectools')
-    tags = ','.join(tags)
-    created_by = getpass.getuser()
-
-    from ectools.ecdb_helper import _using_remote_db, add_row, delete_rows, search_rows
-
-    if not _using_remote_db() and is_api_available():
-        data = {'add_tags': tags, 'created_by': created_by, 'detail': account_dict, 'env': config.env,
-                'member_id': account_dict['member_id']}
-
-        requests.post(Configuration.remote_api + 'save_account', json=data)
-
-    else:
-        target_table = 'test_accounts'
-        search_by = {'member_id': account_dict['member_id'], 'environment': config.env}
-
-        found = search_rows(target_table, search_by)
-        if found:
-            account_dict.update(json.loads(found[0]['detail']))
-
-        delete_rows(target_table, search_by)
-
-        add_row(target_table,
-                config.env,
-                account_dict['member_id'],
-                account_dict['username'],
-                json.dumps(account_dict),
-                str(arrow.utcnow()),
-                created_by,
-                tags)
 
 
 def sf_suspend_student(student_id, suspend_date, resume_date):

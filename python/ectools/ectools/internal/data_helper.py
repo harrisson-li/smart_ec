@@ -143,19 +143,6 @@ def get_any_eclite_product(by_partner=None):
     return get_random_item(found)
 
 
-def get_default_activation_data(product):
-    return {'mainRedemptionQty': 3,
-            'freeRedemptionQty': 3,
-            'startLevel': '0A',
-            'levelQty': 16,
-            'securityverified': 'on',
-            'includesenroll': 'on',
-            'productId': product['id'],
-            'mainRedemptionCode': product['main_code'],
-            'freeRedemptionCode': product['free_code']
-            }
-
-
 def get_all_schools(cached=True):
     if cached:
         if not hasattr(Cache, 'schools'):
