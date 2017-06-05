@@ -90,8 +90,7 @@ def _api_get_accounts_by_tag(tag, expiration_days=None):
             'env': config.env,
             'expiration_days': int(expiration_days)}
 
-    accounts = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data).json()
-    return [_refine_account(a) for a in accounts]
+    return requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data).json()
 
 
 def _db_get_accounts_by_tag(tag, expiration_days=None):

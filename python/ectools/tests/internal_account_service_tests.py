@@ -5,11 +5,11 @@ from ectools.internal import account_service
 
 def test_get_account_by_tag():
     set_environment('live')
-    accounts = account_service._db_get_accounts_by_tag('indo')
+    accounts = account_service._db_get_accounts_by_tag('ectools')
     assert len(accounts) > 0
 
     set_environment('qa')
-    accounts = account_service._api_get_accounts_by_tag('ectools', expiration_days=14)
+    accounts = account_service._api_get_accounts_by_tag('UnitTest', expiration_days=365)
     assert len(accounts) > 0
 
 
