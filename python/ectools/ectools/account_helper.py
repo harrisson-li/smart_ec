@@ -25,11 +25,11 @@ import json
 import arrow
 import requests
 
-from ectools.config import get_logger, config
+from ectools.config import get_logger, config, is_api_available
+from ectools.internal import sf_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
 from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
-from ectools.internal import sf_service_helper
 
 
 def create_account_without_activation(is_e10=False):
@@ -297,7 +297,8 @@ def save_account_to_db(account_dict, *tags):
     created_by = getpass.getuser()
 
     from ectools.ecdb_helper import _using_remote_db, add_row, delete_rows, search_rows
-    if not _using_remote_db():
+
+    if not _using_remote_db() and is_api_available():
         data = {'add_tags': tags, 'created_by': created_by, 'detail': account_dict, 'env': config.env,
                 'member_id': account_dict['member_id']}
 
