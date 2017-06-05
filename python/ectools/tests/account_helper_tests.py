@@ -1,5 +1,3 @@
-import arrow
-
 import ectools.ecdb_helper as db_helper
 from ectools.account_helper import *
 from ectools.config import get_logger, set_environment, set_partner
@@ -121,6 +119,15 @@ def test_sf_suspend_student():
     sf_service_helper.resume_student('11276463')
 
 
+def test_get_or_activate_account():
+    set_environment('QA')
+    account1 = get_or_activate_account(tag='UnitTest123')
+    account2 = get_or_activate_account(tag='UnitTest123')
+
+    for key in ['member_id', 'partner', 'environment']:
+        assert account1[key] == account2[key]
+
+
 def test_get_account_by_tag():
     set_environment('live')
     accounts = get_accounts_by_tag('indo')
@@ -130,8 +137,7 @@ def test_get_account_by_tag():
     accounts = get_accounts_by_tag('ectools', expiration_days=14)
     assert len(accounts) > 0
 
-
-def test_is_account_expired():
-    account = {'created_on': str(arrow.utcnow().shift(years=-1, days=-1))}
-    assert is_account_expired(account, expiration_days=350)
-    assert not is_account_expired(account, expiration_days=370)
+    # get account method
+    account = get_account(accounts[0]['member_id'])
+    assert account is not None
+    assert account['username'] == accounts[0]['username']

@@ -1,3 +1,15 @@
+"""
+We should try to access ecdb and test api every time access account service, because on Mac or Linux it does not
+support using ecdb in url as: //server/path/to/ecdb.sqlite
+
+so we have code like this::
+
+    if not ecdb._using_remote_db() and is_api_available():
+        return _api_get_accounts_by_tag(tag, expiration_days)
+    else:
+        return _db_get_accounts_by_tag(tag, expiration_days)
+
+"""
 import getpass
 import json
 
@@ -54,6 +66,12 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
+def _refine_account(ecdb_account):
+    ecdb_account.update(json.loads(ecdb_account['detail']))
+    del ecdb_account['detail']
+    return ecdb_account
+
+
 @ignore_error
 def get_accounts_by_tag(tag, expiration_days=None):
     """
@@ -68,7 +86,12 @@ def get_accounts_by_tag(tag, expiration_days=None):
 
 
 def _api_get_accounts_by_tag(tag, expiration_days=None):
-    pass
+    data = {'tag': tag,
+            'env': config.env,
+            'expiration_days': int(expiration_days)}
+
+    accounts = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data).json()
+    return [_refine_account(a) for a in accounts]
 
 
 def _db_get_accounts_by_tag(tag, expiration_days=None):
@@ -81,14 +104,8 @@ def _db_get_accounts_by_tag(tag, expiration_days=None):
 
     sql += ' order by created_on desc'
 
-    accounts = []
-
-    for account in ecdb.fetch_all(sql, as_dict=True):
-        account.update(json.loads(account['detail']))
-        del account['detail']
-        accounts.append(account)
-
-    return accounts
+    accounts = ecdb.fetch_all(sql, as_dict=True)
+    return [_refine_account(a) for a in accounts]
 
 
 def is_account_expired(account, expiration_days):
@@ -97,48 +114,95 @@ def is_account_expired(account, expiration_days):
 
 
 @ignore_error
-def save_account(account, *tags):
-    """
-    Save a test account to ecdb, you can add multiple tags to it.
-    """
+def get_account(member_id):
     if not ecdb._using_remote_db() and is_api_available():
-        return _api_save_account(account, *tags)
+        return _api_get_account(member_id)
     else:
-        return _db_save_account(account, *tags)
+        return _db_get_account(member_id)
 
 
-def _api_save_account(account, *tags):
-    tags = list(tags)
-    tags.append('ectools')
-    tags = ','.join(tags)
-    created_by = getpass.getuser()
+def _api_get_account(member_id):
+    data = {'env': config.env, 'username_or_id': member_id}
+    account = requests.post(Configuration.remote_api + 'get_account', json=data).json()
 
-    data = {'add_tags': tags, 'created_by': created_by, 'detail': account, 'env': config.env,
-            'member_id': account['member_id']}
+    return _refine_account(account)
+
+
+def _db_get_account(member_id):
+    sql = 'select * from test_accounts where environment like "%{}%"'.format(config.env)
+    sql += ' and member_id = "{}"'.format(member_id)
+    sql += ' order by created_on desc'
+
+    return _refine_account(ecdb.fetch_one(sql, as_dict=True))
+
+
+@ignore_error
+def save_account(account, add_tags=None, remove_tags=None):
+    """
+    Save a test account to ecdb, you can add or remove multiple tags to it.
+    The add_tags and remove_tags should be in list format as ['Tag1', 'Tag2']
+    """
+
+    if not ecdb._using_remote_db() and is_api_available():
+        return _api_save_account(account, add_tags, remove_tags)
+    else:
+        return _db_save_account(account, add_tags, remove_tags)
+
+
+def _api_save_account(account, add_tags=None, remove_tags=None):
+    data = {'detail': account,
+            'env': config.env,
+            'member_id': int(account['member_id'])}
+
+    if remove_tags:
+        removed_tags = ','.join(remove_tags)
+        data['remove_tags'] = removed_tags
+
+    added_tags = ['ectools']  # always append ectools if save account from here
+
+    if add_tags:
+        added_tags.extend(add_tags)
+
+    data['add_tags'] = ','.join(added_tags)
+
+    # only add created_by for new account
+    if not get_account(account['member_id']):
+        data['created_by'] = getpass.getuser()
 
     requests.post(Configuration.remote_api + 'save_account', json=data)
 
 
-def _db_save_account(account, *tags):
-    tags = list(tags)
-    tags.append('ectools')
-    tags = ','.join(tags)
-    created_by = getpass.getuser()
-
+def _db_save_account(account, add_tags=None, remove_tags=None):
+    tags = ['ectools']
     target_table = 'test_accounts'
-    search_by = {'member_id': account['member_id'], 'environment': config.env}
+    existed_account = get_account(account['member_id'])
 
-    found = ecdb.search_rows(target_table, search_by)
-    if found:
-        account.update(json.loads(found[0]['detail']))
+    if add_tags:
+        tags += add_tags
 
-    ecdb.delete_rows(target_table, search_by)
+    if existed_account:
+        tags += existed_account['tags'].split(',')
 
-    ecdb.add_row(target_table,
-                 config.env,
-                 account['member_id'],
-                 account['username'],
-                 json.dumps(account),
-                 str(arrow.utcnow()),
-                 created_by,
-                 tags)
+        if remove_tags:  # remove tags after fetch existed tags
+            tags = (set(tags) - set(remove_tags))
+
+        account['tags'] = ','.join(set(tags))
+
+        search_by = {'member_id': account['member_id'], 'environment': config.env}
+        update_dict = {'detail': json.dumps(account), 'tags': account['tags']}
+        ecdb.update_rows(target_table, search_by, update_dict)
+
+    else:
+
+        if remove_tags:
+            tags = (set(tags) - set(remove_tags))
+
+        account['tags'] = ','.join(set(tags))
+        ecdb.add_row(target_table,
+                     config.env,
+                     account['member_id'],
+                     account['username'],
+                     json.dumps(account),
+                     str(arrow.utcnow()),
+                     getpass.getuser(),
+                     account['tags'])

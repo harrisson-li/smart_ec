@@ -43,6 +43,7 @@ def get_or_activate_account(tag, expiration_days=365, **kwargs):
     accounts = get_accounts_by_tag(tag)
 
     if accounts and not is_account_expired(accounts[0], expiration_days):
+        get_logger().info('Found account with tag "{}": {}'.format(tag, accounts[0]))
         return accounts[0]
 
     else:
@@ -50,7 +51,8 @@ def get_or_activate_account(tag, expiration_days=365, **kwargs):
         kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
 
         account = activate_account(**kwargs)
-        save_account(account, tag)
+        get_logger().info('Tag account with "{}"'.format(tag))
+        save_account(account, add_tags=[tag])
         return account
 
 
@@ -70,7 +72,7 @@ def create_account_without_activation(is_e10=False):
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
 
-        save_account(student, config.env, 'not_activated')
+        save_account(student, add_tags=[config.env, 'not_activated'])
         return student
     else:
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
@@ -157,7 +159,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         tags.append('ECLite')
 
     get_logger().debug('New test account: {}'.format(student))
-    save_account(student, *tags)
+    save_account(student, add_tags=tags)
 
     # school.csv might have incorrect school data so we verify before return
     enrollment = kwargs.get('includesenroll', False)
