@@ -26,6 +26,12 @@ def test_get_account_by_member_id():
     assert account is not None
     assert account['username'] == accounts[0]['username']
 
+    account = account_service._db_get_account('invalid')
+    assert account == None
+
+    account = account_service._api_get_account('invalid')
+    assert account == None
+
 
 def test_is_account_expired():
     account = {'created_on': str(arrow.utcnow().shift(years=-1, days=-1))}

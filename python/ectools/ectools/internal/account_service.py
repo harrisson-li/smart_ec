@@ -21,6 +21,7 @@ from ectools.config import config
 from ectools.config import is_api_available
 from ectools.internal.objects import Configuration
 from ectools.utility import ignore_error
+from .constants import HTTP_STATUS_OK
 
 
 def get_new_account_link(is_e10):
@@ -68,8 +69,10 @@ def merge_activation_data(source_dict, **more):
 
 def _refine_account(ecdb_account):
     """Merge the detail fields into account itself, original it is a json string."""
-    ecdb_account.update(json.loads(ecdb_account['detail']))
-    del ecdb_account['detail']
+    if 'detail' in ecdb_account:
+        ecdb_account.update(json.loads(ecdb_account['detail']))
+        del ecdb_account['detail']
+
     return ecdb_account
 
 
@@ -91,7 +94,9 @@ def _api_get_accounts_by_tag(tag, expiration_days=None):
             'env': config.env,
             'expiration_days': int(expiration_days)}
 
-    return requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data).json()
+    response = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data)
+    assert response.status_code == HTTP_STATUS_OK, response.text
+    return response.json()
 
 
 def _db_get_accounts_by_tag(tag, expiration_days=None):
@@ -123,9 +128,10 @@ def get_account(member_id):
 
 def _api_get_account(member_id):
     data = {'env': config.env, 'username_or_id': member_id}
-    account = requests.post(Configuration.remote_api + 'get_account', json=data).json()
+    response = requests.post(Configuration.remote_api + 'get_account', json=data)
 
-    return _refine_account(account)
+    if response.status_code == HTTP_STATUS_OK:
+        return _refine_account(response.json())
 
 
 def _db_get_account(member_id):
@@ -133,7 +139,10 @@ def _db_get_account(member_id):
     sql += ' and member_id = "{}"'.format(member_id)
     sql += ' order by created_on desc'
 
-    return _refine_account(ecdb.fetch_one(sql, as_dict=True))
+    account = ecdb.fetch_one(sql, as_dict=True)
+
+    if account:
+        return _refine_account(account)
 
 
 @ignore_error
@@ -169,7 +178,8 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
     if not get_account(account['member_id']):
         data['created_by'] = getpass.getuser()
 
-    requests.post(Configuration.remote_api + 'save_account', json=data)
+    response = requests.post(Configuration.remote_api + 'save_account', json=data)
+    assert response.status_code == HTTP_STATUS_OK, response.text
 
 
 def _db_save_account(account, add_tags=None, remove_tags=None):
