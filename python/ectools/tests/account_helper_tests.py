@@ -1,3 +1,4 @@
+import ectools.ecdb_helper as db_helper
 from ectools.account_helper import *
 from ectools.config import get_logger, set_environment, set_partner
 from ectools.internal.objects import *
@@ -14,7 +15,6 @@ def test_create_account():
     assert student['member_id'] is not None
 
     # test save account via api
-    import ectools.ecdb_helper as db_helper
     original = db_helper._remote_db_dir
 
     try:
@@ -117,3 +117,27 @@ def test_sf_suspend_student():
 
     sf_service_helper.suspend_student('11276463', suspend_date, resume_date)
     sf_service_helper.resume_student('11276463')
+
+
+def test_get_or_activate_account():
+    set_environment('QA')
+    account1 = get_or_activate_account(tag='UnitTest')
+    account2 = get_or_activate_account(tag='UnitTest')
+
+    for key in ['member_id', 'partner', 'environment']:
+        assert account1[key] == account2[key]
+
+
+def test_get_account_by_tag():
+    set_environment('live')
+    accounts = get_accounts_by_tag('indo')
+    assert len(accounts) > 0
+
+    set_environment('qa')
+    accounts = get_accounts_by_tag('ectools', expiration_days=14)
+    assert len(accounts) > 0
+
+    # get account method
+    account = get_account(accounts[0]['member_id'])
+    assert account is not None
+    assert account['username'] == accounts[0]['username']

@@ -1,6 +1,6 @@
 from assertpy import assert_that
 
-from ectools.config import setup, set_environment, set_partner, config
+from ectools.config import setup, set_environment, set_partner, config, is_api_available
 
 
 def test_setup():
@@ -26,3 +26,7 @@ def test_set_partner():
         set_partner('bad')
     except AssertionError as e:
         assert_that(e.args[0]).contains('No such partner')
+
+
+def test_api_available():
+    assert is_api_available()

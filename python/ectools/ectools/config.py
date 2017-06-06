@@ -63,6 +63,9 @@ import logging
 import sys
 from os.path import dirname, join, abspath
 
+import requests
+
+from .internal.constants import HTTP_STATUS_OK
 from .internal.data_helper import get_partner, get_environment, get_database
 from .internal.objects import *
 
@@ -136,6 +139,11 @@ def _setup():
     env = get_environment(config.env, config.domain)
     config.etown_root = env['etown_url']
     config.oboe_root = env['oboe_url']
+
+
+def is_api_available():
+    """Check the API is available or not."""
+    return requests.get(config.remote_api).status_code == HTTP_STATUS_OK
 
 
 setup()
