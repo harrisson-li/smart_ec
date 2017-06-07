@@ -127,6 +127,8 @@ def test_get_or_activate_account():
     for key in ['member_id', 'partner', 'environment']:
         assert account1[key] == account2[key]
 
+    assert account2.get('found_by_tag'), 'second account always has the key: found_by_tag'
+
 
 def test_get_account_by_tag():
     set_environment('live')

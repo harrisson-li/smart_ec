@@ -35,6 +35,7 @@ from ectools.service_helper import is_v2_student
 def get_or_activate_account(tag, expiration_days=365, **kwargs):
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
+    If the account is found by tag, it will contains a key named: found_by_tag.
     
     :param tag: Specified tag to search a test account.
     :param expiration_days: Will activate a new one if cannot get within expiration days.
@@ -43,8 +44,10 @@ def get_or_activate_account(tag, expiration_days=365, **kwargs):
     accounts = get_accounts_by_tag(tag)
 
     if accounts and not is_account_expired(accounts[0], expiration_days):
-        get_logger().info('Found account with tag "{}": {}'.format(tag, accounts[0]))
-        return accounts[0]
+        account = accounts[0]
+        account['found_by_tag'] = tag  # for call back actions
+        get_logger().info('Found account with tag "{}": {}'.format(tag, account))
+        return account
 
     else:
         # the account activation days should be larger than expiration day
