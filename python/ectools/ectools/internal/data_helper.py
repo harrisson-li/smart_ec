@@ -206,7 +206,7 @@ def is_lite_school(school_name):
 
 
 def is_lite_product(product_id):
-    found = [x for x in get_eclite_products() if x['id'] == product_id]
+    found = [x for x in get_eclite_products() if int(x['id']) == int(product_id)]
     return len(found) != 0
 
 

@@ -52,12 +52,12 @@ def test_activate_eclite_account():
     try:
         activate_account(65, 'WH_GGC')
     except AssertionError as e:
-        assert e.args[0] == "Miss match product <65> and school <WH_GGC> for ECLite account!"
+        assert e.args[0] == "Miss match product [65] and school [WH_GGC] for ECLite account!"
 
     try:
         activate_account(143, 'FS_ZUM')
     except AssertionError as e:
-        assert e.args[0] == "Miss match product <143> and school <FS_ZUM> for ECLite account!"
+        assert e.args[0] == "Miss match product [143] and school [FS_ZUM] for ECLite account!"
 
     try:
         set_partner('cool')
@@ -66,6 +66,9 @@ def test_activate_eclite_account():
         assert e.args[0] == "Cannot choose from an empty sequence"
 
     set_partner('mini')
+    assert is_lite_product(143)
+    assert is_lite_product('143')
+
     account = activate_eclite_student()
     assert "EC Lite" in account["product"]["name"]
 

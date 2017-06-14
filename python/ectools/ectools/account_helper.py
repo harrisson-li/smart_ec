@@ -116,7 +116,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
 
     is_lite = is_lite_product(product_id)
     assert is_lite == is_lite_school(school_name), \
-        "Miss match product <{}> and school <{}> for ECLite account!".format(product_id, school_name)
+        "Miss match product [{}] and school [{}] for ECLite account!".format(product_id, school_name)
 
     get_logger().info('Start to activate test account...')
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
