@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -311,7 +312,12 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None):
 
     if not hasattr(Cache, browser_id):
         LOGGER.setLevel(logging.WARNING)
-        browser = getattr(webdriver, browser_type)()
+        if browser_type == 'Chrome':
+            options = Options()
+            options.add_argument('--disable-infobars')
+            browser = webdriver.Chrome(chrome_options=options)
+        else:
+            browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)
     else:
         browser = getattr(Cache, browser_id)
