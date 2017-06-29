@@ -54,7 +54,9 @@ def get_or_activate_account(tag, expiration_days=365, method='activate_account',
         # the account activation days should be larger than expiration day
         kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
 
-        account = globals()[method](**kwargs)
+        current_module = sys.modules[__name__].__dict__
+        account = current_module[method](**kwargs)
+
         get_logger().info('Tag account with "{}"'.format(tag))
         save_account(account, add_tags=[tag])
         return account
