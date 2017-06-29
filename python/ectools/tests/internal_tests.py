@@ -1,4 +1,4 @@
-from ectools.config import set_environment
+from ectools.config import set_environment, set_partner
 from ectools.internal import troop_service_helper as troop
 from ectools.internal.data_helper import *
 
@@ -39,16 +39,33 @@ def test_get_product():
     assert get_any_school_product() is not None
     assert get_any_e10_product() is not None
 
+    set_partner('mini')
+    assert get_any_eclite_product() is not None
+
 
 def test_get_school():
-    result = get_all_schools()
-    assert len(result) > 0
+    assert len(get_all_schools()) > 0
+    assert len(get_test_centers()) > 0
+    assert len(get_all_v2_schools()) > 0
+    assert len(get_eclite_schools()) > 0
+    assert len(get_onlineoc_schools()) > 0
+    assert len(get_all_normal_v2_schools()) > 0
+
     assert get_school_by_name('HK_YLC')['division_code'] == 'HKYLC'
+    assert get_school_by_name('TCenterS14_(DO_NOT_SELECT)') is not None
+    assert get_schools_has_tag('TestCenter') is not None
+
     assert get_schools_by_partner() is not None
     assert get_any_school() is not None
-    assert get_schools_has_tag('TestCenter') is not None
     assert get_any_v2_school() is not None
-    assert get_school_by_name('TCenterS14_(DO_NOT_SELECT)') is not None
+    assert get_any_onlineoc_school() is not None
+
+    assert 'PC2.0' in get_any_v2_school()['tags']
+    assert 'OnlineOC' in get_any_onlineoc_school()['tags']
+
+    set_partner('mini')
+    assert get_any_eclite_school() is not None
+    assert 'ECLite' in get_any_eclite_school()['tags']
 
     set_environment('live')
     school = get_any_school()

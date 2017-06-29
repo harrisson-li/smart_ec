@@ -152,8 +152,10 @@ def get_all_schools(cached=True):
         return read_table('schools')
 
 
-def get_school_by_name(name):
-    found = [x for x in get_all_schools(cached=False) if x['name'] == name]
+def get_school_by_name(name, cached=False):
+    """name should be str or a dict with name key."""
+    name = name if isinstance(name, str) else name['name']
+    found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
     assert len(found), "No such school: {}!".format(name)
     return found[0]
 
@@ -174,73 +176,88 @@ def get_eclite_schools():
     return get_schools_has_tag('ECLite')
 
 
+def get_onlineoc_schools():
+    return get_schools_has_tag('OnlineOC')
+
+
 def get_schools_by_partner(partner=None):
     from ectools.config import config
     if partner is None:
         partner = config.partner
-    found = [x for x in get_all_schools() if x['partner'].lower() == partner.lower()]
+    found = [x for x in get_all_schools()
+             if x['partner'].lower() == partner.lower()]
     return found
 
 
-def get_any_school(by_partner=None):
-    from ectools.config import config
-
-    found = get_schools_by_partner(by_partner)
-    found = [x for x in found if not is_v2_school(x['name'])]
-
-    # only return test center for live
-    if config.env == 'Live':
-        found = [x for x in found if is_item_has_tag(x, 'TestCenter')]
-
-    return get_random_item(found)
-
-
 def is_v2_school(school_name):
-    found = [x for x in get_all_v2_schools() if x['name'] == school_name]
-    return len(found) != 0
+    school = get_school_by_name(school_name, cached=True)
+    return is_item_has_tag(school, 'PC2.0')
 
 
 def is_lite_school(school_name):
-    found = [x for x in get_eclite_schools() if x['name'] == school_name]
-    return len(found) != 0
+    school = get_school_by_name(school_name, cached=True)
+    return is_item_has_tag(school, 'ECLite')
 
 
 def is_lite_product(product_id):
-    found = [x for x in get_eclite_products() if int(x['id']) == int(product_id)]
-    return len(found) != 0
+    product = get_product_by_id(product_id)
+    return is_item_has_tag(product, 'ECLite')
+
+
+def is_onlineoc_school(school_name):
+    school = get_school_by_name(school_name, cached=True)
+    return is_item_has_tag(school, 'OnlineOC')
+
+
+def _pick_one_school(schools):
+    from ectools.config import config
+    # only return test center for live
+    if config.env == 'Live':
+        schools = [x for x in schools if is_item_has_tag(x, 'TestCenter')]
+
+    return get_random_item(schools)
+
+
+def get_any_school(partner=None):
+    """return v1 school."""
+
+    found = [x for x in get_schools_by_partner(partner)
+             if not is_v2_school(x)]
+
+    return _pick_one_school(found)
 
 
 def get_all_normal_v2_schools(partner=None):
-    # not include eclite school
-    from ectools.config import config
-    if partner is None:
-        partner = config.partner
-    found = [x for x in get_all_v2_schools()
-             if x['partner'].lower() == partner.lower()
-             and not is_item_has_tag(x, 'ECLite')]
+    """return v2 school and not include eclite school"""
+
+    found = [x for x in get_schools_by_partner(partner)
+             if is_v2_school(x)
+             and not is_lite_school(x)]
+
     return found
 
 
 def get_any_v2_school(partner=None):
-    from ectools.config import config
-
     # not include eclite school
     found = get_all_normal_v2_schools(partner)
-
-    # only return test center for live
-    if config.env == 'Live':
-        found = [x for x in found if is_item_has_tag(x, 'TestCenter')]
-
-    return get_random_item(found)
+    return _pick_one_school(found)
 
 
 def get_any_eclite_school(partner=None):
-    from ectools.config import config
-    if partner is None:
-        partner = config.partner
+    found = [x for x in get_schools_by_partner(partner)
+             if is_lite_school(x)]
 
-    found = [x for x in get_eclite_schools() if x['partner'].lower() == partner.lower()]
-    return get_random_item(found)
+    return _pick_one_school(found)
+
+
+def get_any_onlineoc_school(partner=None):
+    """return onlineOC school, but not include eclite school"""
+
+    found = [x for x in get_schools_by_partner(partner)
+             if is_onlineoc_school(x)
+             and not is_lite_school(x)]
+
+    return _pick_one_school(found)
 
 
 def get_all_levels():
