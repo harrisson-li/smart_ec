@@ -1,24 +1,25 @@
 DROP TABLE IF EXISTS environments;
 
 CREATE TABLE "environments" (
-  name           TEXT,
-  domain         TEXT,
-  replace_to     TEXT,
-  description    TEXT,
-  mark           TEXT,
-  etown_url      TEXT,
-  oboe_url       TEXT,
-  salesforce_url TEXT,
-  marketing_url  TEXT,
-  tags           TEXT,
+  name             TEXT,
+  domain           TEXT,
+  replace_to       TEXT,
+  description      TEXT,
+  mark             TEXT,
+  etown_url        TEXT,
+  oboe_url         TEXT,
+  salesforce_url   TEXT,
+  tags             TEXT,
+  marketing_url    TEXT,
+  marketing_ts_url TEXT NULL,
   CONSTRAINT environments_pk PRIMARY KEY (domain, name)
 );
 
-INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url) VALUES ('UAT', 'all', 'uat', 'UAT', '', 'http://uat.englishtown.com', 'http://uatoboe.ef.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://devcenter.ef.com.cn');
-INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url) VALUES ('QA', 'all', 'qa', 'QA', '', 'http://qa.englishtown.com', 'http://qaoboe.ef.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://qacenter.ef.com.cn');
-INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url) VALUES ('Staging', 'all', 'staging', 'Staging', '', 'http://staging.englishtown.com', 'http://stagingoboe.ef.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://stgcenter.ef.com.cn');
-INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url) VALUES ('Live', 'cn', 'cn1web1', 'LiveCN', 'livecn', 'http://cn1web1.englishtown.com', 'http://oboecn.ef.com/oboe2/', 'https://login.salesforce.com', 'et2', 'http://center.ef.com.cn');
-INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url) VALUES ('Live', 'us', 'webus1', 'LiveUS', 'liveus', 'http://webus1.englishtown.com', 'http://oboeus.ef.com/oboe2', 'https://login.salesforce.com', 'et2', 'http://center.ef.com.cn');
+INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url, marketing_ts_url) VALUES ('UAT', 'all', 'uat', 'UAT', '', 'http://uat.englishtown.com', 'https://smartuat2.englishtown.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://devcenter.ef.com.cn', 'http://cosam.englishtown.com/online/cn');
+INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url, marketing_ts_url) VALUES ('QA', 'all', 'qa', 'QA', '', 'http://qa.englishtown.com', 'http://qaoboe.ef.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://qacenter.ef.com.cn', 'http://qa.englishtown.cn/online/cn');
+INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url, marketing_ts_url) VALUES ('Staging', 'all', 'staging', 'Staging', '', 'http://staging.englishtown.com', 'http://stagingoboe.ef.com/oboe2/', 'https://test.salesforce.com', 'et2', 'http://stgcenter.ef.com.cn', 'http://stagingcn.englishtown.com/online/cn');
+INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url, marketing_ts_url) VALUES ('Live', 'cn', 'cn1web1', 'LiveCN', 'livecn', 'http://cn1web1.englishtown.com', 'http://oboe.ef.cn/oboe2/', 'https://login.salesforce.com', 'et2', 'http://center.ef.com.cn', 'http://www.englishlive.cn/online/cn');
+INSERT INTO environments (name, domain, replace_to, description, mark, etown_url, oboe_url, salesforce_url, tags, marketing_url, marketing_ts_url) VALUES ('Live', 'us', 'webus1', 'LiveUS', 'liveus', 'http://webus1.englishtown.com', 'http://oboe.ef.com/oboe2/', 'https://login.salesforce.com', 'et2', 'http://center.ef.com.cn', 'http://www.englishlive.cn/online/cn');
 
 DROP TABLE IF EXISTS database;
 
@@ -109,6 +110,10 @@ INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, 
 INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Ecsp', 139, 'EF Smart 15 Home 90D PL40', 'Home', 'SPS15HOME90PL40MAIN', 'SPS15HOME90PL40M1D', 'SPS15HOME90PL40F1D', '');
 INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Rupe', 142, 'EF F2F/PL20 Interactive English Language 15', 'School', 'R15SCHOOLF2FPL20MAIN', 'R15SCHOOLF2FPL20M1D', 'R15SCHOOLF2FPL20F1D', '');
 INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Mini', 143, 'Smart 15 - EC Lite', 'School', 'S15SCHOOLLTMAIN', 'S15SCHOOLLTM1D', 'S15SCHOOLLTF1D', 'ECLite');
+INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Cool', 144, 'Smart 15 - Offpeak', 'School', 'S15SCHOOLMAIN', 'S15SCHOOLM1D', 'S15SCHOOLF1D', '');
+INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Mini', 145, 'Smart 15 - Offpeak - Mini', 'School', 'S15SCHOOLMAIN', 'S15SCHOOLM1D', 'S15SCHOOLF1D', '');
+INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Indo', 146, 'Smart English 15 - PL20', 'School', 'I15SEMAINPL20', 'I15SEMAINPL201D', 'I15SEPL20F1D', '');
+INSERT INTO products (partner, id, name, product_type, main_code, main_one_day, free_code, tags) VALUES ('Indo', 147, 'Professional English 15 - PL20', 'School', 'I15PEMAINPL20', 'I15PEMAINPL201D', 'I15PEPL20F1D', '');
 
 DROP TABLE IF EXISTS schools;
 
@@ -121,6 +126,9 @@ CREATE TABLE "schools" (
   tags          TEXT
 );
 
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (-3, 'Cehk', 'Invalid', 'Invalid', 'Invalid_cehk', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (-2, 'Ecsp', 'Invalid', 'Invalid', 'Invalid_ecsp', 'S15_V1');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (-1, 'Indo', 'Invalid', 'Invalid', 'Invalid_indo', 'S15_V1');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1, 'Cool', 'Shanghai', 'SH_PSQ', 'SSCNSH1', 'PC2.0 default');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2, 'Cool', 'Shanghai', 'SH_XJH', 'SSCNSH3', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (6, 'Cool', 'Beijing', 'BJ_GM1', 'SSCNBJ2', 'PC2.0');
@@ -139,14 +147,14 @@ INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (21, '
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (22, 'Cool', 'ShenZhen', 'SZ_NSD', 'SSCNSZ2', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (23, 'Cool', 'Beijing', 'BJ_SYQ', 'SSCNBJ8', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (24, 'Cool', 'ShenZhen', 'SZ_HQB', 'SSCNSZ3', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (26, 'Cool', 'Beijing', 'BJ_DWL', 'SSCNBJ9', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (26, 'Cool', 'Beijing', 'BJ_DWL', 'SSCNBJ9', 'PC2.0 OnlineOC');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (28, 'Cool', 'ShenZhen', 'SZ_CHC', 'SSCNSZ4', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (35, 'Cool', 'Guangzhou', 'GZ_JNX', 'SSCNGZ5', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (36, 'Cool', 'Shanghai', 'SH_XZG', 'SSCNSH9', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (39, 'Cool', 'Shanghai', 'SH_BBB', 'SSCNSH10', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (41, 'Cool', 'Beijing', 'BJ_YYC', 'SSCNBJ11', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (42, 'Cool', 'Guangzhou', 'GZ_WLH', 'SSCNGZ6', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (51, 'Cool', 'Beijing', 'BJ_WSL', 'SSCNBJ12', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (51, 'Cool', 'Beijing', 'BJ_WSL', 'SSCNBJ12', 'PC2.0 OnlineOC');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (52, 'Cool', 'Beijing', 'BJ_WDK', 'SSCNBJ13', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (53, 'Cool', 'ShenZhen', 'SZ_KJY', 'SSCNSZ5', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (54, 'Cool', 'Tianjin', 'TJ_NJR', 'SSCNTJ1', 'PC2.0');
@@ -157,27 +165,27 @@ INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (62, '
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (63, 'Cool', 'TestCity', 'TCenterS14_(DO_NOT_SELECT)', 'SSCNTE2', 'PC2.0 TestCenter');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (64, 'Mini', 'Mini Test City', 'TCenterS14_M_(DO_NOT_SELECT)', 'CNNMTE1', 'PC2.0 TestCenter');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (65, 'Cool', 'Guangzhou', 'GZ_PYC', 'SSCNGZ7', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (66, 'Mini', 'XiAn', 'XA_XZC', 'CNMNXA2', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (67, 'Mini', 'Wuhan', 'WH_TDC', 'CNMNWH2', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (66, 'Mini', 'XiAn', 'XA_XZC', 'CNMNXA2', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (67, 'Mini', 'Wuhan', 'WH_TDC', 'CNMNWH2', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (68, 'Cool', 'Hangzhou', 'HZ_XXC', 'SSCNHZ6', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (69, 'Mini', 'Wuhan', 'WH_ZNC', 'CNMNWH3', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (70, 'Mini', 'ChengDu', 'CD_MCC', 'CNMNCD3', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (69, 'Mini', 'Wuhan', 'WH_ZNC', 'CNMNWH3', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (70, 'Mini', 'ChengDu', 'CD_MCC', 'CNMNCD3', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (71, 'Cool', 'Shanghai', 'SH_JAT', 'SSCNSH14', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (72, 'Cool', 'Guangzhou', 'GZ_GTC', 'SSCNGZ8', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (73, 'Mini', 'ChengDu', 'CD_YTC', 'CNMNCD6', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (74, 'Mini', 'ChengDu', 'CD_SNI', 'CNMNCD7', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (102, 'Mini', 'Wuxi', 'WX_HDP', 'CNMNWX1', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (73, 'Mini', 'ChengDu', 'CD_YTC', 'CNMNCD6', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (74, 'Mini', 'ChengDu', 'CD_SNI', 'CNMNCD7', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (102, 'Mini', 'Wuxi', 'WX_HDP', 'CNMNWX1', 'PC2.0 OnlineOC');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (103, 'Mini', 'FoShan', 'FS_ZUM', 'CNMNFS1', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (104, 'Mini', 'ChengDu', 'CD_TFG', 'CNMNCD1', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (104, 'Mini', 'ChengDu', 'CD_TFG', 'CNMNCD1', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (112, 'Mini', 'DongGuan', 'DG_NCH', 'CNMNDG1', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (114, 'Mini', 'Ningbo', 'NB_MLC', 'CNMNNB1', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (116, 'Mini', 'Mini Test City', 'Mini_Test', 'CNMNNJTE', 'TestCenter');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (116, 'Mini', 'Mini Test City', 'Mini_Test', 'CNMNNJTE', 'TestCenter OnlineOC');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (117, 'Mini', 'Nanjing', 'NJ_IST', 'CNMNNJ2', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (119, 'Mini', 'ChongQing', 'CQ_GYQ', 'CNMNCQ1', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (119, 'Mini', 'ChongQing', 'CQ_GYQ', 'CNMNCQ1', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (121, 'Mini', 'XiAn', 'XA_XGX', 'CNMNXA1', 'default PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (140, 'Mini', 'ChengDu', 'CD_LFS', 'CNMNCD2', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (140, 'Mini', 'ChengDu', 'CD_LFS', 'CNMNCD2', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (141, 'Mini', 'Nanjing', 'NJ_HSH', 'CNMNNJ3', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (142, 'Mini', 'ChengDu', 'CD_KJN', 'CNMNCD4', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (142, 'Mini', 'ChengDu', 'CD_KJN', 'CNMNCD4', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (143, 'Mini', 'ChengDu', 'CD_KTF', 'CNMNCD5', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (144, 'Mini', 'Suzhou', 'SU_JHC', 'CNMNSU1', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (147, 'Cool', 'Shanghai', 'SH_ZJC', 'SSCNSH15', 'PC2.0');
@@ -193,24 +201,24 @@ INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (913, 
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1012, 'Rupe', 'St. Petersburg', 'SP_NEV', 'SNI', '');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1013, 'Rupe', 'Kazan', 'KA_KAZ', 'KAA', '');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1017, 'Rupe', 'Russia Test City', 'Russia_Test', 'RUPE', 'PC2.0 TestCenter');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1019, 'Rupe', 'Moscow', 'MO_TVE', 'TVE', 'default');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1019, 'Rupe', 'Moscow', 'MO_TVE', 'TVE', 'default TestCenter');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1021, 'Rupe', 'Moscow', 'MO_KUR', 'KUR', '');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1026, 'Rupe', 'Moscow', 'MO_PAR', 'PAR', '');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1027, 'Rupe', 'Novosibirsk', 'NS_LEN', 'LEN', '');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (1029, 'Rupe', 'St. Petersburg', 'SP_TEK', 'TEK', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2001, 'Indo', 'Jakarta', 'JK_SUD', 'INDO1', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2001, 'Indo', 'Jakarta', 'JK_SUD', 'INDO1', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2011, 'Indo', 'Indo Test City', 'IndonesiaTestCenter', 'INDOTEST', 'PC2.0 TestCenter');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2015, 'Indo', 'Jakarta', 'JK_MTA', 'INDO2', 'default');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2016, 'Indo', 'Jakarta', 'JK_KUN', 'INDO3', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2017, 'Indo', 'Surabaya', 'SU_TOS', 'INDO4', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2019, 'Indo', 'Jakarta', 'JK_PLZ', 'INDO5', '');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2015, 'Indo', 'Jakarta', 'JK_MTA', 'INDO2', 'default PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2016, 'Indo', 'Jakarta', 'JK_KUN', 'INDO3', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2017, 'Indo', 'Surabaya', 'SU_TOS', 'INDO4', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2019, 'Indo', 'Jakarta', 'JK_PLZ', 'INDO5', 'PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (2020, 'Mini', 'Wuhan_Lite', 'WH_GGC', 'CNMNWH5', 'PC2.0 ECLite');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3004, 'Ecsp', 'Madrid', 'MD_MDM', 'SPMD1', '');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3005, 'Ecsp', 'Barcelona', 'BC_BLM', 'SPBC1', 'default');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3004, 'Ecsp', 'Madrid', 'MD_MDM', 'SPMD1', 'PC2.0');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3005, 'Ecsp', 'Barcelona', 'BC_BLM', 'SPBC1', 'default TestCenter PC2.0');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3006, 'Ecsp', 'Spain Test City', 'Spain_TestCenter', 'SPTE1', 'PC2.0 TestCenter');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3011, 'Mini', 'Wuhan_Lite', 'WH_LITE', 'CNMNWH4', 'PC2.0 ECLite TestCenter');
 INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (3012, 'Cool', 'ShenZhen', 'SZ_CBD', 'SSCNSZ6', 'PC2.0');
-INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (241620, 'Cool', 'TestCity', 'BJ_Testing_Center', 'TEST', 'TestCenter');
+INSERT INTO schools (id, partner, city, name, division_code, tags) VALUES (241620, 'Cool', 'TestCity', 'BJ_Testing_Center', 'TEST', 'TestCenter OnlineOC');
 
 CREATE TABLE IF NOT EXISTS test_accounts (
   environment TEXT NOT NULL,
