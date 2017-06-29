@@ -170,7 +170,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     get_logger().debug('New test account: {}'.format(student))
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
-    # might have incorrect school version data so we verify before return
+    # there might be out of date data so we verify before return
     enrollment = kwargs.get('includesenroll', False)
     if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
         raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
@@ -179,7 +179,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
 
 
 def activate_account_by_dict(data):
-    """another method to activate account with data dict."""
+    """Another method to activate account by data dict."""
     assert isinstance(data, dict), 'data must be in dict type!'
     product_id = data.pop('product_id', None)
     school_name = data.pop('school_name', None)
