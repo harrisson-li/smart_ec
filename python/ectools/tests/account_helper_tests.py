@@ -48,6 +48,7 @@ def test_activate_account_kwargs():
 
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
+    set_environment('staging')
     set_partner('mini')
     try:
         activate_account(65, 'WH_GGC')
@@ -80,6 +81,8 @@ def test_ignore_eclite_school():
 
 
 def test_activate_account_more():
+    set_environment('staging')
+
     student = activate_e10_student()
     assert student['is_e10']
     student = activate_school_v2_student()

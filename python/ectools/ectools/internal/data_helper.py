@@ -74,10 +74,10 @@ def get_all_products():
     return Cache.products
 
 
-# noinspection PyShadowingBuiltins
-def get_product_by_id(id):
-    found = [x for x in get_all_products() if int(x['id']) == int(id)]
-    assert len(found), "No such product: {}!".format(id)
+def get_product_by_id(product):
+    product_id = product['id'] if isinstance(product, dict) else product
+    found = [x for x in get_all_products() if int(x['id']) == int(product_id)]
+    assert len(found), "No such product: {}!".format(product_id)
     return found[0]
 
 
@@ -189,23 +189,23 @@ def get_schools_by_partner(partner=None):
     return found
 
 
-def is_v2_school(school_name):
-    school = get_school_by_name(school_name, cached=True)
+def is_v2_school(school):
+    school = get_school_by_name(school, cached=True)
     return is_item_has_tag(school, 'PC2.0')
 
 
-def is_lite_school(school_name):
-    school = get_school_by_name(school_name, cached=True)
+def is_lite_school(school):
+    school = get_school_by_name(school, cached=True)
     return is_item_has_tag(school, 'ECLite')
 
 
-def is_lite_product(product_id):
-    product = get_product_by_id(product_id)
-    return is_item_has_tag(product, 'ECLite')
+def is_lite_product(product):
+    prod = get_product_by_id(product)
+    return is_item_has_tag(prod, 'ECLite')
 
 
-def is_onlineoc_school(school_name):
-    school = get_school_by_name(school_name, cached=True)
+def is_onlineoc_school(school):
+    school = get_school_by_name(school, cached=True)
     return is_item_has_tag(school, 'OnlineOC')
 
 
