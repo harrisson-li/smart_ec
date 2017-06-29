@@ -32,13 +32,14 @@ from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
 
 
-def get_or_activate_account(tag, expiration_days=365, **kwargs):
+def get_or_activate_account(tag, expiration_days=365, method='activate_account', **kwargs):
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
     If the account is found by tag, it will contains a key named: found_by_tag.
     
     :param tag: Specified tag to search a test account.
     :param expiration_days: Will activate a new one if cannot get within expiration days.
+    :param method: method to activate account, can be any activation method in this module.
     :param kwargs: Arguments for method **activate_account**.  
     """
     accounts = get_accounts_by_tag(tag)
@@ -53,7 +54,7 @@ def get_or_activate_account(tag, expiration_days=365, **kwargs):
         # the account activation days should be larger than expiration day
         kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
 
-        account = activate_account(**kwargs)
+        account = globals()[method](**kwargs)
         get_logger().info('Tag account with "{}"'.format(tag))
         save_account(account, add_tags=[tag])
         return account
@@ -148,6 +149,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['country_code'] = config.country_code
     student['domain'] = config.domain
     student['environment'] = config.env
+    student['is_eclite'] = is_lite
+    student['is_onlineoc'] = is_onlineoc_school(school)
     student.update(kwargs)
 
     tags = [config.env, config.partner]

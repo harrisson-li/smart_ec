@@ -126,7 +126,7 @@ def test_sf_suspend_student():
 
 
 def test_get_or_activate_account():
-    set_environment('QA')
+    set_environment('staging')
     account1 = get_or_activate_account(tag='UnitTest')
     account2 = get_or_activate_account(tag='UnitTest')
 
