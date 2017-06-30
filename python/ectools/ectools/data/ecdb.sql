@@ -128,9 +128,9 @@ CREATE TABLE "schools" (
   ca_city       TEXT NULL
 );
 
-INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-3, 'Cehk', 'Invalid', 'Invalid', 'Invalid_cehk', 'PC2.0', 'LC_Invalid', NULL);
-INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-2, 'Ecsp', 'Invalid', 'Invalid', 'Invalid_ecsp', 'S15_V1', 'LC_Invalid', NULL);
-INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-1, 'Indo', 'Invalid', 'Invalid', 'Invalid_indo', 'S15_V1', 'LC_Invalid', NULL);
+INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-3, 'Cehk', 'Invalid', 'Invalid_cehk', 'Invalid_cehk', 'PC2.0', 'LC_Invalid', NULL);
+INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-2, 'Ecsp', 'Invalid', 'Invalid_ecsp', 'Invalid_ecsp', '', 'LC_Invalid', NULL);
+INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (-1, 'Indo', 'Invalid', 'Invalid_indo', 'Invalid_indo', '', 'LC_Invalid', NULL);
 INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (1, 'Cool', 'Shanghai', 'SH_PSQ', 'SSCNSH1', 'PC2.0 default', 'LC_Shanghai', 'CA_Shanghai');
 INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (2, 'Cool', 'Shanghai', 'SH_XJH', 'SSCNSH3', 'PC2.0', 'LC_Shanghai', 'CA_Shanghai');
 INSERT INTO schools (id, partner, city, name, division_code, tags, lc_city, ca_city) VALUES (6, 'Cool', 'Beijing', 'BJ_GM1', 'SSCNBJ2', 'PC2.0', 'LC_Beijing', 'CA_Beijing');
