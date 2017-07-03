@@ -32,13 +32,14 @@ from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
 
 
-def get_or_activate_account(tag, expiration_days=365, **kwargs):
+def get_or_activate_account(tag, expiration_days=365, method='activate_account', **kwargs):
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
     If the account is found by tag, it will contains a key named: found_by_tag.
     
     :param tag: Specified tag to search a test account.
     :param expiration_days: Will activate a new one if cannot get within expiration days.
+    :param method: method to activate account, can be any activation method in this module.
     :param kwargs: Arguments for method **activate_account**.  
     """
     accounts = get_accounts_by_tag(tag)
@@ -53,7 +54,9 @@ def get_or_activate_account(tag, expiration_days=365, **kwargs):
         # the account activation days should be larger than expiration day
         kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
 
-        account = activate_account(**kwargs)
+        current_module = sys.modules[__name__].__dict__
+        account = current_module[method](**kwargs)
+
         get_logger().info('Tag account with "{}"'.format(tag))
         save_account(account, add_tags=[tag])
         return account
@@ -114,9 +117,9 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         school = get_school_by_name(school_name)
         is_v2 = is_v2_school(school_name)  # fix account version according to school
 
-    is_lite = is_lite_product(product_id)
-    assert is_lite == is_lite_school(school_name), \
-        "Miss match product [{}] and school [{}] for ECLite account!".format(product_id, school_name)
+    is_lite = is_lite_product(product)
+    assert is_lite == is_lite_school(school), \
+        "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
     get_logger().info('Start to activate test account...')
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
@@ -148,6 +151,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['country_code'] = config.country_code
     student['domain'] = config.domain
     student['environment'] = config.env
+    student['is_eclite'] = is_lite
+    student['is_onlineoc'] = is_onlineoc_school(school)
     student.update(kwargs)
 
     tags = [config.env, config.partner]
@@ -165,7 +170,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     get_logger().debug('New test account: {}'.format(student))
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
-    # school.csv might have incorrect school data so we verify before return
+    # there might be out of date data so we verify before return
     enrollment = kwargs.get('includesenroll', False)
     if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
         raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
@@ -173,86 +178,102 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     return student
 
 
-def activate_e10_student(product_id=None, school_name=None, **kwargs):
-    if product_id is None:
-        product_id = get_any_e10_product()['id']
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+def activate_account_by_dict(data):
+    """Another method to activate account by data dict."""
+    assert isinstance(data, dict), 'data must be in dict type!'
+    product_id = data.pop('product_id', None)
+    school_name = data.pop('school_name', None)
+    is_v2 = data.pop('is_v2', True)
+    student = data.pop('student', None)
+    return activate_account(product_id, school_name, is_v2, student, **data)
 
 
-def activate_s15_student(product_id=None, school_name=None, **kwargs):
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+def activate_e10_student(**kwargs):
+    kwargs['is_v2'] = False
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_e10_product()['id']
+    return activate_account_by_dict(kwargs)
 
 
-def activate_home_student(school_name=None, **kwargs):
-    product_id = get_any_home_product()['id']
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+def activate_s15_student(**kwargs):
+    kwargs['is_v2'] = False
+    return activate_account_by_dict(kwargs)
 
 
-def activate_school_student(school_name=None, **kwargs):
-    product_id = get_any_school_product()['id']
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=False, **kwargs)
+def activate_home_student(**kwargs):
+    kwargs['is_v2'] = False
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product()['id']
+    return activate_account_by_dict(kwargs)
 
 
-def activate_s15_v2_student(product_id=None, school_name=None, **kwargs):
-    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+def activate_school_student(**kwargs):
+    kwargs['is_v2'] = False
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product()['id']
+    return activate_account_by_dict(kwargs)
 
 
-def activate_home_v2_student(school_name=None, **kwargs):
-    product_id = get_any_home_product()['id']
-    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+def activate_s15_v2_student(**kwargs):
+    return activate_account_by_dict(kwargs)
 
 
-def activate_school_v2_student(school_name=None, **kwargs):
-    product_id = get_any_school_product()['id']
-    return activate_account(product_id=product_id, school_name=school_name, **kwargs)
+def activate_home_v2_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product()['id']
+    return activate_account_by_dict(kwargs)
 
 
-def activate_eclite_student(product_id=None, school_name=None):
-    if product_id is None:
-        product_id = get_any_eclite_product()['id']
-
-    if school_name is None:
-        school_name = get_any_eclite_school()['name']
-    return activate_account(product_id=product_id, school_name=school_name)
+def activate_school_v2_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product()['id']
+    return activate_account_by_dict(kwargs)
 
 
-def activate_student_with_random_level(product_id=None,
-                                       school_name=None,
-                                       is_v2=True,
-                                       min_level=1,
-                                       max_level=16,
-                                       **kwargs):
+def activate_eclite_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_eclite_product()['id']
+
+    if 'school_name' not in kwargs:
+        kwargs['school_name'] = get_any_eclite_school()['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_onlineoc_student(**kwargs):
+    if 'school_name' not in kwargs:
+        kwargs['school_name'] = get_any_onlineoc_school()['name']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_onlineoc_school_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product()['id']
+    return activate_onlineoc_student(**kwargs)
+
+
+def activate_onlineoc_home_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product()['id']
+    return activate_onlineoc_student(**kwargs)
+
+
+def activate_student_with_random_level(min_level=1, max_level=16, **kwargs):
     level = get_random_level(min_level, max_level)
-    kwargs.update({'startLevel': level})
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+    kwargs['startLevel'] = level
+    return activate_account_by_dict(kwargs)
 
 
-def activate_school_student_with_random_level(product_id=None,
-                                              school_name=None,
-                                              is_v2=True,
-                                              min_level=1,
-                                              max_level=16,
-                                              **kwargs):
+def activate_school_student_with_random_level(min_level=1, max_level=16, **kwargs):
     level = get_random_level(min_level, max_level)
-    kwargs.update({'startLevel': level})
-    if not product_id:
-        product_id = get_any_school_product()['id']
-
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+    kwargs['startLevel'] = level
+    return activate_school_student(**kwargs)
 
 
-def activate_home_student_with_random_level(product_id=None,
-                                            school_name=None,
-                                            is_v2=True,
-                                            min_level=1,
-                                            max_level=16,
-                                            **kwargs):
+def activate_home_student_with_random_level(min_level=1, max_level=16, **kwargs):
     level = get_random_level(min_level, max_level)
-    kwargs.update({'startLevel': level})
-    if not product_id:
-        product_id = get_any_home_product()['id']
-
-    return activate_account(product_id=product_id, school_name=school_name, is_v2=is_v2, **kwargs)
+    kwargs['startLevel'] = level
+    return activate_home_student(**kwargs)
 
 
 def convert_account_to_object(account_dict,

@@ -5,6 +5,7 @@ from ectools.internal.objects import *
 
 
 def test_create_account():
+    set_environment('staging')
     student = create_account_without_activation()
     get_logger().info(student)
     assert student is not None
@@ -29,7 +30,7 @@ def test_create_account():
 
 
 def test_activate_account_default():
-    set_environment('qa')
+    set_environment('staging')
     student = activate_account(is_v2=True, mainRedemptionQty=60)
     get_logger().info(student)
     assert student is not None
@@ -40,6 +41,7 @@ def test_activate_account_default():
 
 
 def test_activate_account_kwargs():
+    set_environment('staging')
     student = activate_account(startLevel=3, mainRedemptionQty=1, securityverified=False)
     assert student['startLevel'] == 3
     assert student['mainRedemptionQty'] == 1
@@ -48,6 +50,7 @@ def test_activate_account_kwargs():
 
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
+    set_environment('staging')
     set_partner('mini')
     try:
         activate_account(65, 'WH_GGC')
@@ -80,6 +83,8 @@ def test_ignore_eclite_school():
 
 
 def test_activate_account_more():
+    set_environment('staging')
+
     student = activate_e10_student()
     assert student['is_e10']
     student = activate_school_v2_student()
@@ -94,7 +99,8 @@ def test_activate_account_more():
 
 # noinspection PyUnresolvedReferences
 def test_convert_student_to_object():
-    student = activate_account()
+    set_environment('staging')
+    student = get_or_activate_account(tag='UnitTest')
 
     class Student(Base):
         pass
@@ -123,7 +129,7 @@ def test_sf_suspend_student():
 
 
 def test_get_or_activate_account():
-    set_environment('QA')
+    set_environment('staging')
     account1 = get_or_activate_account(tag='UnitTest')
     account2 = get_or_activate_account(tag='UnitTest')
 
@@ -146,3 +152,9 @@ def test_get_account_by_tag():
     account = get_account(accounts[0]['member_id'])
     assert account is not None
     assert account['username'] == accounts[0]['username']
+
+
+def test_or_activate_onlineoc_student():
+    set_environment('staging')
+    account = get_or_activate_account(tag='OnlineOC_UT', method='activate_onlineoc_student')
+    assert account['is_onlineoc']
