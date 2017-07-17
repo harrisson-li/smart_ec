@@ -82,6 +82,7 @@ class PageBase(object):
     def wait_for_option_selector_by(self, by, by_value, timeout=TIMEOUT_SECONDS):
         self.wait_until(lambda x: len(self.get_all_option_elements_by(by, by_value)) > 0, timeout=timeout)
 
+    @retry_for_error(error=StaleElementReferenceException)
     def wait_for_option_selector(self, selector_xpath, timeout=TIMEOUT_SECONDS):
         self.wait_for_option_selector_by(By.XPATH, selector_xpath, timeout=timeout)
 
