@@ -140,6 +140,7 @@ class PageBase(object):
         option.select_by_index(index)
 
     @detail_on_failure
+    @retry_for_error(error=StaleElementReferenceException)
     def first_selected_option(self, selector_xpath):
         self.wait_for_option_selector(selector_xpath)
         return self.get_option_selector(selector_xpath).first_selected_option
