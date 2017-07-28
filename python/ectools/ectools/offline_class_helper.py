@@ -198,7 +198,16 @@ def _get_coupon_count(student_id, coupon_type_id):
 
 
 def _insert_booking_id(student_id, schedule_id, coupon_category_id):
-    sql = """INSERT INTO oboe.dbo.Booking
+    sql = """INSERT INTO oboe.dbo.Booking 
+           ([ScheduledClass_id]
+           ,[Student_id]
+           ,[BookingStatus_id]
+           ,[LevelIndex]
+           ,[UnitIndex]
+           ,[IsDeleted]
+           ,[InsertDate]
+           ,[UpdateDate]
+           ,[LevelCode])
     VALUES ({}, {}, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
     """
     execute_query(sql.format(schedule_id, student_id))
