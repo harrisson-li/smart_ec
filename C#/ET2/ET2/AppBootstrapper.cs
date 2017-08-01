@@ -22,13 +22,40 @@ namespace ET2
             Initialize();
         }
 
+        /// <summary>
+        /// Genreate more readable error message.
+        /// </summary>
+        private string GetReadableException(Exception ex)
+        {
+            var messageList = new List<string>();
+            var counter = 0;
+            var e = ex;
+            while (e != null)
+            {
+                messageList.Add(String.Format("{0}: {1}", e.Source, e.Message));
+                e = e.InnerException;
+                counter++;
+            }
+
+            messageList.Reverse();
+            for (int i = 0; i < messageList.Count; i++)
+            {
+                var from = i == 0 ? "Failed from " : "Then from ";
+                messageList[i] = string.Format("{0}{1}{2}", new string(' ', i * 4), from, messageList[i]);
+            }
+
+            return String.Join("\n", messageList);
+        }
+
         private void GlobalUnhandleException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            var message = string.Format("Detail: {1}", ex.Message, ex.StackTrace);
+            var message = GetReadableException(ex);
+
+            Log.Error(message);
             Log.Error("Unhandle error: ");
             Log.Error(ex);
-            System.Diagnostics.Trace.Fail(ex.Message, message);
+            System.Diagnostics.Trace.Fail(message);
         }
 
         protected override void BuildUp(object instance)

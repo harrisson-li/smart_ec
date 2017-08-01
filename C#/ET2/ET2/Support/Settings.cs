@@ -51,8 +51,15 @@ namespace ET2.Support
         public static JArray ReadApiData(string apiName)
         {
             var url = "{0}{1}/".FormatWith(REST_HOST, apiName);
-            var response = HttpHelper.Get(url);
-            return response.ToJArray();
+            try
+            {
+                var response = HttpHelper.Get(url);
+                return response.ToJArray();
+            }
+            catch
+            {
+                throw new InvalidDataException("Failed to load data: {0}!".FormatWith(url));
+            }
         }
 
         public static string AppFolder
