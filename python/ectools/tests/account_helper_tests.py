@@ -158,3 +158,8 @@ def test_or_activate_onlineoc_student():
     set_environment('staging')
     account = get_or_activate_account(tag='OnlineOC_UT', method='activate_onlineoc_student')
     assert account['is_onlineoc']
+
+
+def test_set_hima_test():
+    set_environment('uat')
+    sf_service_helper.set_hima_test('23924331', '5')
