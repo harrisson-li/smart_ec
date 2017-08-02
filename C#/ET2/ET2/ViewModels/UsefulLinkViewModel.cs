@@ -86,6 +86,7 @@ namespace ET2.ViewModels
         public string ConvertLink(string originUrl)
         {
             var envString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var envName = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
             var id = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.MemberId;
             var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
             var mark = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Mark;
@@ -99,7 +100,8 @@ namespace ET2.ViewModels
             {
                 Log.DebugFormat("Covert URL From: {0}", originUrl);
 
-                originUrl = originUrl.Replace("$env", envString);
+                originUrl = originUrl.Replace("$envStr", envString);
+                originUrl = originUrl.Replace("$env", envName);
                 originUrl = originUrl.Replace("$id", id);
                 originUrl = originUrl.Replace("$name", name);
                 originUrl = originUrl.Replace("$mark", mark);

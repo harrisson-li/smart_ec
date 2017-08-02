@@ -1,4 +1,10 @@
-﻿## v0.0.0.38
+﻿## v0.0.0.41
+
+1. More detail message when ET2 failed.
+2. Add one more token: $envStr, which will equal to 'url_replacement' in db.
+3. UAT related links will default to 'smartuat2', so you don't need to add hosts.
+
+## v0.0.0.38
 
 1. Retire CSV config files, load data via http://cns-qaauto5/api/
 2. Global configuration was saved in sqlite @ \\cns-qaauto5\Shared\Automation\ec.sqlite
