@@ -14,6 +14,7 @@ from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.ecdb_helper import *
 
 SF_NEW_ORG_SERVICE_URL = "/services/Oboe2/1.0/SalesforceNewOrgService.svc"
+SF_SERVICE_URL = "/services/Oboe2/1.0/SalesForceService.svc"
 SALESFORCE_USERNAME = "SalesforceSmartUser"
 SALESFORCE_PASSWORD = "SalesforceSmartPwd"
 
@@ -134,3 +135,52 @@ def resume_student(member_id):
         raise SystemError(result.content)
     else:
         delete_rows('suspend_info', {'member_id': member_id})
+
+
+def set_hima_test(member_id, level_code):
+    """
+
+    :param member_id: student's member id
+    :param level_code: level code from 0A - 14 for all partners
+    :return:
+    """
+    headers = {
+        'SOAPAction': "\"http://tempuri.org/ISalesForceService/SetHimaTestInfo\"",
+        'Content-type': 'text/xml'
+    }
+
+    data = """
+    <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+        <s:Header>
+        <o:Security s:mustUnderstand="1" xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+        <o:UsernameToken>
+        <o:Username>{}</o:Username>
+        <o:Password>{}</o:Password>
+        </o:UsernameToken>
+        </o:Security>
+        </s:Header>
+
+        <s:Body>
+        <SetHimaTestInfo xmlns="http://tempuri.org/"><param xmlns:a="http://schemas.datacontract.org/2004/07/EFSchools.Englishtown.Oboe.Services.DataContract.SalesForce" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        <a:LevelCode>{}</a:LevelCode>
+        <a:StudentId>{}</a:StudentId>
+        <a:TestId>28</a:TestId>
+        </param>
+        </SetHimaTestInfo>
+        </s:Body>
+    </s:Envelope>
+    """
+
+    result = requests.post(config.etown_root.replace('http', 'https') + SF_SERVICE_URL, data=data.
+                           format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, level_code, member_id),
+                           headers=headers, verify=False)
+
+    assert result.status_code == HTTP_STATUS_OK, result.text
+
+    doc = bs(result.content, 'xml')
+
+    if doc.find('IsSuccess').string == 'true':
+        return level_code
+
+    else:
+        raise SystemError(result.content)
