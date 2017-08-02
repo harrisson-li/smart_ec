@@ -319,5 +319,5 @@ def sf_resume_student(student_id):
     return sf_service_helper.resume_student(student_id)
 
 
-def sf_set_hima_test(student_id, level_code):
+def sf_set_hima_test(student_id, level_code='0A'):
     return sf_service_helper.set_hima_test(student_id, level_code)
