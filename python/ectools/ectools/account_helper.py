@@ -243,7 +243,16 @@ def activate_eclite_student(**kwargs):
 def activate_onlineoc_student(**kwargs):
     if 'school_name' not in kwargs:
         kwargs['school_name'] = get_any_onlineoc_school()['name']
-    return activate_account_by_dict(kwargs)
+
+    kwargs['includesenroll'] = False
+    set_hima = kwargs.get('set_hima', True)
+    level_code = kwargs.get('startLevel', '0A')
+
+    student = activate_account_by_dict(kwargs)
+    if set_hima:
+        sf_set_hima_test(student['member_id'], level_code)
+
+    return student
 
 
 def activate_onlineoc_school_student(**kwargs):
