@@ -166,5 +166,5 @@ def test_set_hima_test():
 
 
 def test_activate_onlineoc_student():
-    set_environment('uat')
+    set_environment('staging')
     activate_onlineoc_school_student(startLevel=3)
