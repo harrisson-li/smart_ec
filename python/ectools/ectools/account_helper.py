@@ -27,7 +27,7 @@ For more info about using EFEC test account, please refer to confluence page or 
 from ectools.config import get_logger
 from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
-from ectools.internal.constants import HTTP_STATUS_OK, SUCCESS_TEXT
+from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.data_helper import *
 from ectools.service_helper import is_v2_student
 
@@ -67,7 +67,7 @@ def create_account_without_activation(is_e10=False):
     link = get_new_account_link(is_e10)
     result = requests.get(link)
 
-    assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
+    assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
 
     # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
     pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>[^<br]+)'
