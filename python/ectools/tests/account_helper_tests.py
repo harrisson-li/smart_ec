@@ -163,3 +163,8 @@ def test_or_activate_onlineoc_student():
 def test_set_hima_test():
     set_environment('uat')
     sf_service_helper.set_hima_test('23924331', '5')
+
+
+def test_activate_onlineoc_student():
+    set_environment('staging')
+    activate_onlineoc_school_student(startLevel=3)
