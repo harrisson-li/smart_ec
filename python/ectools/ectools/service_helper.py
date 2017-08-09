@@ -76,7 +76,8 @@ def get_student_info(student_id):
     """
 
     def get_name_and_email(student_id):
-        target_url = "{}/services/ecplatform/Tools/StudentView?id={}".format(config.etown_root, student_id)
+        target_url = "{}/services/ecplatform/Tools/StudentView?id={}&token={}".format(
+            config.etown_root, student_id, get_token())
         response = requests.get(target_url)
 
         if response.status_code == HTTP_STATUS_OK:
