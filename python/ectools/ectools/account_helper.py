@@ -142,7 +142,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
         del data['levelQty']  # e10 student cannot set 'levelQty'
 
     result = requests.post(link, data=data)
-    assert result.status_code == HTTP_STATUS_OK and SUCCESS_TEXT in result.text.lower(), result.text
+    success_text = 'success' if student['is_e10'] else 'IsSuccess:True'
+    assert result.status_code == HTTP_STATUS_OK and success_text in result.text, result.text
 
     student['product'] = product
     student['school'] = school
