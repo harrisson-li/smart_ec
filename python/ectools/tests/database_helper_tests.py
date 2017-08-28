@@ -1,4 +1,4 @@
-from ectools.config import set_environment
+from ectools.config import set_environment, set_partner
 from ectools.database_helper import *
 
 logger = get_logger()
@@ -76,3 +76,12 @@ def test_switch_db_connection():
     qa_conn = get_connection_info()
 
     assert uat_conn != qa_conn
+
+
+def test_able_to_connect_db():
+    set_environment('uat')
+    assert able_to_connect_db()
+
+    set_environment('live')
+    set_partner('cehk')
+    assert not able_to_connect_db()
