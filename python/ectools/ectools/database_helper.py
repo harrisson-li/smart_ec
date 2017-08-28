@@ -52,11 +52,11 @@ However, I would recommend you use `connect_database` as d decorator to make sur
 
 -----
 """
+import collections
+import pymssql
+
 from ectools.config import config, get_logger
 from .internal.objects import *
-
-import pymssql
-import collections
 
 
 def set_connection_info(server=None, user=None, password=None, database=None):
@@ -94,7 +94,7 @@ def get_connection_info():
 
 def _connect():
     if not hasattr(Cache, 'connection'):
-        Cache.connection = pymssql.connect(*get_connection_info())
+        Cache.connection = pymssql.connect(*get_connection_info(), login_timeout=10)
         Cache.cursor = Cache.connection.cursor()
     return Cache.connection
 
@@ -149,6 +149,16 @@ def connect_database(func=None):
 def close_database():
     """Close database and release resource."""
     _cleanup()
+
+
+def able_to_connect_db():
+    """Check if able to connect to db or not."""
+    try:
+        fetch_one('SELECT TOP 1 Student_id FROM Oboe.dbo.Student')
+        return True
+    except pymssql.OperationalError:
+        get_logger().warning('Failed to connect to DB.')
+        return False
 
 
 @connect_database
