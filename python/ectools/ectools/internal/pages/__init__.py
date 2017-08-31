@@ -139,6 +139,7 @@ class PageBase(object):
         for o in options:
             if o.text.find(text) != -1:
                 o.click()
+                break
 
     @detail_on_failure
     @retry_for_error(error=StaleElementReferenceException)
