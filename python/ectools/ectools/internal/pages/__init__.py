@@ -132,6 +132,17 @@ class PageBase(object):
 
     @detail_on_failure
     @retry_for_error(error=StaleElementReferenceException)
+    def select_option_including_text(self, selector_xpath, text):
+
+        self.wait_for_option_selector(selector_xpath)
+        options = self.get_all_option_elements(selector_xpath)
+        for o in options:
+            if o.text.find(text) != -1:
+                o.click()
+                break
+
+    @detail_on_failure
+    @retry_for_error(error=StaleElementReferenceException)
     def select_option_by_index(self, selector_xpath, index=0):
         """Select option by index, starts from 0."""
         self.wait_for_option_selector(selector_xpath)
