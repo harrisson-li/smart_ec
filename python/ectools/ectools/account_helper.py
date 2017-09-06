@@ -153,7 +153,6 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     student['domain'] = config.domain
     student['environment'] = config.env
     student['is_eclite'] = is_lite
-    student['is_onlineoc'] = is_onlineoc_school(school)
     student.update(kwargs)
 
     tags = [config.env, config.partner]
@@ -253,6 +252,7 @@ def activate_onlineoc_student(**kwargs):
     if set_hima:
         sf_set_hima_test(student['member_id'], level_code)
 
+    student['is_onlineoc'] = True
     return student
 
 
