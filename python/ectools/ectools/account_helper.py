@@ -237,7 +237,7 @@ def activate_eclite_student(**kwargs):
     if 'school_name' not in kwargs:
         kwargs['school_name'] = get_any_eclite_school()['name']
 
-    return activate_account_by_dict(kwargs)
+    return activate_onlineoc_student(**kwargs)
 
 
 def activate_onlineoc_student(**kwargs):
