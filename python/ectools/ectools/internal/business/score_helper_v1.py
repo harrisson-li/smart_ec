@@ -11,6 +11,7 @@ You must call load_student() method before any action.
 
 # score helper is slow, so the timeout is much more logger
 TIMEOUT_FOR_SCORE_HELPER = 240
+LEVEL_TEST = "Level Test"
 
 
 def _open_page():
@@ -81,7 +82,7 @@ def pass_six_units(score=get_score()):
 
 def pass_level_test(score=get_score()):
     get_logger().info("Pass level test")
-    _page().select_option_by_index(CurrentPage.CURRENT_UNIT_SELECTOR_XPATH, 6)
+    _page().select_option_including_text(CurrentPage.CURRENT_UNIT_SELECTOR_XPATH, LEVEL_TEST)
     _page().element_load_unit_progress_button.click()
     wait_for_submit_ready()
 
