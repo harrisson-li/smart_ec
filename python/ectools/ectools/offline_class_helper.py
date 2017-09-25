@@ -398,8 +398,11 @@ def take_class(student_id, start_date=None, end_date=None, **kwargs):
     """
 
     # set start date and end date
-    HelperConfig.ClassTakenSince = {'days': _days_to_now(start_date)}
-    HelperConfig.ClassTakenUntil = {'days': _days_to_now(end_date)}
+    if start_date:
+        HelperConfig.ClassTakenSince = {'days': _days_to_now(start_date)}
+
+    if end_date:
+        HelperConfig.ClassTakenUntil = {'days': _days_to_now(end_date)}
 
     # take class and reset
     _main(student_id, **kwargs)
