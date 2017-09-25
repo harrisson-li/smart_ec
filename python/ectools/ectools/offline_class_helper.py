@@ -43,7 +43,7 @@ class HelperConfig(Base):
 
 
 def reset_config():
-    """To reset config if you want to keep the default behavior."""
+    """To reset config for this helper if you want to keep the default behavior."""
     HelperConfig.LevelMustComplete = True
     HelperConfig.LevelEnrollDateShift = {'days': -30}
     HelperConfig.ClassTakenSince = {'days': -29}
@@ -222,8 +222,8 @@ def _is_coupon_free_student(student_id):
 
 def _insert_booking_id(student_id, schedule_class, coupon_category_id):
     """Insert booking record and set status as checked in."""
-    scheduled_class_id = schedule_class.ScheduledClass_id
-    get_logger().debug('Insert booking record for class: {}'.format(scheduled_class_id))
+    scheduled_id = schedule_class.ScheduledClass_id
+    get_logger().debug('Insert booking record for class: {}'.format(scheduled_id))
 
     sql = """INSERT INTO oboe.dbo.Booking 
            ([ScheduledClass_id]
@@ -237,11 +237,11 @@ def _insert_booking_id(student_id, schedule_class, coupon_category_id):
            ,[LevelCode])
     VALUES ({}, {}, 2, 1, 1, 0, '{}', GETDATE(), '1')
     """
-    execute_query(sql.format(scheduled_class_id,
+    execute_query(sql.format(scheduled_id,
                              student_id,
                              schedule_class.EndDate))
 
-    # if student is coupon free, return now
+    # if student is coupon free, no need to update coupon table, just return
     if _is_coupon_free_student(student_id):
         return
 
@@ -251,7 +251,7 @@ def _insert_booking_id(student_id, schedule_class, coupon_category_id):
     AND ScheduledClass_id = {}
     ORDER BY Booking_id DESC"""
 
-    book_id = fetch_one(sql.format(student_id, scheduled_class_id))[0]
+    book_id = fetch_one(sql.format(student_id, scheduled_id))[0]
 
     sql = """DECLARE @coupon_id AS INT
     SELECT @coupon_id = MIN(coupon_id)
@@ -278,8 +278,10 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
     is_coupon_free = _is_coupon_free_student(student_id)
 
     while count > 0:
+
+        # set coupon to valid number for coupon free student
         if is_coupon_free:
-            coupon_count = 1  # set coupon to valid number for coupon free student
+            coupon_count = 1
         else:
             coupon_count = _get_coupon_count(student_id, coupon_category_id)
 
@@ -373,10 +375,12 @@ def _main(student_id, **kwargs):
 
 
 def _get_arrow_time(time_value):
+    """Convert time value to Arrow object."""
     return time_value if isinstance(time_value, arrow.Arrow) else arrow.get(time_value)
 
 
 def _days_to_now(time_value):
+    """Days delta for time value to utc now."""
     time = _get_arrow_time(time_value)
     return (time - arrow.utcnow()).days
 
