@@ -42,6 +42,16 @@ class HelperConfig(Base):
     DefaultPLCode = 'CP20'
 
 
+def reset_config():
+    """To reset config for this helper if you want to keep the default behavior."""
+    HelperConfig.LevelMustComplete = True
+    HelperConfig.LevelEnrollDateShift = {'days': -30}
+    HelperConfig.ClassTakenSince = {'days': -29}
+    HelperConfig.ClassTakenUntil = {'days': -1}
+    HelperConfig.DefaultMinimumClassTaken = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    HelperConfig.DefaultPLCode = 'CP20'
+
+
 def achieve_minimum_class_taken(student_id, **kwargs):
     """
     Achieve minimum class taken to move on to next level.
@@ -171,7 +181,8 @@ def _get_class_type_mapping():
     return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 3], 'life_club': [6, 4]}
 
 
-def _get_past_class_id(class_category_id):
+def _get_past_class_item(class_category_id):
+    """Get a class in past time for specified class category."""
     sql = """SELECT TOP 1 * FROM [Oboe].[dbo].[ScheduledClass]
     WHERE ClassCategory_id = {0}
     AND StartDate > GETDATE() + {1}
@@ -184,10 +195,11 @@ def _get_past_class_id(class_category_id):
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
                                 HelperConfig.ClassTakenUntil['days'])
-                     ).ScheduledClass_id
+                     )
 
 
 def _get_coupon_count(student_id, coupon_type_id):
+    """Get coupon count for a student."""
     sql = """SELECT COUNT(*)
     FROM oboe.dbo.Coupon
     WHERE booking_id IS NULL
@@ -197,7 +209,22 @@ def _get_coupon_count(student_id, coupon_type_id):
     return fetch_one(sql.format(student_id, coupon_type_id))[0]
 
 
-def _insert_booking_id(student_id, schedule_id, coupon_category_id):
+def _is_coupon_free_student(student_id):
+    sql = """SELECT COUNT(*) FROM oboe.dbo.ProductFeatureMapping_lnk pfm
+    JOIN oboe.dbo.Product_lkp p ON p.Product_id = pfm.Product_id
+    JOIN oboe.dbo.Student s ON s.Product_id = p.Product_id
+    WHERE  pfm.ProductFeatureCode ='CouponFree'
+    AND s.Student_id = {}"""
+
+    is_coupon_free = int(fetch_one(sql.format(student_id))[0])
+    return is_coupon_free > 0
+
+
+def _insert_booking_id(student_id, schedule_class, coupon_category_id):
+    """Insert booking record and set status as checked in."""
+    scheduled_id = schedule_class.ScheduledClass_id
+    get_logger().debug('Insert booking record for class: {}'.format(scheduled_id))
+
     sql = """INSERT INTO oboe.dbo.Booking 
            ([ScheduledClass_id]
            ,[Student_id]
@@ -208,17 +235,23 @@ def _insert_booking_id(student_id, schedule_id, coupon_category_id):
            ,[InsertDate]
            ,[UpdateDate]
            ,[LevelCode])
-    VALUES ({}, {}, '2', 1, 1, 0, GETDATE() - 3, GETDATE() - 3, '1')
+    VALUES ({}, {}, 2, 1, 1, 0, '{}', GETDATE(), '1')
     """
-    execute_query(sql.format(schedule_id, student_id))
+    execute_query(sql.format(scheduled_id,
+                             student_id,
+                             schedule_class.EndDate))
+
+    # if student is coupon free, no need to update coupon table, just return
+    if _is_coupon_free_student(student_id):
+        return
 
     sql = """SELECT booking_id
     FROM oboe.dbo.Booking
     WHERE student_id = {}
     AND ScheduledClass_id = {}
-    ORDER BY UpdateDate DESC"""
+    ORDER BY Booking_id DESC"""
 
-    book_id = fetch_one(sql.format(student_id, schedule_id))[0]
+    book_id = fetch_one(sql.format(student_id, scheduled_id))[0]
 
     sql = """DECLARE @coupon_id AS INT
     SELECT @coupon_id = MIN(coupon_id)
@@ -242,10 +275,17 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
     get_logger().info("Class taken for {}: {}".format(class_type, count))
     coupon_category_id = _get_class_type_mapping()[class_type][0]
     class_category_id = _get_class_type_mapping()[class_type][1]
+    is_coupon_free = _is_coupon_free_student(student_id)
 
     while count > 0:
-        coupon_count = _get_coupon_count(student_id, coupon_category_id)
 
+        # set coupon to valid number for coupon free student
+        if is_coupon_free:
+            coupon_count = 1
+        else:
+            coupon_count = _get_coupon_count(student_id, coupon_category_id)
+
+        # verify coupon before booking
         if coupon_count == 0:
             message = "No enough coupon for: {}".format(class_type)
 
@@ -255,8 +295,8 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
             else:
                 raise Exception(message)
 
-        schedule_id = _get_past_class_id(class_category_id)
-        _insert_booking_id(student_id, schedule_id, coupon_category_id)
+        schedule_class = _get_past_class_item(class_category_id)
+        _insert_booking_id(student_id, schedule_class, coupon_category_id)
         count -= 1
 
 
@@ -332,3 +372,42 @@ def _main(student_id, **kwargs):
     else:
         _class_taken(student_id, 'apply', apply_event)
         _class_taken(student_id, 'life_club', life_club)
+
+
+def _get_arrow_time(time_value):
+    """Convert time value to Arrow object."""
+    return time_value if isinstance(time_value, arrow.Arrow) else arrow.get(time_value)
+
+
+def _days_to_now(time_value):
+    """Days delta for time value to utc now."""
+    time = _get_arrow_time(time_value)
+    return (time - arrow.utcnow()).days
+
+
+def take_class(student_id, start_date=None, end_date=None, **kwargs):
+    """
+    Take a class in past time, required start_date and end_date
+    :param student_id: student id / member id.
+    :param start_date: UTC start_time in popular format or Arrow object.
+    :param end_date: UTC end_time in popular format or Arrow object.
+    :param kwargs:  specify the class type to be taken, example `f2f=3`.
+
+             - f2f
+             - workshop
+             - apply_event
+             - life_club
+             - online_gl
+             - apply_or_lc
+    """
+
+    # set start date and end date
+    if start_date:
+        HelperConfig.ClassTakenSince = {'days': _days_to_now(start_date)}
+
+    if end_date:
+        HelperConfig.ClassTakenUntil = {'days': _days_to_now(end_date)}
+
+    # take class and reset
+    _main(student_id, **kwargs)
+    reset_config()
