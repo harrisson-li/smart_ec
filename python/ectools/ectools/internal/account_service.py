@@ -57,6 +57,13 @@ def get_default_activation_data(product):
             }
 
 
+def should_enable_onlineoc(auto_determine, student, school):
+    return auto_determine \
+           and config.partner in ['Cool', 'Mini'] \
+           and not student['is_e10'] \
+           and 'OnlineOC-Off' not in school['tags']
+
+
 def merge_activation_data(source_dict, **more):
     source_dict.update(more)
 

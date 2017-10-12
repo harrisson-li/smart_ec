@@ -84,13 +84,15 @@ def create_account_without_activation(is_e10=False):
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
 
 
-def activate_account(product_id=None, school_name=None, is_v2=True, student=None, **kwargs):
+def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineoc=True, student=None, **kwargs):
     """
     Activate a test account and return a dict object with account info.
+    When activate cool and mini accounts will auto enable Online OC features.
 
     :param product_id: If not specified will randomly get a major product (home/school) from current partner.
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
+    :param auto_onlineoc: Cool or Mini will enable online OC automatically.
     :param student: Specify a student to activate, `student['member_id']` must be valid.
 
     :keyword: Can be one or more of below, please refer to account tool page for more detail.
@@ -138,6 +140,9 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
     data['memberId'] = student['member_id']
     data['divisionCode'] = school['division_code']
 
+    if should_enable_onlineoc(auto_onlineoc, student, school):
+        data['includesenroll'] = False
+
     if not student['is_e10']:
         del data['levelQty']  # e10 student cannot set 'levelQty'
 
@@ -166,6 +171,17 @@ def activate_account(product_id=None, school_name=None, is_v2=True, student=None
 
     if is_lite:
         tags.append('ECLite')
+
+    if should_enable_onlineoc(auto_onlineoc, student, school):
+        # set hima test level and append tags
+
+        set_hima = kwargs.get('set_hima', True)
+        level_code = kwargs.get('startLevel', '0A')
+        if set_hima:
+            sf_set_hima_test(student['member_id'], level_code)
+
+        tags.append('OnlineOC')
+        student['is_onlineoc'] = True
 
     get_logger().debug('New test account: {}'.format(student))
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
@@ -244,15 +260,7 @@ def activate_onlineoc_student(**kwargs):
     if 'school_name' not in kwargs:
         kwargs['school_name'] = get_any_onlineoc_school()['name']
 
-    kwargs['includesenroll'] = False
-    set_hima = kwargs.get('set_hima', True)
-    level_code = kwargs.get('startLevel', '0A')
-
     student = activate_account_by_dict(kwargs)
-    if set_hima:
-        sf_set_hima_test(student['member_id'], level_code)
-
-    student['is_onlineoc'] = True
     return student
 
 
