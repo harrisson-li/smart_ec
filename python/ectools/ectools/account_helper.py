@@ -201,7 +201,11 @@ def activate_account_by_dict(data):
     school_name = data.pop('school_name', None)
     is_v2 = data.pop('is_v2', True)
     student = data.pop('student', None)
-    return activate_account(product_id, school_name, is_v2, student, **data)
+    return activate_account(product_id=product_id,
+                            school_name=school_name,
+                            is_v2=is_v2,
+                            student=student,
+                            **data)
 
 
 def activate_e10_student(**kwargs):
