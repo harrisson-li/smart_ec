@@ -177,7 +177,12 @@ def get_eclite_schools():
 
 
 def get_onlineoc_schools():
-    return get_schools_has_tag('OnlineOC')
+    """will not return eclite schools."""
+    from ectools.config import config
+
+    assert config.partner in ['Cool', 'Mini'], 'Invalid partner for OnlineOC: {}!'.format(config.partner)
+    schools = get_schools_has_tag('PC2.0')
+    return [s for s in schools if not is_item_has_tag(s, 'ECLite')]
 
 
 def get_schools_by_partner(partner=None):
@@ -205,8 +210,13 @@ def is_lite_product(product):
 
 
 def is_onlineoc_school(school):
+    from ectools.config import config
+
+    if config.partner not in ['Cool', 'Mini']:
+        return False
+
     school = get_school_by_name(school, cached=True)
-    return is_item_has_tag(school, 'OnlineOC')
+    return not is_item_has_tag(school, 'OnlineOC-Off')
 
 
 def _pick_one_school(schools):

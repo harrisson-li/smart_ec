@@ -61,7 +61,6 @@ def test_get_school():
     assert get_any_onlineoc_school() is not None
 
     assert 'PC2.0' in get_any_v2_school()['tags']
-    assert 'OnlineOC' in get_any_onlineoc_school()['tags']
 
     set_partner('mini')
     assert get_any_eclite_school() is not None
