@@ -187,7 +187,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineo
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
     # there might be out of date data so we verify before return
-    enrollment = kwargs.get('includesenroll', False)
+    enrollment = data.get('includesenroll', False)
     if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
         raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
 
@@ -201,7 +201,11 @@ def activate_account_by_dict(data):
     school_name = data.pop('school_name', None)
     is_v2 = data.pop('is_v2', True)
     student = data.pop('student', None)
-    return activate_account(product_id, school_name, is_v2, student, **data)
+    return activate_account(product_id=product_id,
+                            school_name=school_name,
+                            is_v2=is_v2,
+                            student=student,
+                            **data)
 
 
 def activate_e10_student(**kwargs):
