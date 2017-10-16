@@ -14,6 +14,18 @@ def test_get_member_site_settings():
     get_logger().info(settings)
 
 
+def test_set_member_site_settings():
+    set_environment('uat')
+    student_id = 23908427
+
+    set_member_site_settings(student_id, 'test_key', 'test_value')
+    set_member_site_settings(student_id, 'test_time', '2017-10-1', is_time_value=True)
+
+    settings = get_member_site_settings(student_id)
+    assert settings['test_key'] == 'test_value'
+    assert settings['test_time'] == '10/1/2017 12:00:00'
+
+
 def test_is_v2_student():
     set_environment('qa')
     student_id = 10806560
