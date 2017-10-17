@@ -84,7 +84,13 @@ def create_account_without_activation(is_e10=False):
         raise EnvironmentError('Cannot create new account: {}'.format(result.text))
 
 
-def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineoc=True, student=None, **kwargs):
+def activate_account(product_id=None,
+                     school_name=None,
+                     is_v2=True,
+                     is_s18=False,
+                     auto_onlineoc=True,
+                     student=None,
+                     **kwargs):
     """
     Activate a test account and return a dict object with account info.
     When activate cool and mini accounts will auto enable Online OC features.
@@ -92,6 +98,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineo
     :param product_id: If not specified will randomly get a major product (home/school) from current partner.
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
+    :param is_s18: True will use S18 redemption code.
     :param auto_onlineoc: Cool or Mini will enable online OC automatically.
     :param student: Specify a student to activate, `student['member_id']` must be valid.
 
@@ -109,9 +116,9 @@ def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineo
     """
 
     if product_id is None:
-        product = get_any_product()
+        product = get_any_product(is_s18=is_s18)
     else:
-        product = get_product_by_id(product_id)
+        product = get_product_by_id(product=product_id, is_s18=is_s18)
 
     if school_name is None:
         school = get_any_v2_school() if is_v2 else get_any_school()
@@ -164,8 +171,7 @@ def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineo
     if student['is_e10']:
         tags.append('E10')
     else:
-        tag = 'S18' if is_s18_product(product) else 'S15'
-        tags.append(tag)
+        tags.append('S18' if is_s18 else 'S15')
 
     if is_v2:
         tags.append('V2')
@@ -232,6 +238,25 @@ def activate_school_student(**kwargs):
     kwargs['is_v2'] = False
     if 'product_id' not in kwargs:
         kwargs['product_id'] = get_any_school_product()['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_s18_student(**kwargs):
+    kwargs['is_s18'] = True
+    return activate_account_by_dict(kwargs)
+
+
+def activate_s18_home_student(**kwargs):
+    kwargs['is_s18'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product(is_s18=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_s18_school_student(**kwargs):
+    kwargs['is_s18'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product(is_s18=True)['id']
     return activate_account_by_dict(kwargs)
 
 

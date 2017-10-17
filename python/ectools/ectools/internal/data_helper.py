@@ -21,6 +21,13 @@ def get_item_has_tag(items, tag):
     return found
 
 
+def get_item_does_not_have_tag(items, tag):
+    found = [x for x in items if not is_item_has_tag(x, tag)]
+    if len(found) == 0:
+        raise ValueError('Cannot find any item does not has tag: {}'.format(tag))
+    return found
+
+
 def read_data(table_name):
     rows = read_table(table_name)
     # filter out all items tag by 'ignore'
@@ -74,9 +81,12 @@ def get_all_products():
     return Cache.products
 
 
-def get_product_by_id(product):
+def get_product_by_id(product, is_s18=False):
     product_id = product['id'] if isinstance(product, dict) else product
-    found = [x for x in get_all_products() if int(x['id']) == int(product_id)]
+    found = [x for x in get_all_products()
+             if int(x['id']) == int(product_id)
+             and is_item_has_tag(x, 'S18') == is_s18]
+
     assert len(found), "No such product: {}!".format(product_id)
     return found[0]
 
@@ -87,16 +97,18 @@ def get_products_has_tag(tag):
 
 def get_products_by_partner(partner=None, is_e10=False):
     from ectools.config import config
+
     if partner is None:
         partner = config.partner
-    found = [x for x in get_all_products() if
-             x['partner'].lower() == partner.lower()
-             and is_item_has_tag(x, 'E10') == is_e10]
-    return found
+
+    return [x for x in get_all_products() if
+            x['partner'].lower() == partner.lower()
+            and is_item_has_tag(x, 'E10') == is_e10]
 
 
-def get_any_product(by_partner=None, is_e10=False, is_major=True):
+def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
     found = get_products_by_partner(by_partner, is_e10)
+    found = [x for x in found if is_item_has_tag(x, 'S18') == is_s18]
 
     if is_major:
         found = get_item_has_tag(found, 'major')
@@ -108,8 +120,10 @@ def get_any_e10_product(by_partner=None):
     return get_any_product(by_partner, is_e10=True, is_major=False)
 
 
-def get_any_home_product(by_partner=None, is_major=True):
-    found = [x for x in get_products_by_partner(by_partner) if x['product_type'] == 'Home']
+def get_any_home_product(by_partner=None, is_major=True, is_s18=False):
+    found = [x for x in get_products_by_partner(by_partner)
+             if x['product_type'] == 'Home'
+             and is_item_has_tag(x, 'S18') == is_s18]
 
     if is_major:
         return get_item_has_tag(found, 'major')[0]
@@ -117,9 +131,11 @@ def get_any_home_product(by_partner=None, is_major=True):
         return get_random_item(found)
 
 
-def get_any_school_product(by_partner=None, is_major=True):
+def get_any_school_product(by_partner=None, is_major=True, is_s18=True):
     found = [x for x in get_products_by_partner(by_partner)
-             if x['product_type'] == 'School' and not is_item_has_tag(x, 'ECLite')]
+             if x['product_type'] == 'School'
+             and is_item_has_tag(x, 'S18') == is_s18
+             and not is_item_has_tag(x, 'ECLite')]
 
     if is_major:
         return get_item_has_tag(found, 'major')[0]
@@ -207,11 +223,6 @@ def is_lite_school(school):
 def is_lite_product(product):
     prod = get_product_by_id(product)
     return is_item_has_tag(prod, 'ECLite')
-
-
-def is_s18_product(product):
-    prod = get_product_by_id(product)
-    return is_item_has_tag(prod, 'S18')
 
 
 def is_onlineoc_school(school):
