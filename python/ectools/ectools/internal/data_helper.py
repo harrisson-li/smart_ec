@@ -209,6 +209,11 @@ def is_lite_product(product):
     return is_item_has_tag(prod, 'ECLite')
 
 
+def is_s18_product(product):
+    prod = get_product_by_id(product)
+    return is_item_has_tag(prod, 'S18')
+
+
 def is_onlineoc_school(school):
     from ectools.config import config
 

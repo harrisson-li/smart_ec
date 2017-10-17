@@ -164,7 +164,8 @@ def activate_account(product_id=None, school_name=None, is_v2=True, auto_onlineo
     if student['is_e10']:
         tags.append('E10')
     else:
-        tags.append('S15')
+        tag = 'S18' if is_s18_product(product) else 'S15'
+        tags.append(tag)
 
     if is_v2:
         tags.append('V2')
