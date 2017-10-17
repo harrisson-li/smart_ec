@@ -21,13 +21,6 @@ def get_item_has_tag(items, tag):
     return found
 
 
-def get_item_does_not_have_tag(items, tag):
-    found = [x for x in items if not is_item_has_tag(x, tag)]
-    if len(found) == 0:
-        raise ValueError('Cannot find any item does not has tag: {}'.format(tag))
-    return found
-
-
 def read_data(table_name):
     rows = read_table(table_name)
     # filter out all items tag by 'ignore'
@@ -83,6 +76,7 @@ def get_all_products():
 
 def get_product_by_id(product, is_s18=False):
     product_id = product['id'] if isinstance(product, dict) else product
+
     found = [x for x in get_all_products()
              if int(x['id']) == int(product_id)
              and is_item_has_tag(x, 'S18') == is_s18]
@@ -107,8 +101,8 @@ def get_products_by_partner(partner=None, is_e10=False):
 
 
 def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
-    found = get_products_by_partner(by_partner, is_e10)
-    found = [x for x in found if is_item_has_tag(x, 'S18') == is_s18]
+    found = [x for x in get_products_by_partner(by_partner, is_e10)
+             if is_item_has_tag(x, 'S18') == is_s18]
 
     if is_major:
         found = get_item_has_tag(found, 'major')
