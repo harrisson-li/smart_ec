@@ -11,6 +11,7 @@ from datetime import datetime
 from io import StringIO
 from xml.etree import ElementTree
 
+import arrow
 import requests
 
 from ectools.config import config
@@ -62,12 +63,26 @@ def get_member_site_settings(student_id, site_area='school'):
         key = element.find('b:Key', namespaces).text
         value = element.find('b:Value', namespaces).text
 
-        if re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
+        if value and re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
             value = datetime.strptime(value, datetime_format)
 
         site_settings[key] = value
 
     return site_settings
+
+
+def set_member_site_settings(student_id, key_name, key_value, site_area='school', is_time_value=False):
+    if is_time_value:
+        key_value = arrow.get(key_value).format('M/D/YYYY hh:mm:ss')
+
+    url = '{}/services/ecplatform/Tools/StudentSettings/SaveMemberSiteSetting'.format(config.etown_root)
+    data = {'studentId': student_id,
+            'siteArea': site_area,
+            'key': key_name,
+            'value': key_value}
+
+    response = requests.post(url, data=data)
+    assert '"IsSuccess":true' in response.text, response.text
 
 
 def get_student_info(student_id):
