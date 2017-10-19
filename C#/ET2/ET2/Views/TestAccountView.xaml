@@ -217,13 +217,14 @@
                         Style="{DynamicResource FieldLabelStyle}"
                         Visibility="Collapsed" />
                     <CheckBox
-                        Margin="0,2,0,0"
+                        Margin="5,5,0,0"
                         Content="Security Verified"
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.SecurityVerified,
                                             Mode=TwoWay}" />
                     <CheckBox
-                        Margin="0,5,0,0"
+                        Margin="5,5,0,0"
                         Content="Includes Enroll"
+                        ToolTip="Will be disabled when Auto OnlineOC."
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
                                             Mode=TwoWay}"
                         IsEnabled="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
@@ -337,7 +338,7 @@
                         Text="{Binding Path=ProductVM.CurrentSchool,
                                        Mode=TwoWay}" />
                     <CheckBox
-                        Margin="0,2,0,0"
+                        Margin="0,5,0,0"
                         Content="Auto OnlineOC"
                         ToolTip="Auto determine should enable Online OC features or not."
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
