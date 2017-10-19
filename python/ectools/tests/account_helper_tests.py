@@ -48,6 +48,14 @@ def test_activate_account_kwargs():
     assert not student['securityverified']
 
 
+def test_activate_s18_accounts():
+    set_environment('qa')
+    set_partner('cool')
+    student = activate_s18_school_student()
+    assert student['product']['main_code'] == 'S18SCHOOLMAIN'
+    assert student['product']['id'] == 63
+
+
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
     set_environment('staging')
