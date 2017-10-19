@@ -115,6 +115,7 @@ namespace ET2.ViewModels
                 this.CurrentProduct.Partner = prod.Partner;
                 this.CurrentProduct.MainRedCode = prod.MainRedCode;
                 this.CurrentProduct.FreeRedCode = prod.FreeRedCode;
+                this.CurrentProduct.Tags = prod.Tags;
                 this.NotifyOfPropertyChange();
             }
         }

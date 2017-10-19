@@ -65,7 +65,7 @@
                     <CheckBox
                         Margin="5 0 0 0"
                         Checked="CheckBox_Checked"
-                        Content="S15"
+                        Content="Smart 1.0"
                         IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
                                             Converter={StaticResource EnumBoolean},
                                             ConverterParameter=S15,
@@ -74,7 +74,7 @@
                         Name="chkIsV2"
                         Margin="5 0 0 0"
                         Checked="CheckBox_Checked"
-                        Content="S15 V2.0"
+                        Content="Smart 2.0"
                         IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
                                             Converter={StaticResource EnumBoolean},
                                             ConverterParameter=S15_V2,
@@ -221,6 +221,13 @@
                         Content="Security Verified"
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.SecurityVerified,
                                             Mode=TwoWay}" />
+                    <CheckBox
+                        Margin="0,5,0,0"
+                        Content="Includes Enroll"
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
+                                            Mode=TwoWay}"
+                        IsEnabled="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
+                                            Converter={StaticResource InverseBoolean}}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Left">
                     <ComboBox
@@ -330,12 +337,11 @@
                         Text="{Binding Path=ProductVM.CurrentSchool,
                                        Mode=TwoWay}" />
                     <CheckBox
-                        Margin="0,5,0,0"
-                        Content="Includes Enroll"
-                        IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
-                                            Mode=TwoWay}"
-                        IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsE10,
-                                            Converter={StaticResource InverseBoolean}}" />
+                        Margin="0,2,0,0"
+                        Content="Auto OnlineOC"
+                        ToolTip="Auto determine should enable Online OC features or not."
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
+                                            Mode=TwoWay}" />
                 </StackPanel>
                 <WrapPanel
                     Name="quickActionsPanel"

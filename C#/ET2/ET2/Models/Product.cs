@@ -187,6 +187,19 @@ namespace ET2.Models
             }
         }
 
+        private bool _isAutoOnlineOc;
+
+        public bool AutoOnlineOc
+        {
+            get { return _isAutoOnlineOc; }
+            set
+            {
+                if (value == _isAutoOnlineOc) return;
+                _isAutoOnlineOc = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
