@@ -187,6 +187,8 @@ namespace ET2.ViewModels
                 partner = data.CurrentPartner,
                 is_e10 = (accountType == AccountTypes.E10),
                 is_v2 = (accountType == AccountTypes.S15_V2),
+                is_s18 = data.CurrentProduct.Tags.Contains("S18"),
+                auto_onlineoc = data.CurrentProduct.AutoOnlineOc,
                 product_id = data.CurrentProduct.Id,
                 school_name = data.CurrentSchool,
                 student = new { member_id = id, username = username },

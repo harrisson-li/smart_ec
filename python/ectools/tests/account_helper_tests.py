@@ -56,6 +56,21 @@ def test_activate_s18_accounts():
     assert student['product']['id'] == 63
 
 
+def test_get_s18_products():
+    set_partner('cool')
+    product = get_any_school_product()
+    assert product['main_code'] == 'S15SCHOOLMAIN'
+
+    product = get_any_school_product(is_s18=True)
+    assert product['main_code'] == 'S18SCHOOLMAIN'
+
+    product = get_any_home_product()
+    assert product['main_code'] == 'S15HOMEPL20MAIN'
+
+    product = get_any_home_product(is_s18=True)
+    assert product['main_code'] == 'S18HOMEPL20MAIN'
+
+
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
     set_environment('staging')

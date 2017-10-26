@@ -1,4 +1,10 @@
-﻿## v0.0.0.41
+﻿## v0.0.0.45
+
+1. Support activate S18 products.
+2. Add a checkbox to auto determine Online OC features when activate test account.
+3. Enable auto Online OC features by default.
+
+## v0.0.0.41
 
 1. More detail message when ET2 failed.
 2. Add one more token: $envStr, which will equal to 'url_replacement' in db.
