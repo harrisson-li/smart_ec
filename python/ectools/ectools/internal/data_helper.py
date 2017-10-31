@@ -205,18 +205,24 @@ def get_schools_by_partner(partner=None):
 
 
 def is_v2_school(school):
-    school = get_school_by_name(school, cached=True)
+    if not isinstance(school, dict):
+        school = get_school_by_name(school, cached=True)
+
     return is_item_has_tag(school, 'PC2.0')
 
 
 def is_lite_school(school):
-    school = get_school_by_name(school, cached=True)
+    if not isinstance(school, dict):
+        school = get_school_by_name(school, cached=True)
+
     return is_item_has_tag(school, 'ECLite')
 
 
 def is_lite_product(product):
-    prod = get_product_by_id(product)
-    return is_item_has_tag(prod, 'ECLite')
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'ECLite')
 
 
 def is_onlineoc_school(school):
@@ -225,7 +231,9 @@ def is_onlineoc_school(school):
     if config.partner not in ['Cool', 'Mini']:
         return False
 
-    school = get_school_by_name(school, cached=True)
+    if not isinstance(school, dict):
+        school = get_school_by_name(school, cached=True)
+
     return not is_item_has_tag(school, 'OnlineOC-Off')
 
 
