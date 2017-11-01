@@ -1,5 +1,11 @@
 ﻿## v0.0.0.45
 
+1. Support new live cn environment webcn1.
+2. Add one more token: $etownUrl
+3. Refactor and bug fixing.
+
+## v0.0.0.45
+
 1. Support activate S18 products.
 2. Add a checkbox to auto determine Online OC features when activate test account.
 3. Enable auto Online OC features by default.

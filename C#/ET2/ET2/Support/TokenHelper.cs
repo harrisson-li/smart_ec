@@ -17,26 +17,26 @@ namespace ET2.Support
         /// <summary>
         /// To get the token from secret page.
         /// </summary>
-        /// <param name="env">The target environment.</param>
+        /// <param name="etownUrl">Etown URL for current environment.</param>
         /// <returns></returns>
-        public static string GetToken(string envString)
+        public static string GetToken(string etownUrl)
         {
             if (CachedTokenHelper == null)
             {
                 CachedTokenHelper = new Dictionary<string, TokenHelper>();
             }
 
-            if (!CachedTokenHelper.ContainsKey(envString))
+            if (!CachedTokenHelper.ContainsKey(etownUrl))
             {
-                var tokenHelper = new TokenHelper(envString);
-                CachedTokenHelper.Add(envString, tokenHelper);
+                var tokenHelper = new TokenHelper(etownUrl);
+                CachedTokenHelper.Add(etownUrl, tokenHelper);
             }
-            return CachedTokenHelper[envString].CurrentToken.Value;
+            return CachedTokenHelper[etownUrl].CurrentToken.Value;
         }
 
         #region Implement to get token
 
-        private string secretPage = "http://{0}.englishtown.com/services/oboe2/Areas/ServiceTest/MemberSiteSetting.aspx";
+        private string secretPage = "{0}/services/oboe2/Areas/ServiceTest/MemberSiteSetting.aspx";
 
         public TokenHelper(string targetEnv)
         {

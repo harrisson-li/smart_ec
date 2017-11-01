@@ -17,9 +17,6 @@ namespace ET2.ViewModels
     {
         #region Test account functions
 
-        private const string URL_CONVERT_20 = "http://{0}.englishtown.com/services/ecplatform/Tools/StudentSettings/SaveStatusFlag?id={1}&t=1468393171082";
-        private const string URL_SUBMIT_SCORE = "http://{0}.englishtown.com/services/school/_tools/progress/SubmitScoreHelper.aspx";
-
         private bool IsClientInfoUpdated = false;
         private string ApiHost = ConfigHelper.GetAppSettingsValue("ApiHost") + "api/";
         private List<TestAccount> _historyAccountList;
@@ -83,33 +80,32 @@ namespace ET2.ViewModels
         /// <returns>The test account.</returns>
         public TestAccount GetTestAccountByNameOrId(string nameOrId)
         {
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            var url = URL_SUBMIT_SCORE.FormatWith(envUrlString);
-            var data = new Dictionary<string, object>();
-
-            data.Add("cmd", "loadStudentInfo");
-            data.Add("member_id", nameOrId);
-            data.Add("token", TokenHelper.GetToken(envUrlString));
-
-            var result = HttpHelper.Post(url, data);
-            ShellViewModel.WriteStatus(result);
-
             try
             {
-                var studentInfo = result.Split(new char[] { '|' });
-                var account = new TestAccount();
-                account.UserName = studentInfo[1];
-                account.MemberId = studentInfo[3];
-                account.AccountType = CurrentTestAccount.AccountType;
-                return account;
+                ShellViewModel.WriteStatus("Working");
+                var requestData = new { env = GetCurrentEnvironment(), username_or_id = nameOrId };
+                var api = ApiHost + "get_account";
+                var response = HttpHelper.PostJson(api, requestData);
+                var account = response.ToJObject();
+
+                ShellViewModel.WriteStatus("Get account by name or id: {0}".FormatWith(response));
+
+                if (account["member_id"] != null)
+                {
+                    var student = new TestAccount();
+                    student.UserName = (string)account["username"];
+                    student.MemberId = (string)account["member_id"];
+                    student.AccountType = CurrentTestAccount.AccountType;
+                    return student;
+                }
             }
-            catch (IndexOutOfRangeException)
+            catch (Exception ex)
             {
-                var tips = "Environment = {0}, level initialized?".FormatWith(
-                    ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name);
-                ShellViewModel.WriteStatus("Cannot get student info: {0} ({1})".FormatWith(nameOrId, tips));
-                return null;
+                ShellViewModel.WriteStatus("Failed! {0}".FormatWith(ex.Message));
             }
+
+            ShellViewModel.WriteStatus("No enrollment or incorrect environment, please check.");
+            return null;
         }
 
         private string GetCurrentEnvironment()
@@ -218,22 +214,6 @@ namespace ET2.ViewModels
             {
                 ShellViewModel.WriteStatus("Failed: {0}".FormatWith(ex.Message));
             }
-        }
-
-        public void ConvertTo20()
-        {
-            var id = Convert.ToInt32(CurrentTestAccount.MemberId);
-            var envUrlString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
-            ConvertTo20(id, envUrlString);
-        }
-
-        public void ConvertTo20(int id, string envUrlString)
-        {
-            var url = URL_CONVERT_20.FormatWith(envUrlString, id);
-
-            var data = "studentId={0}&flag=12&value=true&IsDBOnly=false".FormatWith(id);
-            var result = HttpHelper.Post(url, data);
-            ShellViewModel.WriteStatus("IsEcRolloutSchoolPlatform2 = true");
         }
 
         public void Save()

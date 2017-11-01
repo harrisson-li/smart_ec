@@ -96,14 +96,6 @@ namespace ET2.Views
             });
         }
 
-        private async void ConvertTo20(object sender, RoutedEventArgs e)
-        {
-            await ShellView.Instance.RunInBackgroud(() =>
-            {
-                ShellViewModel.Instance.TestAccountVM.ConvertTo20();
-            });
-        }
-
         private void OpenLink(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
