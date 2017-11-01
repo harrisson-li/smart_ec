@@ -1,4 +1,4 @@
-﻿## v0.0.0.45
+﻿## v0.0.0.46
 
 1. Support new live cn environment webcn1.
 2. Add one more token: $etownUrl

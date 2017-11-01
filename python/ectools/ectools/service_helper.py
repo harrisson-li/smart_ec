@@ -183,7 +183,7 @@ def score_helper_load_student(student_name_or_id):
             result['current_unit'] = current_unit[current_unit.index(match_char) + 1:]
 
         else:
-            result['current_level_code'] = int(re.findall(r'Level([\d ]+)', current_level)[0].strip())  # 1~16
+            result['current_level_code'] = re.findall(r'Level(.+)', current_level)[0].strip()  # not stable
             result['current_level_name'] = re.findall(r'Level(.+)-', current_unit)[0].strip()  # A, B, 1~14
             result['current_unit'] = int(re.findall(r'Unit([\d ]+)', current_unit)[0].strip())  # 1~6
 

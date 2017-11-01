@@ -46,7 +46,7 @@ def test_get_student_info():
     assert result['partner'] == 'Mini'
     assert result['current_unit'] == 6
     assert result['current_level_name'] == '1'
-    assert result['current_level_code'] == 3
+    assert result['current_level_code'] == '3'
     assert result['elite_code'] == 'te23904718'
     assert result['school_id'] == 143
     assert result['product_id'] == 65
@@ -60,7 +60,7 @@ def test_score_helper_load_student():
     result = score_helper_load_student(student_id)
     assert result['username'] == 'stest24561'
     assert result['current_level_name'] == '1'
-    assert result['current_level_code'] == 3
+    assert result['current_level_code'] == '3'
     assert result['current_unit'] == 6
     assert result['partner'] == 'Mini'
 
@@ -69,7 +69,7 @@ def test_score_helper_load_student():
     result = score_helper_load_student(student_id)
     assert result['username'] == 'stest79207'
     assert result['current_level_name'] == 'A'
-    assert result['current_level_code'] == 1
+    assert result['current_level_code'] == '1'
     assert result['current_unit'] == 3
 
     set_environment('qa')
@@ -81,6 +81,10 @@ def test_score_helper_load_student():
     assert result['current_unit'] == 'Pharmacy'
     assert result['partner'] == 'Mini'
 
+    result = score_helper_load_student('ctest2515')
+    assert result['current_level_name'] == 'A'
+    assert result['current_level_code'] == 'A'
+
 
 def test_load_student_via_ecplatform_service():
     set_environment('uat')
@@ -90,8 +94,8 @@ def test_load_student_via_ecplatform_service():
     assert result['CurrentLevelCode'] == '1'
 
     result = ecplatform_load_student_basic_info(student_id)
-    assert result['StudentBasicInfo'][0]['Key'] == 'UserName'
-    assert result['StudentBasicInfo'][0]['Value'] == 'stest24561'
+    assert result['StudentBasicInfo'][0]['Key'] == 'EliteCode'
+    assert result['StudentBasicInfo'][0]['Value'] == 'te23904718'
 
 
 def test_load_status_flag():
