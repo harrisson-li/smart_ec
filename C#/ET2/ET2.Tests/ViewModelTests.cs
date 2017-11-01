@@ -26,7 +26,6 @@ namespace ET2.Tests
             Shell.TestEnvVM.UpdateEnvironment("qa");
             var account = Shell.TestAccountVM.GetTestAccountByNameOrId(name);
             Assert.AreEqual(name, account.UserName);
-            Assert.AreEqual("1", account.Password);
         }
 
         [TestMethod]
@@ -36,7 +35,6 @@ namespace ET2.Tests
             Shell.TestEnvVM.UpdateEnvironment("qa");
             var account = Shell.TestAccountVM.GetTestAccountByNameOrId(id);
             Assert.AreEqual(id, account.MemberId);
-            Assert.AreEqual("1", account.Password);
         }
 
         [TestMethod]
