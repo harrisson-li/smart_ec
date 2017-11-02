@@ -44,6 +44,23 @@ namespace ET2.Models
             }
         }
 
+
+        private string _etown;
+
+        /// <summary>
+        /// Etown URL on current environment.
+        /// </summary>
+        public string EtownUrl
+        {
+            get { return _etown; }
+            set
+            {
+                if (value == _etown) return;
+                _etown = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _mark;
 
         /// <summary>

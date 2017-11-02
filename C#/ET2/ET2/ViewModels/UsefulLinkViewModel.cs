@@ -86,6 +86,7 @@ namespace ET2.ViewModels
         public string ConvertLink(string originUrl)
         {
             var envString = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.UrlReplacement;
+            var etownUrl = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.EtownUrl;
             var envName = ShellViewModel.Instance.TestEnvVM.CurrentEnvironment.Name;
             var id = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.MemberId;
             var name = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.UserName;
@@ -100,6 +101,7 @@ namespace ET2.ViewModels
             {
                 Log.DebugFormat("Covert URL From: {0}", originUrl);
 
+                originUrl = originUrl.Replace("$etownUrl", etownUrl);
                 originUrl = originUrl.Replace("$envStr", envString);
                 originUrl = originUrl.Replace("$env", envName);
                 originUrl = originUrl.Replace("$id", id);
@@ -110,7 +112,7 @@ namespace ET2.ViewModels
                 originUrl = originUrl.Replace("$level", level);
                 originUrl = originUrl.Replace("$productId", productId.ToString());
                 originUrl = originUrl.Replace("$accountType", accountType.ToString());
-                originUrl = originUrl.Replace("$token", TokenHelper.GetToken(envString));
+                originUrl = originUrl.Replace("$token", TokenHelper.GetToken(etownUrl));
                 originUrl = TryToFixLink(originUrl);
 
                 Log.DebugFormat("Covert URL To: {0}", originUrl);

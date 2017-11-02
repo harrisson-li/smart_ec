@@ -231,6 +231,7 @@ namespace ET2.Support
                 {
                     Name = (string)e["description"],
                     UrlReplacement = (string)e["replace_to"],
+                    EtownUrl = (string)e["etown_url"],
                     Mark = (string)e["mark"]
                 }).ToList();
 
@@ -252,7 +253,7 @@ namespace ET2.Support
         {
             var obj = LoadPersonalSetting<TestEnvironment>(Data.CurrentTestEnvironment);
 
-            if (obj == null)
+            if (obj == null || obj.EtownUrl == null)
             {
                 obj = LoadEnvironments().First();
             }

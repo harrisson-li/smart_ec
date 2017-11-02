@@ -10,10 +10,11 @@ namespace ET2.Tests
         [TestMethod]
         public void TestGetToken()
         {
-            var envList = new string[] { "uat", "qa", "staging", "cn1web1", "webus1" };
+            var envList = new string[] { "uat", "qa", "staging", "webus1" };
             foreach (var env in envList)
             {
-                Log.InfoFormat("{0}: {1}", env, TokenHelper.GetToken(env));
+                var etown = string.Format("http://{0}.englishtown.com", env) ;
+                Log.InfoFormat("{0}: {1}", env, TokenHelper.GetToken(etown));
             }
         }
     }

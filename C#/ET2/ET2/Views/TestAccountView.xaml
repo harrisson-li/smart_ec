@@ -356,14 +356,6 @@
                         Content="Activate Account"
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}" />
-                    <Button
-                        Width="130"
-                        Margin="5,0,5,5"
-                        Click="ConvertTo20"
-                        Content="Convert to 2.0"
-                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
-                                            Converter={StaticResource InverseBoolean}}"
-                        ToolTip="IsEcRolloutSchoolPlatform2 = true" />
                 </WrapPanel>
                 <StackPanel
                     Name="homeLinks"
