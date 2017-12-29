@@ -53,7 +53,8 @@ def get_default_activation_data(product):
             'includesenroll': 'on',
             'productId': product['id'],
             'mainRedemptionCode': product['main_code'],
-            'freeRedemptionCode': product['free_code']
+            'freeRedemptionCode': product['free_code'],
+            'packageProductIds': ''
             }
 
 
