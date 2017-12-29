@@ -21,6 +21,14 @@ from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
 from ectools.token_helper import get_token
 from ectools.utility import camelcase_to_underscore
 
+# ignore http insecure request warning, no such module in py27 so try it
+try:
+    import urllib3
+
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except ImportError:
+    pass
+
 
 def is_v2_student(student_id):
     site_settings = get_member_site_settings(student_id)
