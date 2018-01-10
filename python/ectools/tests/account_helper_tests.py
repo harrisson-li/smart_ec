@@ -191,3 +191,9 @@ def test_set_hima_test():
 def test_activate_onlineoc_student():
     set_environment('staging')
     activate_onlineoc_school_student(startLevel=3)
+
+
+def test_activate_socn_student():
+    set_environment('uat')
+    set_partner('socn')
+    activate_account(product_id=157, is_s18=True)
