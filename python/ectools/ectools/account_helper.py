@@ -146,9 +146,10 @@ def activate_account(product_id=None,
     data = merge_activation_data(data, **kwargs)
     data['memberId'] = student['member_id']
     data['divisionCode'] = school['division_code']
+    should_enroll = data.get('includesenroll', False)
 
     if should_enable_onlineoc(auto_onlineoc, student, school):
-        data['includesenroll'] = False
+        del data['includesenroll']
 
     if not student['is_e10']:
         del data['levelQty']  # e10 student cannot set 'levelQty'
@@ -193,12 +194,43 @@ def activate_account(product_id=None,
     get_logger().debug('New test account: {}'.format(student))
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
-    # there might be out of date data so we verify before return
-    enrollment = data.get('includesenroll', False)
-    if enrollment == 'on' and is_v2 != is_v2_student(student['member_id']):
-        raise AssertionError("Incorrect account version! Please double check target school version: {}".format(school))
+    if should_enroll:
+        enroll_account(student['username'], student['password'])
+
+        # ensure account version is correct before return
+        if is_v2 != is_v2_student(student['member_id']):
+            raise AssertionError(
+                "Incorrect account version! Please double check target school version: {}".format(school))
 
     return student
+
+
+def enroll_account(username, password='1'):
+    """
+    Enroll student with level and course info, only work for online oc students.
+    Login via mobile enroll page will do the work.
+    """
+    if config.partner not in ['Cool', 'Mini']:
+        get_logger().debug('No need to enroll account as it is not in Cool/Mini partner')
+        return
+
+    login_url = get_login_post_link()
+    data = {'username': username, 'password': password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
+
+    s = requests.session()
+    response = s.post(url=login_url, data=data)
+
+    if response.status_code == 200 and response.json()['success']:
+        redirect = response.json()['redirect']
+        result = s.get(redirect, allow_redirects=True)
+        if 'mobile/welcome' in result.url:
+            get_logger().info('Enroll account {} success'.format(username))
+        else:
+            get_logger().error('Enroll to {}, detail: {}'.format(result.url, result.text))
+            raise AssertionError('Error occurred when enroll account {}'.format(username))
+
+    else:
+        raise ValueError('Fail to login with user {} / {}! '.format(username, password) + response.text)
 
 
 def activate_account_by_dict(data):
