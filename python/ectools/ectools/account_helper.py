@@ -148,7 +148,7 @@ def activate_account(product_id=None,
     data['divisionCode'] = school['division_code']
     should_enroll = data.get('includesenroll', False)
 
-    if should_enable_onlineoc(auto_onlineoc, student, school):
+    if should_enable_onlineoc(auto_onlineoc, student, school) and 'includesenroll' in data:
         del data['includesenroll']
 
     if not student['is_e10']:
