@@ -8,14 +8,14 @@ build a local db in your user profile directory.
 """
 
 import collections
+import glob
 import sqlite3
-from os.path import join, dirname, exists, expanduser
+from os.path import join, dirname, exists, expanduser, abspath
 
 from ectools.utility import read_text, convert_to_str
 from .internal.objects import Configuration, Cache
 
 _db_name = 'ec.sqlite'
-_db_source_sql = 'ecdb.sql'
 _remote_db_dir = "//cns-qaauto5/Shared/Automation/"
 _local_db_dir = expanduser('~')
 
@@ -40,6 +40,10 @@ def _get_db_path():
     return Configuration.db_path
 
 
+def _get_db_schema():
+    return [abspath(s) for s in glob.glob(_get_data_dir() + '/*.sql')]
+
+
 def _build_db():
     """
     1. Build the db if it does not exist on remote server.
@@ -49,9 +53,10 @@ def _build_db():
         return
 
     if not exists(_get_db_path()) or Configuration.db_path == join(_local_db_dir, _db_name):
-        sql = read_text(join(_get_data_dir(), _db_source_sql))
         conn = sqlite3.connect(Configuration.db_path)
-        conn.executescript(sql)
+        for schema in _get_db_schema():
+            sql = read_text(schema)
+            conn.executescript(sql)
         conn.commit()
         conn.close()
         Cache.db_has_built = True

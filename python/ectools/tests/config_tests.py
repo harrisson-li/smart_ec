@@ -22,6 +22,11 @@ def test_set_partner():
     set_partner('cehk')
     assert_that(config.partner).is_equal_to('Cehk')
     assert_that(config.country_code).is_equal_to('hk')
+
+    set_partner('socn')
+    assert_that(config.partner).is_equal_to('Socn')
+    assert_that(config.country_code).is_equal_to('cn')
+
     try:
         set_partner('bad')
     except AssertionError as e:

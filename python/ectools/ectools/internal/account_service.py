@@ -44,6 +44,10 @@ def get_activate_account_link(is_e10):
         return url
 
 
+def get_login_post_link():
+    return '{}/login/secure.ashx'.format(config.etown_root).replace('http:', 'https:')
+
+
 def get_default_activation_data(product):
     return {'mainRedemptionQty': 3,
             'freeRedemptionQty': 3,
@@ -69,6 +73,12 @@ def merge_activation_data(source_dict, **more):
     source_dict.update(more)
 
     for key in ['securityverified', 'includesenroll']:
+
+        # when key exist and value == True will update it to 'on'
+        if key in source_dict and source_dict[key]:
+            source_dict[key] = 'on'
+
+        # delete the key when value != 'on'
         if source_dict.get(key, 'on') != 'on':
             del source_dict[key]
 
