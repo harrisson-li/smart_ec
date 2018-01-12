@@ -148,7 +148,7 @@ def activate_account(product_id=None,
     data['divisionCode'] = school['division_code']
     should_enroll = data.get('includesenroll', False)
 
-    if should_enable_onlineoc(auto_onlineoc, student, school):
+    if should_enable_onlineoc(auto_onlineoc, student, school) and 'includesenroll' in data:
         del data['includesenroll']
 
     if not student['is_e10']:
@@ -210,8 +210,8 @@ def enroll_account(username, password='1'):
     Enroll student with level and course info, only work for online oc students.
     Login via mobile enroll page will do the work.
     """
-    if config.partner not in ['Cool', 'Mini']:
-        get_logger().debug('No need to enroll account as it is not in Cool/Mini partner')
+    if config.partner not in ['Cool', 'Mini', 'Socn']:
+        get_logger().debug('No need to enroll account as it is not in CN partners')
         return
 
     login_url = get_login_post_link()
