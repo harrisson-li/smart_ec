@@ -195,7 +195,8 @@ def activate_account(product_id=None,
     save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
     if should_enroll:
-        enroll_account(student['username'], student['password'])
+        password = '1' if 'password' not in student else student['password']
+        enroll_account(student['username'], password)
 
         # ensure account version is correct before return
         if is_v2 != is_v2_student(student['member_id']):
@@ -205,7 +206,7 @@ def activate_account(product_id=None,
     return student
 
 
-def enroll_account(username, password='1'):
+def enroll_account(username, password):
     """
     Enroll student with level and course info, only work for online oc students.
     Login via mobile enroll page will do the work.
