@@ -1,4 +1,9 @@
-﻿## v0.0.0.46
+﻿## v0.0.0.47
+
+1. Support new partner - socn
+2. Load partners from db but not use hard code strings.
+
+## v0.0.0.46
 
 1. Support new live cn environment webcn1.
 2. Add one more token: $etownUrl
