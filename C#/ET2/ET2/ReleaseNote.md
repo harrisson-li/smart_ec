@@ -1,4 +1,10 @@
-﻿## v0.0.0.47
+﻿## v0.0.0.48
+
+1. Remove relations for auto-onlineOC and includes enroll.
+2. Resize tool size and remove maximum button.
+3. Update documents.
+
+## v0.0.0.47
 
 1. Support new partner - socn
 2. Load partners from db but not use hard code strings.

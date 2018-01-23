@@ -42,11 +42,7 @@ You can see application saved state and private hosts at here, also there are a 
 
 #### 3.3 Public Configurations
 
-- Environments.csv (Test environments settings)
-- ProductList.csv (Smart proudct data, to activate test account)
-- DivisionCode.csv (Division code list, to activate test account)
-- UsefulLinks.csv (Data file for useful links tab)
-- FixLinks.csv (Data file to fix links if token replacement does not work)
+- ET2_DB.txt (Almost all settings are now saved in DB)
 - Hosts(Folder to place public host settings)
 - QuickActions (Remote quick actions, will be updated via Jenkins job)
 
@@ -54,7 +50,7 @@ You can see application saved state and private hosts at here, also there are a 
 
 - Save.XXXX (State file for a saved entity, e.g. Save.CurrentTestAccount)
 - Hosts (Folder to place private host settings)
-- QuickActions (Local quick actions, do change it from here)
+- QuickActions (Local quick actions, do not change)
 
 #### 3.5 Token Replacement
 
@@ -62,12 +58,16 @@ Token replacement is wildly used in ET2, you can set token in useful links or qu
 
 - $id (=> member id)
 - $name (=> student name)
-- $env (=> current test environment)
+- $env (=> current test environment name, e.g. UAT/QA)
+- $envStr (=> current test environment string, e.g. smartuat2/qa)
 - $partner (=> current selected partner)
 - $school (=> current selected school)
-- $school (=> current selected start level)
+- $level (=> current selected start level)
 - $productId (=> current selected product id)
 - $accountType (=> current selected accountType)
+- $etownUrl (=> etown URL according to env)
+- $token (=> current secret token)
+- $mark (=> another identity for current environment, e.g. livecn/liveus)
 
 #### 3.6 Quick Actions
 
@@ -76,7 +76,7 @@ To add new quick actions, you have to publish to '[**PublicSettings**]/QuickActi
 Please follow steps:
 
 1. Ensure you have access the quick action repository, if not ping Toby to get it.
-2. Clone quick action repo: https://stash.englishtown.com/users/toby.qin/repos/et2_actions
+2. Clone quick action repo: https://bitbucket.englishtown.cn/users/toby.qin/repos/et2_actions
 3. Create and push your quick actions to origin/master branch. (Jenkins job will help you do the publish work)
 4. Wait 1~2 minutes, restart ET2, you should able to see your actions.
 
@@ -93,3 +93,4 @@ Please remember do not manually publish quick action, Jenkins will remove it if 
 1. Quick action file must be ended with `.action`
 2. Talk to ET2 via data file in "%UserProfile%\ET2" folder, they are json files.
 3. `AsAdmin` and `WatiForExit` can be set for quick actions if you want.
+4. Try ET2 web edition for non-Windows users: http://cns-qaauto5/test_accounts/

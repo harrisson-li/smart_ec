@@ -226,9 +226,7 @@
                         Content="Includes Enroll"
                         ToolTip="Will be disabled when Auto OnlineOC."
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.IncludesEnroll,
-                                            Mode=TwoWay}"
-                        IsEnabled="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
-                                            Converter={StaticResource InverseBoolean}}" />
+                                            Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Left">
                     <ComboBox
