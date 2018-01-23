@@ -64,7 +64,7 @@ def get_default_activation_data(product):
 
 def should_enable_onlineoc(auto_determine, student, school):
     return auto_determine \
-           and config.partner in ['Cool', 'Mini'] \
+           and config.partner in ['Cool', 'Mini', 'Socn'] \
            and not student['is_e10'] \
            and 'OnlineOC-Off' not in school['tags']
 
@@ -75,7 +75,7 @@ def merge_activation_data(source_dict, **more):
     for key in ['securityverified', 'includesenroll']:
 
         # when key exist and value == True will update it to 'on'
-        if key in source_dict and source_dict[key]:
+        if key in source_dict and source_dict[key] == True:
             source_dict[key] = 'on'
 
         # delete the key when value != 'on'

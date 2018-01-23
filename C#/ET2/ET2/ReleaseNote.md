@@ -1,4 +1,15 @@
-﻿## v0.0.0.46
+﻿## v0.0.0.48
+
+1. Remove relations for auto-onlineOC and includes enroll.
+2. Resize tool size and remove maximum button.
+3. Update documents.
+
+## v0.0.0.47
+
+1. Support new partner - socn
+2. Load partners from db but not use hard code strings.
+
+## v0.0.0.46
 
 1. Support new live cn environment webcn1.
 2. Add one more token: $etownUrl

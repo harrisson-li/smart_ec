@@ -29,7 +29,7 @@ def read_data(table_name):
 
 def _filter(item, name, domain):
     return item['name'].lower() == name.lower() and (
-        (item['domain'].lower() == domain.lower()) or (item['domain'] == 'all'))
+            (item['domain'].lower() == domain.lower()) or (item['domain'] == 'all'))
 
 
 def get_all_environments():
@@ -190,7 +190,7 @@ def get_onlineoc_schools():
     """will not return eclite schools."""
     from ectools.config import config
 
-    assert config.partner in ['Cool', 'Mini'], 'Invalid partner for OnlineOC: {}!'.format(config.partner)
+    assert config.partner in ['Cool', 'Mini', 'Socn'], 'Invalid partner for OnlineOC: {}!'.format(config.partner)
     schools = get_schools_has_tag('PC2.0')
     return [s for s in schools if not is_item_has_tag(s, 'ECLite')]
 
@@ -228,7 +228,7 @@ def is_lite_product(product):
 def is_onlineoc_school(school):
     from ectools.config import config
 
-    if config.partner not in ['Cool', 'Mini']:
+    if config.partner not in ['Cool', 'Mini', 'Socn']:
         return False
 
     if not isinstance(school, dict):

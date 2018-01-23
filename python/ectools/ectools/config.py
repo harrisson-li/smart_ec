@@ -77,7 +77,7 @@ def setup(env='UAT', partner='Cool'):
     Set environment and partner for this tool.
 
     :param env: should be one of 'UAT', 'QA', 'Staging', 'Live'
-    :param partner: Should be one of 'Cool', 'Mini', 'Indo', 'Cehk', 'Ecsp', 'Rupe'
+    :param partner: Should be one of 'Cool', 'Mini', 'Indo', 'Cehk', 'Ecsp', 'Rupe', 'Socn'
     """
     set_partner(partner)
     set_environment(env)
@@ -98,7 +98,7 @@ def set_partner(partner):
     """
     Set partner for this tool.
 
-    :param partner: Should be one of 'Cool', 'Mini', 'Indo', 'Cehk', 'Ecsp', 'Rupe'
+    :param partner: Should be one of 'Cool', 'Mini', 'Indo', 'Cehk', 'Ecsp', 'Rupe', 'Socn'
     """
     partner = get_partner(partner)
     config.partner = partner['name']

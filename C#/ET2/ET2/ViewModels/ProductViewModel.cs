@@ -79,7 +79,7 @@ namespace ET2.ViewModels
         {
             get
             {
-                return new List<string>() { "cool", "mini", "cehk", "rupe", "indo", "ecsp" };
+                return Settings.LoadPartners();
             }
         }
 

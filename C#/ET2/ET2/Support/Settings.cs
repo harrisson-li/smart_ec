@@ -217,6 +217,18 @@ namespace ET2.Support
 
         #endregion Test account
 
+        private static List<string> _partners = null;
+
+        public static List<string> LoadPartners()
+        {
+            if (_partners == null)
+            {
+                var data = ReadApiData(ApiEndpoint.Partners);
+                _partners = data.Select(e => ((string)e["name"]).ToLower()).ToList();
+            }
+            return _partners;
+        }
+
         #region Test environment
 
         private static List<TestEnvironment> _environments = null;
@@ -608,6 +620,6 @@ namespace ET2.Support
             return LoadWhiteList().Contains(Environment.UserName.ToLower());
         }
 
-        #endregion
+        #endregion WhiteList
     }
 }
