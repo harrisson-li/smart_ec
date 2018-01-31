@@ -87,18 +87,6 @@ CREATE TABLE IF NOT EXISTS test_accounts
   PRIMARY KEY (member_id, environment)
 );
 
-CREATE INDEX test_accounts_detail_index
-  ON test_accounts (detail);
-
-CREATE INDEX test_accounts_created_on_index
-  ON test_accounts (created_on);
-
-CREATE INDEX test_accounts_created_by_index
-  ON test_accounts (created_by);
-
-CREATE INDEX test_accounts_tags_index
-  ON test_accounts (tags);
-
 CREATE TABLE IF NOT EXISTS suspend_info (
   member_id           TEXT,
   suspend_date        TEXT,
