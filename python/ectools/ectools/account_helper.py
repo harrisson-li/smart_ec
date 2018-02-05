@@ -114,87 +114,73 @@ def activate_account(product_id=None,
 
     :return: A dict with all account info.
     """
+    get_logger().info('Start to activate test account...')
 
+    # auto get product if not specified
     if product_id is None:
         product = get_any_product(is_s18=is_s18)
     else:
         product = get_product_by_id(product=product_id, is_s18=is_s18)
 
+    # auto get school if not specified
     if school_name is None:
         school = get_any_v2_school() if is_v2 else get_any_school()
     else:
         school = get_school_by_name(school_name)
         is_v2 = is_v2_school(school_name)  # fix account version according to school
 
+    # check eclite product should match eclite center
     is_lite = is_lite_product(product)
     assert is_lite == is_lite_school(school), \
         "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
-    get_logger().info('Start to activate test account...')
+    # check partner of product and school should match
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
 
+    # auto create member if not specified
     if student is None:
         student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
     else:
         assert isinstance(student, dict)
 
-    student['is_v2'] = is_v2
+    # generate activation data
+    student['is_v2'], student['is_s18'], student['is_eclite'] = is_v2, is_s18, is_lite
     student['is_e10'] = is_item_has_tag(product, 'E10')
     link = get_activate_account_link(student['is_e10'])
-
     data = get_default_activation_data(product)
     data = merge_activation_data(data, **kwargs)
-    data['memberId'] = student['member_id']
-    data['divisionCode'] = school['division_code']
+    data['memberId'], data['divisionCode'] = student['member_id'], school['division_code']
     should_enroll = data.get('includesenroll', False)
 
-    if should_enable_onlineoc(auto_onlineoc, student, school) and 'includesenroll' in data:
+    # online oc student will need to enroll via login, so not include enroll when activate
+    if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
         del data['includesenroll']
 
+    # e10 student cannot set 'levelQty'
     if not student['is_e10']:
-        del data['levelQty']  # e10 student cannot set 'levelQty'
+        del data['levelQty']
 
     result = requests.post(link, data=data)
     success_text = 'success' if student['is_e10'] else 'IsSuccess:True'
     assert result.status_code == HTTP_STATUS_OK and success_text in result.text, result.text
 
-    student['product'] = product
-    student['school'] = school
-    student['is_activated'] = True
-    student['partner'] = config.partner
-    student['country_code'] = config.country_code
-    student['domain'] = config.domain
-    student['environment'] = config.env
-    student['is_eclite'] = is_lite
+    # update student detail as dict
+    student['is_activated'], student['is_onlineoc'] = True, False
+    student['product'], student['school'] = product, school
+    student['partner'], student['country_code'] = config.partner, config.country_code
+    student['domain'], student['environment'] = config.domain, config.env
     student.update(kwargs)
 
-    tags = [config.env, config.partner]
-    if student['is_e10']:
-        tags.append('E10')
-    else:
-        tags.append('S18' if is_s18 else 'S15')
-
-    if is_v2:
-        tags.append('V2')
-
-    if is_lite:
-        tags.append('ECLite')
-
+    # set hima test level for online oc student
     if should_enable_onlineoc(auto_onlineoc, student, school):
-        # set hima test level and append tags
-
+        student['is_onlineoc'] = True
         set_hima = kwargs.get('set_hima', True)
         level_code = kwargs.get('startLevel', '0A')
         if set_hima:
             sf_set_hima_test(student['member_id'], level_code)
 
-        tags.append('OnlineOC')
-        student['is_onlineoc'] = True
-
-    get_logger().debug('New test account: {}'.format(student))
-    save_account(student, add_tags=tags, remove_tags=['not_activated'])
-
-    if should_enroll:
+    # special enroll logic for online oc student and check 2.0 account version
+    if should_enroll and not student['is_e10']:
         password = '1' if 'password' not in student else student['password']
         enroll_account(student['username'], password)
 
@@ -202,6 +188,11 @@ def activate_account(product_id=None,
         if is_v2 != is_v2_student(student['member_id']):
             raise AssertionError(
                 "Incorrect account version! Please double check target school version: {}".format(school))
+
+    # save account to EC db then return
+    get_logger().debug('New test account: {}'.format(student))
+    tags = get_student_tags(student)
+    save_account(student, add_tags=tags, remove_tags=['not_activated'])
 
     return student
 

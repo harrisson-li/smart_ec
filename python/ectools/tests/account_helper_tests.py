@@ -107,6 +107,7 @@ def test_ignore_eclite_school():
 
 def test_activate_account_more():
     set_environment('staging')
+    set_partner('mini')
 
     student = activate_e10_student()
     assert student['is_e10']

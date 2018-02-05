@@ -163,6 +163,27 @@ def _db_get_account(member_id):
         return _refine_account(account)
 
 
+def get_student_tags(student):
+    """Get tags from a student dict."""
+    tags = [student['partner'], student['environment']]
+
+    if student['is_e10']:
+        tags.append('E10')
+    else:
+        tags.append('S18' if student['is_s18'] else 'S15')
+
+    if student['is_v2']:
+        tags.append('V2')
+
+    if student['is_eclite']:
+        tags.append('ECLite')
+
+    if student['is_onlineoc']:
+        tags.append('OnlineOC')
+
+    return tags
+
+
 @ignore_error
 def save_account(account, add_tags=None, remove_tags=None):
     """
