@@ -178,7 +178,7 @@ def get_student_tags(student):
     if student['is_eclite']:
         tags.append('ECLite')
 
-    if student.get('is_onlineoc', False):
+    if student['is_onlineoc']:
         tags.append('OnlineOC')
 
     return tags
