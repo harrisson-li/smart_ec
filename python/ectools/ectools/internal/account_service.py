@@ -164,7 +164,9 @@ def _db_get_account(member_id):
 
 
 def get_student_tags(student):
+    """Get tags from a student dict."""
     tags = [student['partner'], student['environment']]
+
     if student['is_e10']:
         tags.append('E10')
     else:
