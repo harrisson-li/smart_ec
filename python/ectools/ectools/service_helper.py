@@ -32,7 +32,7 @@ except ImportError:
 
 def is_v2_student(student_id):
     site_settings = get_member_site_settings(student_id)
-    return site_settings.get('student.platform.version') == '2.0'
+    return site_settings.get('student.platform.version', '1.0') == '2.0'
 
 
 def get_member_site_settings(student_id, site_area='school'):

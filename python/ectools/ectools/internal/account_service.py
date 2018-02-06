@@ -66,7 +66,8 @@ def should_enable_onlineoc(auto_determine, student, school):
     return auto_determine \
            and config.partner in ['Cool', 'Mini', 'Socn'] \
            and not student['is_e10'] \
-           and 'OnlineOC-Off' not in school['tags']
+           and 'OnlineOC-Off' not in school['tags'] \
+           and student['is_v2']
 
 
 def merge_activation_data(source_dict, **more):

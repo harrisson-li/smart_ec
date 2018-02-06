@@ -198,3 +198,9 @@ def test_activate_socn_student():
     set_environment('uat')
     set_partner('socn')
     activate_account(product_id=157, is_s18=True)
+
+
+def test_activate_v1_student():
+    set_environment('staging')
+    set_partner('mini')
+    activate_s15_student()
