@@ -110,6 +110,11 @@ def activate_account(product_id=None,
               - levelQty          = '16'
               - securityverified  = True
               - includesenroll    = True
+              - cityCode          = e.g. 'Shanghai'
+              - channel           = e.g. 'EC#SH_XJH'
+              - onlineViceProducts= e.g. '{PL:20,CP20:30}'
+              - packageProductIds = e.g. '1001,1010'
+
 
 
     :return: A dict with all account info.
