@@ -214,3 +214,40 @@ def troop_service_translate_blurb(blurb_id, culture_code='en'):
 def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
     query_string = 'q=user!current'
     return query_troop_service(student_name, query_string=query_string, password=password)
+
+
+def account_service_load_student(student_name_or_id):
+    """load account info via /services/commerce/1.0/AccountService.svc"""
+    target_url = config.etown_root + '/services/commerce/1.0/AccountService.svc'
+    headers = {'Content-Type': 'text/xml',
+               'SOAPAction': 'http://tempuri.org/IAccountService/GetMemberInfo'}
+
+    body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' \
+           '<s:Body><GetMemberInfo xmlns="http://tempuri.org/"><member_id>{}</member_id>' \
+           ' </GetMemberInfo></s:Body></s:Envelope>'.format(student_name_or_id)
+
+    id_response = requests.post(target_url, data=body, headers=headers)
+    response_xml = id_response.text
+
+    # try to load as username if failed to load by id
+    if id_response.status_code != HTTP_STATUS_OK:
+        headers['SOAPAction'] = 'http://tempuri.org/IAccountService/GetMemberByEmailOrUserName'
+        body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' \
+               '<s:Body><GetMemberByEmailOrUserName xmlns="http://tempuri.org/">' \
+               '<emailOrUserName>{}</emailOrUserName></GetMemberByEmailOrUserName>' \
+               '</s:Body></s:Envelope>'.format(student_name_or_id)
+
+        name_response = requests.post(target_url, data=body, headers=headers)
+        assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
+        response_xml = name_response.text
+
+    # get all return field names
+    fields = re.findall('<a:([^>/]+)>', response_xml)
+
+    # get all field value and convert to dict
+    info = {}
+    for field in fields:
+        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
+        info[camelcase_to_underscore(field)] = value
+
+    return info
