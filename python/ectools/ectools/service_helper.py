@@ -198,12 +198,19 @@ def score_helper_load_student(student_name_or_id):
     return result
 
 
-def query_troop_service(student_name, query_string, login_required=True, password=DEFAULT_PASSWORD):
+def query_troop_service(student_name,
+                        query_string,
+                        login_required=True,
+                        password=DEFAULT_PASSWORD,
+                        return_first_item=True):
     if login_required:
         troop_service_helper.login(student_name, password)
 
     url_with_context = True if student_name else False
-    return troop_service_helper.query(student_name, query_string, url_with_context=url_with_context)
+    return troop_service_helper.query(student_name,
+                                      query_string,
+                                      url_with_context=url_with_context,
+                                      return_first_item=return_first_item)
 
 
 def troop_service_translate_blurb(blurb_id, culture_code='en'):
