@@ -60,6 +60,8 @@ def pass_level_test_v2(student_id, score=get_score()):
     data = {"score": score, "minutesSpent": 3, "studyMode": 0}
 
     for section in section_id_list:
+        # e.g. section = student_leveltest_section!9c274635-49f1-4456-a30d-47f48ff29eff
+        # slice to get id => 9c274635-49f1-4456-a30d-47f48ff29eff
         data['studentLevelTestSectionId'] = section[26:]
         result = client.post(url, json=data)
         assert result.status_code == HTTP_STATUS_OK, result.text
