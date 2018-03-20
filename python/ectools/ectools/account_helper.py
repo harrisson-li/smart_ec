@@ -180,7 +180,7 @@ def activate_account(product_id=None,
             sf_set_hima_test(student['member_id'], level_code)
 
     # special enroll logic for online oc student and check 2.0 account version
-    if should_enroll and not student['is_e10']:
+    if should_enroll and student['is_v2']:
         password = '1' if 'password' not in student else student['password']
         enroll_account(student['username'], password)
 
