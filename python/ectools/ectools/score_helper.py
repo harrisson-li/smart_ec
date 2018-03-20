@@ -34,6 +34,7 @@ from ectools.service_helper import is_v2_student
 from ectools.utility import get_score
 from .internal.business import score_helper_v1
 from .internal.business import score_helper_v2
+from .internal.level_test_helper import pass_level_test_v2
 from .internal.objects import *
 
 
@@ -59,6 +60,7 @@ def submit_score_helper(student_id):
 
 def load_student(student_id, reload_page=True):
     Cache.submit_for_v2 = is_v2_student(student_id)
+    Cache.current_student_id = student_id
     _get_score_helper().load_student(student_id, reload_page)
 
 
@@ -83,11 +85,13 @@ def enroll_to_unit(unit_id):
 
 
 def pass_level_test(score=get_score()):
-    _get_score_helper().pass_level_test(score)
+    student_id = getattr(Cache, 'current_student_id')
+    pass_level_test_v2(student_id, score)
 
 
 def pass_six_units_and_level_test(score=get_score()):
-    _get_score_helper().pass_six_units_and_level_test(score)
+    _get_score_helper().pass_six_units(score)
+    pass_level_test(score)
 
 
 def close_browser():

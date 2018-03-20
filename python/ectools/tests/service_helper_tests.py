@@ -1,3 +1,5 @@
+import json
+
 from ectools.config import get_logger, set_environment
 from ectools.service_helper import *
 
@@ -123,3 +125,22 @@ def test_troop_translate_blurb():
     blurb_id = '498117'
     result = troop_service_translate_blurb(blurb_id)
     assert result == 'Live Teacher Feedback'
+
+
+def test_account_service_load_student():
+    set_environment('uat')
+    student_id = '23904718'
+    expected = '{"last_name": "test", "local_name": "s14hz test", ' \
+               '"first_name": "s14hz", "user_name": "stest24561", ' \
+               '"partner_code": "Mini", "email": "te636251605203525074@qp1.org", ' \
+               '"country_code": "cn", "member_type": "M", "password": "1", ' \
+               '"member_id": "23904718", "creation_date": "2017-03-15T03:43:10.69", ' \
+               '"date_of_birth": "2017-03-15T03:42:00.353", "language_code": "en", ' \
+               '"email_language_code": "en", "data_store": "US1"}'
+
+    result = account_service_load_student(student_id)
+    assert result == json.loads(expected)
+
+    student_name = 'stest24561'
+    result = account_service_load_student(student_name)
+    assert result == json.loads(expected)
