@@ -29,6 +29,7 @@ from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.data_helper import *
+from ectools.service_helper import account_service_load_student
 from ectools.service_helper import is_v2_student
 
 
@@ -186,8 +187,8 @@ def activate_account(product_id=None,
 
     # special enroll logic for online oc student and check 2.0 account version
     if should_enroll and student['is_v2']:
-        password = '1' if 'password' not in student else student['password']
-        enroll_account(student['username'], password)
+        s = account_service_load_student(student['member_id'])
+        enroll_account(s['user_name'], s['password'])
 
         # ensure account version is correct before return
         if is_v2 != is_v2_student(student['member_id']):

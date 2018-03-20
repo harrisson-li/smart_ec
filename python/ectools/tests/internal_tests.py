@@ -96,7 +96,7 @@ def test_troop_get_current_context():
     print(context)
     assert context['culturecode']['value'] == 'zh-CN'
     assert context['siteversion']['value'] == 'qa'
-    assert context['partnercode']['value'] == 'None'
+    assert context['partnercode']['value'] == 'Cool'
     assert context['countrycode']['value'] == 'cn'
 
 

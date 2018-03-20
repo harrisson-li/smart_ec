@@ -1,10 +1,9 @@
 import json
 
 import requests
-from requests import Session
-
 from ectools.config import config
 from ectools.internal.objects import Cache
+from requests import Session
 
 LOGIN_SERVICE_URL = "{}/login/secure.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
@@ -24,6 +23,9 @@ def _get_default_header():
 
 def get_request_session(username):
     """get one session  for same username."""
+    if not username:
+        username = 'temp_user'
+
     session = getattr(Cache, username + '_session', requests.session())
     setattr(Cache, username + '_session', session)
 
