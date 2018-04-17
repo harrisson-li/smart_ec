@@ -25,7 +25,7 @@ def test_sql_with_parameters():
     assert row is not None
 
 
-def test_create_and_use_table():
+def test_table_shortcut_functions():
     test_table = 'unit_test'
     db_helper.execute_query('truncate table ' + test_table)
 
