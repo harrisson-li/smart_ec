@@ -29,10 +29,10 @@ _connection_info = ('CNS-ETDEVDB', 'TestUser', 'testuserdev', 'TestAutomation')
 
 
 def _connect():
-    if not hasattr(Cache, 'ecdb_v2_conn'):
-        Cache.ecdb_v2_conn = pymssql.connect(*_connection_info, login_timeout=10)
-        Cache.ecdb_v2_cur = Cache.ecdb_v2_conn.cursor()
-    return Cache.ecdb_v2_conn
+    if not hasattr(Cache, 'ecdb_conn_v2'):
+        Cache.ecdb_conn_v2 = pymssql.connect(*_connection_info, login_timeout=10)
+        Cache.ecdb_cur_v2 = Cache.ecdb_conn_v2.cursor()
+    return Cache.ecdb_conn_v2
 
 
 def _execute(sql, params=None):
@@ -43,25 +43,25 @@ def _execute(sql, params=None):
 
 
 def _cleanup():
-    if hasattr(Cache, 'ecdb_v2_cur'):
-        Cache.ecdb_v2_cur.close()
-        del Cache.ecdb_v2_cur
+    if hasattr(Cache, 'ecdb_cur_v2'):
+        Cache.ecdb_cur_v2.close()
+        del Cache.ecdb_cur_v2
 
-    if hasattr(Cache, 'ecdb_v2_conn'):
-        Cache.ecdb_v2_conn.close()
-        del Cache.ecdb_v2_conn
+    if hasattr(Cache, 'ecdb_conn_v2'):
+        Cache.ecdb_conn_v2.close()
+        del Cache.ecdb_conn_v2
 
 
 def _get_conn():
     """Get the database connection."""
-    if hasattr(Cache, 'ecdb_v2_conn') and isinstance(Cache.ecdb_v2_conn, pymssql.Connection):
-        return Cache.ecdb_v2_conn
+    if hasattr(Cache, 'ecdb_conn_v2') and isinstance(Cache.ecdb_conn_v2, pymssql.Connection):
+        return Cache.ecdb_conn_v2
 
 
 def _get_cursor():
     """Get the database cursor."""
-    if hasattr(Cache, 'ecdb_v2_cur') and isinstance(Cache.ecdb_v2_cur, pymssql.Cursor):
-        return Cache.ecdb_v2_cur
+    if hasattr(Cache, 'ecdb_cur_v2') and isinstance(Cache.ecdb_cur_v2, pymssql.Cursor):
+        return Cache.ecdb_cur_v2
 
 
 def connect_database(func=None):
