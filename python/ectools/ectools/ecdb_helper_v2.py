@@ -145,7 +145,7 @@ def add_row(table_name, *values):
 
 
 def add_row_as_dict(table_name, row_dict):
-    columns = list(row_dict.keys())
+    columns = ['[{}]'.format(x) for x in list(row_dict.keys())]
     values = list(row_dict.values())
     sql = "INSERT INTO {} ({}) VALUES ({})".format(table_name, ','.join(columns), _to_insert_values(values))
     return execute_query(sql)

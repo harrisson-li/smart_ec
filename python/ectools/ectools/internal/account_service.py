@@ -16,7 +16,7 @@ import json
 import arrow
 import requests
 
-from ectools import ecdb_helper as ecdb
+from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.config import is_api_available
 from ectools.internal.objects import Configuration
@@ -102,7 +102,7 @@ def get_accounts_by_tag(tag, expiration_days=None):
     If expiration days provided, will return accounts within expired days.
     """
 
-    if not ecdb._using_remote_db() and is_api_available():
+    if is_api_available():
         return _api_get_accounts_by_tag(tag, expiration_days)
     else:
         return _db_get_accounts_by_tag(tag, expiration_days)
@@ -119,16 +119,16 @@ def _api_get_accounts_by_tag(tag, expiration_days=None):
 
 
 def _db_get_accounts_by_tag(tag, expiration_days=None):
-    sql = 'select * from test_accounts where environment like "%{}%"'.format(config.env)
-    sql += ' and tags like "%{}%"'.format(tag)
+    sql = "select * from ec_test_accounts where environment like '%{}%'".format(config.env)
+    sql += " and tags like '%{}%'".format(tag)
 
     if expiration_days:
         date = arrow.utcnow().shift(days=-expiration_days).format('YYYY-MM-DD')
-        sql += 'and created_on > "{}"'.format(date)
+        sql += "and created_on > '{}'".format(date)
 
-    sql += ' order by created_on desc'
+    sql += " order by created_on desc"
 
-    accounts = ecdb.fetch_all(sql, as_dict=True)
+    accounts = ecdb_v2.fetch_all(sql, as_dict=True)
     return [_refine_account(a) for a in accounts]
 
 
@@ -139,7 +139,7 @@ def is_account_expired(account, expiration_days):
 
 @ignore_error
 def get_account(member_id):
-    if not ecdb._using_remote_db() and is_api_available():
+    if is_api_available():
         return _api_get_account(member_id)
     else:
         return _db_get_account(member_id)
@@ -154,11 +154,11 @@ def _api_get_account(member_id):
 
 
 def _db_get_account(member_id):
-    sql = 'select * from test_accounts where environment like "%{}%"'.format(config.env)
-    sql += ' and member_id = "{}"'.format(member_id)
-    sql += ' order by created_on desc'
+    sql = "select * from ec_test_accounts where environment like '%{}%'".format(config.env)
+    sql += " and member_id = {}".format(member_id)
+    sql += " order by created_on desc"
 
-    account = ecdb.fetch_one(sql, as_dict=True)
+    account = ecdb_v2.fetch_one(sql, as_dict=True)
 
     if account:
         return _refine_account(account)
@@ -192,7 +192,7 @@ def save_account(account, add_tags=None, remove_tags=None):
     The add_tags and remove_tags should be in list format as ['Tag1', 'Tag2']
     """
 
-    if not ecdb._using_remote_db() and is_api_available():
+    if is_api_available():
         return _api_save_account(account, add_tags, remove_tags)
     else:
         return _db_save_account(account, add_tags, remove_tags)
@@ -224,7 +224,7 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
 
 def _db_save_account(account, add_tags=None, remove_tags=None):
     tags = ['ectools']
-    target_table = 'test_accounts'
+    target_table = 'ec_test_accounts'
     existed_account = get_account(account['member_id'])
 
     if add_tags:
@@ -240,7 +240,7 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
 
         search_by = {'member_id': account['member_id'], 'environment': config.env}
         update_dict = {'detail': json.dumps(account), 'tags': account['tags']}
-        ecdb.update_rows(target_table, search_by, update_dict)
+        ecdb_v2.update_rows(target_table, search_by, update_dict)
 
     else:
 
@@ -248,11 +248,11 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
             tags = (set(tags) - set(remove_tags))
 
         account['tags'] = ','.join(set(tags))
-        ecdb.add_row(target_table,
-                     config.env,
-                     account['member_id'],
-                     account['username'],
-                     json.dumps(account),
-                     str(arrow.utcnow()),
-                     getpass.getuser(),
-                     account['tags'])
+        ecdb_v2.add_row(target_table,
+                        config.env,
+                        account['member_id'],
+                        account['username'],
+                        json.dumps(account),
+                        arrow.utcnow().format('YYYY-MM-DD HH:mm:ss.SSS'),
+                        getpass.getuser(),
+                        account['tags'])
