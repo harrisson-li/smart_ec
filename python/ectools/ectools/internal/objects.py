@@ -23,7 +23,8 @@ class Configuration(Base):
     base_dir = '.'
     data_dir = 'data'
     database = None
-    etown_root = ''
+    etown_root = ''  # https default
+    etown_root_http = ''
     oboe_root = '',
     browser_id = 'internal_browser'
     browser_type = 'Chrome'

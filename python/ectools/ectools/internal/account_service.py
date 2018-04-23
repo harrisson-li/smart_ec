@@ -45,7 +45,7 @@ def get_activate_account_link(is_e10):
 
 
 def get_login_post_link():
-    return '{}/login/secure.ashx'.format(config.etown_root).replace('http:', 'https:')
+    return '{}/login/secure.ashx'.format(config.etown_root)
 
 
 def get_default_activation_data(product):
