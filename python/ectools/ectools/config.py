@@ -138,6 +138,7 @@ def _setup():
     config.database = get_database(config.env, config.domain)
     env = get_environment(config.env, config.domain)
     config.etown_root = env['etown_url']
+    config.etown_root_http = config.etown_root.replace('https', 'http')
     config.oboe_root = env['oboe_url']
 
 

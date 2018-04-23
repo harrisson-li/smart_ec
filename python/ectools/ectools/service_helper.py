@@ -56,7 +56,8 @@ def get_member_site_settings(student_id, site_area='school'):
                     </LoadMemberSiteSettings>
                 </s:Body>
             </s:Envelope>"""
-    result = requests.post(config.etown_root + service_url, data=data.format(student_id, site_area), headers=headers)
+    result = requests.post(config.etown_root_http + service_url, data=data.format(student_id, site_area),
+                           headers=headers)
     assert result.status_code == HTTP_STATUS_OK, "Failed to call membersettings.svc: {}".format(result.text)
 
     site_settings = {}
@@ -138,7 +139,7 @@ def call_ecplatform_service(service_url, payload):
         'Content-Type': 'application/json',
         'Accept': 'text/plain'
     }
-    response = requests.post(config.etown_root + service_url, json=payload, headers=headers)
+    response = requests.post(config.etown_root_http + service_url, json=payload, headers=headers)
     if response.status_code == HTTP_STATUS_OK:
         return json.loads(response.text)
     else:
@@ -225,7 +226,7 @@ def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
 
 def account_service_load_student(student_name_or_id):
     """load account info via /services/commerce/1.0/AccountService.svc"""
-    target_url = config.etown_root + '/services/commerce/1.0/AccountService.svc'
+    target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
     headers = {'Content-Type': 'text/xml',
                'SOAPAction': 'http://tempuri.org/IAccountService/GetMemberInfo'}
 
