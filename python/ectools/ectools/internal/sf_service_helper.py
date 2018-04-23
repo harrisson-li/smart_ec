@@ -5,7 +5,6 @@ This module provides methods to suspend or resume student.
 
 -----
 """
-import requests
 import uuid
 from datetime import datetime
 
