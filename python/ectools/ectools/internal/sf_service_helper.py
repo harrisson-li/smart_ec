@@ -11,8 +11,8 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup as bs
 
+import ectools.ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
-from ectools.ecdb_helper import *
 from ectools.internal.constants import HTTP_STATUS_OK
 
 SF_NEW_ORG_SERVICE_URL = "/services/Oboe2/1.0/SalesforceNewOrgService.svc"
@@ -58,7 +58,7 @@ def suspend_student(member_id, suspend_date, resume_date):
     </s:Body>
     </s:Envelope>"""
 
-    search_result = search_rows('suspend_info', {'member_id': member_id})
+    search_result = ecdb_v2.search_rows('ec_suspend_info', {'member_id': member_id})
     if search_result:
         raise ValueError("This student {} has been suspended on {} and will resume on {}, no need to suspend again. "
                          "Please resume first".format(member_id, search_result[0]['suspend_date'],
@@ -74,8 +74,12 @@ def suspend_student(member_id, suspend_date, resume_date):
 
     if doc.find('IsSuccess').string == 'true':
         suspend_external_id = doc.find('SuspendExternalId').string
-        add_row('suspend_info', member_id, suspend_date, resume_date, suspend_external_id)
+        info = {'member_id': member_id,
+                'suspend_date': suspend_date,
+                'resume_date': resume_date,
+                'suspend_external_id': suspend_external_id}
 
+        ecdb_v2.add_row_as_dict('ec_suspend_info', info)
         return suspend_external_id
     else:
         error_code = doc.find('ErrorCode').string
@@ -86,7 +90,7 @@ def suspend_student(member_id, suspend_date, resume_date):
 
 def resume_student(member_id):
     transaction_id = uuid.uuid4()
-    result = search_rows('suspend_info', {'member_id': member_id})
+    result = ecdb_v2.search_rows('ec_suspend_info', {'member_id': member_id})
 
     if result:
         external_id = result[0]['suspend_external_id']
@@ -136,7 +140,7 @@ def resume_student(member_id):
     if doc.find('IsSuccess').string != 'true':
         raise SystemError(result.content)
     else:
-        delete_rows('suspend_info', {'member_id': member_id})
+        ecdb_v2.delete_rows('ec_suspend_info', {'member_id': member_id})
 
 
 def set_hima_test(member_id, level_code):

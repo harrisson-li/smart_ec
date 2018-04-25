@@ -221,7 +221,7 @@ def _to_query_clause(d, sep='AND'):
     clause = []
 
     for k, v in d.items():
-        text = " {}={} ".format(k, _escape_value(v))
+        text = " [{}]={} ".format(k, _escape_value(v))
         clause.append(text)
 
     return sep.join(clause)

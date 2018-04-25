@@ -18,7 +18,7 @@ namespace ET2.Support
     {
         #region Constants
 
-        private static string REST_HOST = ConfigHelper.GetAppSettingsValue("ApiHost") + "rest/";
+        private static string API_ROOT = ConfigHelper.GetAppSettingsValue("ApiHost") + "ecdb/";
 
         internal class Data
         {
@@ -41,7 +41,7 @@ namespace ET2.Support
             public const string Schools = "schools";
             public const string UsefulLinks = "useful_links";
             public const string Products = "products";
-            public const string WhiteList = "white_lists";
+            public const string Admin = "admin";
         }
 
         #endregion Constants
@@ -50,7 +50,7 @@ namespace ET2.Support
 
         public static JArray ReadApiData(string apiName)
         {
-            var url = "{0}{1}/".FormatWith(REST_HOST, apiName);
+            var url = "{0}{1}".FormatWith(API_ROOT, apiName);
             try
             {
                 var response = HttpHelper.Get(url);
@@ -608,8 +608,9 @@ namespace ET2.Support
         {
             if (_whiteList == null)
             {
-                var data = ReadApiData(ApiEndpoint.WhiteList);
-                _whiteList = data.Select(e => e["username"].ToString().ToLower()).ToList();
+                var data = ReadApiData(ApiEndpoint.Admin);
+                _whiteList = data.Where(e => e["tags"].ToString() == "et2")
+                    .Select(e => e["username"].ToString().ToLower()).ToList();
             }
 
             return _whiteList;

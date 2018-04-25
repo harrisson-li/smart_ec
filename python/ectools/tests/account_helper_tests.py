@@ -1,4 +1,3 @@
-import ectools.ecdb_helper as db_helper
 from ectools.account_helper import *
 from ectools.config import get_logger, set_environment, set_partner
 from ectools.internal.objects import *
@@ -15,18 +14,18 @@ def test_create_account():
     student = activate_account(student=student)
     assert student['member_id'] is not None
 
-    # test save account via api
-    original = db_helper._remote_db_dir
+    # test save account via sql
+    original = config.remote_api
 
     try:
-        db_helper._remote_db_dir = '//not/exist/path'
+        config.remote_api = 'http://not/exist/'
         student = create_account_without_activation(is_e10=True)
         get_logger().info(student)
         assert student is not None
         assert student['is_e10']
 
     finally:
-        db_helper._remote_db_dir = original
+        config.remote_api = original
 
 
 def test_activate_account_default():
