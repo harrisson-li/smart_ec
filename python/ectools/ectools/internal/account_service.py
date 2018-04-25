@@ -26,7 +26,7 @@ from .constants import HTTP_STATUS_OK
 
 def get_new_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
-    url = url.format(config.etown_root, config.country_code, config.partner)
+    url = url.format(config.etown_root_http, config.country_code, config.partner)
 
     if is_e10:
         return url.replace('e14hz', config.partner)
@@ -36,12 +36,17 @@ def get_new_account_link(is_e10):
 
 def get_activate_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/ActivateV2'
-    url = url.format(config.etown_root)
+    url = url.format(config.etown_root_http)
 
     if is_e10:
         return url.replace('V2', 'E10')
     else:
         return url
+
+
+def get_activate_pack_link():
+    url = '{}/services/Oboe2/SalesForce/test/ActivatePack?r=json'
+    return url.format(config.etown_root_http)
 
 
 def get_login_post_link():
@@ -84,6 +89,46 @@ def merge_activation_data(source_dict, **more):
             del source_dict[key]
 
     return source_dict
+
+
+def center_pack_activation_data(pack_index):
+    package_mapping = {'Rupe': 1101, 'Ecsp': 1105}
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterBase',
+            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+            'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
+                                                            '{"name":"WS","count": 5},' +
+                                                            '{"name": "LC","count": 5}]}'}
+
+
+def online_pack_activation_data(pack_index):
+    package_mapping = {'Rupe': 1102, 'Ecsp': 1106}
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlineBase',
+            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+            'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
+                                                            '{"name":"PL40","count": 5},' +
+                                                            '{"name": "GL","count": 5}]}'}
+
+
+def tweak_activation_data_for_phoenix(data):
+    data['OrderId'] = arrow.now().timestamp  # for refund purpose
+    data['DaysOfExpiredCouponRetention'] = 30
+    data['RedemptionCode'] = data['mainRedemptionCode']
+    data['RedemptionQty'] = data['mainRedemptionQty']
+    data['ExtendSubscriptionType'] = 'FromExpiredDate'
+
+    to_be_deleted = ['includesenroll', 'mainRedemptionCode', 'mainRedemptionQty',
+                     'startLevel', 'levelQty', 'productId', 'freeRedemptionCode',
+                     'freeRedemptionQty', 'packageProductIds']
+
+    for key in to_be_deleted:
+        if key in data:
+            del data[key]
+
+    # workaround: if RedemptionQty <= 12 it probably means months, we update it to days
+    qty = int(data['RedemptionQty'])
+
+    if qty <= 12:
+        data['RedemptionQty'] = qty * 30
 
 
 def _refine_account(ecdb_account):
@@ -173,14 +218,14 @@ def get_student_tags(student):
     else:
         tags.append('S18' if student['is_s18'] else 'S15')
 
-    if student['is_v2']:
-        tags.append('V2')
-
     if student['is_eclite']:
         tags.append('ECLite')
 
     if student['is_onlineoc']:
-        tags.append('OnlineOC')
+        tags.append('OC')
+
+    if student['is_phoenix']:
+        tags.append('Phoenix')
 
     return tags
 
@@ -201,7 +246,8 @@ def save_account(account, add_tags=None, remove_tags=None):
 def _api_save_account(account, add_tags=None, remove_tags=None):
     data = {'detail': account,
             'env': config.env,
-            'member_id': int(account['member_id'])}
+            'member_id': int(account['member_id']),
+            'created_by': getpass.getuser()}
 
     if remove_tags:
         removed_tags = ','.join(remove_tags)
@@ -213,10 +259,6 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
         added_tags.extend(add_tags)
 
     data['add_tags'] = ','.join(added_tags)
-
-    # only add created_by for new account
-    if not get_account(account['member_id']):
-        data['created_by'] = getpass.getuser()
 
     response = requests.post(Configuration.remote_api + 'save_account', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text
@@ -239,7 +281,9 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
         account['tags'] = ','.join(set(tags))
 
         search_by = {'member_id': account['member_id'], 'environment': config.env}
-        update_dict = {'detail': json.dumps(account), 'tags': account['tags']}
+        update_dict = {'detail': json.dumps(account),
+                       'tags': account['tags'],
+                       'created_by': getpass.getuser()}
         ecdb_v2.update_rows(target_table, search_by, update_dict)
 
     else:

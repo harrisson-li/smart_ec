@@ -203,3 +203,12 @@ def test_activate_v1_student():
     set_environment('staging')
     set_partner('mini')
     activate_s15_student()
+
+
+def test_activate_phoenix_student():
+    set_environment('uat')
+    set_partner('rupe')
+
+    activate_phoenix_student()
+    activate_phoenix_student(center_pack=False, startLevel='4')
+    activate_phoenix_student(online_pack=False)

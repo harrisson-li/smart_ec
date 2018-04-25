@@ -43,6 +43,18 @@ def test_get_product():
     assert get_any_eclite_product() is not None
 
 
+def test_get_phoenix_data():
+    set_environment('uat')
+    set_partner('rupe')
+
+    result = get_any_phoenix_school()
+    print(result)
+    assert 'Phoenix' in result['tags']
+
+    result = get_any_phoenix_product()
+    print(result)
+    assert 'Phoenix' in result['tags']
+
 def test_get_school():
     assert len(get_all_schools()) > 0
     assert len(get_test_centers()) > 0

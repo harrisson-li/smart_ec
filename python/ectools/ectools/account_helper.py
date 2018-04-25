@@ -88,7 +88,7 @@ def create_account_without_activation(is_e10=False):
 def activate_account(product_id=None,
                      school_name=None,
                      is_v2=True,
-                     is_s18=False,
+                     is_s18=True,
                      auto_onlineoc=True,
                      student=None,
                      **kwargs):
@@ -157,6 +157,7 @@ def activate_account(product_id=None,
     data = merge_activation_data(data, **kwargs)
     data['memberId'], data['divisionCode'] = student['member_id'], school['division_code']
     should_enroll = data.get('includesenroll', False)
+    level_code = kwargs.get('startLevel', '0A')
 
     # online oc student will need to enroll via login, so not include enroll when activate
     if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
@@ -166,8 +167,33 @@ def activate_account(product_id=None,
     if not student['is_e10']:
         del data['levelQty']
 
+    # Phoenix will use new activation link and activate center pack + online pack by default
+    is_phoenix = is_phoenix_product(product)
+
+    if is_phoenix:
+        link = get_activate_pack_link()
+        include_center_pack = kwargs.get('center_pack', True)
+        include_online_pack = kwargs.get('online_pack', True)
+        pack_index = 0
+
+        if include_center_pack:
+            data.update(center_pack_activation_data(pack_index))
+            pack_index += 1
+
+        if include_online_pack:
+            data.update(online_pack_activation_data(pack_index))
+
+        tweak_activation_data_for_phoenix(data)
+
     result = requests.post(link, data=data)
-    success_text = 'success' if student['is_e10'] else 'IsSuccess:True'
+
+    if is_phoenix:
+        success_text = '"isSuccess": true'
+    elif student['is_e10']:
+        success_text = 'IsSuccess:True'
+    else:
+        success_text = 'success'
+
     assert result.status_code == HTTP_STATUS_OK and success_text in result.text, result.text
 
     # update student detail as dict
@@ -175,20 +201,20 @@ def activate_account(product_id=None,
     student['product'], student['school'] = product, school
     student['partner'], student['country_code'] = config.partner, config.country_code
     student['domain'], student['environment'] = config.domain, config.env
+    student['is_phoenix'] = is_phoenix
     student.update(kwargs)
 
     # set hima test level for online oc student
-    if should_enable_onlineoc(auto_onlineoc, student, school):
+    if should_enable_onlineoc(auto_onlineoc, student, school) or is_phoenix:
         student['is_onlineoc'] = True
         set_hima = kwargs.get('set_hima', True)
-        level_code = kwargs.get('startLevel', '0A')
         if set_hima:
             sf_set_hima_test(student['member_id'], level_code)
 
     # special enroll logic for online oc student and check 2.0 account version
     if should_enroll and student['is_v2']:
         s = account_service_load_student(student['member_id'])
-        enroll_account(s['user_name'], s['password'])
+        enroll_account(s['user_name'], s['password'], is_phoenix)
 
         # ensure account version is correct before return
         if is_v2 != is_v2_student(student['member_id']):
@@ -203,12 +229,13 @@ def activate_account(product_id=None,
     return student
 
 
-def enroll_account(username, password):
+def enroll_account(username, password, force=False):
     """
     Enroll student with level and course info, only work for online oc students.
     Login via mobile enroll page will do the work.
     """
-    if config.partner not in ['Cool', 'Mini', 'Socn']:
+
+    if not force and config.partner not in ['Cool', 'Mini', 'Socn']:
         get_logger().debug('No need to enroll account as it is not in CN partners')
         return
 
@@ -268,6 +295,16 @@ def activate_school_student(**kwargs):
     kwargs['is_v2'] = False
     if 'product_id' not in kwargs:
         kwargs['product_id'] = get_any_school_product()['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_phoenix_student(**kwargs):
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_phoenix_product()['id']
+
+    if 'school_name' not in kwargs:
+        kwargs['school_name'] = get_any_phoenix_school()['name']
+
     return activate_account_by_dict(kwargs)
 
 
