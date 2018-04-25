@@ -88,7 +88,7 @@ def create_account_without_activation(is_e10=False):
 def activate_account(product_id=None,
                      school_name=None,
                      is_v2=True,
-                     is_s18=True,
+                     is_s18=False,
                      auto_onlineoc=True,
                      student=None,
                      **kwargs):
