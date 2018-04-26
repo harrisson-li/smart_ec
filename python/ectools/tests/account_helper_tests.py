@@ -198,6 +198,9 @@ def test_activate_socn_student():
     set_partner('socn')
     activate_account(product_id=157, is_s18=True)
 
+    # activate data with phoenix pack should not hurt
+    activate_account(product_id=157, is_s18=True, center_pack=True, online_pack=True)
+
 
 def test_activate_v1_student():
     set_environment('staging')

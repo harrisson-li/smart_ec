@@ -169,12 +169,12 @@ def activate_account(product_id=None,
 
     # Phoenix will use new activation link and activate center pack + online pack by default
     is_phoenix = is_phoenix_product(product)
+    include_center_pack = data.pop('center_pack', True)
+    include_online_pack = data.pop('online_pack', True)
 
     if is_phoenix:
-        link = get_activate_pack_link()
-        include_center_pack = kwargs.get('center_pack', True)
-        include_online_pack = kwargs.get('online_pack', True)
         pack_index = 0
+        link = get_activate_pack_link()
 
         if include_center_pack:
             data.update(center_pack_activation_data(pack_index))
@@ -188,11 +188,11 @@ def activate_account(product_id=None,
     result = requests.post(link, data=data)
 
     if is_phoenix:
-        success_text = '"isSuccess": true'
+        success_text = '"isSuccess":true'
     elif student['is_e10']:
-        success_text = 'IsSuccess:True'
-    else:
         success_text = 'success'
+    else:
+        success_text = 'IsSuccess:True'
 
     assert result.status_code == HTTP_STATUS_OK and success_text in result.text, result.text
 
@@ -305,6 +305,7 @@ def activate_phoenix_student(**kwargs):
     if 'school_name' not in kwargs:
         kwargs['school_name'] = get_any_phoenix_school()['name']
 
+    kwargs['is_s18'] = True
     return activate_account_by_dict(kwargs)
 
 

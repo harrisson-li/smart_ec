@@ -121,8 +121,7 @@ def tweak_activation_data_for_phoenix(data):
                      'freeRedemptionQty', 'packageProductIds']
 
     for key in to_be_deleted:
-        if key in data:
-            del data[key]
+        data.pop(key, None)
 
     # workaround: if RedemptionQty <= 12 it probably means months, we update it to days
     qty = int(data['RedemptionQty'])
