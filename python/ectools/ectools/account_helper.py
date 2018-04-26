@@ -100,7 +100,7 @@ def activate_account(product_id=None,
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
     :param is_s18: True will use S18 redemption code.
-    :param auto_onlineoc: Cool or Mini will enable online OC automatically.
+    :param auto_onlineoc: Will auto determine if should go to online OC flow or not.
     :param student: Specify a student to activate, `student['member_id']` must be valid.
 
     :keyword: Can be one or more of below, please refer to account tool page for more detail.
@@ -150,8 +150,13 @@ def activate_account(product_id=None,
         assert isinstance(student, dict)
 
     # generate activation data
-    student['is_v2'], student['is_s18'], student['is_eclite'] = is_v2, is_s18, is_lite
+    is_phoenix = is_phoenix_product(product)
+
+    student['is_v2'], student['is_s18'] = is_v2, is_s18
     student['is_e10'] = is_item_has_tag(product, 'E10')
+    student['is_eclite'] = is_lite
+    student['is_phoenix'] = is_phoenix
+
     link = get_activate_account_link(student['is_e10'])
     data = get_default_activation_data(product)
     data = merge_activation_data(data, **kwargs)
@@ -168,7 +173,7 @@ def activate_account(product_id=None,
         del data['levelQty']
 
     # Phoenix will use new activation link and activate center pack + online pack by default
-    is_phoenix = is_phoenix_product(product)
+
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
 
@@ -201,11 +206,10 @@ def activate_account(product_id=None,
     student['product'], student['school'] = product, school
     student['partner'], student['country_code'] = config.partner, config.country_code
     student['domain'], student['environment'] = config.domain, config.env
-    student['is_phoenix'] = is_phoenix
     student.update(kwargs)
 
-    # set hima test level for online oc student
-    if should_enable_onlineoc(auto_onlineoc, student, school) or is_phoenix:
+    # set hima test level for online oc student who will enroll
+    if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
         student['is_onlineoc'] = True
         set_hima = kwargs.get('set_hima', True)
         if set_hima:

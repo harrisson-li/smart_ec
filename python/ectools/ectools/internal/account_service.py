@@ -68,11 +68,22 @@ def get_default_activation_data(product):
 
 
 def should_enable_onlineoc(auto_determine, student, school):
-    return auto_determine \
-           and config.partner in ['Cool', 'Mini', 'Socn'] \
-           and not student['is_e10'] \
-           and 'OnlineOC-Off' not in school['tags'] \
-           and student['is_v2']
+    # always treat if as disable if not auto determine
+    if not auto_determine:
+        return False
+
+    # China student will enable Online OC by default, except E10 or some test center turn it off
+    if config.partner in ['Cool', 'Mini', 'Socn'] \
+            and not student['is_e10'] \
+            and 'OnlineOC-Off' not in school['tags'] \
+            and student['is_v2']:
+        return True
+
+    # Phoenix student will enable Online OC by default
+    if student['is_phoenix']:
+        return True
+
+    return False
 
 
 def merge_activation_data(source_dict, **more):
