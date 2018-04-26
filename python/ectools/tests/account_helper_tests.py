@@ -215,3 +215,4 @@ def test_activate_phoenix_student():
     activate_phoenix_student()
     activate_phoenix_student(center_pack=False, startLevel='4')
     activate_phoenix_student(online_pack=False)
+    activate_phoenix_student(includesenroll=False)
