@@ -1,4 +1,4 @@
-from ectools.ecdb_helper import read_table
+from ectools.ecdb_helper_v2 import read_table
 from ectools.utility import *
 
 from .objects import Cache
@@ -22,6 +22,10 @@ def get_item_has_tag(items, tag):
 
 
 def read_data(table_name):
+    # only read table with ec_ prefix
+    if not table_name.startswith('ec_'):
+        table_name = 'ec_' + table_name
+
     rows = read_table(table_name)
     # filter out all items tag by 'ignore'
     return [r for r in rows if not is_item_has_tag(r, 'ignore')]
@@ -46,7 +50,7 @@ def get_environment(env_name, domain):
 
 def get_all_database():
     if not hasattr(Cache, 'databases'):
-        Cache.databases = read_data('database')
+        Cache.databases = read_data('databases')
     return Cache.databases
 
 
@@ -137,6 +141,13 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=False):
         return get_random_item(found)
 
 
+def get_any_phoenix_product(by_partner=None):
+    found = [x for x in get_products_by_partner(by_partner)
+             if is_item_has_tag(x, 'Phoenix')]
+
+    return get_random_item(found)
+
+
 def get_eclite_products(partner=None):
     from ectools.config import config
     if partner is None:
@@ -159,7 +170,7 @@ def get_all_schools(cached=True):
             Cache.schools = read_data('schools')
         return Cache.schools
     else:
-        return read_table('schools')
+        return read_data('schools')
 
 
 def get_school_by_name(name, cached=False):
@@ -225,6 +236,13 @@ def is_lite_product(product):
     return is_item_has_tag(product, 'ECLite')
 
 
+def is_phoenix_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'Phoenix')
+
+
 def is_onlineoc_school(school):
     from ectools.config import config
 
@@ -235,6 +253,13 @@ def is_onlineoc_school(school):
         school = get_school_by_name(school, cached=True)
 
     return not is_item_has_tag(school, 'OnlineOC-Off')
+
+
+def is_phoenix_school(school):
+    if not isinstance(school, dict):
+        school = get_school_by_name(school, cached=True)
+
+    return is_item_has_tag(school, 'Phoenix')
 
 
 def _pick_one_school(schools):
@@ -284,6 +309,13 @@ def get_any_onlineoc_school(partner=None):
     found = [x for x in get_schools_by_partner(partner)
              if is_onlineoc_school(x)
              and not is_lite_school(x)]
+
+    return _pick_one_school(found)
+
+
+def get_any_phoenix_school(partner=None):
+    found = [x for x in get_schools_by_partner(partner)
+             if is_phoenix_school(x)]
 
     return _pick_one_school(found)
 

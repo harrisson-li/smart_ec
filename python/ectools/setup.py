@@ -6,10 +6,10 @@ def main():
         name="ectools",
         description="Toolbox from EFEC QA team.",
         long_description="library to help with EFEC testing, such as create test account, submit score, get tokens.",
-        version="1.4.90",
+        version="1.5.11",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
-        url="https://confluence.englishtown.com/display/SMart/ectools+-+Introduction",
+        url="https://confluence.englishtown.cn/display/SMart/ectools+-+Introduction",
         packages=find_packages(exclude=['tests', 'tests.*']),
         package_data={"ectools": ["data/*.csv", "data/*.sql"]},
         install_requires=[
