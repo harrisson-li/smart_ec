@@ -23,6 +23,8 @@ from ectools.internal.objects import Configuration
 from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
 
+PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
+
 
 def get_new_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
@@ -103,18 +105,16 @@ def merge_activation_data(source_dict, **more):
 
 
 def center_pack_activation_data(pack_index):
-    package_mapping = {'Rupe': 1101, 'Ecsp': 1105}
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterBase',
-            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterPack',
+            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
                                                             '{"name":"WS","count": 5},' +
                                                             '{"name": "LC","count": 5}]}'}
 
 
 def online_pack_activation_data(pack_index):
-    package_mapping = {'Rupe': 1102, 'Ecsp': 1106}
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlineBase',
-            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlinePack',
+            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
                                                             '{"name":"PL40","count": 5},' +
                                                             '{"name": "GL","count": 5}]}'}
@@ -263,12 +263,8 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
         removed_tags = ','.join(remove_tags)
         data['remove_tags'] = removed_tags
 
-    added_tags = ['ectools']  # always append ectools if save account from here
-
     if add_tags:
-        added_tags.extend(add_tags)
-
-    data['add_tags'] = ','.join(added_tags)
+        data['add_tags'] = ','.join(add_tags)
 
     response = requests.post(Configuration.remote_api + 'save_account', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text

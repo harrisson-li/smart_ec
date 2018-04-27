@@ -206,7 +206,9 @@ def activate_account(product_id=None,
     student['product'], student['school'] = product, school
     student['partner'], student['country_code'] = config.partner, config.country_code
     student['domain'], student['environment'] = config.domain, config.env
-    student.update(kwargs)
+
+    # save activation data will be good for troubleshooting
+    student['activation_data'] = data
 
     # set hima test level for online oc student who will enroll
     if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
