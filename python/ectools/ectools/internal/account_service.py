@@ -24,6 +24,7 @@ from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
 
 PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
+PHOENIX_PROD_MAP = {'Rupe': '01tO0000005UVjlIAG', 'Ecsp': '01tO0000005UVjlIAG'}
 
 
 def get_new_account_link(is_e10):
@@ -53,6 +54,17 @@ def get_activate_pack_link():
 
 def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
+
+
+def get_success_message(student):
+    if student['is_phoenix']:
+        success_text = '"isSuccess":true'
+    elif student['is_e10']:
+        success_text = 'success'
+    else:
+        success_text = 'IsSuccess:True'
+
+    return success_text
 
 
 def get_default_activation_data(product):
@@ -107,6 +119,7 @@ def merge_activation_data(source_dict, **more):
 def center_pack_activation_data(pack_index):
     return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterPack',
             'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
                                                             '{"name":"WS","count": 5},' +
                                                             '{"name": "LC","count": 5}]}'}
@@ -115,6 +128,7 @@ def center_pack_activation_data(pack_index):
 def online_pack_activation_data(pack_index):
     return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlinePack',
             'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
                                                             '{"name":"PL40","count": 5},' +
                                                             '{"name": "GL","count": 5}]}'}
