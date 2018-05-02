@@ -57,3 +57,7 @@ def test_table_shortcut_functions():
     db_helper.delete_rows(test_table, search_dict)
     row = db_helper.read_table(test_table)
     assert len(row) == 1
+
+
+def test_ecdb_v2_available():
+    assert db_helper.is_db_available()

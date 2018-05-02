@@ -166,3 +166,11 @@ def update_rows(table_name, search_dict, update_dict):
 def delete_rows(table_name, search_dict):
     sql = "DELETE FROM {} WHERE {}".format(table_name, _to_query_clause(search_dict))
     return execute_query(sql)
+
+
+def is_db_available():
+    try:
+        read_table('ec_products', row_limit=1)
+        return True
+    except:
+        return False

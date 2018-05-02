@@ -1,10 +1,9 @@
 """
-We should try to access ecdb and test api every time access account service, because on Mac or Linux it does not
-support using ecdb in url as: //server/path/to/ecdb.sqlite
+We will try to use ecdb_v2 locally for account service, if not working we will use api (for MacOS / Linux)
 
 so we have code like this::
 
-    if not ecdb._using_remote_db() and is_api_available():
+    if ecdb_v2.is_db_available():
         return _api_get_accounts_by_tag(tag, expiration_days)
     else:
         return _db_get_accounts_by_tag(tag, expiration_days)
@@ -18,7 +17,6 @@ import requests
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
-from ectools.config import is_api_available
 from ectools.internal.objects import Configuration
 from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
@@ -161,6 +159,9 @@ def _refine_account(ecdb_account):
         ecdb_account.update(json.loads(ecdb_account['detail']))
         del ecdb_account['detail']
 
+    if 'created_on' in ecdb_account:
+        ecdb_account['created_on'] = arrow.get(ecdb_account['created_on']).format()
+
     return ecdb_account
 
 
@@ -171,16 +172,18 @@ def get_accounts_by_tag(tag, expiration_days=None):
     If expiration days provided, will return accounts within expired days.
     """
 
-    if is_api_available():
-        return _api_get_accounts_by_tag(tag, expiration_days)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_get_accounts_by_tag(tag, expiration_days)
+    else:
+        return _api_get_accounts_by_tag(tag, expiration_days)
 
 
 def _api_get_accounts_by_tag(tag, expiration_days=None):
     data = {'tag': tag,
-            'env': config.env,
-            'expiration_days': int(expiration_days)}
+            'env': config.env}
+
+    if expiration_days:
+        data['expiration_days'] = int(expiration_days)
 
     response = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text
@@ -202,16 +205,16 @@ def _db_get_accounts_by_tag(tag, expiration_days=None):
 
 
 def is_account_expired(account, expiration_days):
-    date = arrow.utcnow().shift(days=-expiration_days).format('YYYY-MM-DD')
-    return account['created_on'] < date
+    expired_date = arrow.utcnow().shift(days=-expiration_days)
+    return arrow.get(account['created_on']) < expired_date
 
 
 @ignore_error
 def get_account(member_id):
-    if is_api_available():
-        return _api_get_account(member_id)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_get_account(member_id)
+    else:
+        return _api_get_account(member_id)
 
 
 def _api_get_account(member_id):
@@ -223,6 +226,11 @@ def _api_get_account(member_id):
 
 
 def _db_get_account(member_id):
+    try:
+        member_id = int(member_id)
+    except ValueError:
+        return None
+
     sql = "select * from ec_test_accounts where environment like '%{}%'".format(config.env)
     sql += " and member_id = {}".format(member_id)
     sql += " order by created_on desc"
@@ -261,10 +269,10 @@ def save_account(account, add_tags=None, remove_tags=None):
     The add_tags and remove_tags should be in list format as ['Tag1', 'Tag2']
     """
 
-    if is_api_available():
-        return _api_save_account(account, add_tags, remove_tags)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_save_account(account, add_tags, remove_tags)
+    else:
+        return _api_save_account(account, add_tags, remove_tags)
 
 
 def _api_save_account(account, add_tags=None, remove_tags=None):
