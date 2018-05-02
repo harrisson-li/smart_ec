@@ -1,3 +1,5 @@
+import arrow
+
 from ectools.account_helper import *
 from ectools.config import set_environment
 from ectools.internal import account_service
@@ -8,9 +10,15 @@ def test_get_account_by_tag():
     accounts = account_service._db_get_accounts_by_tag('ectools')
     assert len(accounts) > 0
 
+    # able to convert time info
+    get_logger().info(arrow.get(accounts[0]['created_on']))
+
     set_environment('qa')
     accounts = account_service._api_get_accounts_by_tag('UnitTest', expiration_days=365)
     assert len(accounts) > 0
+
+    # able to convert time info
+    get_logger().info(arrow.get(accounts[0]['created_on']))
 
 
 def test_get_account_by_member_id():

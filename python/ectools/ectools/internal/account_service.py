@@ -1,10 +1,9 @@
 """
-We should try to access ecdb and test api every time access account service, because on Mac or Linux it does not
-support using ecdb in url as: //server/path/to/ecdb.sqlite
+We will try to use ecdb_v2 locally for account service, if not working we will use api (for MacOS / Linux)
 
 so we have code like this::
 
-    if not ecdb._using_remote_db() and is_api_available():
+    if ecdb_v2.is_db_available():
         return _api_get_accounts_by_tag(tag, expiration_days)
     else:
         return _db_get_accounts_by_tag(tag, expiration_days)
@@ -18,10 +17,12 @@ import requests
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
-from ectools.config import is_api_available
 from ectools.internal.objects import Configuration
 from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
+
+PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
+PHOENIX_PROD_MAP = {'Rupe': '01tO0000005UVjlIAG', 'Ecsp': '01tO0000005UVjlIAG'}
 
 
 def get_new_account_link(is_e10):
@@ -51,6 +52,17 @@ def get_activate_pack_link():
 
 def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
+
+
+def get_success_message(student):
+    if student['is_phoenix']:
+        success_text = '"isSuccess":true'
+    elif student['is_e10']:
+        success_text = 'success'
+    else:
+        success_text = 'IsSuccess:True'
+
+    return success_text
 
 
 def get_default_activation_data(product):
@@ -103,18 +115,18 @@ def merge_activation_data(source_dict, **more):
 
 
 def center_pack_activation_data(pack_index):
-    package_mapping = {'Rupe': 1101, 'Ecsp': 1105}
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterBase',
-            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterPack',
+            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
                                                             '{"name":"WS","count": 5},' +
                                                             '{"name": "LC","count": 5}]}'}
 
 
 def online_pack_activation_data(pack_index):
-    package_mapping = {'Rupe': 1102, 'Ecsp': 1106}
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlineBase',
-            'PackList[{}].PackageProductId'.format(pack_index): package_mapping[config.partner],
+    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlinePack',
+            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
                                                             '{"name":"PL40","count": 5},' +
                                                             '{"name": "GL","count": 5}]}'}
@@ -147,6 +159,9 @@ def _refine_account(ecdb_account):
         ecdb_account.update(json.loads(ecdb_account['detail']))
         del ecdb_account['detail']
 
+    if 'created_on' in ecdb_account:
+        ecdb_account['created_on'] = arrow.get(ecdb_account['created_on']).format()
+
     return ecdb_account
 
 
@@ -157,16 +172,18 @@ def get_accounts_by_tag(tag, expiration_days=None):
     If expiration days provided, will return accounts within expired days.
     """
 
-    if is_api_available():
-        return _api_get_accounts_by_tag(tag, expiration_days)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_get_accounts_by_tag(tag, expiration_days)
+    else:
+        return _api_get_accounts_by_tag(tag, expiration_days)
 
 
 def _api_get_accounts_by_tag(tag, expiration_days=None):
     data = {'tag': tag,
-            'env': config.env,
-            'expiration_days': int(expiration_days)}
+            'env': config.env}
+
+    if expiration_days:
+        data['expiration_days'] = int(expiration_days)
 
     response = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text
@@ -188,16 +205,16 @@ def _db_get_accounts_by_tag(tag, expiration_days=None):
 
 
 def is_account_expired(account, expiration_days):
-    date = arrow.utcnow().shift(days=-expiration_days).format('YYYY-MM-DD')
-    return account['created_on'] < date
+    expired_date = arrow.utcnow().shift(days=-expiration_days)
+    return arrow.get(account['created_on']) < expired_date
 
 
 @ignore_error
 def get_account(member_id):
-    if is_api_available():
-        return _api_get_account(member_id)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_get_account(member_id)
+    else:
+        return _api_get_account(member_id)
 
 
 def _api_get_account(member_id):
@@ -209,6 +226,11 @@ def _api_get_account(member_id):
 
 
 def _db_get_account(member_id):
+    try:
+        member_id = int(member_id)
+    except ValueError:
+        return None
+
     sql = "select * from ec_test_accounts where environment like '%{}%'".format(config.env)
     sql += " and member_id = {}".format(member_id)
     sql += " order by created_on desc"
@@ -247,10 +269,10 @@ def save_account(account, add_tags=None, remove_tags=None):
     The add_tags and remove_tags should be in list format as ['Tag1', 'Tag2']
     """
 
-    if is_api_available():
-        return _api_save_account(account, add_tags, remove_tags)
-    else:
+    if ecdb_v2.is_db_available():
         return _db_save_account(account, add_tags, remove_tags)
+    else:
+        return _api_save_account(account, add_tags, remove_tags)
 
 
 def _api_save_account(account, add_tags=None, remove_tags=None):
@@ -263,12 +285,8 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
         removed_tags = ','.join(remove_tags)
         data['remove_tags'] = removed_tags
 
-    added_tags = ['ectools']  # always append ectools if save account from here
-
     if add_tags:
-        added_tags.extend(add_tags)
-
-    data['add_tags'] = ','.join(added_tags)
+        data['add_tags'] = ','.join(add_tags)
 
     response = requests.post(Configuration.remote_api + 'save_account', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text

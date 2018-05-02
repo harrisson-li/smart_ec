@@ -135,27 +135,30 @@ def activate_account(product_id=None,
         school = get_school_by_name(school_name)
         is_v2 = is_v2_school(school_name)  # fix account version according to school
 
-    # check eclite product should match eclite center
+    # initial student type
     is_lite = is_lite_product(product)
-    assert is_lite == is_lite_school(school), \
-        "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
+    is_phoenix = is_phoenix_product(product)
+
+    # check eclite product should match eclite center
+    if is_lite:
+        assert is_lite_school(school), \
+            "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
     # check partner of product and school should match
     assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
 
-    # auto create member if not specified
+    # create member id if not specified
     if student is None:
         student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
     else:
         assert isinstance(student, dict)
 
     # generate activation data
-    is_phoenix = is_phoenix_product(product)
-
     student['is_v2'], student['is_s18'] = is_v2, is_s18
     student['is_e10'] = is_item_has_tag(product, 'E10')
     student['is_eclite'] = is_lite
     student['is_phoenix'] = is_phoenix
+    student['source'] = kwargs.pop('source', 'ectools')
 
     link = get_activate_account_link(student['is_e10'])
     data = get_default_activation_data(product)
@@ -173,7 +176,6 @@ def activate_account(product_id=None,
         del data['levelQty']
 
     # Phoenix will use new activation link and activate center pack + online pack by default
-
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
 
@@ -190,23 +192,23 @@ def activate_account(product_id=None,
 
         tweak_activation_data_for_phoenix(data)
 
+    # save activation data will be good for troubleshooting
+    student['activation_data'] = data
+
+    # post the data to activation tool
     result = requests.post(link, data=data)
+    success_text = get_success_message(student)
 
-    if is_phoenix:
-        success_text = '"isSuccess":true'
-    elif student['is_e10']:
-        success_text = 'success'
-    else:
-        success_text = 'IsSuccess:True'
-
-    assert result.status_code == HTTP_STATUS_OK and success_text in result.text, result.text
+    # handle activation failure flow, save account and append a tag as "Failed"
+    if result.status_code != HTTP_STATUS_OK or success_text not in result.text:
+        save_account(student, add_tags=['Failed', ])
+        raise AssertionError(result.text)
 
     # update student detail as dict
     student['is_activated'], student['is_onlineoc'] = True, False
     student['product'], student['school'] = product, school
     student['partner'], student['country_code'] = config.partner, config.country_code
     student['domain'], student['environment'] = config.domain, config.env
-    student.update(kwargs)
 
     # set hima test level for online oc student who will enroll
     if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:

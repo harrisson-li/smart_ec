@@ -74,10 +74,6 @@ def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
     set_environment('staging')
     set_partner('mini')
-    try:
-        activate_account(65, 'WH_GGC')
-    except AssertionError as e:
-        assert e.args[0] == "Miss match product [65] and school [WH_GGC] for ECLite account!"
 
     try:
         activate_account(143, 'FS_ZUM')
