@@ -1,4 +1,9 @@
-﻿## v0.0.0.48
+﻿## v0.0.0.51
+
+1. Support Phoenix Center Pack and Online Pack
+2. Remove ET2 tag and add it as source in account detail.
+
+## v0.0.0.48
 
 1. Remove relations for auto-onlineOC and includes enroll.
 2. Resize tool size and remove maximum button.

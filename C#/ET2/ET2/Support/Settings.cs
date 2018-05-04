@@ -330,8 +330,11 @@ namespace ET2.Support
                     Partner = e["partner"].ToString().ToLower(),
                     SecurityVerified = true,
                     AutoOnlineOc = true,
+                    CenterPack = true,
+                    OnlinePack = true,
                     StartLevel = "0A",
                     IsE10 = e["tags"].ToString().Contains("E10"),
+                    IsPhoenix = e["tags"].ToString().Contains("Phoenix"),
                     Tags = e["tags"].ToString()
                 }).ToList();
             }

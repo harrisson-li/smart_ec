@@ -10,6 +10,7 @@ namespace ET2.Models
         private int _productId;
         private string _name;
         private bool _isE10;
+        private bool _isPhoenix;
 
         public bool IsE10
         {
@@ -18,6 +19,17 @@ namespace ET2.Models
             {
                 if (value == _isE10) return;
                 _isE10 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsPhoenix
+        {
+            get { return _isPhoenix; }
+            set
+            {
+                if (value == _isPhoenix) return;
+                _isPhoenix = value;
                 OnPropertyChanged();
             }
         }
@@ -196,6 +208,32 @@ namespace ET2.Models
             {
                 if (value == _isAutoOnlineOc) return;
                 _isAutoOnlineOc = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _includeCenterPack;
+
+        public bool CenterPack
+        {
+            get { return _includeCenterPack; }
+            set
+            {
+                if (value == _includeCenterPack) return;
+                _includeCenterPack = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _includeOnlinePack;
+
+        public bool OnlinePack
+        {
+            get { return _includeOnlinePack; }
+            set
+            {
+                if (value == _includeOnlinePack) return;
+                _includeOnlinePack = value;
                 OnPropertyChanged();
             }
         }
