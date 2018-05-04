@@ -185,6 +185,8 @@ namespace ET2.ViewModels
                 is_v2 = (accountType == AccountTypes.S15_V2),
                 is_s18 = data.CurrentProduct.Tags.Contains("S18"),
                 auto_onlineoc = data.CurrentProduct.AutoOnlineOc,
+                center_pack = data.CurrentProduct.CenterPack,
+                online_pack = data.CurrentProduct.OnlinePack,
                 product_id = data.CurrentProduct.Id,
                 school_name = data.CurrentSchool,
                 student = new { member_id = id, username = username },
@@ -192,7 +194,8 @@ namespace ET2.ViewModels
                 mainRedemptionQty = data.CurrentProduct.MainRedQty,
                 freeRedemptionQty = data.CurrentProduct.FreeRedQty,
                 securityverified = data.CurrentProduct.SecurityVerified ? "on" : "off",
-                includesenroll = data.CurrentProduct.IncludesEnroll ? "on" : "off"
+                includesenroll = data.CurrentProduct.IncludesEnroll ? "on" : "off",
+                source = "ET2 Windows"
             };
 
             try
@@ -228,7 +231,6 @@ namespace ET2.ViewModels
                     env = GetCurrentEnvironment(),
                     member_id = id,
                     created_by = Environment.UserName,
-                    add_tags = "ET2",
                     remove_tags = "ectools"
                 };
 

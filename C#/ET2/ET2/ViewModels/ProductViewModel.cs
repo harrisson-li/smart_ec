@@ -116,6 +116,7 @@ namespace ET2.ViewModels
                 this.CurrentProduct.MainRedCode = prod.MainRedCode;
                 this.CurrentProduct.FreeRedCode = prod.FreeRedCode;
                 this.CurrentProduct.Tags = prod.Tags;
+                this.CurrentProduct.IsPhoenix = prod.IsPhoenix;
                 this.NotifyOfPropertyChange();
             }
         }

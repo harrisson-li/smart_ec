@@ -338,8 +338,22 @@
                     <CheckBox
                         Margin="0,5,0,0"
                         Content="Auto OnlineOC"
-                        ToolTip="Auto determine should enable Online OC features or not."
+                        ToolTip="Auto enable online OC for China + Phoenix products."
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
+                                            Mode=TwoWay}" />
+                    <CheckBox
+                        Margin="0,5,0,0"
+                        Content="Center Pack"
+                        IsEnabled="{Binding Path=ProductVM.CurrentProduct.IsPhoenix}"
+                        ToolTip="Add Center Pack when activate Phoenix product."
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.CenterPack,
+                                            Mode=TwoWay}" />
+                    <CheckBox
+                        Margin="0,5,0,0"
+                        Content="Online Pack"
+                        IsEnabled="{Binding Path=ProductVM.CurrentProduct.IsPhoenix}"
+                        ToolTip="Add Online Pack when activate Phoenix product."
+                        IsChecked="{Binding Path=ProductVM.CurrentProduct.OnlinePack,
                                             Mode=TwoWay}" />
                 </StackPanel>
                 <WrapPanel
