@@ -13,8 +13,10 @@ namespace ET2.Tests
             var envList = new string[] { "uat", "qa", "staging", "webus1" };
             foreach (var env in envList)
             {
-                var etown = string.Format("http://{0}.englishtown.com", env) ;
-                Log.InfoFormat("{0}: {1}", env, TokenHelper.GetToken(etown));
+                var etown = string.Format("https://{0}.englishtown.com", env);
+                var token = TokenHelper.GetToken(etown);
+                Log.InfoFormat("{0}: {1}", env, token);
+                Assert.AreNotEqual("<Unknown>", token);
             }
         }
     }

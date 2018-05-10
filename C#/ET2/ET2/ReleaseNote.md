@@ -1,4 +1,8 @@
-﻿## v0.0.0.51
+﻿## v0.0.0.52
+
+1. Bug fix: cannot load token for QA environment due to upgrade to https
+
+## v0.0.0.51
 
 1. Support Phoenix Center Pack and Online Pack
 2. Remove ET2 tag and add it as source in account detail.
