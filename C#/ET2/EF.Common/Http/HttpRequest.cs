@@ -31,6 +31,7 @@ namespace EF.Common.Http
             request.Headers.Add("Origin", header.Origin);
             request.KeepAlive = true;
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
             if (header.Method.ToLower() == "post")
