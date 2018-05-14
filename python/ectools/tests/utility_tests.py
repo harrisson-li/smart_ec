@@ -12,7 +12,12 @@ def test_get_browser():
     assert browser.name == 'chrome'
     browser.get('http://ec.ef.com')
     close_browser()
+
     browser = get_browser(browser_type='Chrome', browser_id='my')
+    assert browser.name == 'chrome'
+    close_browser(browser_id='my')
+
+    browser = get_browser(browser_type='Chrome', browser_id='my', headless=True)
     assert browser.name == 'chrome'
     close_browser(browser_id='my')
 
