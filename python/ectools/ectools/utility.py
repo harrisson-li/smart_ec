@@ -305,7 +305,7 @@ def close_browser(browser_id=None):
         delattr(Cache, browser_id)
 
 
-def get_browser(browser_type=Configuration.browser_type, browser_id=None):
+def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=False):
     if not browser_id:
         from ectools.config import config
         browser_id = config.browser_id
@@ -315,6 +315,11 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None):
         if browser_type == 'Chrome':
             options = Options()
             options.add_argument('--disable-infobars')
+
+            if headless:
+                options.add_argument('--headless')
+                options.add_argument('--disable-gpu')
+
             browser = webdriver.Chrome(chrome_options=options)
         else:
             browser = getattr(webdriver, browser_type)()
