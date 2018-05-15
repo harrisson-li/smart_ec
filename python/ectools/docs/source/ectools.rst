@@ -50,9 +50,9 @@ ectools.ecdb_helper_v2 module
 -----------------------------
 
 .. automodule:: ectools.ecdb_helper_v2
-:members:
-        :undoc-members:
-        :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 ectools.offline_class_helper module
 -----------------------------------
@@ -66,9 +66,9 @@ ectools.schedule_class_helper module
 ------------------------------------
 
 .. automodule:: ectools.schedule_class_helper
-:members:
-        :undoc-members:
-        :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 ectools.service_helper module
 -----------------------------
