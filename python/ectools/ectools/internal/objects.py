@@ -28,8 +28,10 @@ class Configuration(Base):
     oboe_root = '',
     browser_id = 'internal_browser'
     browser_type = 'Chrome'
+    browser_headless = False
     default_timeout = 60
     default_poll_time = 0.5
     default_retry_times = 3
     db_path = 'to_be_set'
     remote_api = 'http://cns-qaauto5/api/'
+    smart_repo = r'\\cns-qaauto5\Shared\git\smart'
