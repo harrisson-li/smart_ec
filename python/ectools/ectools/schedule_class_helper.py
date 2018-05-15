@@ -6,6 +6,9 @@ Example to use this module::
   from ectools.schedule_class_helper import *
   from ectools.config import set_environment, set_partner
 
+  # set smart repo, required for Mac / Linux system
+  set_smart_repo('/path/to/smart')
+
   # first of all, you have to set environment and partner
   set_environment('qa')
   set_partner('mini')
