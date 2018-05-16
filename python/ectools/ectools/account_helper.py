@@ -230,7 +230,7 @@ def activate_account(product_id=None,
     # save account to EC db then return
     get_logger().debug('New test account: {}'.format(student))
     tags = get_student_tags(student)
-    save_account(student, add_tags=tags, remove_tags=['not_activated'])
+    save_account(student, add_tags=tags, remove_tags=['not_activated', 'Failed'])
 
     return student
 

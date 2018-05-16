@@ -1,7 +1,5 @@
 """
-This module will provide functions to schedule EC class via oboe service.
-
-Example to use this module::
+This module will provide functions to schedule EC class via oboe service. Example usage::
 
   from ectools.schedule_class_helper import *
   from ectools.config import set_environment, set_partner
@@ -23,12 +21,28 @@ Example to use this module::
                                    class_type='F2F High')
 
   # or schedule a class directly, if no topic scheduled it will auto schedule one
-  # schedule_class support offsite class and center class, see below examples
+  # schedule_class() support offsite class and center class, see below examples
+
+  # offsite class and supported arguments
   detail = schedule_class(schedule_date=schedule_date,
                           school_name='BJ_DFG',
-                          class_category='LC')
+                          class_category='LC'
+                          # center_type = 'InCenter' / 'OutCenter'
+                          # capacity
+                          # start_time e.g. '1100'
+                          # end_time e.g. '1200'
+                          # address_en
+                          # address_local
+                          # topic_en
+                          # topic_local
+                          # notes_en
+                          # notes_local
+                          # fee
+                          # friends_allowed
+                          # friends_total
+                          )
 
-  # change partner to schedule for another school
+  # center class and supported arguments
   set_partner('mini')
   schedule_class(schedule_date=schedule_date,
                  school_name='CD_MCC',
@@ -39,7 +53,8 @@ Example to use this module::
                  )
 
 For more detail about schedule class topic and schedule topic, please refer to smart automation repo.
- -  smart\\business\oboe\service\schedule_class_services\
+
+ -  ``smart\\business\oboe\service\schedule_class_services\``
 
 """
 
@@ -58,10 +73,12 @@ def _import_smart():
 
 def set_smart_repo(repo_path):
     """
-    Provide another smart repo instead use default value, usually required for Mac/Linux.
-    Because the default smart repo is a Windows SMB path: \\cns-qaauto5\Shared\git\smart
+    Provide another smart repo instead use default value, required for Mac/Linux or when
+    you cannot connect default smart repo. The default smart repo only support Windows system:
 
-    :param repo_path: e.g. \\path\for\windows or /path/for/mac/linux
+      - ``\\\\cns-qaauto5\Shared\git\smart``
+
+    :param repo_path: e.g. ``/path/for/mac/linux``
     """
     if not exists(repo_path):
         raise ValueError('Invalid path: {}!'.format(repo_path))
@@ -71,12 +88,29 @@ def set_smart_repo(repo_path):
 
 
 def get_future_date(days_delta=0, date_format='%m/%d/%Y'):
+    """
+    Get a date in specified format. for example::
+
+      today = get_future_date()
+      tomorrow = get_future_date(1)
+      yesterday = get_future_date(-1)
+
+    :param days_delta: any integer number.
+    :param date_format: default = ``%m/%d/%Y``
+    :return: date string in format.
+    """
     _import_smart()
     from data import utilities as i
     return i.get_future_date(days_delta, date_format)
 
 
 def get_year_week_code(date_str):
+    """
+    Convert date string into week code.
+
+    :param date_str: format in ``mm/dd/year``, e.g. 1/21/2017
+    :return: e.g. ``1703`` ==> year 2017, third week
+    """
     _import_smart()
     from data import utilities as i
     return i.get_year_week_code(date_str)
@@ -85,7 +119,8 @@ def get_year_week_code(date_str):
 def schedule_class_topic(**kwargs):
     """
     Schedule class topic via OBOE service, for more detail please refer to:
-        - smart\\business\oboe\service\schedule_class_services\schedule_class_topic_service.py
+
+        - ``smart\\business\oboe\service\schedule_class_services\schedule_class_topic_service.py``
 
     :return: class topic info, dict data type.
     """
@@ -102,9 +137,10 @@ def schedule_class_topic(**kwargs):
 def schedule_class(**kwargs):
     """
     Schedule class via OBOE service, for more detail please refer to:
-        - smart\\business\oboe\service\schedule_class_services\__init__.py
-        - smart\\business\oboe\service\schedule_class_services\schedule_offsite_class_service.py
-        - smart\\business\oboe\service\schedule_class_services\schedule_regular_class_service.py
+
+        - ``smart\\business\oboe\service\schedule_class_services\__init__.py``
+        - ``smart\\business\oboe\service\schedule_class_services\schedule_offsite_class_service.py``
+        - ``smart\\business\oboe\service\schedule_class_services\schedule_regular_class_service.py``
 
     :return: class info, dict data type.
     """
