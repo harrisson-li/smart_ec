@@ -205,7 +205,7 @@ def test_activate_v1_student():
 
 
 def test_activate_phoenix_student():
-    set_environment('live')
+    set_environment('uat')
     set_partner('rupe')
 
     activate_phoenix_student()
@@ -217,4 +217,4 @@ def test_activate_phoenix_student():
 def test_activate_live_student():
     set_environment('live')
     set_partner('cool')
-    activate_s18_student()
+    activate_s18_student(school_name='Tcenter(notselect)')
