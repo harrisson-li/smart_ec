@@ -18,6 +18,7 @@ import requests
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.internal.objects import Configuration
+from ectools.token_helper import get_token
 from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
 
@@ -25,14 +26,23 @@ PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
 PHOENIX_PROD_MAP = {'Rupe': '01tO0000005UVjlIAG', 'Ecsp': '01tO0000005UVjlIAG'}
 
 
+def append_token(url, join_by='&'):
+    if config.env == 'Live':
+        url += join_by + 'token=' + get_token()
+
+    return url
+
+
 def get_new_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
     url = url.format(config.etown_root_http, config.country_code, config.partner)
 
     if is_e10:
-        return url.replace('e14hz', config.partner)
+        url = url.replace('e14hz', config.partner)
     else:
-        return "{}&v=2".format(url)
+        url = "{}&v=2".format(url)
+
+    return append_token(url)
 
 
 def get_activate_account_link(is_e10):
@@ -40,14 +50,15 @@ def get_activate_account_link(is_e10):
     url = url.format(config.etown_root_http)
 
     if is_e10:
-        return url.replace('V2', 'E10')
-    else:
-        return url
+        url = url.replace('V2', 'E10')
+
+    return append_token(url, join_by='?')
 
 
 def get_activate_pack_link():
     url = '{}/services/Oboe2/SalesForce/test/ActivatePack?r=json'
-    return url.format(config.etown_root_http)
+    url = url.format(config.etown_root_http)
+    return append_token(url)
 
 
 def get_login_post_link():

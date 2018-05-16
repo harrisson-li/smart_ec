@@ -305,9 +305,10 @@ def close_browser(browser_id=None):
         delattr(Cache, browser_id)
 
 
-def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=False):
+def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=None):
+    from ectools.config import config
+
     if not browser_id:
-        from ectools.config import config
         browser_id = config.browser_id
 
     if not hasattr(Cache, browser_id):
@@ -315,6 +316,9 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
         if browser_type == 'Chrome':
             options = Options()
             options.add_argument('--disable-infobars')
+
+            if headless == None:
+                headless = config.browser_headless
 
             if headless:
                 options.add_argument('--headless')

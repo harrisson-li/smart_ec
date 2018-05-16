@@ -212,3 +212,9 @@ def test_activate_phoenix_student():
     activate_phoenix_student(center_pack=False, startLevel='4')
     activate_phoenix_student(online_pack=False)
     activate_phoenix_student(includesenroll=False)
+
+
+def test_activate_live_student():
+    set_environment('live')
+    set_partner('cool')
+    activate_s18_student(school_name='Tcenter(notselect)')
