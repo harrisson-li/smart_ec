@@ -23,7 +23,10 @@ from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
 
 PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
-PHOENIX_PROD_MAP = {'Rupe': '01tO0000005UVjlIAG', 'Ecsp': '01tO0000005UVjlIAG'}
+PHOENIX_PROD_MAP = {'Rupe': {'Center': '01t0l000001DYG8AAO',
+                             'Online': '01t0l000001DYGBAA4'},
+                    'Ecsp': {'Center': '01t0l000001DmQnAAK',
+                             'Online': '01t0l000001DmR2AAK'}}
 
 
 def append_token(url, join_by='&'):
@@ -128,7 +131,7 @@ def merge_activation_data(source_dict, **more):
 def center_pack_activation_data(pack_index):
     return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterPack',
             'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
-            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner]['Center'],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
                                                             '{"name":"WS","count": 5},' +
                                                             '{"name": "LC","count": 5}]}'}
@@ -137,7 +140,7 @@ def center_pack_activation_data(pack_index):
 def online_pack_activation_data(pack_index):
     return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlinePack',
             'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
-            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner],
+            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner]['Online'],
             'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
                                                             '{"name":"PL40","count": 5},' +
                                                             '{"name": "GL","count": 5}]}'}
@@ -148,7 +151,7 @@ def tweak_activation_data_for_phoenix(data):
     data['DaysOfExpiredCouponRetention'] = 30
     data['RedemptionCode'] = data['mainRedemptionCode']
     data['RedemptionQty'] = data['mainRedemptionQty']
-    data['ExtendSubscriptionType'] = 'FromExpiredDate'
+    data['ExtendSubscriptionType'] = 'FromNow'
 
     to_be_deleted = ['includesenroll', 'mainRedemptionCode', 'mainRedemptionQty',
                      'startLevel', 'levelQty', 'productId', 'freeRedemptionCode',
