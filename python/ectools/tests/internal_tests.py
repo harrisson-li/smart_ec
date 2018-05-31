@@ -1,4 +1,4 @@
-from ectools.config import set_environment, set_partner
+from ectools.config import set_environment, set_partner, config
 from ectools.internal import troop_service_helper as troop
 from ectools.internal.data_helper import *
 
@@ -146,3 +146,21 @@ def test_troop_get_current_user_info():
     assert result['lastName'] == 'test'
     assert result['partnerCode'] == 'Cool'
     assert result['divisionCode'] == 'SSCNBJ5'
+
+
+def test_get_phoenix_pack():
+    set_environment('uat')
+    set_partner('rupe')
+    pack = get_phoenix_pack(config.env, config.partner, 'Center Pack Basic')
+    assert 'Starter' in pack['tags']
+
+    set_partner('ecsp')
+    pack = get_phoenix_pack(config.env, config.partner, 'Online Pack Basic')
+    assert pack['salesforce_id'] == '01t0l000001DmR2AAK'
+
+    pack = get_phoenix_pack(config.env, config.partner, 'Unrestricted Center')
+    assert pack['salesforce_id'] == '01t0l000001DYGdAAO'
+
+    set_partner('rupe')
+    pack = get_phoenix_pack(config.env, config.partner, 'Unrestricted Online')
+    assert pack['salesforce_id'] == '01t0l000001DYGeAAO'

@@ -115,6 +115,7 @@ def activate_account(product_id=None,
               - channel           = e.g. 'EC#SH_XJH'
               - onlineViceProducts= e.g. '{PL:20,CP20:30}'
               - packageProductIds = e.g. '1001,1010'
+              - phoenix_packs     = e.g. ['pack1','pack2'], pack name => kiss.dbo.product / ProductName
 
 
 
@@ -178,19 +179,24 @@ def activate_account(product_id=None,
     # Phoenix will use new activation link and activate center pack + online pack by default
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
+    phoenix_packs = data.pop('phoenix_packs', [])
+    assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
+
+    # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
+    if len(phoenix_packs):
+        include_center_pack = False
+        include_online_pack = False
 
     if is_phoenix:
-        pack_index = 0
         link = get_activate_pack_link()
 
         if include_center_pack:
-            data.update(center_pack_activation_data(pack_index))
-            pack_index += 1
+            phoenix_packs.append('Center Pack Basic')
 
         if include_online_pack:
-            data.update(online_pack_activation_data(pack_index))
+            phoenix_packs.append('Online Pack Basic')
 
-        tweak_activation_data_for_phoenix(data)
+        generate_activation_data_for_phoenix(data, phoenix_packs)
 
     # save activation data will be good for troubleshooting
     student['activation_data'] = data
