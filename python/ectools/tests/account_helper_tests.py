@@ -214,6 +214,13 @@ def test_activate_phoenix_student():
     activate_phoenix_student(includesenroll=False)
 
 
+def test_activate_phoenix_pack():
+    set_environment('uat')
+    set_partner('rupe')
+
+    activate_phoenix_student(phoenix_packs=['Center Pack Basic', 'Unrestricted Center'])
+
+
 def test_activate_live_student():
     set_environment('live')
     set_partner('cool')

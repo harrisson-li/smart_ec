@@ -17,16 +17,11 @@ import requests
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
+from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
 from ectools.token_helper import get_token
 from ectools.utility import ignore_error
 from .constants import HTTP_STATUS_OK
-
-PHOENIX_PACK_MAP = {'Rupe': 1101, 'Ecsp': 1105}
-PHOENIX_PROD_MAP = {'Rupe': {'Center': '01t0l000001DYG8AAO',
-                             'Online': '01t0l000001DYGBAA4'},
-                    'Ecsp': {'Center': '01t0l000001DmQnAAK',
-                             'Online': '01t0l000001DmR2AAK'}}
 
 
 def append_token(url, join_by='&'):
@@ -128,25 +123,16 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
-def center_pack_activation_data(pack_index):
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'CenterPack',
-            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
-            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner]['Center'],
-            'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"F2F","count":5},' +
-                                                            '{"name":"WS","count": 5},' +
-                                                            '{"name": "LC","count": 5}]}'}
+def generate_activation_data_for_phoenix(data, phoenix_packs):
+    assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
 
+    for i, name in enumerate(phoenix_packs):
+        p = get_phoenix_pack(config.env, config.partner, name)
+        data['PackList[{}].OrderProductId'.format(i)] = p['name']
+        data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
+        data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
+        data['PackList[{}].TemplateData'.format(i)] = p['data'] or ''
 
-def online_pack_activation_data(pack_index):
-    return {'PackList[{}].OrderProductId'.format(pack_index): 'OnlinePack',
-            'PackList[{}].PackageProductId'.format(pack_index): PHOENIX_PACK_MAP[config.partner],
-            'PackList[{}].SalesforceProductId'.format(pack_index): PHOENIX_PROD_MAP[config.partner]['Online'],
-            'PackList[{}].TemplateData'.format(pack_index): '{"coupons":[{"name":"PL20","count":5},' +
-                                                            '{"name":"PL40","count": 5},' +
-                                                            '{"name": "GL","count": 5}]}'}
-
-
-def tweak_activation_data_for_phoenix(data):
     data['OrderId'] = arrow.now().timestamp  # for refund purpose
     data['DaysOfExpiredCouponRetention'] = 30
     data['RedemptionCode'] = data['mainRedemptionCode']

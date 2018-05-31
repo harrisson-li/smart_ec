@@ -330,3 +330,20 @@ def get_all_levels():
 def get_random_level(min_level=1, max_level=16):
     level_list = get_all_levels()[min_level - 1:max_level - 1]
     return get_random_item(level_list)
+
+
+def get_all_phoenix_pack():
+    if not hasattr(Cache, 'phoenix_pack'):
+        Cache.phoenix_pack = read_data('phoenix_pack')
+    return Cache.phoenix_pack
+
+
+def get_phoenix_pack(env_name, partner, pack_name):
+    found = [x for x in get_all_phoenix_pack() if x['name'] == pack_name]
+    # env example: All, UAT, UAT+QA
+    found = [x for x in found if x['env'] == 'All' or env_name in x['env']]
+    # partner example: All, Cool, Cool+Mini
+    found = [x for x in found if x['partner'] == 'All' or partner in x['partner']]
+
+    assert len(found), "No such package: {}/{}/{}!".format(env_name, partner, pack_name)
+    return found[0]
