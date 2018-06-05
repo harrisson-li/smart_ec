@@ -1,9 +1,10 @@
 import json
 
 import requests
+from requests import Session
+
 from ectools.config import config
 from ectools.internal.objects import Cache
-from requests import Session
 
 LOGIN_SERVICE_URL = "{}/login/secure.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
@@ -74,11 +75,14 @@ def _build_context(username):
     return CONTEXT_QUERY_STRING_PATTERN.format(country_code, culture_code, partner_code, site_version)
 
 
-def query(username, query_string, url_with_context=True, return_first_item=True):
+def query(username, query_string, url_with_context=True, return_first_item=True, url_query_string=None):
     url = TROOP_SERVICE_URL.format(config.etown_root)
 
     if url_with_context:
         url += _build_context(username)
+
+    if url_query_string:
+        url += url_query_string
 
     headers = _get_default_header()
     response = get_request_session(username).post(url, headers=headers, data=query_string)

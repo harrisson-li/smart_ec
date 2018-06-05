@@ -1,5 +1,3 @@
-import json
-
 from ectools.config import get_logger, set_environment
 from ectools.service_helper import *
 
@@ -125,6 +123,8 @@ def test_troop_translate_blurb():
     blurb_id = '498117'
     result = troop_service_translate_blurb(blurb_id)
     assert result == 'Live Teacher Feedback'
+    result = troop_service_translate_blurb(blurb_id, 'es')
+    assert result == 'Comentarios de un Profesor'
 
 
 def test_account_service_load_student():

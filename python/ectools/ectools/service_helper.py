@@ -215,8 +215,11 @@ def query_troop_service(student_name,
 
 
 def troop_service_translate_blurb(blurb_id, culture_code='en'):
-    query_string = 'q=blurb!{}&c=culturecode={}'.format(blurb_id, culture_code)
-    return query_troop_service(None, query_string, login_required=False)['translation']
+    query_string = 'q=blurb!{}'.format(blurb_id)
+    url_query_string = 'c=culturecode={}'.format(culture_code)
+    return troop_service_helper.query(None, query_string,
+                                      url_with_context=False,
+                                      url_query_string=url_query_string)['translation']
 
 
 def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
