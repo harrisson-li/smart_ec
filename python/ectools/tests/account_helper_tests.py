@@ -218,7 +218,7 @@ def test_activate_phoenix_pack():
     set_environment('uat')
     set_partner('rupe')
 
-    activate_phoenix_student(phoenix_packs=['Center Pack Basic', 'Unrestricted Center'])
+    activate_phoenix_student(phoenix_packs=['Center Pack Basic', 'Intensive Center Fee'])
 
 
 def test_activate_live_student():

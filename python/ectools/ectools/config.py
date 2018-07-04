@@ -108,6 +108,9 @@ def set_partner(partner):
 
 
 def _set_logger():
+    if get_ptest_logger():
+        return get_ptest_logger()
+
     logger = logging.getLogger(config.name)
     if not logger.handlers:
         console_handler = logging.StreamHandler(sys.stdout)
@@ -119,7 +122,15 @@ def _set_logger():
 
 
 def get_logger():
-    return logging.getLogger(config.name)
+    return get_ptest_logger() or logging.getLogger(config.name)
+
+
+def get_ptest_logger():
+    try:
+        from ptest.plogger import preporter
+        return preporter
+    except ImportError:
+        return None
 
 
 def _reset_cache():

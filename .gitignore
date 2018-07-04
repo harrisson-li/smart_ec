@@ -301,3 +301,4 @@ target/
 
 # Pycharm
 .idea/
+.pytest_cache/
