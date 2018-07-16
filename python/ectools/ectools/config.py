@@ -121,7 +121,15 @@ def _set_logger():
     return logger
 
 
-def get_logger():
+def get_logger(force_sys_logging=False):
+    """
+    If ptest installed will return ptest reporter, else sys logging.
+    :param force_sys_logging: always return sys logging if set to True.
+    :return: a logger object.
+    """
+    if force_sys_logging:
+        return logging.getLogger(config.name)
+
     return get_ptest_logger() or logging.getLogger(config.name)
 
 

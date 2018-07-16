@@ -181,7 +181,7 @@ def _get_class_type_mapping():
     return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 3], 'life_club': [6, 4]}
 
 
-def _get_past_class_item(class_category_id):
+def _get_past_class_item(class_category_id, student_id):
     """Get a class in past time for specified class category."""
     sql = """SELECT TOP 1 * FROM [Oboe].[dbo].[ScheduledClass]
     WHERE ClassCategory_id = {0}
@@ -190,12 +190,16 @@ def _get_past_class_item(class_category_id):
     AND EndDate < GETDATE() + {2}
     AND IsPublished = 1
     AND IsDeleted = 0
+    AND ScheduledClass_id NOT IN (
+	SELECT ScheduledClass_id FROM oboe.dbo.Booking
+	WHERE Student_id = {3}
+	AND BookingStatus_id NOT IN (0,4))
     """
 
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
-                                HelperConfig.ClassTakenUntil['days'])
-                     )
+                                HelperConfig.ClassTakenUntil['days'],
+                                student_id))
 
 
 def _get_coupon_count(student_id, coupon_type_id):
@@ -295,7 +299,7 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
             else:
                 raise Exception(message)
 
-        schedule_class = _get_past_class_item(class_category_id)
+        schedule_class = _get_past_class_item(class_category_id, student_id)
         _insert_booking_id(student_id, schedule_class, coupon_category_id)
         count -= 1
 
