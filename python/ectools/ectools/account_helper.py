@@ -31,6 +31,7 @@ from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.data_helper import *
 from ectools.service_helper import account_service_load_student
 from ectools.service_helper import is_v2_student
+from ectools.utility import no_ssl_requests
 
 
 def get_or_activate_account(tag, expiration_days=365, method='activate_account', **kwargs):
@@ -66,7 +67,7 @@ def get_or_activate_account(tag, expiration_days=365, method='activate_account',
 def create_account_without_activation(is_e10=False):
     student = {'is_e10': is_e10, 'environment': config.env}
     link = get_new_account_link(is_e10)
-    result = requests.get(link)
+    result = no_ssl_requests().get(link)
 
     assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
 
@@ -202,7 +203,7 @@ def activate_account(product_id=None,
     student['activation_data'] = data
 
     # post the data to activation tool
-    result = requests.post(link, data=data)
+    result = no_ssl_requests().post(link, data=data)
     success_text = get_success_message(student)
 
     # handle activation failure flow, save account and append a tag as "Failed"
@@ -252,14 +253,13 @@ def enroll_account(username, password, force=False):
         return
 
     login_url = get_login_post_link()
+    session = no_ssl_requests()
     data = {'username': username, 'password': password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
-
-    s = requests.session()
-    response = s.post(url=login_url, data=data)
+    response = session.post(url=login_url, data=data)
 
     if response.status_code == 200 and response.json()['success']:
         redirect = response.json()['redirect']
-        result = s.get(redirect, allow_redirects=True)
+        result = session.get(redirect, allow_redirects=True)
         if 'mobile/welcome' in result.url:
             get_logger().info('Enroll account {} success'.format(username))
         else:

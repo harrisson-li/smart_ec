@@ -8,12 +8,12 @@ This module provides methods to suspend or resume student.
 import uuid
 from datetime import datetime
 
-import requests
 from bs4 import BeautifulSoup as bs
 
 import ectools.ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.internal.constants import HTTP_STATUS_OK
+from ectools.utility import no_ssl_requests
 
 SF_NEW_ORG_SERVICE_URL = "/services/Oboe2/1.0/SalesforceNewOrgService.svc"
 SF_SERVICE_URL = "/services/Oboe2/1.0/SalesForceService.svc"
@@ -64,8 +64,8 @@ def suspend_student(member_id, suspend_date, resume_date):
                          "Please resume first".format(member_id, search_result[0]['suspend_date'],
                                                       search_result[0]['resume_date']))
 
-    result = requests.post(config.etown_root + SF_NEW_ORG_SERVICE_URL, data=data.
-                           format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, member_id, reason_code, resume_date,
+    result = no_ssl_requests().post(config.etown_root + SF_NEW_ORG_SERVICE_URL, data=data.
+                                    format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, member_id, reason_code, resume_date,
                                   suspend_date, transaction_id), headers=headers, verify=False)
 
     assert result.status_code == HTTP_STATUS_OK, result.text
@@ -129,8 +129,8 @@ def resume_student(member_id):
         </s:Body>
     </s:Envelope>
     """
-    result = requests.post(config.etown_root + SF_NEW_ORG_SERVICE_URL, data=data.
-                           format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, external_id, member_id, resume_date,
+    result = no_ssl_requests().post(config.etown_root + SF_NEW_ORG_SERVICE_URL, data=data.
+                                    format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, external_id, member_id, resume_date,
                                   transaction_id), headers=headers, verify=False)
 
     assert result.status_code == HTTP_STATUS_OK, result.text
@@ -177,9 +177,9 @@ def set_hima_test(member_id, level_code):
     </s:Envelope>
     """
 
-    result = requests.post(config.etown_root + SF_SERVICE_URL, data=data.
-                           format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, level_code, member_id),
-                           headers=headers, verify=False)
+    result = no_ssl_requests().post(config.etown_root + SF_SERVICE_URL, data=data.
+                                    format(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, level_code, member_id),
+                                    headers=headers, verify=False)
 
     assert result.status_code == HTTP_STATUS_OK, result.text
 

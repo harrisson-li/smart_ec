@@ -13,14 +13,13 @@ import getpass
 import json
 
 import arrow
-import requests
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
 from ectools.token_helper import get_token
-from ectools.utility import ignore_error
+from ectools.utility import ignore_error, no_ssl_requests
 from .constants import HTTP_STATUS_OK
 
 
@@ -185,7 +184,7 @@ def _api_get_accounts_by_tag(tag, expiration_days=None):
     if expiration_days:
         data['expiration_days'] = int(expiration_days)
 
-    response = requests.post(Configuration.remote_api + 'get_accounts_by_tag', json=data)
+    response = no_ssl_requests().post(Configuration.remote_api + 'get_accounts_by_tag', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text
     return response.json()
 
@@ -219,7 +218,7 @@ def get_account(member_id):
 
 def _api_get_account(member_id):
     data = {'env': config.env, 'username_or_id': member_id}
-    response = requests.post(Configuration.remote_api + 'get_account', json=data)
+    response = no_ssl_requests().post(Configuration.remote_api + 'get_account', json=data)
 
     if response.status_code == HTTP_STATUS_OK:
         return _refine_account(response.json())
@@ -288,7 +287,7 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
     if add_tags:
         data['add_tags'] = ','.join(add_tags)
 
-    response = requests.post(Configuration.remote_api + 'save_account', json=data)
+    response = no_ssl_requests().post(Configuration.remote_api + 'save_account', json=data)
     assert response.status_code == HTTP_STATUS_OK, response.text
 
 
