@@ -63,11 +63,10 @@ import logging
 import sys
 from os.path import dirname, join, abspath
 
-import requests
-
 from .internal.constants import HTTP_STATUS_OK
 from .internal.data_helper import get_partner, get_environment, get_database
 from .internal.objects import *
+from .utility import no_ssl_requests
 
 config = Configuration()
 
@@ -163,7 +162,7 @@ def _setup():
 
 def is_api_available():
     """Check the API is available or not."""
-    return requests.get(config.remote_api).status_code == HTTP_STATUS_OK
+    return no_ssl_requests().get(config.remote_api).status_code == HTTP_STATUS_OK
 
 
 setup()

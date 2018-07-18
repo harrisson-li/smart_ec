@@ -12,22 +12,13 @@ from io import StringIO
 from xml.etree import ElementTree
 
 import arrow
-import requests
 
 from ectools.config import config
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
 from ectools.token_helper import get_token
-from ectools.utility import camelcase_to_underscore
-
-# ignore http insecure request warning, no such module in py27 so try it
-try:
-    import urllib3
-
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-except ImportError:
-    pass
+from ectools.utility import camelcase_to_underscore, no_ssl_requests
 
 
 def is_v2_student(student_id):
@@ -56,8 +47,8 @@ def get_member_site_settings(student_id, site_area='school'):
                     </LoadMemberSiteSettings>
                 </s:Body>
             </s:Envelope>"""
-    result = requests.post(config.etown_root_http + service_url, data=data.format(student_id, site_area),
-                           headers=headers)
+    result = no_ssl_requests().post(config.etown_root_http + service_url, data=data.format(student_id, site_area),
+                                    headers=headers)
     assert result.status_code == HTTP_STATUS_OK, "Failed to call membersettings.svc: {}".format(result.text)
 
     site_settings = {}
@@ -90,7 +81,7 @@ def set_member_site_settings(student_id, key_name, key_value, site_area='school'
             'key': key_name,
             'value': key_value}
 
-    response = requests.post(url, data=data)
+    response = no_ssl_requests().post(url, data=data)
     assert '"IsSuccess":true' in response.text, response.text
 
 
@@ -102,7 +93,7 @@ def get_student_info(student_id):
     def get_name_and_email(student_id):
         target_url = "{}/services/ecplatform/Tools/StudentView?id={}&token={}".format(
             config.etown_root, student_id, get_token())
-        response = requests.get(target_url)
+        response = no_ssl_requests().get(target_url)
 
         if response.status_code == HTTP_STATUS_OK:
             result = re.findall('\[Name\] : (.*) \[Email\] : (.*)', response.text)
@@ -139,7 +130,7 @@ def call_ecplatform_service(service_url, payload):
         'Content-Type': 'application/json',
         'Accept': 'text/plain'
     }
-    response = requests.post(config.etown_root_http + service_url, json=payload, headers=headers)
+    response = no_ssl_requests().post(config.etown_root_http + service_url, json=payload, headers=headers)
     if response.status_code == HTTP_STATUS_OK:
         return json.loads(response.text)
     else:
@@ -174,7 +165,7 @@ def score_helper_load_student(student_name_or_id):
             'member_id': student_name_or_id,
             'token': token}
     target_url = "/services/school/_tools/progress/SubmitScoreHelper.aspx"
-    response = requests.post(config.etown_root + target_url, data=data)
+    response = no_ssl_requests().post(config.etown_root + target_url, data=data)
     match_char = u'★'
     result = {}
 
@@ -237,7 +228,7 @@ def account_service_load_student(student_name_or_id):
            '<s:Body><GetMemberInfo xmlns="http://tempuri.org/"><member_id>{}</member_id>' \
            ' </GetMemberInfo></s:Body></s:Envelope>'.format(student_name_or_id)
 
-    id_response = requests.post(target_url, data=body, headers=headers)
+    id_response = no_ssl_requests().post(target_url, data=body, headers=headers)
     response_xml = id_response.text
 
     # try to load as username if failed to load by id
@@ -248,7 +239,7 @@ def account_service_load_student(student_name_or_id):
                '<emailOrUserName>{}</emailOrUserName></GetMemberByEmailOrUserName>' \
                '</s:Body></s:Envelope>'.format(student_name_or_id)
 
-        name_response = requests.post(target_url, data=body, headers=headers)
+        name_response = no_ssl_requests().post(target_url, data=body, headers=headers)
         assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
         response_xml = name_response.text
 

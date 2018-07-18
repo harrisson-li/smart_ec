@@ -1,10 +1,10 @@
 import json
 
-import requests
 from requests import Session
 
 from ectools.config import config
 from ectools.internal.objects import Cache
+from ectools.utility import no_ssl_requests
 
 LOGIN_SERVICE_URL = "{}/login/secure.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
@@ -27,7 +27,7 @@ def get_request_session(username):
     if not username:
         username = 'temp_user'
 
-    session = getattr(Cache, username + '_session', requests.session())
+    session = getattr(Cache, username + '_session', no_ssl_requests())
     setattr(Cache, username + '_session', session)
 
     assert isinstance(session, Session)

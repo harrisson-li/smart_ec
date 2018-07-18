@@ -13,12 +13,21 @@ import time
 from datetime import datetime, timedelta
 from functools import wraps
 
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from .internal.objects import Cache, Configuration
+
+# ignore http insecure request warning, no such module in py27 so try it
+try:
+    import urllib3
+
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except ImportError:
+    pass
 
 
 def read_csv(csv_path, as_dict=False, skip_header=True):
@@ -360,3 +369,11 @@ def camelcase_to_underscore(name):
     """Convert a string from CamelCase to camel_case, which will be useful for dict keys."""
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+def no_ssl_requests():
+    """get requests instance without SSL verify."""
+
+    s = requests.Session()
+    s.verify = False
+    return s
