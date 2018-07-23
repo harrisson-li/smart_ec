@@ -447,5 +447,13 @@ def sf_resume_student(student_id):
     return sf_service_helper.resume_student(student_id)
 
 
-def sf_set_hima_test(student_id, level_code='0A'):
-    return sf_service_helper.set_hima_test(student_id, level_code)
+def sf_set_hima_test(student_id, level_code='0A', ignore_if_already_set=True):
+    try:
+        sf_service_helper.set_hima_test(student_id, level_code)
+
+    except SystemError as e:
+
+        if ignore_if_already_set:
+            assert str(e) == "Can't do this, please check student data if already done.", str(e)
+        else:
+            raise
