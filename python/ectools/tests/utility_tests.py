@@ -148,3 +148,21 @@ def test_read_text():
     ecdbsql = path.join(_get_data_dir(), 'ecdb.sql')
     content = read_text(ecdbsql)
     assert "DROP TABLE IF EXISTS environment" in content
+
+
+def test_get_pkg_version():
+    v = get_pkg_version()
+    assert v is not None
+
+    v = get_pkg_version('requests')
+    assert v is not None
+
+
+def test_get_python_cmd():
+    cmd = get_python_cmd()
+    assert cmd is not None
+
+
+def test_update_pkg():
+    update_pkg('ectools')
+    update_pkg('requests')

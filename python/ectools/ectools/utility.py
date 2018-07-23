@@ -6,6 +6,7 @@ This module contains some handy function, please refer to bellow function list.
 import csv
 import inspect
 import logging
+import os
 import random
 import re
 import sys
@@ -377,3 +378,34 @@ def no_ssl_requests():
     s = requests.Session()
     s.verify = False
     return s
+
+
+def get_pkg_version(name='ectools'):
+    """Get current version of a installed pip package."""
+    import pkg_resources
+
+    try:
+        return pkg_resources.require(name)[0].version
+    except pkg_resources.DistributionNotFound:
+        return None
+
+
+def get_python_cmd():
+    """Get current running python.exe"""
+    return sys.executable
+
+
+def update_pkg(name='ectools', *args):
+    """Update a pypi package with pip."""
+
+    arguments = [get_python_cmd(), '-m pip install -U', name]
+    arguments.extend(args)
+
+    if name in ['ectools', 'ef-common']:
+        arguments.append('--extra-index-url http://jenkins.englishtown.com:8081/pypi')
+        arguments.append('--trusted-host jenkins.englishtown.com')
+
+    cmd = ' '.join(arguments)
+
+    print('Update {}: \n{}\n'.format(name, cmd))
+    os.system(cmd)

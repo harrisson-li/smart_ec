@@ -35,6 +35,7 @@ setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
+version_file = r"\\cns-qaauto5\Shared\Automation\ectools.txt"
 
 
 def prepare():
@@ -67,28 +68,37 @@ def update_version(new_version):
         else:
             return '{}{}"'.format(match.group(1), new_version)
 
+    # update version in setup.py
     for line in fileinput.input(setup_py, inplace=True):
         if 'version=' in line:
             line = re.sub(r'(.*\.)(\d+)(")', update, line)
 
         sys.stdout.write(line)
 
+    # return current version
     for line in open(setup_py):
         if "version=" in line:
             print("Update to {}".format(line.strip()))
+            return re.search('([\d.]+)', line).group()  # e.g. 1.5.34
+
+    raise RuntimeError('Failed to update ectools version!')
 
 
 def make_package():
     print('Make package')
     try:
-        assert exists(pypi_dir)
+        assert exists(pypi_dir), 'Cannot access {}!'.format(pypi_dir)
 
         if len(list(glob.iglob(pypi_dir + '/*.gz'))):
             latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
             print("Latest build on server: {}".format(latest_build))
 
-            latest_version = re.search(r'-\d+\.\d+\.(\d+)\.tar\.gz', latest_build).group(1)
-            update_version(int(latest_version) + 1)
+            latest_version = re.search('([\d.]+)', latest_build).group(1)[0:-1]  # e.g. 1.5.33
+            current_version = update_version(int(latest_version.split('.')[2]) + 1)
+
+            # save current version to version file
+            with open(version_file, 'w') as f:
+                f.write(current_version)
 
     except AssertionError:
         print('ERROR: Cannot access to pypi server: {}'.format(pypi_dir))

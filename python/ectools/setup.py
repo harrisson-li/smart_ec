@@ -5,7 +5,7 @@ def main():
     setup(
         name="ectools",
         description="Toolbox from EFEC QA team.",
-        long_description="library to help with EFEC testing, such as create test account, submit score, get tokens.",
+        long_description="Library to help with EFEC testing, such as create test account, submit score, get tokens.",
         version="1.5.33",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
