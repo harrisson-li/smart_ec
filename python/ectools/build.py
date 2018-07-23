@@ -61,6 +61,7 @@ def unit_tests():
 
 
 def update_version(new_version):
+    """Update version in setup.py and return."""
     def update(match):
         if int(match.group(2)) == 0 and new_version != 1:  # major version reset, no need to update
             return ''.join(match.groups())
@@ -90,11 +91,11 @@ def make_package():
         assert exists(pypi_dir), 'Cannot access {}!'.format(pypi_dir)
 
         if len(list(glob.iglob(pypi_dir + '/*.gz'))):
-            latest_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
-            print("Latest build on server: {}".format(latest_build))
+            last_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
+            print("Latest build on server: {}".format(last_build))
 
-            latest_version = re.search('([\d.]+)', latest_build).group(1)[0:-1]  # e.g. 1.5.33
-            current_version = update_version(int(latest_version.split('.')[2]) + 1)
+            last_version = re.search('([\d.]+)', last_build).group(1)[0:-1]  # e.g. 1.5.33
+            current_version = update_version(int(last_version.split('.')[2]) + 1)
 
             # save current version to version file
             with open(version_file, 'w') as f:
