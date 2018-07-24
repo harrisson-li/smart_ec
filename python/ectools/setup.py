@@ -5,8 +5,8 @@ def main():
     setup(
         name="ectools",
         description="Toolbox from EFEC QA team.",
-        long_description="library to help with EFEC testing, such as create test account, submit score, get tokens.",
-        version="1.5.33",
+        long_description="Library to help with EFEC testing, such as create test account, submit score, get tokens.",
+        version="1.5.34",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
         url="https://confluence.englishtown.cn/display/SMart/ectools+-+Introduction",
