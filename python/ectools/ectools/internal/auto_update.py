@@ -1,7 +1,6 @@
 import os
-from pathlib import Path
 
-from ectools.utility import no_ssl_requests, get_pkg_version, update_pkg
+from ectools.utility import no_ssl_requests, get_pkg_version, update_pkg, read_text
 
 VERSION_FILE = r"\\cns-qaauto5\Shared\Automation\ectools.txt"
 VERSION_URL = 'http://cns-qaauto5/view/shared/automation/ectools.txt'
@@ -10,7 +9,7 @@ NAME = 'ectools'
 
 def get_latest_version():
     if os.name == 'nt':  # access file on windows will be faster
-        return Path(VERSION_FILE).read_text()
+        return read_text(VERSION_FILE)
     else:
         return no_ssl_requests().get(VERSION_URL).text
 

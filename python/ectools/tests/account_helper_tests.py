@@ -179,9 +179,35 @@ def test_or_activate_onlineoc_student():
     assert account['is_onlineoc']
 
 
-def test_set_hima_test():
+def test_set_hima_test_success():
     set_environment('uat')
     sf_service_helper.set_hima_test('23924331', '5')
+
+
+def test_set_hima_test_failed():
+    set_environment('uat')
+    student_id = 23955169
+    msg = "Can't do this, please check student data if already done."
+
+    try:
+        sf_service_helper.set_hima_test(student_id, '5')
+
+    except SystemError as e:
+        assert str(e) == msg
+
+    else:
+        assert False, 'Did not raise error!'
+
+    sf_set_hima_test(student_id)
+
+    try:
+        sf_set_hima_test(student_id, ignore_if_already_set=False)
+
+    except SystemError as e:
+        assert str(e) == msg
+
+    else:
+        assert False, 'Did not raise error!'
 
 
 def test_activate_onlineoc_student():
