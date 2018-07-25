@@ -16,6 +16,51 @@ namespace ET2.ViewModels
         private bool _isV2 = Settings.LoadCurrentTestAccount().IsV2;
         private bool _isE10 = Settings.LoadCurrentTestAccount().IsE10;
 
+        private void UpdateDefaultSchool()
+        {
+            // update city list
+            this.NotifyOfPropertyChange(() => this.ProductCityList);
+
+            var validSchools = this.DivisionList
+                .Where(e => e.PartnerCode == CurrentPartner)
+                .Where(e => e.IsV2 == _isV2);
+
+            // get default school
+            var defaultSchool = validSchools.Where(e => e.Tags.Contains("default")).FirstOrDefault();
+
+            if (defaultSchool == null)
+            {
+                defaultSchool = validSchools.First();
+            }
+
+            // update current city only if there is matched schools
+            this.CurrentCity = defaultSchool.City;
+
+            // update school list and school name
+            this.NotifyOfPropertyChange(() => this.ProductSchoolList);
+            this.CurrentSchool = defaultSchool.SchoolName;
+        }
+
+        private void UpdateDefaultProduct()
+        {
+            // update product list
+            this.NotifyOfPropertyChange(() => this.ProductNameList);
+
+            var validProducts = this.ProductList
+                .Where(e => e.Partner == CurrentPartner)
+                .Where(e => e.IsE10 == _isE10);
+
+            // get default product
+            var defaultProduct = validProducts.Where(e => e.Tags.Contains("default")).FirstOrDefault();
+
+            if (defaultProduct == null)
+            {
+                defaultProduct = validProducts.First();
+            }
+
+            this.ProductName = defaultProduct.Name;
+        }
+
         /// <summary>
         /// When account type changed, will call this method.
         /// </summary>
@@ -25,30 +70,8 @@ namespace ET2.ViewModels
             _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
             _isE10 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsE10;
 
-            // update city list
-            this.NotifyOfPropertyChange(() => this.ProductCityList);
-            var existSchool = this.DivisionList
-                .Where(e => e.PartnerCode == CurrentPartner)
-                .Where(e => e.City == CurrentCity)
-                .Where(e => e.IsV2 == _isV2)
-                .Count() > 0;
-
-            // update current city only if there is matched schools
-            if (!existSchool)
-            {
-                var school = this.DivisionList
-                    .Where(e => e.PartnerCode == CurrentPartner)
-                    .Where(e => e.IsV2 == _isV2).First();
-                this.CurrentCity = school.City;
-            }
-
-            // update school list and school name
-            this.NotifyOfPropertyChange(() => this.ProductSchoolList);
-            this.CurrentSchool = this.ProductSchoolList.First();
-
-            // update product for e10 student
-            this.NotifyOfPropertyChange(() => this.ProductNameList);
-            this.ProductName = this.ProductNameList.First();
+            UpdateDefaultSchool();
+            UpdateDefaultProduct();
         }
 
         #region Partner filters
@@ -68,10 +91,8 @@ namespace ET2.ViewModels
                 _partner = value;
 
                 this.NotifyOfPropertyChange();
-                this.NotifyOfPropertyChange(() => this.ProductNameList);
-                this.NotifyOfPropertyChange(() => this.ProductCityList);
-                this.CurrentCity = this.ProductCityList.First();
-                this.ProductName = this.ProductNameList.First();
+                UpdateDefaultSchool();
+                UpdateDefaultProduct();
             }
         }
 

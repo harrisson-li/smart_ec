@@ -85,8 +85,7 @@ namespace ET2.Views
                .UpdateEnvironment(selectedEnv);
             });
 
-            ShellViewModel.WriteStatus(
-                "Current Test Environment: {0}".FormatWith(selectedEnv));
+            ShellViewModel.WriteStatus("Current Environment = {0}".FormatWith(selectedEnv));
         }
 
         #endregion Test Environments
@@ -109,7 +108,7 @@ namespace ET2.Views
             System.Diagnostics.Process.Start(helpLink);
         }
 
-        #endregion Help Message
+        #endregion Web Edition
 
         #region Settings
 
@@ -137,12 +136,10 @@ namespace ET2.Views
 
         private async void UsefulLinksTabItem_Selected(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.WriteStatus("Update links...");
             await RunInBackgroud(() =>
             {
                 ShellViewModel.Instance.UsefulLinkVM.NotifyUrlUpdate();
             });
-            ShellViewModel.WriteStatus("OK.");
         }
 
         #endregion Useful Links

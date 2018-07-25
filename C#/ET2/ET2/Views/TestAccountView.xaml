@@ -39,11 +39,11 @@
         <GroupBox Grid.Row="0" Margin="0,0,0,5">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="110*" />
                     <ColumnDefinition Width="80*" />
+                    <ColumnDefinition Width="100*" />
+                    <ColumnDefinition Width="60*" />
                     <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="250*" />
+                    <ColumnDefinition Width="300*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50*" />
@@ -55,7 +55,7 @@
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
                     <CheckBox
-                        Margin="10 0 0 0"
+                        Margin="15 0 0 0"
                         Checked="CheckBox_Checked"
                         Content="E10"
                         IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
@@ -65,7 +65,7 @@
                     <CheckBox
                         Margin="5 0 0 0"
                         Checked="CheckBox_Checked"
-                        Content="Smart 1.0"
+                        Content="V1"
                         IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
                                             Converter={StaticResource EnumBoolean},
                                             ConverterParameter=S15,
@@ -74,7 +74,7 @@
                         Name="chkIsV2"
                         Margin="5 0 0 0"
                         Checked="CheckBox_Checked"
-                        Content="Smart 2.0"
+                        Content="V2"
                         IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
                                             Converter={StaticResource EnumBoolean},
                                             ConverterParameter=S15_V2,
@@ -92,6 +92,16 @@
                         Controls:ButtonHelper.PreserveTextCase="True"
                         Click="NewAccount"
                         Content="New"
+                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
+                                            Converter={StaticResource InverseBoolean}}"
+                        Style="{DynamicResource SquareButtonStyle}" />
+                    <Button
+                        Width="70"
+                        Height="30"
+                        Margin="10 0 0 0"
+                        Controls:ButtonHelper.PreserveTextCase="True"
+                        Click="ActivateAccount"
+                        Content="Activate"
                         IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
                                             Converter={StaticResource InverseBoolean}}"
                         Style="{DynamicResource SquareButtonStyle}" />
@@ -153,7 +163,7 @@
                     Name="txtPw"
                     Grid.Row="1"
                     Grid.Column="2"
-                    Width="50"
+                    Width="60"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     IsReadOnly="True"
                     Text="{Binding Path=TestAccountVM.CurrentTestAccount.Password,
@@ -361,13 +371,6 @@
                     Grid.Column="2"
                     HorizontalAlignment="Left"
                     Orientation="Vertical">
-                    <Button
-                        Width="130"
-                        Margin="5,0,5,5"
-                        Click="ActivateAccount"
-                        Content="Activate Account"
-                        IsEnabled="{Binding Path=StatusInfoVM.HasBackgroundTask,
-                                            Converter={StaticResource InverseBoolean}}" />
                 </WrapPanel>
                 <StackPanel
                     Name="homeLinks"

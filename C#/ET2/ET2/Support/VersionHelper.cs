@@ -14,11 +14,26 @@ namespace ET2.Support
         private static ET2Version _currentVersion;
 
         /// <summary>
+        /// Fix note line break to Windows style.
+        /// </summary>
+        private static void FixReleaseNote()
+        {
+            var note = File.ReadAllText(Settings.Data.ReleaseNote);
+            if (!note.Contains("\r\n"))
+            {
+                note = note.Replace("\n", "\r\n");
+                File.WriteAllText(Settings.Data.ReleaseNote, note);
+            }
+        }
+
+        /// <summary>
         /// To get current version.
         /// </summary>
         /// <returns></returns>
         public static ET2Version GetCurrentVersion()
         {
+            FixReleaseNote();
+
             if (_currentVersion == null)
             {
                 var build = string.Empty;
