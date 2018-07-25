@@ -86,7 +86,7 @@ namespace ET2.ViewModels
                 var api = ApiHost + "get_account";
                 var response = HttpHelper.PostJson(api, requestData);
                 var account = response.ToJObject();
-                Log.DebugFormat("Get account by name or id: {0}", response);
+                Log.InfoFormat("Get account by name or id: {0}", response);
 
                 if (account["member_id"] != null)
                 {
@@ -138,7 +138,7 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
-                    Log.DebugFormat("New Account: {0}", response);
+                    Log.InfoFormat("New Account: {0}", response);
 
                     this.CurrentTestAccount.MemberId = (string)account["member_id"];
                     this.CurrentTestAccount.UserName = (string)account["username"];
@@ -200,7 +200,7 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
-                    Log.DebugFormat("Activate Account: {0}", response);
+                    Log.InfoFormat("Activate Account: {0}", response);
                     Save();
                 }
                 else
