@@ -1,4 +1,11 @@
-﻿## v0.0.0.52
+﻿## v0.0.0.55
+
+1. Enhancement - use default product & school when partner changed or account type changed.
+2. Show tips when there is background action running.
+3. Bug fix - relase note display on Windows notepad use wrong line break.
+4. Enhancement - change log file encoding to utf8.
+
+## v0.0.0.52
 
 1. Bug fix: cannot load token for QA environment due to upgrade to https
 

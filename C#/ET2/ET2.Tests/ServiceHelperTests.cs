@@ -19,5 +19,13 @@ namespace ET2.Tests
                 Assert.IsTrue(ServiceHelper.IsPlatform2Student(id, env));
             }
         }
+
+        [TestMethod]
+        public void TestGetOneTips()
+        {
+            var tips = ServiceHelper.GetOneTips();
+            Console.WriteLine(tips);
+            Assert.AreNotEqual("Working...", tips);
+        }
     }
 }

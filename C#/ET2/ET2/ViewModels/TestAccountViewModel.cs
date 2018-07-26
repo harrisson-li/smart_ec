@@ -82,13 +82,11 @@ namespace ET2.ViewModels
         {
             try
             {
-                ShellViewModel.WriteStatus("Working");
                 var requestData = new { env = GetCurrentEnvironment(), username_or_id = nameOrId };
                 var api = ApiHost + "get_account";
                 var response = HttpHelper.PostJson(api, requestData);
                 var account = response.ToJObject();
-
-                ShellViewModel.WriteStatus("Get account by name or id: {0}".FormatWith(response));
+                Log.InfoFormat("Get account by name or id: {0}", response);
 
                 if (account["member_id"] != null)
                 {
@@ -104,7 +102,7 @@ namespace ET2.ViewModels
                 ShellViewModel.WriteStatus("Failed! {0}".FormatWith(ex.Message));
             }
 
-            ShellViewModel.WriteStatus("No enrollment or incorrect environment, please check.");
+            ShellViewModel.WriteStatus("Incorrect environment or bad student, please check.");
             return null;
         }
 
@@ -129,7 +127,6 @@ namespace ET2.ViewModels
 
         public void GenerateAccount(AccountTypes accountType, string partner)
         {
-            ShellViewModel.WriteStatus("Working");
             var api = ApiHost + "new_account";
             var isE10 = (accountType == AccountTypes.E10);
             var requestData = new { env = GetCurrentEnvironment(), partner = partner, is_e10 = isE10 };
@@ -141,7 +138,7 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
-                    ShellViewModel.WriteStatus(response);
+                    Log.InfoFormat("New Account: {0}", response);
 
                     this.CurrentTestAccount.MemberId = (string)account["member_id"];
                     this.CurrentTestAccount.UserName = (string)account["username"];
@@ -170,8 +167,6 @@ namespace ET2.ViewModels
 
         public void ActivateAccount(AccountTypes accountType)
         {
-            ShellViewModel.WriteStatus("Working");
-
             var api = ApiHost + "activate_account";
             var id = Convert.ToInt32(CurrentTestAccount.MemberId);
             var username = CurrentTestAccount.UserName;
@@ -205,7 +200,7 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
-                    ShellViewModel.WriteStatus(response);
+                    Log.InfoFormat("Activate Account: {0}", response);
                     Save();
                 }
                 else
@@ -235,8 +230,7 @@ namespace ET2.ViewModels
                 };
 
                 var api = ApiHost + "save_account";
-                var response = HttpHelper.PostJson(api, requestData);
-                ShellViewModel.WriteStatus("Success: {0}".FormatWith(response));
+                HttpHelper.PostJson(api, requestData);
 
                 // save client info for ET2 web
                 UpdateClientInfo();

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EF.Common;
+using EF.Common.Http;
 using ET2.MemberSettingsSvc;
 
 namespace ET2.Support
@@ -11,6 +13,7 @@ namespace ET2.Support
     {
         private static string configName = "BasicHttpBinding_IMemberSettingsService";
         private static string svcAddress = "http://{0}.englishtown.com/services/shared/1.0/membersettings.svc";
+        private static string API_ROOT = ConfigHelper.GetAppSettingsValue("ApiHost") + "api/";
 
         public static bool IsPlatform2Student(int studentId, string env)
         {
@@ -30,6 +33,21 @@ namespace ET2.Support
             }
 
             return false;
+        }
+
+        public static string GetOneTips()
+        {
+            var url = "{0}{1}".FormatWith(API_ROOT, "give_me_joke");
+            try
+            {
+                var response = HttpHelper.Get(url);
+                return (string)response.ToJObject()["content"];
+            }
+            catch
+            {
+                // if cannot get tip via api, return default text.
+                return "Working...";
+            }
         }
     }
 }
