@@ -239,6 +239,9 @@ def activate_account(product_id=None,
     tags = get_student_tags(student)
     save_account(student, add_tags=tags, remove_tags=['not_activated', 'Failed'])
 
+    # update telephone 2 to valid number
+    set_account_phone2(student['member_id'])
+
     return student
 
 

@@ -25,6 +25,13 @@ def test_set_member_site_settings():
     assert settings['test_key'] == 'test_value'
     assert settings['test_time'] == '10/1/2017 12:00:00'
 
+    set_environment('staging')
+    student_id = 14890056
+
+    set_member_site_settings(student_id, 'test_key', 'test_value', site_area='school_ec')
+    settings = get_member_site_settings(student_id, site_area='school_ec')
+    assert settings['test_key'] == 'test_value'
+
 
 def test_is_v2_student():
     set_environment('qa')
@@ -144,3 +151,16 @@ def test_account_service_load_student():
     student_name = 'stest24561'
     result = account_service_load_student(student_name)
     assert result == json.loads(expected)
+
+
+def test_account_service_update_phone2():
+    set_environment('uat')
+    student_id = '23956735'
+    account_service_update_phone2(student_id, 666666666)
+
+    try:
+        account_service_update_phone2(123, 66666666)
+    except Exception as e:
+        assert 'no such member' in str(e)
+    else:
+        assert False, 'should raise error!'
