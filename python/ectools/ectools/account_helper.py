@@ -123,6 +123,7 @@ def activate_account(product_id=None,
     :return: A dict with all account info.
     """
     get_logger().info('Start to activate test account...')
+    get_logger().debug('Arguments: {}'.format(locals()))
 
     # auto get product if not specified
     if product_id is None:
@@ -146,8 +147,9 @@ def activate_account(product_id=None,
         assert is_lite_school(school), \
             "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
-    # check partner of product and school should match
-    assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
+    # partner of product and school should match for none-CN product
+    if product['partner'] not in ['Socn', 'Cool', 'Mini']:
+        assert school['partner'].lower() == product['partner'].lower(), "Partner not match for school and product!"
 
     # create member id if not specified
     if student is None:
