@@ -409,3 +409,17 @@ def update_pkg(name='ectools', *args):
 
     print('Update {}: \n{}\n'.format(name, cmd))
     os.system(cmd)
+
+
+def ensure_safe_query(sql):
+    """Should not allow dangerous query."""
+    sql = sql.lower()
+
+    if 'select' in sql:
+        assert 'top' in sql or 'where' in sql, 'Do not allow SELECT without TOP or WHERE!'
+
+    if 'update' in sql:
+        assert 'where' in sql, 'Do not allow UPDATE without WHERE!'
+
+    if 'delete' in sql:
+        assert 'where' in sql, 'Do not allow DELETE without WHERE!'
