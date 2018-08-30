@@ -18,7 +18,7 @@ from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
-from ectools.service_helper import account_service_update_phone2
+from ectools.service_helper import account_service_update_info
 from ectools.token_helper import get_token
 from ectools.utility import ignore_error, no_ssl_requests
 from .constants import HTTP_STATUS_OK
@@ -209,15 +209,18 @@ def is_account_expired(account, expiration_days):
     return arrow.get(account['created_on']) < expired_date
 
 
-def set_account_phone2(student_id):
-    """Set telephone2 to valid phone number for each partner."""
+def set_account_info(student_id):
+    """
+    1. Set telephone2 to valid phone number for each partner.
+    2. Update first name to current user.
+    """
 
     numbers = {'Cool': '18966666666', 'Mini': '18977777777', 'Rupe': '9777777777',
                'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
                'Socn': '18988888888'}
 
-    number = numbers[config.partner]
-    account_service_update_phone2(student_id, number)
+    account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
+    account_service_update_info(student_id, {'FirstName': getpass.getuser(), 'LastName': 'ectools'})
 
 
 @ignore_error
