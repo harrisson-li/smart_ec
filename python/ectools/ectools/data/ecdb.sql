@@ -18,9 +18,9 @@ CREATE TABLE environments
   PRIMARY KEY (domain, name)
 );
 
-DROP TABLE IF EXISTS database;
+DROP TABLE IF EXISTS databases;
 
-CREATE TABLE database
+CREATE TABLE databases
 (
   name     TEXT,
   domain   TEXT,
