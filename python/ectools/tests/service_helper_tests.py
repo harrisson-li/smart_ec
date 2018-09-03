@@ -164,3 +164,9 @@ def test_account_service_update_phone2():
         assert 'no such member' in str(e)
     else:
         assert False, 'should raise error!'
+
+
+def test_account_service_update_name():
+    set_environment('uat')
+    student_id = '23958712'
+    account_service_update_info(student_id, {'FirstName': 'unit.test'})

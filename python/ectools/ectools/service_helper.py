@@ -257,21 +257,31 @@ def account_service_load_student(student_name_or_id):
 
 def account_service_update_phone2(student_id, phone_number):
     """update telephone2 via /services/commerce/1.0/AccountService.svc"""
+    account_service_update_info(student_id, {'MobilePhone': phone_number})
+
+
+def account_service_update_info(student_id, info):
+    """
+    update basic info via /services/commerce/1.0/AccountService.svc
+    info: dict data to update the account, e.g.{'MobilePhone':123, FirstName:'test', LastName:'test'}
+    """
     target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
     headers = {'Content-Type': 'text/xml',
                'SOAPAction': 'http://tempuri.org/IAccountService/UpdateBasicInfo'}
+
+    updates = '<efs:Member_id>{}</efs:Member_id>'.format(student_id)
+
+    for k, v in info.items():
+        updates += '<efs:{0}>{1}</efs:{0}>'.format(k, v)
 
     body = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:efs="EFSchools.Englishtown.Commerce.Client.Members">
                    <soapenv:Header/>
                    <soapenv:Body>
                       <tem:UpdateBasicInfo>
-                         <tem:member>
-                            <efs:Member_id>{}</efs:Member_id>
-                            <efs:MobilePhone>{}</efs:MobilePhone>
-                         </tem:member>
+                         <tem:member>{}</tem:member>
                       </tem:UpdateBasicInfo>
                    </soapenv:Body>
-                </soapenv:Envelope> """.format(student_id, phone_number)
+                </soapenv:Envelope> """.format(updates)
 
     response = no_ssl_requests().post(target_url, data=body, headers=headers)
     assert 'Success>true' in response.text, response.text

@@ -333,6 +333,7 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
             if headless:
                 options.add_argument('--headless')
                 options.add_argument('--disable-gpu')
+                options.add_argument('--window-size=1280x1024')
 
             browser = webdriver.Chrome(chrome_options=options)
         else:
