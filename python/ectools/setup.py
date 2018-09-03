@@ -15,7 +15,6 @@ def main():
         install_requires=[
             'requests',
             'selenium',
-            'pymssql',
             'assertpy',
             'arrow',
             'bs4',
