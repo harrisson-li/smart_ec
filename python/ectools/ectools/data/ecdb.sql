@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS environments;
 
 CREATE TABLE environments
 (
+  "__id__"         INTEGER
+    PRIMARY KEY
+  AUTOINCREMENT,
   name             TEXT,
   domain           TEXT,
   replace_to       TEXT,
@@ -13,19 +16,19 @@ CREATE TABLE environments
   salesforce_url   TEXT,
   tags             TEXT,
   marketing_url    TEXT,
-  marketing_ts_url TEXT,
-  CONSTRAINT environments_pk
-  PRIMARY KEY (domain, name)
+  marketing_ts_url TEXT
 );
 
 DROP TABLE IF EXISTS databases;
 
 CREATE TABLE databases
 (
+  "__id__" INTEGER
+    PRIMARY KEY
+  AUTOINCREMENT,
   name     TEXT,
   domain   TEXT,
-  server   TEXT
-    PRIMARY KEY,
+  server   TEXT,
   user     TEXT,
   password TEXT,
   tags     TEXT
@@ -35,8 +38,10 @@ DROP TABLE IF EXISTS partners;
 
 CREATE TABLE partners
 (
-  name         TEXT
-    PRIMARY KEY,
+  "__id__"     INTEGER
+    PRIMARY KEY
+  AUTOINCREMENT,
+  name         TEXT,
   domain       TEXT,
   country_code TEXT,
   tags         TEXT
@@ -63,8 +68,10 @@ DROP TABLE IF EXISTS schools;
 
 CREATE TABLE schools
 (
-  id            INTEGER
-    PRIMARY KEY,
+  "__id__"      INTEGER
+    PRIMARY KEY
+  AUTOINCREMENT,
+  id            INTEGER,
   partner       TEXT,
   city          TEXT,
   name          TEXT,
