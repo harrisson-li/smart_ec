@@ -18,9 +18,11 @@ class DbQueryPage(PageBase):
         super().__init__(browser)
         assert env != 'UAT', 'DbQuery page not support UAT!'
 
-        env = '' if env == 'Live' else env
-        page = 'configqa.aspx' if env == 'QA' else 'dbquery.aspx'
-        self.url = "https://{}deepblue2.englishtown.com/dbquery/{}".format(env.lower(), page)
+        self.env = env.lower()
+        self.url_base = "https://{}deepblue2.englishtown.com/dbquery/{}"
+
+        e = '' if self.env == 'live' else self.env
+        self.url = self.url_base.format(e, 'dbquery.aspx')
 
     def login(self, username=None, password=None):
         if not username:
@@ -40,8 +42,13 @@ class DbQueryPage(PageBase):
 
         self.wait_until_xpath_visible(self.TEXT_QUERY)
 
-    def execute_query(self, query_text):
+    def update_query_page(self):
+        """Update action will use config qa page."""
+        if self.env == 'qa':
+            url = self.url_base.format(self.env, 'configqa.aspx')
+            self.browser.get(url)
 
+    def execute_query(self, query_text):
         self.get_element(self.TEXT_QUERY).send_keys(query_text)
         self.get_element(self.BUTTON_EXE).click()
         self.wait_for_ready()

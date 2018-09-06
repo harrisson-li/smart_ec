@@ -1,5 +1,5 @@
 from ectools.config import set_environment
-from ectools.dbquery_helper import fetch_one, fetch_all, execute_query, ensure_safe_query
+from ectools.internal.dbquery_helper import fetch_one, fetch_all, execute_query, ensure_safe_query
 
 
 def test_fetch_one():
@@ -7,7 +7,7 @@ def test_fetch_one():
     sql = 'select top 10 * from oboe.dbo.student'
     result = fetch_one(sql)
     print(result)
-    assert len(result) == 1
+    assert isinstance(result, dict)
 
 
 def test_fetch_all():

@@ -30,10 +30,10 @@ ectools.token_helper module
     :undoc-members:
     :show-inheritance:
 
-ectools.database_helper module
+ectools.db_query module
 ------------------------------
 
-.. automodule:: ectools.database_helper
+.. automodule:: ectools.db_query
     :members:
     :undoc-members:
     :show-inheritance:
