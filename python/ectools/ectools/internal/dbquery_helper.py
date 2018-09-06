@@ -53,5 +53,6 @@ def fetch_all(sql, as_dict=True):
 def execute_query(sql):
     """Execute query and return message, most for update,delete or sp."""
     ensure_safe_query(sql)
+    _page().update_query_page()
     _page().execute_query(sql)
     return _page().get_message()

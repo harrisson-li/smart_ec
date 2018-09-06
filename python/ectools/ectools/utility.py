@@ -9,6 +9,7 @@ import logging
 import os
 import random
 import re
+import socket
 import sys
 import time
 from datetime import datetime, timedelta
@@ -424,3 +425,9 @@ def ensure_safe_query(sql):
 
     if 'delete' in sql:
         assert 'where' in sql, 'Do not allow DELETE without WHERE!'
+
+
+def is_corp_net():
+    """Check current network is in corporation intranet."""
+    ip = socket.gethostbyname(socket.gethostname())
+    return ip.startswith('10.')

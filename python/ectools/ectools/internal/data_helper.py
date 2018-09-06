@@ -1,7 +1,11 @@
-from ectools.ecdb_helper_v2 import read_table
 from ectools.utility import *
 
 from .objects import Cache
+
+try:
+    from ectools.ecdb_helper_v2 import read_table
+except ImportError:
+    from ectools.ecdb_helper import read_table
 
 
 def has_tag(tags, tag):
@@ -22,10 +26,6 @@ def get_item_has_tag(items, tag):
 
 
 def read_data(table_name):
-    # only read table with ec_ prefix
-    if not table_name.startswith('ec_'):
-        table_name = 'ec_' + table_name
-
     rows = read_table(table_name)
     # filter out all items tag by 'ignore'
     return [r for r in rows if not is_item_has_tag(r, 'ignore')]

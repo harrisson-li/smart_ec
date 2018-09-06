@@ -20,6 +20,7 @@ Major functions::
 """
 
 import collections
+
 import pymssql
 
 from .ecdb_helper import _to_insert_values, _to_query_clause
@@ -128,6 +129,11 @@ def execute_query(sql, params=None):
 
 def read_table(table_name, row_limit=500, order_by_column=None, order_desc=False, as_dict=True):
     """Read all rows from a table."""
+
+    # only read table with ec_ prefix
+    if not table_name.startswith('ec_'):
+        table_name = 'ec_' + table_name
+
     if order_by_column:
         order_statement = 'ORDER BY {}'.format(order_by_column)
         if order_desc:

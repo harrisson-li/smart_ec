@@ -1,6 +1,6 @@
 import os
 
-from ectools.utility import no_ssl_requests, get_pkg_version, update_pkg, read_text
+from ectools.utility import no_ssl_requests, get_pkg_version, update_pkg, read_text, is_corp_net
 
 VERSION_FILE = r"\\cns-qaauto5\Shared\Automation\ectools.txt"
 VERSION_URL = 'http://cns-qaauto5/view/shared/automation/ectools.txt'
@@ -15,6 +15,9 @@ def get_latest_version():
 
 
 def check_update(install=True):
+    if not is_corp_net():
+        return
+
     latest_version = get_latest_version()
     installed_version = get_pkg_version(NAME)
 

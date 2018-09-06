@@ -1,5 +1,9 @@
 """
-This module provides methods to run sql query and fetch data in database easily, what you need to do is just::
+.. attention::
+
+  You must have **pymssql**<http://pymssql.org/en/stable/> installed on the machine.
+
+This module provides functions to run sql query and fetch data in database easily, here is the example::
 
   from ectools.database_helper import execute_query, fetch_one, fetch_all
 
