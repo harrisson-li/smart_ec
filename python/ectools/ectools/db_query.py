@@ -14,11 +14,11 @@ def _get_executor():
 
 
 def fetch_one(sql, as_dict=True):
-    return _get_executor().fetch_one(sql, as_dict)
+    return _get_executor().fetch_one(sql, as_dict=as_dict)
 
 
 def fetch_all(sql, as_dict=True):
-    return _get_executor().fetch_all(sql, as_dict)
+    return _get_executor().fetch_all(sql, as_dict=as_dict)
 
 
 def execute_query(sql):

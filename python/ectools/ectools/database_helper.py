@@ -169,15 +169,8 @@ def able_to_connect_db():
 def fetch_one(sql, params=None, as_dict=False):
     """Fetch first row from a sql query."""
     _execute(sql, params)
-    row = get_cursor().fetchone()
-
-    if row:
-        columns = [column[0] for column in get_cursor().description]
-        if as_dict:
-            return dict(zip(columns, row))
-        else:
-            t = collections.namedtuple('row', columns, rename=True)
-            return t(*row)
+    result = fetch_all(sql, params, as_dict)
+    return result[0] if len(result) else None
 
 
 @connect_database

@@ -1,6 +1,12 @@
 from ectools.config import set_environment, set_partner
-from ectools.db_query import fetch_all
+from ectools.db_query import fetch_all, fetch_one
 
+
+def test_uat_fetch_one():
+    set_environment('uat')
+    result = fetch_one(' SELECT top 10 m.DateExpires FROM ET_Commerce.dbo.Subscriptions m (NOLOCK)')
+    print(result)
+    assert result is not None
 
 def test_uat_query():
     set_environment('uat')
