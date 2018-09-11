@@ -75,6 +75,8 @@ def test_activate_eclite_account():
     set_environment('staging')
     set_partner('mini')
 
+    activate_account(143)
+
     try:
         activate_account(143, 'FS_ZUM')
     except AssertionError as e:
@@ -250,7 +252,7 @@ def test_activate_phoenix_pack():
 def test_activate_live_student():
     set_environment('live')
     set_partner('cool')
-    activate_s18_student(school_name='Tcenter(notselect)')
+    activate_s18_student(school_name='QA_T1C')
 
 
 def test_activate_phoenix_socn():

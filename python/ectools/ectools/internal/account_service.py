@@ -209,18 +209,24 @@ def is_account_expired(account, expiration_days):
     return arrow.get(account['created_on']) < expired_date
 
 
-def set_account_info(student_id):
+def set_account_info(student):
     """
     1. Set telephone2 to valid phone number for each partner.
     2. Update first name to current user.
+    3. Update last name to member id.
+    4. Update email to include full account info.
     """
 
     numbers = {'Cool': '18966666666', 'Mini': '18977777777', 'Rupe': '9777777777',
                'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
                'Socn': '18988888888'}
 
+    student_id, username = student['member_id'], student['username']
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
-    account_service_update_info(student_id, {'FirstName': getpass.getuser(), 'LastName': 'ectools'})
+    account_service_update_info(student_id, {'FirstName': getpass.getuser()})
+    account_service_update_info(student_id, {'LastName': student_id})
+    account_service_update_info(student_id, {'Email': '{}_{}_{}@qp1.org'
+                                .format(username, student_id, config.partner.lower())})
 
 
 @ignore_error

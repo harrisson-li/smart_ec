@@ -80,6 +80,8 @@ def create_account_without_activation(is_e10=False):
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
 
+        # update telephone 2 / first name / last name / email
+        set_account_info(student)
         save_account(student, add_tags=[config.env, 'not_activated'])
         return student
     else:
@@ -144,8 +146,11 @@ def activate_account(product_id=None,
 
     # check eclite product should match eclite center
     if is_lite:
-        assert is_lite_school(school), \
-            "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
+        if school_name is None:
+            school = get_any_eclite_school()
+        else:
+            assert is_lite_school(school), \
+                "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
     # partner of product and school should match for none-CN product
     if product['partner'] not in ['Socn', 'Cool', 'Mini']:
@@ -240,9 +245,6 @@ def activate_account(product_id=None,
     get_logger().debug('New test account: {}'.format(student))
     tags = get_student_tags(student)
     save_account(student, add_tags=tags, remove_tags=['not_activated', 'Failed'])
-
-    # update telephone 2 / first name / last name
-    set_account_info(student['member_id'])
 
     return student
 
