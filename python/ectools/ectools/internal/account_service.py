@@ -267,14 +267,12 @@ def get_student_tags(student):
     """Get tags from a student dict."""
     tags = [student['partner'], student['environment']]
 
-    if student['is_e10']:
-        tags.append('E10')
-    elif student['is_s18']:
-        tags.append('S18')
-    elif student['is_phoenix']:
+    if student['is_phoenix']:
         tags.append('Phoenix')
+    elif student['is_e10']:
+        tags.append('E10')
     else:
-        tags.append('S15')
+        tags.append('S18' if student['is_s18'] else 'S15')
 
     if student['is_eclite']:
         tags.append('ECLite')
@@ -334,7 +332,7 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
     tags = ['ectools']
     target_table = 'ec_test_accounts'
     existed_account = get_account(account['member_id'])
-    created_by = account.get('created_by', getpass.getuser())
+    created_by = account.get('created_by', None)
     account['created_by'] = created_by
 
     if add_tags:
@@ -350,9 +348,11 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
         existed_account.update(account)
 
         search_by = {'member_id': account['member_id'], 'environment': config.env}
-        update_dict = {'detail': json.dumps(existed_account),
-                       'tags': account['tags'],
-                       'created_by': created_by}
+        update_dict = {'detail': json.dumps(existed_account), 'tags': account['tags']}
+
+        if created_by:
+            update_dict['created_by'] = created_by
+
         ecdb_v2.update_rows(target_table, search_by, update_dict)
 
     else:
@@ -368,5 +368,5 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
                         account['username'],
                         json.dumps(account),
                         arrow.utcnow().format('YYYY-MM-DD HH:mm:ss.SSS'),
-                        created_by,
+                        created_by or getpass.getuser(),
                         account['tags'])
