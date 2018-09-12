@@ -156,8 +156,9 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
 def _refine_account(ecdb_account):
     """Merge the detail fields into account itself, original it is a json string."""
     if 'detail' in ecdb_account:
-        ecdb_account.update(json.loads(ecdb_account['detail']))
-        del ecdb_account['detail']
+        detail = json.loads(ecdb_account.pop('detail'))
+        detail.update(ecdb_account)
+        ecdb_account = detail
 
     if 'created_on' in ecdb_account:
         ecdb_account['created_on'] = arrow.get(ecdb_account['created_on']).format()
@@ -297,10 +298,18 @@ def save_account(account, add_tags=None, remove_tags=None):
 
 
 def _api_save_account(account, add_tags=None, remove_tags=None):
+    """
+    api to save account in ecdb.
+    :param account: dict
+    :param add_tags: list
+    :param remove_tags: list
+    :return:
+    """
+    created_by = account.get('created_by', getpass.getuser())
     data = {'detail': account,
             'env': config.env,
             'member_id': int(account['member_id']),
-            'created_by': getpass.getuser()}
+            'created_by': created_by}
 
     if remove_tags:
         removed_tags = ','.join(remove_tags)
@@ -314,9 +323,18 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
 
 
 def _db_save_account(account, add_tags=None, remove_tags=None):
+    """
+    sql to save the account in ecdb.
+    :param account: dict
+    :param add_tags: list
+    :param remove_tags: list
+    :return:
+    """
     tags = ['ectools']
     target_table = 'ec_test_accounts'
     existed_account = get_account(account['member_id'])
+    created_by = account.get('created_by', getpass.getuser())
+    account['created_by'] = created_by
 
     if add_tags:
         tags += add_tags
@@ -328,11 +346,12 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
             tags = (set(tags) - set(remove_tags))
 
         account['tags'] = ','.join(set(tags))
+        existed_account.update(account)
 
         search_by = {'member_id': account['member_id'], 'environment': config.env}
-        update_dict = {'detail': json.dumps(account),
+        update_dict = {'detail': json.dumps(existed_account),
                        'tags': account['tags'],
-                       'created_by': getpass.getuser()}
+                       'created_by': created_by}
         ecdb_v2.update_rows(target_table, search_by, update_dict)
 
     else:
@@ -341,11 +360,12 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
             tags = (set(tags) - set(remove_tags))
 
         account['tags'] = ','.join(set(tags))
+        assert 'username' in account, 'username is required to save the account!'
         ecdb_v2.add_row(target_table,
                         config.env,
                         account['member_id'],
                         account['username'],
                         json.dumps(account),
                         arrow.utcnow().format('YYYY-MM-DD HH:mm:ss.SSS'),
-                        getpass.getuser(),
+                        created_by,
                         account['tags'])
