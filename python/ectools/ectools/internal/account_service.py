@@ -269,17 +269,18 @@ def get_student_tags(student):
 
     if student['is_e10']:
         tags.append('E10')
+    elif student['is_s18']:
+        tags.append('S18')
+    elif student['is_phoenix']:
+        tags.append('Phoenix')
     else:
-        tags.append('S18' if student['is_s18'] else 'S15')
+        tags.append('S15')
 
     if student['is_eclite']:
         tags.append('ECLite')
 
     if student['is_onlineoc']:
         tags.append('OC')
-
-    if student['is_phoenix']:
-        tags.append('Phoenix')
 
     return tags
 
