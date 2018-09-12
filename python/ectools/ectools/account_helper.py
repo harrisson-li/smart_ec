@@ -64,8 +64,9 @@ def get_or_activate_account(tag, expiration_days=365, method='activate_account',
         return account
 
 
-def create_account_without_activation(is_e10=False):
-    student = {'is_e10': is_e10, 'environment': config.env}
+def create_account_without_activation(is_e10=False, **kwargs):
+    student = {'is_e10': is_e10, 'environment': config.env, 'partner': config.partner}
+    student.update(kwargs)
     link = get_new_account_link(is_e10)
     result = no_ssl_requests().get(link)
 

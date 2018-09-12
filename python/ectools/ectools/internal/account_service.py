@@ -221,9 +221,10 @@ def set_account_info(student):
                'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
                'Socn': '18988888888'}
 
+    created_by = student.get('created_by', getpass.getuser())
     student_id, username = student['member_id'], student['username']
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
-    account_service_update_info(student_id, {'FirstName': getpass.getuser()})
+    account_service_update_info(student_id, {'FirstName': created_by})
     account_service_update_info(student_id, {'LastName': student_id})
     account_service_update_info(student_id, {'Email': '{}_{}_{}@qp1.org'
                                 .format(username, student_id, config.partner.lower())})
