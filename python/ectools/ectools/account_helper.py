@@ -127,6 +127,7 @@ def activate_account(product_id=None,
     """
     get_logger().info('Start to activate test account...')
     get_logger().debug('Arguments: {}'.format(locals()))
+    created_by = kwargs.pop('created_by', getpass.getuser())
 
     # auto get product if not specified
     if product_id is None:
@@ -159,7 +160,9 @@ def activate_account(product_id=None,
 
     # create member id if not specified
     if student is None:
-        student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
+        student = create_account_without_activation(
+            is_e10=is_item_has_tag(product, 'E10'),
+            created_by=created_by)
     else:
         assert isinstance(student, dict)
 
