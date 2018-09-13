@@ -9,7 +9,6 @@ import logging
 import os
 import random
 import re
-import socket
 import sys
 import time
 from datetime import datetime, timedelta
@@ -429,5 +428,8 @@ def ensure_safe_query(sql):
 
 def is_corp_net():
     """Check current network is in corporation intranet."""
-    ip = socket.gethostbyname(socket.gethostname())
-    return ip.startswith('10.')
+    try:
+        no_ssl_requests().get(Configuration.version_url, timeout=2)
+        return True
+    except requests.exceptions.ConnectionError:
+        return False

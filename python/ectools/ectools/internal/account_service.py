@@ -156,8 +156,9 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
 def _refine_account(ecdb_account):
     """Merge the detail fields into account itself, original it is a json string."""
     if 'detail' in ecdb_account:
-        ecdb_account.update(json.loads(ecdb_account['detail']))
-        del ecdb_account['detail']
+        detail = json.loads(ecdb_account.pop('detail'))
+        detail.update(ecdb_account)
+        ecdb_account = detail
 
     if 'created_on' in ecdb_account:
         ecdb_account['created_on'] = arrow.get(ecdb_account['created_on']).format()
@@ -209,18 +210,25 @@ def is_account_expired(account, expiration_days):
     return arrow.get(account['created_on']) < expired_date
 
 
-def set_account_info(student_id):
+def set_account_info(student):
     """
     1. Set telephone2 to valid phone number for each partner.
     2. Update first name to current user.
+    3. Update last name to member id.
+    4. Update email to include full account info.
     """
 
     numbers = {'Cool': '18966666666', 'Mini': '18977777777', 'Rupe': '9777777777',
                'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
                'Socn': '18988888888'}
 
+    created_by = student.get('created_by', getpass.getuser())
+    student_id, username = student['member_id'], student['username']
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
-    account_service_update_info(student_id, {'FirstName': getpass.getuser(), 'LastName': 'ectools'})
+    account_service_update_info(student_id, {'FirstName': created_by})
+    account_service_update_info(student_id, {'LastName': student_id})
+    account_service_update_info(student_id, {'Email': '{}_{}_{}@qp1.org'
+                                .format(username, student_id, config.partner.lower())})
 
 
 @ignore_error
@@ -259,7 +267,9 @@ def get_student_tags(student):
     """Get tags from a student dict."""
     tags = [student['partner'], student['environment']]
 
-    if student['is_e10']:
+    if student['is_phoenix']:
+        tags.append('Phoenix')
+    elif student['is_e10']:
         tags.append('E10')
     else:
         tags.append('S18' if student['is_s18'] else 'S15')
@@ -269,9 +279,6 @@ def get_student_tags(student):
 
     if student['is_onlineoc']:
         tags.append('OC')
-
-    if student['is_phoenix']:
-        tags.append('Phoenix')
 
     return tags
 
@@ -290,10 +297,18 @@ def save_account(account, add_tags=None, remove_tags=None):
 
 
 def _api_save_account(account, add_tags=None, remove_tags=None):
+    """
+    api to save account in ecdb.
+    :param account: dict
+    :param add_tags: list
+    :param remove_tags: list
+    :return:
+    """
+    created_by = account.get('created_by', getpass.getuser())
     data = {'detail': account,
             'env': config.env,
             'member_id': int(account['member_id']),
-            'created_by': getpass.getuser()}
+            'created_by': created_by}
 
     if remove_tags:
         removed_tags = ','.join(remove_tags)
@@ -307,9 +322,18 @@ def _api_save_account(account, add_tags=None, remove_tags=None):
 
 
 def _db_save_account(account, add_tags=None, remove_tags=None):
+    """
+    sql to save the account in ecdb.
+    :param account: dict
+    :param add_tags: list
+    :param remove_tags: list
+    :return:
+    """
     tags = ['ectools']
     target_table = 'ec_test_accounts'
     existed_account = get_account(account['member_id'])
+    created_by = account.get('created_by', None)
+    account['created_by'] = created_by
 
     if add_tags:
         tags += add_tags
@@ -321,11 +345,14 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
             tags = (set(tags) - set(remove_tags))
 
         account['tags'] = ','.join(set(tags))
+        existed_account.update(account)
 
         search_by = {'member_id': account['member_id'], 'environment': config.env}
-        update_dict = {'detail': json.dumps(account),
-                       'tags': account['tags'],
-                       'created_by': getpass.getuser()}
+        update_dict = {'detail': json.dumps(existed_account), 'tags': account['tags']}
+
+        if created_by:
+            update_dict['created_by'] = created_by
+
         ecdb_v2.update_rows(target_table, search_by, update_dict)
 
     else:
@@ -334,11 +361,12 @@ def _db_save_account(account, add_tags=None, remove_tags=None):
             tags = (set(tags) - set(remove_tags))
 
         account['tags'] = ','.join(set(tags))
+        assert 'username' in account, 'username is required to save the account!'
         ecdb_v2.add_row(target_table,
                         config.env,
                         account['member_id'],
                         account['username'],
                         json.dumps(account),
                         arrow.utcnow().format('YYYY-MM-DD HH:mm:ss.SSS'),
-                        getpass.getuser(),
+                        created_by or getpass.getuser(),
                         account['tags'])

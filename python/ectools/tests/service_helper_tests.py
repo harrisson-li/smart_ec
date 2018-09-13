@@ -170,3 +170,16 @@ def test_account_service_update_name():
     set_environment('uat')
     student_id = '23958712'
     account_service_update_info(student_id, {'FirstName': 'unit.test'})
+
+
+def test_adjust_level():
+    set_environment('staging')
+    student_id = 14896006
+
+    adjust_level(student_id, to_level_code='0A')
+    adjust_level(student_id, to_level_code=5)
+
+    try:
+        adjust_level(student_id, to_level_code=5)
+    except SystemError as e:
+        assert str(e) == 'Can not change to same unit!'

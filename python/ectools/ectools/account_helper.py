@@ -64,8 +64,9 @@ def get_or_activate_account(tag, expiration_days=365, method='activate_account',
         return account
 
 
-def create_account_without_activation(is_e10=False):
-    student = {'is_e10': is_e10, 'environment': config.env}
+def create_account_without_activation(is_e10=False, **kwargs):
+    student = {'is_e10': is_e10, 'environment': config.env, 'partner': config.partner}
+    student.update(kwargs)
     link = get_new_account_link(is_e10)
     result = no_ssl_requests().get(link)
 
@@ -80,6 +81,8 @@ def create_account_without_activation(is_e10=False):
         student['username'] = match.group('name')
         student['password'] = match.group('pw')
 
+        # update telephone 2 / first name / last name / email
+        set_account_info(student)
         save_account(student, add_tags=[config.env, 'not_activated'])
         return student
     else:
@@ -124,6 +127,7 @@ def activate_account(product_id=None,
     """
     get_logger().info('Start to activate test account...')
     get_logger().debug('Arguments: {}'.format(locals()))
+    created_by = kwargs.pop('created_by', getpass.getuser())
 
     # auto get product if not specified
     if product_id is None:
@@ -144,8 +148,11 @@ def activate_account(product_id=None,
 
     # check eclite product should match eclite center
     if is_lite:
-        assert is_lite_school(school), \
-            "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
+        if school_name is None:
+            school = get_any_eclite_school()
+        else:
+            assert is_lite_school(school), \
+                "Miss match product [{}] and school [{}] for ECLite account!".format(product['id'], school['name'])
 
     # partner of product and school should match for none-CN product
     if product['partner'] not in ['Socn', 'Cool', 'Mini']:
@@ -153,7 +160,9 @@ def activate_account(product_id=None,
 
     # create member id if not specified
     if student is None:
-        student = create_account_without_activation(is_e10=is_item_has_tag(product, 'E10'))
+        student = create_account_without_activation(
+            is_e10=is_item_has_tag(product, 'E10'),
+            created_by=created_by)
     else:
         assert isinstance(student, dict)
 
@@ -240,9 +249,6 @@ def activate_account(product_id=None,
     get_logger().debug('New test account: {}'.format(student))
     tags = get_student_tags(student)
     save_account(student, add_tags=tags, remove_tags=['not_activated', 'Failed'])
-
-    # update telephone 2 / first name / last name
-    set_account_info(student['member_id'])
 
     return student
 

@@ -35,7 +35,7 @@ setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
-version_file = r"\\cns-qaauto5\Shared\Automation\ectools.txt"
+version_file = r"\\cns-etnexus\pypi\ectools\version.txt"
 
 
 def prepare():
