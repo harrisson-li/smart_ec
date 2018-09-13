@@ -35,3 +35,5 @@ class Configuration(Base):
     db_path = 'to_be_set'
     remote_api = 'http://cns-qaauto5/api/'
     smart_repo = r'\\cns-qaauto5\Shared\git\smart'
+    version_file = r"\\cns-etnexus\pypi\ectools\version.txt"
+    version_url = 'http://jenkins.englishtown.com:8081/pypi/ectools/version.txt'

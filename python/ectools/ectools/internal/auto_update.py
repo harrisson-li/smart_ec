@@ -1,9 +1,10 @@
 import os
 
+from ectools.internal.objects import Configuration
 from ectools.utility import no_ssl_requests, get_pkg_version, update_pkg, read_text, is_corp_net, ignore_error
 
-VERSION_FILE = r"\\cns-etnexus\pypi\ectools\version.txt"
-VERSION_URL = 'http://jenkins.englishtown.com:8081/pypi/ectools/version.txt'
+VERSION_FILE = Configuration.version_file
+VERSION_URL = Configuration.version_url
 NAME = 'ectools'
 
 
