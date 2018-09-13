@@ -156,7 +156,6 @@ def resume_student(member_id):
 
 def set_hima_test(member_id, level_code):
     """
-
     :param member_id: student's member id
     :param level_code: level code from 0A - 14 for all partners
     :return:
@@ -197,6 +196,53 @@ def set_hima_test(member_id, level_code):
     doc = bs(result.content, 'xml')
 
     # raise error message if failed to set hima
+    if doc.find('IsSuccess').string != 'true':
+        msg = doc.find('ErrorMessage').string
+        raise SystemError(msg)
+
+
+def change_level(member_id, to_level_code):
+    """
+    :param member_id: student's member id
+    :param to_level_code: level code from 0A - 14 for all partners
+    :return:
+    """
+    headers = {
+        'SOAPAction': "\"http://tempuri.org/ISalesForceService/ChangeLevel\"",
+        'Content-type': 'text/xml'
+    }
+
+    data = """
+<soapenv:Envelope xmlns:efs="http://schemas.datacontract.org/2004/07/EFSchools.Englishtown.Oboe.Services.DataContract.SalesForce" 
+xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+   <soapenv:Header><wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" 
+   xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+   <wsse:UsernameToken wsu:Id="UsernameToken-9AB39A190ED58AF32715368031876625">
+   <wsse:Username>{}</wsse:Username>
+   <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{}</wsse:Password>
+   </wsse:UsernameToken></wsse:Security></soapenv:Header>
+   <soapenv:Body>
+      <tem:ChangeLevel>
+         <tem:param>
+            <efs:LevelsLeftCount>16</efs:LevelsLeftCount>
+            <efs:MemberId>{}</efs:MemberId>
+            <efs:OperatorName>ectools</efs:OperatorName>
+            <efs:ToLevelCode>{}</efs:ToLevelCode>
+         </tem:param>
+      </tem:ChangeLevel>
+   </soapenv:Body>
+</soapenv:Envelope>
+    """
+
+    result = no_ssl_requests().post(config.etown_root + SF_SERVICE_URL,
+                                    data=data.format(SALESFORCE_USERNAME,
+                                                     SALESFORCE_PASSWORD,
+                                                     member_id,
+                                                     to_level_code),
+                                    headers=headers)
+
+    assert result.status_code == HTTP_STATUS_OK, result.text
+    doc = bs(result.content, 'xml')
     if doc.find('IsSuccess').string != 'true':
         msg = doc.find('ErrorMessage').string
         raise SystemError(msg)

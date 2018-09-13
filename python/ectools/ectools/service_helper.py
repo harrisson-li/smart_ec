@@ -14,6 +14,7 @@ from xml.etree import ElementTree
 import arrow
 
 from ectools.config import config
+from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
@@ -285,3 +286,7 @@ def account_service_update_info(student_id, info):
 
     response = no_ssl_requests().post(target_url, data=body, headers=headers)
     assert 'Success>true' in response.text, response.text
+
+
+def adjust_level(student_id, to_level_code):
+    sf.change_level(student_id, to_level_code)
