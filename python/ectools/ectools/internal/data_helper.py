@@ -82,11 +82,29 @@ def get_product_by_id(product, is_s18=False):
     product_id = product['id'] if isinstance(product, dict) else product
 
     found = [x for x in get_all_products()
-             if int(x['id']) == int(product_id)
-             and is_item_has_tag(x, 'S18') == is_s18]
+             if int(x['id']) == int(product_id)]
+
+    # if more results found, filter by s18, else ignore it
+    if len(found) > 1:
+        found = [x for x in found if is_item_has_tag(x, 'S18') == is_s18]
 
     assert len(found), "No such product: {}!".format(product_id)
     return found[0]
+
+
+def get_default_product(partner=None):
+    from ectools.config import config
+    if not partner:
+        partner = config.partner
+
+    return [x for x in get_all_products()
+            if is_item_has_tag(x, 'default')
+            and x['partner'].lower() == partner.lower()][0]
+
+
+def is_s18_product(product):
+    assert isinstance(product, dict)
+    return is_item_has_tag(product, 'S18')
 
 
 def get_products_has_tag(tag):
@@ -213,6 +231,11 @@ def get_schools_by_partner(partner=None):
     found = [x for x in get_all_schools()
              if x['partner'].lower() == partner.lower()]
     return found
+
+
+def get_default_school(partner=None):
+    return [x for x in get_schools_by_partner(partner)
+            if is_item_has_tag(x, 'default')][0]
 
 
 def is_v2_school(school):
