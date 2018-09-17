@@ -129,18 +129,26 @@ def activate_account(product_id=None,
     get_logger().debug('Arguments: {}'.format(locals()))
     created_by = kwargs.pop('created_by', getpass.getuser())
 
-    # auto get product if not specified
-    if product_id is None:
-        product = get_any_product(is_s18=is_s18)
-    else:
-        product = get_product_by_id(product=product_id, is_s18=is_s18)
+    if not product_id and not school_name:
+        get_logger().info('Use default product and school.')
+        product = get_default_product()
+        is_s18 = is_s18_product(product)
+        school = get_default_school()
 
-    # auto get school if not specified
-    if school_name is None:
-        school = get_any_v2_school() if is_v2 else get_any_school()
     else:
-        school = get_school_by_name(school_name)
-        is_v2 = is_v2_school(school_name)  # fix account version according to school
+        # auto get product if not specified
+        if not product_id:
+            product = get_any_product(is_s18=is_s18)
+        else:
+            product = get_product_by_id(product=product_id, is_s18=is_s18)
+            is_s18 = is_s18_product(product)
+
+        # auto get school if not specified
+        if not school_name:
+            school = get_any_v2_school() if is_v2 else get_any_school()
+        else:
+            school = get_school_by_name(school_name)
+            is_v2 = is_v2_school(school_name)  # fix account version according to school
 
     # initial student type
     is_lite = is_lite_product(product)

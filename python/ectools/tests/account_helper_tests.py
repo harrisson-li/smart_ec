@@ -259,3 +259,11 @@ def test_activate_phoenix_socn():
     set_environment('uat')
     set_partner('socn')
     activate_phoenix_student(school_name='SH_PSQ')
+
+
+def test_activate_default_account():
+    set_environment('staging')
+    for partner, prod in [('Cool', 63), ('Mini', 65), ('Rupe', 159), ('Cehk', 127)]:
+        set_partner(partner)
+        account = activate_account()
+        assert account['product']['id'] == prod
