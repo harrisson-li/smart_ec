@@ -78,7 +78,7 @@ def get_all_products():
     return Cache.products
 
 
-def get_product_by_id(product, is_s18=False):
+def get_product_by_id(product, is_s18=True):
     product_id = product['id'] if isinstance(product, dict) else product
 
     found = [x for x in get_all_products()
@@ -122,7 +122,7 @@ def get_products_by_partner(partner=None, is_e10=False):
             and is_item_has_tag(x, 'E10') == is_e10]
 
 
-def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
+def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_major=True):
     found = [x for x in get_products_by_partner(by_partner, is_e10)
              if is_item_has_tag(x, 'S18') == is_s18]
 
@@ -133,10 +133,10 @@ def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
 
 
 def get_any_e10_product(by_partner=None):
-    return get_any_product(by_partner, is_e10=True, is_major=False)
+    return get_any_product(by_partner, is_e10=True, is_s18=False, is_major=False)
 
 
-def get_any_home_product(by_partner=None, is_major=True, is_s18=False):
+def get_any_home_product(by_partner=None, is_major=True, is_s18=True):
     found = [x for x in get_products_by_partner(by_partner)
              if x['product_type'] == 'Home'
              and is_item_has_tag(x, 'S18') == is_s18]
@@ -147,7 +147,7 @@ def get_any_home_product(by_partner=None, is_major=True, is_s18=False):
         return get_random_item(found)
 
 
-def get_any_school_product(by_partner=None, is_major=True, is_s18=False):
+def get_any_school_product(by_partner=None, is_major=True, is_s18=True):
     found = [x for x in get_products_by_partner(by_partner)
              if x['product_type'] == 'School'
              and is_item_has_tag(x, 'S18') == is_s18

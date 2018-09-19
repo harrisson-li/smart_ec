@@ -31,15 +31,15 @@ def test_get_partner():
 def test_get_product():
     result = get_all_partners()
     assert len(result) > 0
-    assert get_product_by_id(63)['name'] == 'Smart 15 - School'
+    assert get_product_by_id(63)['name'] == 'Smart 18 - School'
     assert get_products_by_partner() is not None
     assert get_products_has_tag('Major') is not None
     assert get_any_product() is not None
     assert get_any_home_product() is not None
     assert get_any_school_product() is not None
-    assert get_any_e10_product() is not None
 
     set_partner('mini')
+    assert get_any_e10_product() is not None
     assert get_any_eclite_product() is not None
 
 
@@ -55,7 +55,9 @@ def test_get_phoenix_data():
     print(result)
     assert 'Phoenix' in result['tags']
 
+
 def test_get_school():
+    set_partner('cool')
     assert len(get_all_schools()) > 0
     assert len(get_test_centers()) > 0
     assert len(get_all_v2_schools()) > 0
@@ -64,7 +66,7 @@ def test_get_school():
     assert len(get_all_normal_v2_schools()) > 0
 
     assert get_school_by_name('HK_YLC')['division_code'] == 'HKYLC'
-    assert get_school_by_name('TCenterS14_(DO_NOT_SELECT)') is not None
+    assert get_school_by_name('QA_T1C') is not None
     assert get_schools_has_tag('TestCenter') is not None
 
     assert get_schools_by_partner() is not None
@@ -158,9 +160,9 @@ def test_get_phoenix_pack():
     pack = get_phoenix_pack(config.env, config.partner, 'Online Pack Basic')
     assert pack['salesforce_id'] == '01t0l000001DmR2AAK'
 
-    pack = get_phoenix_pack(config.env, config.partner, 'Unrestricted Center')
+    pack = get_phoenix_pack(config.env, config.partner, 'Intensive Center Fee')
     assert pack['salesforce_id'] == '01t0l000001DYGdAAO'
 
     set_partner('rupe')
-    pack = get_phoenix_pack(config.env, config.partner, 'Unrestricted Online')
+    pack = get_phoenix_pack(config.env, config.partner, 'Intensive Online Fee')
     assert pack['salesforce_id'] == '01t0l000001DYGeAAO'

@@ -385,14 +385,16 @@ def activate_s15_v2_student(**kwargs):
 
 
 def activate_home_v2_student(**kwargs):
+    kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_any_home_product()['id']
+        kwargs['product_id'] = get_any_home_product(is_s18=True)['id']
     return activate_account_by_dict(kwargs)
 
 
 def activate_school_v2_student(**kwargs):
+    kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_any_school_product()['id']
+        kwargs['product_id'] = get_any_school_product(is_s18=True)['id']
     return activate_account_by_dict(kwargs)
 
 
@@ -414,14 +416,16 @@ def activate_onlineoc_student(**kwargs):
 
 
 def activate_onlineoc_school_student(**kwargs):
+    kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_any_school_product()['id']
+        kwargs['product_id'] = get_any_school_product(is_s18=True)['id']
     return activate_onlineoc_student(**kwargs)
 
 
 def activate_onlineoc_home_student(**kwargs):
+    kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_any_home_product()['id']
+        kwargs['product_id'] = get_any_home_product(is_s18=True)['id']
     return activate_onlineoc_student(**kwargs)
 
 
@@ -434,7 +438,7 @@ def activate_student_with_random_level(min_level=1, max_level=16, **kwargs):
 def activate_school_student_with_random_level(min_level=1, max_level=16, **kwargs):
     level = get_random_level(min_level, max_level)
     kwargs['startLevel'] = level
-    return activate_school_v1_student(**kwargs)
+    return activate_school_v2_student(**kwargs)
 
 
 def activate_home_student_with_random_level(min_level=1, max_level=16, **kwargs):

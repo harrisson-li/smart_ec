@@ -57,7 +57,7 @@ def test_activate_s18_accounts():
 
 def test_get_s18_products():
     set_partner('cool')
-    product = get_any_school_product()
+    product = get_any_school_product(is_s18=False)
     assert product['main_code'] == 'S15SCHOOLMAIN'
 
     product = get_any_school_product(is_s18=True)
