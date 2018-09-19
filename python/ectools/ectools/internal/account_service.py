@@ -227,8 +227,8 @@ def set_account_info(student):
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
     account_service_update_info(student_id, {'FirstName': created_by})
     account_service_update_info(student_id, {'LastName': student_id})
-    account_service_update_info(student_id, {'Email': '{}_{}_{}@qp1.org'
-                                .format(username, student_id, config.partner.lower())})
+    account_service_update_info(student_id, {'Email': '{}_{}_{}_{}@qp1.org'
+                                .format(username, student_id, config.partner.lower(), config.env.lower())})
 
 
 @ignore_error

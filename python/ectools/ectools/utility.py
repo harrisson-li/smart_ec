@@ -431,5 +431,5 @@ def is_corp_net():
     try:
         no_ssl_requests().get(Configuration.version_url, timeout=2)
         return True
-    except requests.exceptions.ConnectionError:
+    except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return False
