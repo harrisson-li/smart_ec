@@ -47,9 +47,9 @@ def test_get_phoenix_data():
     set_environment('uat')
     set_partner('rupe')
 
-    result = get_any_phoenix_school()
+    result = get_any_phoenix_school(is_virtual=True)
     print(result)
-    assert 'Phoenix' in result['tags']
+    assert 'Virtual' in result['tags']
 
     result = get_any_phoenix_product()
     print(result)
@@ -68,7 +68,7 @@ def test_get_school():
     assert get_schools_has_tag('TestCenter') is not None
 
     assert get_schools_by_partner() is not None
-    assert get_any_school() is not None
+    assert get_any_v1_school() is not None
     assert get_any_v2_school() is not None
     assert get_any_onlineoc_school() is not None
 
@@ -79,7 +79,7 @@ def test_get_school():
     assert 'ECLite' in get_any_eclite_school()['tags']
 
     set_environment('live')
-    school = get_any_school()
+    school = get_any_v1_school()
     assert 'TestCenter' in school['tags']
 
     school = get_any_v2_school()

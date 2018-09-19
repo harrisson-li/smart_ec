@@ -111,7 +111,7 @@ def test_activate_account_more():
     student = activate_school_v2_student()
     assert student['product']['product_type'] == 'School'
     assert student['is_v2']
-    student = activate_home_student()
+    student = activate_home_v1_student()
     assert student['product']['product_type'] == 'Home'
     assert not student['is_v2']
     student = activate_school_student_with_random_level(min_level=2, max_level=3)
@@ -229,7 +229,7 @@ def test_activate_socn_student():
 def test_activate_v1_student():
     set_environment('staging')
     set_partner('mini')
-    activate_s15_student()
+    activate_s15_v1_student()
 
 
 def test_activate_phoenix_student():

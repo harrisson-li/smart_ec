@@ -275,14 +275,14 @@ def is_onlineoc_school(school):
     if not isinstance(school, dict):
         school = get_school_by_name(school, cached=True)
 
-    return not is_item_has_tag(school, 'OnlineOC-Off')
+    return not is_item_has_tag(school, 'OC-Off')
 
 
-def is_phoenix_school(school):
+def is_virtual_school(school):
     if not isinstance(school, dict):
         school = get_school_by_name(school, cached=True)
 
-    return is_item_has_tag(school, 'Phoenix')
+    return is_item_has_tag(school, 'Virtual')
 
 
 def _pick_one_school(schools):
@@ -294,7 +294,7 @@ def _pick_one_school(schools):
     return get_random_item(schools)
 
 
-def get_any_school(partner=None):
+def get_any_v1_school(partner=None):
     """return v1 school."""
 
     found = [x for x in get_schools_by_partner(partner)
@@ -336,9 +336,9 @@ def get_any_onlineoc_school(partner=None):
     return _pick_one_school(found)
 
 
-def get_any_phoenix_school(partner=None):
+def get_any_phoenix_school(partner=None, is_virtual=True):
     found = [x for x in get_schools_by_partner(partner)
-             if is_phoenix_school(x)]
+             if is_virtual_school(x) == is_virtual]
 
     return _pick_one_school(found)
 
