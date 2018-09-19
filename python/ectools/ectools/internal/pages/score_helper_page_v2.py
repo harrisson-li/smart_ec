@@ -1,4 +1,5 @@
 from ectools.config import config
+
 from . import PageBase
 
 
@@ -16,6 +17,12 @@ class SubmitScoreHelperS15V2Page(PageBase):
     MERGED_LESSON_SCORE_TEXTBOX_XPATH = "//*[@id='lessonProgressRepeater_txtLessonScore_%s']"
     MERGED_LESSON_SUBMIT_SCORE_BUTTON_XPATH = "//*[@id='lessonProgressRepeater_btnMergedLesson_%s']"
     MERGER_LESSON_STATUS_TEXT_XPATH = "//*[@id='plLessonProgress']/table[%s]/tbody/tr[1]/td[1]"
+    PC_LESSON_SCORE_TEXTBOX_XPATH = "//*[@id='lessonProgressRepeater_txtPCLessonScore_%s']"
+    PC_LESSON_SUBMIT_SCORE_BUTTON_XPATH = "//*[@id='lessonProgressRepeater_btnPCLesson_%s']"
+    PC_LESSON_STATUS_TEXT_XPATH = "//*[@id='plLessonProgress']/table[%s]/tbody/tr[2]/td[1]"
+    MOBILE_LESSON_SCORE_TEXTBOX_XPATH = "//*[@id='lessonProgressRepeater_txtMOBLessonScore_%s']"
+    MOBILE_LESSON_SUBMIT_SCORE_BUTTON_XPATH = "//*[@id='lessonProgressRepeater_btnMOBLesson_%s']"
+    MOBILE_LESSON_STATUS_TEXT_XPATH = "//*[@id='plLessonProgress']/table[%s]/tbody/tr[2]/td[3]"
 
     UNIT_ID = "UNIT_ID"
     UNIT_NAME = "NAME"
@@ -84,3 +91,35 @@ class SubmitScoreHelperS15V2Page(PageBase):
         merged_lesson_status_text = self.element_merged_lesson_status_text(lesson_sequence)
 
         return merged_lesson_score_text_box, merged_lesson_submit_score_button, merged_lesson_status_text
+
+    def element_pc_lesson_score_textbox(self, lesson_sequence):
+        return self.get_element(self.PC_LESSON_SCORE_TEXTBOX_XPATH % (lesson_sequence - 1))
+
+    def element_pc_lesson_submit_score_button(self, lesson_sequence):
+        return self.get_element(self.PC_LESSON_SUBMIT_SCORE_BUTTON_XPATH % (lesson_sequence - 1))
+
+    def element_pc_lesson_status_text(self, lesson_sequence):
+        return self.get_element(self.PC_LESSON_STATUS_TEXT_XPATH % (lesson_sequence - 1))
+
+    def get_pc_lesson(self, lesson_sequence):
+        pc_lesson_score_text_box = self.element_pc_lesson_score_textbox(lesson_sequence)
+        pc_lesson_submit_score_button = self.element_pc_lesson_submit_score_button(lesson_sequence)
+        pc_lesson_status_text = self.element_pc_lesson_status_text(lesson_sequence)
+
+        return pc_lesson_score_text_box, pc_lesson_submit_score_button, pc_lesson_status_text
+
+    def element_mobile_lesson_score_textbox(self, lesson_sequence):
+        return self.get_element(self.MOBILE_LESSON_SCORE_TEXTBOX_XPATH % (lesson_sequence - 1))
+
+    def element_mobile_lesson_submit_score_button(self, lesson_sequence):
+        return self.get_element(self.MOBILE_LESSON_SUBMIT_SCORE_BUTTON_XPATH % (lesson_sequence - 1))
+
+    def element_mobile_lesson_status_text(self, lesson_sequence):
+        return self.get_element(self.MOBILE_LESSON_STATUS_TEXT_XPATH % (lesson_sequence - 1))
+
+    def get_mobile_lesson(self, lesson_sequence):
+        mobile_lesson_score_text_box = self.element_mobile_lesson_score_textbox(lesson_sequence)
+        mobile_lesson_submit_score_button = self.element_mobile_lesson_submit_score_button(lesson_sequence)
+        mobile_lesson_status_text = self.element_mobile_lesson_status_text(lesson_sequence)
+
+        return mobile_lesson_score_text_box, mobile_lesson_submit_score_button, mobile_lesson_status_text

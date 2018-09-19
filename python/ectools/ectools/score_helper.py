@@ -32,6 +32,7 @@ from contextlib import contextmanager
 import ectools.utility
 from ectools.service_helper import is_v2_student
 from ectools.utility import get_score
+
 from .internal.business import score_helper_v1
 from .internal.business import score_helper_v2
 from .internal.level_test_helper import pass_level_test_v2
@@ -70,6 +71,18 @@ def submit_current_unit(score=get_score(), skip_activity=0):
 
 def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
     _get_score_helper().submit_for_unit(unit_id, score, skip_activity)
+
+
+def submit_merged_lesson_current_unit(lesson_sequence, score=get_score()):
+    _get_score_helper().submit_merged_score_for_one_lesson(lesson_sequence, score)
+
+
+def submit_pc_lesson_current_unit(lesson_sequence, score=get_score()):
+    _get_score_helper().submit_pc_score_for_one_lesson(lesson_sequence, score)
+
+
+def submit_mobile_lesson_current_unit(lesson_sequence, score=get_score()):
+    _get_score_helper().submit_mobile_score_for_one_lesson(lesson_sequence, score)
 
 
 def pass_to_unit(unit_id, score=get_score(), skip_activity=0):
