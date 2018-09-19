@@ -10,7 +10,6 @@ LOGIN_SERVICE_URL = "{}/login/secure.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
 
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
-CONTEXT_QUERY_STRING_PATTERN = "c=countrycode={}|culturecode={}|partnercode={}|siteversion={}"
 DEFAULT_PASSWORD = 1
 
 
@@ -59,27 +58,32 @@ def query_current_context(username):
     return query(username, query_string, url_with_context=False)['values']
 
 
-def _build_context(username):
+def _build_context(username, use_default_context=True):
     context_id = username + '_troop_service_context'
 
     # try to get from cache, if not found then query from troop
     if not getattr(Cache, context_id, None):
         setattr(Cache, context_id, query_current_context(username))
 
-    context = getattr(Cache, context_id)
-    country_code = context['studentcountrycode']['value']
-    culture_code = context['culturecode']['value']
-    partner_code = context['partnercode']['value']
-    site_version = context['siteversion']['value']
+    context_values = getattr(Cache, context_id)
 
-    return CONTEXT_QUERY_STRING_PATTERN.format(country_code, culture_code, partner_code, site_version)
+    context = {}
+    for k in context_values:
+        context[k] = context_values[k]['value']
+
+    if use_default_context:
+        context['culturecode'] = 'en'
+        context['languagecode'] = 'en'
+
+    return 'c=' + '|'.join(['{}={}'.format(k, context[k]) for k in context if context[k] is not None])
 
 
-def query(username, query_string, url_with_context=True, return_first_item=True, url_query_string=None):
+def query(username, query_string, url_with_context=True, return_first_item=True, url_query_string=None,
+          use_default_context=True):
     url = TROOP_SERVICE_URL.format(config.etown_root)
 
     if url_with_context:
-        url += _build_context(username)
+        url += _build_context(username, use_default_context)
 
     if url_query_string:
         url += url_query_string
