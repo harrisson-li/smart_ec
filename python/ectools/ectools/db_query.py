@@ -1,7 +1,7 @@
 """
 Use this module to query DB for all environments.
 """
-from ectools.config import config
+from ectools.config import config, get_logger
 
 
 def _get_executor():
@@ -14,12 +14,15 @@ def _get_executor():
 
 
 def fetch_one(sql, as_dict=True):
+    get_logger().debug('SQL: {}'.format(sql))
     return _get_executor().fetch_one(sql, as_dict=as_dict)
 
 
 def fetch_all(sql, as_dict=True):
+    get_logger().debug('SQL: {}'.format(sql))
     return _get_executor().fetch_all(sql, as_dict=as_dict)
 
 
 def execute_query(sql):
+    get_logger().debug('SQL: {}'.format(sql))
     return _get_executor().execute_query(sql)

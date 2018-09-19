@@ -129,7 +129,13 @@ namespace ET2.ViewModels
         {
             var api = ApiHost + "new_account";
             var isE10 = (accountType == AccountTypes.E10);
-            var requestData = new { env = GetCurrentEnvironment(), partner = partner, is_e10 = isE10 };
+            var requestData = new
+            {
+                env = GetCurrentEnvironment(),
+                partner = partner,
+                is_e10 = isE10,
+                created_by = Environment.UserName
+            };
 
             try
             {
@@ -190,7 +196,8 @@ namespace ET2.ViewModels
                 freeRedemptionQty = data.CurrentProduct.FreeRedQty,
                 securityverified = data.CurrentProduct.SecurityVerified ? "on" : "off",
                 includesenroll = data.CurrentProduct.IncludesEnroll ? "on" : "off",
-                source = "ET2 Windows"
+                source = "ET2 Windows",
+                created_by = Environment.UserName
             };
 
             try
@@ -225,7 +232,6 @@ namespace ET2.ViewModels
                 {
                     env = GetCurrentEnvironment(),
                     member_id = id,
-                    created_by = Environment.UserName,
                     remove_tags = "ectools"
                 };
 
