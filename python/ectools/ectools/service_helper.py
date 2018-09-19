@@ -195,7 +195,8 @@ def query_troop_service(student_name,
                         query_string,
                         login_required=True,
                         password=DEFAULT_PASSWORD,
-                        return_first_item=True):
+                        return_first_item=True,
+                        use_default_context=True):
     if login_required:
         troop_service_helper.login(student_name, password)
 
@@ -203,7 +204,8 @@ def query_troop_service(student_name,
     return troop_service_helper.query(student_name,
                                       query_string,
                                       url_with_context=url_with_context,
-                                      return_first_item=return_first_item)
+                                      return_first_item=return_first_item,
+                                      use_default_context=use_default_context)
 
 
 def troop_service_translate_blurb(blurb_id, culture_code='en'):
