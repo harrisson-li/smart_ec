@@ -73,15 +73,15 @@ def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
     _get_score_helper().submit_for_unit(unit_id, score, skip_activity)
 
 
-def submit_merged_lesson_current_unit(lesson_sequence, score=get_score()):
+def submit_merged_lesson_for_current_unit(lesson_sequence, score=get_score()):
     _get_score_helper().submit_merged_score_for_one_lesson(lesson_sequence, score)
 
 
-def submit_pc_lesson_current_unit(lesson_sequence, score=get_score()):
+def submit_pc_lesson_for_current_unit(lesson_sequence, score=get_score()):
     _get_score_helper().submit_pc_score_for_one_lesson(lesson_sequence, score)
 
 
-def submit_mobile_lesson_current_unit(lesson_sequence, score=get_score()):
+def submit_mobile_lesson_for_current_unit(lesson_sequence, score=get_score()):
     _get_score_helper().submit_mobile_score_for_one_lesson(lesson_sequence, score)
 
 
