@@ -76,7 +76,7 @@ def get_success_message(student):
 
 def get_default_activation_data(product):
     return {'mainRedemptionQty': 3,
-            'freeRedemptionQty': 3,
+            'freeRedemptionQty': 0,
             'startLevel': '0A',
             'levelQty': 16,
             'securityverified': 'on',

@@ -92,7 +92,7 @@ def create_account_without_activation(is_e10=False, **kwargs):
 def activate_account(product_id=None,
                      school_name=None,
                      is_v2=True,
-                     is_s18=False,
+                     is_s18=True,
                      auto_onlineoc=True,
                      student=None,
                      **kwargs):
@@ -218,12 +218,13 @@ def activate_account(product_id=None,
 
         generate_activation_data_for_phoenix(data, phoenix_packs)
 
-    # save activation data will be good for troubleshooting
-    student['activation_data'] = data
-
     # post the data to activation tool
     result = no_ssl_requests().post(link, data=data)
     success_text = get_success_message(student)
+
+    # save activation data will be good for troubleshooting
+    data.update(kwargs)
+    student['activation_data'] = data
 
     # handle activation failure flow, save account and append a tag as "Failed"
     if result.status_code != HTTP_STATUS_OK or success_text not in result.text:
