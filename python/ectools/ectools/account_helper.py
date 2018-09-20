@@ -445,7 +445,13 @@ def activate_school_student_with_random_level(min_level=1, max_level=16, **kwarg
 def activate_home_student_with_random_level(min_level=1, max_level=16, **kwargs):
     level = get_random_level(min_level, max_level)
     kwargs['startLevel'] = level
-    return activate_home_v1_student(**kwargs)
+    return activate_home_v2_student(**kwargs)
+
+
+def activate_phoenix_student_with_random_level(min_level=1, max_level=16, **kwargs):
+    level = get_random_level(min_level, max_level)
+    kwargs['startLevel'] = level
+    return activate_phoenix_student(**kwargs)
 
 
 def convert_account_to_object(account_dict,
