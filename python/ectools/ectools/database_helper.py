@@ -161,7 +161,7 @@ def able_to_connect_db():
         fetch_one('SELECT TOP 1 Student_id FROM Oboe.dbo.Student')
         return True
     except pymssql.OperationalError:
-        get_logger().warning('Failed to connect to DB.')
+        get_logger().warn('Failed to connect to DB.')
         return False
 
 
