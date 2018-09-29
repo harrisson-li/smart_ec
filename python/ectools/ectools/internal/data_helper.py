@@ -337,7 +337,7 @@ def get_any_onlineoc_school(partner=None):
 
 
 def get_any_phoenix_school(partner=None, is_virtual=True):
-    found = [x for x in get_schools_by_partner(partner)
+    found = [x for x in get_all_normal_v2_schools(partner)
              if is_virtual_school(x) == is_virtual]
 
     return _pick_one_school(found)

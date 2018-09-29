@@ -257,9 +257,9 @@ def test_activate_live_student():
 
 
 def test_activate_phoenix_socn():
-    set_environment('uat')
+    set_environment('qa')
     set_partner('socn')
-    activate_phoenix_student(school_name='SH_PSQ')
+    activate_phoenix_student(school_name='HZ_CXC')
 
 
 def test_activate_default_account():
