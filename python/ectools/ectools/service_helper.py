@@ -292,3 +292,24 @@ def account_service_update_info(student_id, info):
 
 def adjust_level(student_id, to_level_code):
     sf.change_level(student_id, to_level_code)
+
+
+def add_offline_coupon(student_id, coupon_type, add_count):
+    """
+    Add offline coupons for a student.
+    :param student_id: the member id.
+    :param coupon_type: "F2F"/"Face to Face"/"WS"/"Workshop"/"LC"/"Life Club"/"Apply"
+    :param add_count: counts to add.
+    :return:
+    """
+    map = {'F2F': 'F2FQty', 'Face to Face': 'F2FQty',
+           'WS': 'WSQty', 'Workshop': 'WSQty',
+           'LC': 'LCQty', 'Life Club': 'LCQty',
+           'Apply': 'ApplyQty'}
+    url = '{}/services/oboe2/salesforce/test/UpsellCoupon'.format(config.etown_root)
+    response = no_ssl_requests().post(url, data={
+        'memberId': student_id,
+        map[coupon_type]: add_count,
+        'token': 'b175934dbe21f41945759f3797b50c86ac1f'
+    })
+    assert response.text == 'Coupons granted!', response.text

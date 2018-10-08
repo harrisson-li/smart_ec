@@ -316,6 +316,7 @@ def activate_e10_student(**kwargs):
 
 def activate_s15_v1_student(**kwargs):
     kwargs['is_v2'] = False
+    kwargs['is_s18'] = False
     if 'product_id' not in kwargs:
         kwargs['product_id'] = get_any_product(is_s18=False)['id']
 
@@ -378,6 +379,7 @@ def activate_s18_school_student(**kwargs):
 
 
 def activate_s15_v2_student(**kwargs):
+    kwargs['is_s18'] = False
     if 'product_id' not in kwargs:
         kwargs['product_id'] = get_any_product(is_s18=False)['id']
     if 'school_name' not in kwargs:
