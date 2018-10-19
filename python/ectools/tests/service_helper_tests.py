@@ -183,3 +183,11 @@ def test_adjust_level():
         adjust_level(student_id, to_level_code=5)
     except SystemError as e:
         assert str(e) == 'Can not change to same unit!'
+
+
+def test_add_offline_coupon():
+    set_environment('staging')
+    student_id = 14896006
+
+    add_offline_coupon(student_id, 'F2F', 2)
+    add_offline_coupon(student_id, 'WS', 2)
