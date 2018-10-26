@@ -74,6 +74,11 @@ class DbQueryPage(PageBase):
     def get_result(self, as_dict=True):
         self.check_query_error()
 
+        # no result in query, return an empty list
+        if '-1 rows affected.' in self.browser.page_source:
+            return []
+
+        # analyze the table in page source to get result
         doc = etree.HTML(self.browser.page_source)
         element_rows = doc.xpath('//table')[4].find('tbody').findall('tr')
 
