@@ -8,6 +8,7 @@ def test_uat_fetch_one():
     print(result)
     assert result is not None
 
+
 def test_uat_query():
     set_environment('uat')
     result = fetch_all('select top 2 * from oboe.dbo.student')
@@ -30,3 +31,9 @@ def test_live_query():
     result = fetch_all('select top 2 * from oboe.dbo.student WITH(NOLOCK)')
     print(result)
     assert result is not None
+
+
+def test_no_result():
+    set_environment('qa')
+    result = fetch_all('select * from oboe.dbo.student where 1>2')
+    assert result == []
