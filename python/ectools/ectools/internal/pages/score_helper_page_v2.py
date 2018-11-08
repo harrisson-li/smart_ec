@@ -99,7 +99,7 @@ class SubmitScoreHelperS15V2Page(PageBase):
         return self.get_element(self.PC_LESSON_SUBMIT_SCORE_BUTTON_XPATH % (lesson_sequence - 1))
 
     def element_pc_lesson_status_text(self, lesson_sequence):
-        return self.get_element(self.PC_LESSON_STATUS_TEXT_XPATH % (lesson_sequence - 1))
+        return self.get_element(self.PC_LESSON_STATUS_TEXT_XPATH % lesson_sequence)
 
     def get_pc_lesson(self, lesson_sequence):
         pc_lesson_score_text_box = self.element_pc_lesson_score_textbox(lesson_sequence)
@@ -115,7 +115,7 @@ class SubmitScoreHelperS15V2Page(PageBase):
         return self.get_element(self.MOBILE_LESSON_SUBMIT_SCORE_BUTTON_XPATH % (lesson_sequence - 1))
 
     def element_mobile_lesson_status_text(self, lesson_sequence):
-        return self.get_element(self.MOBILE_LESSON_STATUS_TEXT_XPATH % (lesson_sequence - 1))
+        return self.get_element(self.MOBILE_LESSON_STATUS_TEXT_XPATH % lesson_sequence)
 
     def get_mobile_lesson(self, lesson_sequence):
         mobile_lesson_score_text_box = self.element_mobile_lesson_score_textbox(lesson_sequence)
