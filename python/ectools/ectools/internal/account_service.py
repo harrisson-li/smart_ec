@@ -137,6 +137,7 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
     data['DaysOfExpiredCouponRetention'] = 30
     data['RedemptionCode'] = data['mainRedemptionCode']
     data['RedemptionQty'] = data['mainRedemptionQty']
+    data['LegalDuration'] = 360
     data['ExtendSubscriptionType'] = 'FromNow'
 
     to_be_deleted = ['includesenroll', 'mainRedemptionCode', 'mainRedemptionQty',
