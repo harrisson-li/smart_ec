@@ -28,7 +28,9 @@ from datetime import datetime, timedelta
 
 import arrow
 
-from ectools.database_helper import *
+from ectools.config import get_logger
+from ectools.db_query import execute_query, fetch_one
+from ectools.internal.objects import Base
 from ectools.service_helper import is_v2_student
 from ectools.utility import get_score, random_date
 
@@ -90,13 +92,13 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         WHERE StudentCourse_id IN (SELECT
         StudentCourse_id
         FROM SchoolAccount.dbo.StudentCourse
-        WHERE Student_id = %s
+        WHERE Student_id = {}
         AND IsCurrent = 1
         AND IsCurrentForCourseType = 1
         AND IsEnrollable = 1
-        AND IsPrimary = 1)"""
+        AND IsPrimary = 1)""".format(student_id)
 
-        return fetch_one(sql, student_id).StudentLevelProgress_id
+        return fetch_one(sql, as_dict=False).StudentLevelProgress_id
 
     def get_unit_progress_id():
         sql = """SELECT MIN(StudentUnitProgress_id)
@@ -104,13 +106,13 @@ def achieve_minimum_class_taken_v1(student_id, **kwargs):
         WHERE StudentCourse_id IN (SELECT
         StudentCourse_id
         FROM SchoolAccount.dbo.StudentCourse
-        WHERE Student_id = %s
+        WHERE Student_id = {}
         AND IsCurrent = 1
         AND IsCurrentForCourseType = 1
         AND IsEnrollable = 1
-        AND IsPrimary = 1)"""
+        AND IsPrimary = 1)""".format(student_id)
 
-        return fetch_one(sql, student_id)[0]
+        return fetch_one(sql, as_dict=False)[0]
 
     def update_progress_start_time(level_progress_id, unit_progress_id):
         get_logger().info("Update level and unit progress start time")
@@ -154,7 +156,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
             sql = sql.replace('AND CompleteDate IS NOT NULL', '')
 
         db_suffix = str(student_id)[-1]
-        row = fetch_one(sql.format(db_suffix, student_id))
+        row = fetch_one(sql.format(db_suffix, student_id), as_dict=False)
         extra_data = row.ExtraData
         course_item_id = row.StudentCourseItem_id
         pattern = r'.*enrollDate":"([\d\-T\:]*)"'
@@ -199,7 +201,7 @@ def _get_past_class_item(class_category_id, student_id):
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
                                 HelperConfig.ClassTakenUntil['days'],
-                                student_id))
+                                student_id), as_dict=False)
 
 
 def _get_coupon_count(student_id, coupon_type_id):
@@ -210,7 +212,7 @@ def _get_coupon_count(student_id, coupon_type_id):
     AND student_id = {}
     AND couponClassCategoryGroup_id = {}"""
 
-    return fetch_one(sql.format(student_id, coupon_type_id))[0]
+    return fetch_one(sql.format(student_id, coupon_type_id), as_dict=False)[0]
 
 
 def _is_coupon_free_student(student_id):
@@ -220,7 +222,7 @@ def _is_coupon_free_student(student_id):
     WHERE  pfm.ProductFeatureCode ='CouponFree'
     AND s.Student_id = {}"""
 
-    is_coupon_free = int(fetch_one(sql.format(student_id))[0])
+    is_coupon_free = int(fetch_one(sql.format(student_id), as_dict=False)[0])
     return is_coupon_free > 0
 
 
@@ -239,7 +241,7 @@ def _insert_booking_id(student_id, schedule_class, coupon_category_id):
            ,[InsertDate]
            ,[UpdateDate]
            ,[LevelCode])
-    VALUES ({}, {}, 2, 1, 1, 0, '{}', GETDATE(), '1')
+    VALUES ({}, {}, 2, 1, 1, 0, CAST('{}' AS DATETIME2), GETDATE(), '1')
     """
     execute_query(sql.format(scheduled_id,
                              student_id,
@@ -255,21 +257,21 @@ def _insert_booking_id(student_id, schedule_class, coupon_category_id):
     AND ScheduledClass_id = {}
     ORDER BY Booking_id DESC"""
 
-    book_id = fetch_one(sql.format(student_id, scheduled_id))[0]
+    book_id = fetch_one(sql.format(student_id, scheduled_id), as_dict=False)[0]
 
     sql = """DECLARE @coupon_id AS INT
     SELECT @coupon_id = MIN(coupon_id)
     FROM oboe.dbo.Coupon
     WHERE booking_id IS NULL
-    AND student_id = %s
-    AND couponClassCategoryGroup_id = %s
+    AND student_id = {}
+    AND couponClassCategoryGroup_id = {}
     AND IsActivated = 1
     AND IsDeleted = 0
     UPDATE oboe.dbo.Coupon
-    SET booking_id = %s
+    SET booking_id = {}
     WHERE coupon_id = @coupon_id"""
 
-    execute_query(sql, (student_id, coupon_category_id, book_id))
+    execute_query(sql.format(student_id, coupon_category_id, book_id))
 
 
 def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):

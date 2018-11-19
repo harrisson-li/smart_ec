@@ -1,3 +1,8 @@
+from ectools.config import set_environment, set_partner
+from ectools.offline_class_helper import achieve_minimum_class_taken, HelperConfig
+from ectools.service_helper import add_offline_coupon
+
+
 def test_use_config():
     from ectools.offline_class_helper import HelperConfig
 
@@ -27,11 +32,16 @@ def test_use_config():
     HelperConfig.DefaultPLCode = 'PL'
 
 
-def test_class_taken():
-    from ectools.config import setup
-    from ectools.offline_class_helper import achieve_minimum_class_taken, HelperConfig
-
+def test_class_taken_online():
+    set_environment('uat')
     student_id = 23909095
-    setup('uat')
     HelperConfig.LevelMustComplete = False
     achieve_minimum_class_taken(student_id, online_pl=1)
+
+
+def test_class_taken_offline():
+    set_environment('uat')
+    set_partner('cool')
+    student_id = 23964729
+    add_offline_coupon(student_id, 'WS', 1)
+    achieve_minimum_class_taken(student_id, workshop=1)
