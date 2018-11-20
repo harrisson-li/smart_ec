@@ -37,7 +37,7 @@ namespace ET2.Support
 
         public static string GetOneTips()
         {
-            var url = "{0}{1}".FormatWith(API_ROOT, "give_me_joke");
+            var url = "{0}{1}".FormatWith(API_ROOT, "give_me_tips");
             try
             {
                 var response = HttpHelper.Get(url);
