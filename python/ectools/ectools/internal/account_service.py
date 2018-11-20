@@ -146,11 +146,14 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
     for key in to_be_deleted:
         data.pop(key, None)
 
-    # workaround: if RedemptionQty <= 12 it probably means months, we update it to days
+    # hack: if RedemptionQty <= 12 we treat it as months, else as days
     qty = int(data['RedemptionQty'])
 
     if qty <= 12:
         data['RedemptionQty'] = qty * 30
+
+    # legal duration = main redemption qty
+    data['LegalDuration'] = data['RedemptionQty']
 
 
 def _refine_account(ecdb_account):

@@ -209,7 +209,7 @@
                         IsEnabled="{Binding Path=TestAccountVM.CurrentTestAccount.IsE10,
                                             Converter={StaticResource InverseBoolean}}"
                         Style="{DynamicResource FieldLabelStyle}"
-                        Visibility="Visible" />
+                        Visibility="Collapsed" />
                     <Label
                         Content="StartLevel: "
                         Style="{DynamicResource FieldLabelStyle}"
@@ -291,6 +291,8 @@
                         Interval="1"
                         TextAlignment="Left"
                         ToolTip="FreeRedemptionQty"
+                        IsEnabled="{Binding Path=ProductVM.CurrentProduct.IsPhoenix,
+                                            Converter={StaticResource InverseBoolean}}"
                         Value="{Binding Path=ProductVM.CurrentProduct.FreeRedQty,
                                         Mode=TwoWay}" />
 
@@ -305,7 +307,7 @@
                                             Converter={StaticResource InverseBoolean}}"
                         TextAlignment="Left"
                         ToolTip="LevelQty"
-                        Visibility="Visible"
+                        Visibility="Collapsed"
                         Value="{Binding Path=ProductVM.CurrentProduct.LevelQty,
                                         Mode=TwoWay}" />
                     <ComboBox
@@ -348,6 +350,7 @@
                     <CheckBox
                         Margin="0,5,0,0"
                         Content="Auto OnlineOC"
+                        Visibility="Collapsed"
                         ToolTip="Auto enable online OC for China + Phoenix products."
                         IsChecked="{Binding Path=ProductVM.CurrentProduct.AutoOnlineOc,
                                             Mode=TwoWay}" />

@@ -218,10 +218,6 @@ def activate_account(product_id=None,
 
         generate_activation_data_for_phoenix(data, phoenix_packs)
 
-        # legal duration only available for socn currently
-        if config.partner == 'Socn':
-            data['LegalDuration'] = 360
-
     # post the data to activation tool
     result = no_ssl_requests().post(link, data=data)
     success_text = get_success_message(student)

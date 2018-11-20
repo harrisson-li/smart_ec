@@ -72,6 +72,13 @@ namespace ET2.ViewModels
             this._historyAccountList = Settings.LoadTestAccountHistory();
         }
 
+        private void ShowAccount(Newtonsoft.Json.Linq.JObject account)
+        {
+            ShellViewModel.WriteStatus("Success: {1} / {2} @ {0}"
+                        .FormatWith(GetCurrentEnvironment().ToUpper(),
+                        account["username"], account["member_id"]));
+        }
+
         /// <summary>
         /// No matter user type in name or id, we all need to get the specific test account.
         /// Implement this function by sending post data to submit score helper tool.
@@ -90,6 +97,7 @@ namespace ET2.ViewModels
 
                 if (account["member_id"] != null)
                 {
+                    ShowAccount(account);
                     var student = new TestAccount();
                     student.UserName = (string)account["username"];
                     student.MemberId = (string)account["member_id"];
@@ -153,6 +161,7 @@ namespace ET2.ViewModels
                     // save current test account to history list
                     AddHistoryAccount();
                     Save();
+                    ShowAccount(account);
                 }
                 else
                 {
@@ -185,7 +194,6 @@ namespace ET2.ViewModels
                 is_e10 = (accountType == AccountTypes.E10),
                 is_v2 = (accountType == AccountTypes.S15_V2),
                 is_s18 = data.CurrentProduct.Tags.Contains("S18"),
-                auto_onlineoc = data.CurrentProduct.AutoOnlineOc,
                 center_pack = data.CurrentProduct.CenterPack,
                 online_pack = data.CurrentProduct.OnlinePack,
                 product_id = data.CurrentProduct.Id,
@@ -209,6 +217,7 @@ namespace ET2.ViewModels
                 {
                     Log.InfoFormat("Activate Account: {0}", response);
                     Save();
+                    ShowAccount(account);
                 }
                 else
                 {
