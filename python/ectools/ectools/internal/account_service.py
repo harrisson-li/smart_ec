@@ -153,7 +153,7 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
         data['RedemptionQty'] = qty * 30
 
     # legal duration = main redemption qty
-    data['LegalDuration'] = data['mainRedemptionQty']
+    data['LegalDuration'] = data['RedemptionQty']
 
 
 def _refine_account(ecdb_account):
