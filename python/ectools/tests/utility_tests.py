@@ -59,7 +59,11 @@ def foo(*args):
 
 
 def bar(**kwargs):
-    return 'no kwargs!' if kwargs == {} else kwargs
+    return 'no kwargs!' if kwargs == {} else None
+
+
+def bar2(**kwargs):
+    return kwargs
 
 
 def void_func():
@@ -73,10 +77,10 @@ def test_wait_for_return_as():
     value = wait_for(method=lambda: foo(True), return_as=lambda r: r is not None)
     assert value == (1,)
 
-    value = wait_for(method=lambda: bar(), return_as=lambda r: r is None)
-    assert value == 'no kwargs!'
+    value = wait_for(bar2, return_as=lambda r: r == {})
+    assert value == {}
 
-    value = wait_for(method=lambda: void_func(), return_as=lambda r: r is None)
+    value = wait_for(void_func, return_as=lambda r: r is None)
     assert value is None
 
 
@@ -87,7 +91,7 @@ def test_wait_for_value():
     value = wait_for(lambda: foo(1), timeout=5)
     assert value == (1,)
 
-    value = wait_for(lambda: bar(), timeout=5, poll_time=1)
+    value = wait_for(bar, timeout=5, poll_time=1)
     assert value == 'no kwargs!'
 
     value = wait_for(lambda: bar(a=1, b=2, c=3) is None)
