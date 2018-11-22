@@ -26,7 +26,7 @@ def test_sql_with_parameters():
 
 
 def test_table_shortcut_functions():
-    test_table = 'unit_test'
+    test_table = 'ec_unit_test'
     db_helper.execute_query('truncate table ' + test_table)
 
     row = [1, test_table, "t's note"]
