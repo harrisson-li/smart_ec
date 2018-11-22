@@ -54,6 +54,28 @@ def test_try_wait_for():
     assert not result
 
 
+def foo(*args):
+    return args
+
+
+def bar(**kwargs):
+    return None if kwargs else 'no kwargs!'
+
+
+def test_wait_for_value():
+    value = wait_for(lambda: foo(1, 2, 3))
+    assert value == (1, 2, 3)
+
+    value = wait_for(lambda: foo(1), timeout=5)
+    assert value == (1,)
+
+    value = wait_for(lambda: bar(), timeout=5, poll_time=1)
+    assert value == 'no kwargs!'
+
+    value = wait_for(lambda: bar(a=1, b=2, c=3) is None)
+    assert value == True  # note: lambada will return True, but the return of function is None
+
+
 def test_retry_for_error():
     @retry_for_error(error=RuntimeError)
     def try_me():
