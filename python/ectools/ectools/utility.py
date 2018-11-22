@@ -179,10 +179,10 @@ def detail_on_failure(func):
     return wrapper
 
 
-def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
+def wait_for(method, return_as=None, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
     """
-    Wait for a method with timeout, return its result or raise error.
-    The expecting result should NOT be False or equal to False.
+    Wait for a method with timeout until method return as you expected value, return its result or raise error.
+    If return_as validator is not provided, the expecting result should NOT be False or equal to False.
     """
 
     end_time = time.time() + timeout
@@ -191,8 +191,12 @@ def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configurat
     while True:
         try:
             value = method()
-            if value:
-                return value
+            if not return_as:
+                if value:
+                    return value
+            else:
+                if return_as(value):
+                    return value
 
         except Exception as exc:
             args_as_str = [convert_to_str(x) for x in exc.args]
@@ -275,15 +279,21 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
     def wrapper_(func):
         @wraps(wrapped=func)
         def wrapper(*args, **kwargs):
-            retry = 1
-            while retry <= retry_times:
-                try:
-                    return func(*args, **kwargs)
-                except errors as exc:
-                    msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
-                    get_logger().info(msg)
-                    retry += 1
-                    time.sleep(poll_time)
+            try:
+                return func(*args, **kwargs)
+            except errors as exc:
+                retry = 1
+                while retry <= retry_times:
+                    try:
+                        msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
+                        get_logger().info(msg)
+                        return func(*args, **kwargs)
+                    except errors as exc:
+                        retry += 1
+                        if retry > retry_times:
+                            raise exc
+                        else:
+                            time.sleep(poll_time)
 
         return wrapper
 
