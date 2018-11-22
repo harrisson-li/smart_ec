@@ -275,6 +275,7 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
     """
 
     from ectools.config import get_logger
+    assert retry_times > 0, 'retry_times must larger than 0!'
 
     def wrapper_(func):
         @wraps(wrapped=func)
