@@ -275,25 +275,24 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
     """
 
     from ectools.config import get_logger
+    assert retry_times > 0, 'retry_times must larger than 0!'
 
     def wrapper_(func):
         @wraps(wrapped=func)
         def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except errors as exc:
-                retry = 1
-                while retry <= retry_times:
-                    try:
-                        msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
-                        get_logger().info(msg)
-                        return func(*args, **kwargs)
-                    except errors as exc:
-                        retry += 1
-                        if retry > retry_times:
-                            raise exc
-                        else:
-                            time.sleep(poll_time)
+            retry = 1
+            while retry <= retry_times:
+                try:
+                    return func(*args, **kwargs)
+                except errors as exc:
+                    msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
+                    get_logger().info(msg)
+                    retry += 1
+
+                    if retry > retry_times:
+                        raise exc
+                    else:
+                        time.sleep(poll_time)
 
         return wrapper
 
