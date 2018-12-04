@@ -71,11 +71,12 @@ def create_account_without_activation(is_e10=False, **kwargs):
     result = no_ssl_requests().get(link)
 
     assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
+    info = result.text.split('<br />')[0]
 
     # the correct result will look like: ...studentId: <id>, username: <name>, password: <pw>
-    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>[^<br]+)'
+    pattern = r'.+studentId\: (?P<id>\d+), username\: (?P<name>.+), password\: (?P<pw>.+)'
 
-    match = re.match(pattern, result.text)
+    match = re.match(pattern, info)
     if match:
         student['member_id'] = match.group('id')
         student['username'] = match.group('name')
