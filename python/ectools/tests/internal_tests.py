@@ -87,6 +87,15 @@ def test_get_school():
     school = get_any_v2_school()
     assert 'TestCenter' in school['tags']
 
+    school = get_school_by_name('WX_HDP')
+    assert school['partner'] == 'Mini'
+
+    school = get_school_by_name('CN_TSC')
+    assert school['partner'] == 'Socn'
+
+    school = get_school_by_name('HZ_CXC', ignore_socn=False)
+    assert school['partner'] == 'Socn'
+
 
 def test_get_random_level():
     level = get_random_level(min_level=2, max_level=16)
