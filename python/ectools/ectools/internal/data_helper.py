@@ -191,12 +191,21 @@ def get_all_schools(cached=True):
         return read_data('schools')
 
 
-def get_school_by_name(name, cached=False):
+def get_school_by_name(name, cached=False, ignore_socn=True):
     """name should be str or a dict with name key."""
     name = name if isinstance(name, str) else name['name']
     found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
     assert len(found), "No such school: {}!".format(name)
-    return found[0]
+
+    # just return if only one match
+    if len(found) == 1:
+        return found[0]
+    else:
+        # filter socn school as it might be duplicate with cool / mini school
+        if ignore_socn:
+            found = [x for x in found if x['partner'] != 'Socn']
+
+        return found[0]
 
 
 def get_schools_has_tag(tag):
