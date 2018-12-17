@@ -299,7 +299,9 @@ docs/_build/
 # PyBuilder
 target/
 
-# Pycharm
+# IDE
 .idea/
 .pytest_cache/
 venv/
+.vscode/
+.vs/
