@@ -61,3 +61,20 @@ def test_table_shortcut_functions():
 
 def test_ecdb_v2_available():
     assert db_helper.is_db_available()
+
+
+def test_get_config_value():
+    value = db_helper.get_config_value('unit_test')
+    assert value == '{"test":1}'
+
+    value = db_helper.get_config_value('unit_test', is_json=True)
+    assert value == {"test": 1}
+
+    value = db_helper.get_config_value('unit_test', is_json=True, one_row_only=False)
+    assert value == [{'test': 1}, {'test': 2}]
+
+    value = db_helper.get_config_value('unit_test', is_json=False, one_row_only=False)
+    assert value == ['{"test":1}', '{"test":2}']
+
+    row = db_helper.get_config_value('unit_test_tag', value_only=False)
+    assert row['tags'] == 'test'

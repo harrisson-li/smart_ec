@@ -16,6 +16,7 @@ import arrow
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
+from ectools.ecdb_helper_v2 import get_config_value
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
 from ectools.service_helper import account_service_update_info
@@ -221,10 +222,7 @@ def set_account_info(student):
     4. Update email to include full account info.
     """
 
-    numbers = {'Cool': '18966666666', 'Mini': '18977777777', 'Rupe': '9777777777',
-               'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
-               'Socn': '18988888888'}
-
+    numbers = get_config_value('test_account_phone', is_json=True)
     created_by = student.get('created_by', getpass.getuser())
     student_id, username = student['member_id'], student['username']
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})

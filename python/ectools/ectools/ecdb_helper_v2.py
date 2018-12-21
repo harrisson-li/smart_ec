@@ -20,7 +20,7 @@ Major functions::
 """
 
 import collections
-
+import json
 import pymssql
 
 from .ecdb_helper import _to_insert_values, _to_query_clause
@@ -185,3 +185,29 @@ def is_db_available():
         return True
     except:
         return False
+
+
+def get_config_value(name, is_json=False, one_row_only=True, value_only=True):
+    """
+    get config value for ectools from TestAutomation.dbo.ec_config_value.
+    :param name: the config name.
+    :param is_json: parse to dict type if config value is json.
+    :param one_row_only: just return the first row if multiple rows found.
+    :param value_only: just return value, else return full row.
+    :return:
+    """
+    found = search_rows('ec_config_value', {'name': name, 'enabled': 1})
+    if found:
+        if one_row_only:
+            if value_only:
+                return json.loads(found[0]['value']) if is_json else found[0]['value']
+            else:
+                return found[0]
+        else:
+            if value_only:
+                values = [row['value'] for row in found]
+                return [json.loads(v) for v in values] if is_json else values
+            else:
+                return found
+
+    return None
