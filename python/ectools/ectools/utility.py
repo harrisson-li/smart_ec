@@ -344,7 +344,7 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--disable-gpu')
                 options.add_argument('--window-size=1280x1024')
 
-            browser = webdriver.Chrome(chrome_options=options)
+            browser = webdriver.Chrome(options=options)
         else:
             browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)

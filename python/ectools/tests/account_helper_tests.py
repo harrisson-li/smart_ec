@@ -257,7 +257,11 @@ def test_activate_live_student():
 
 
 def test_activate_phoenix_socn():
-    set_environment('qa')
+    set_environment('staging')
+    set_partner('socn')
+    activate_phoenix_student(school_name='HZ_CXC')
+
+    set_environment('qacn')
     set_partner('socn')
     activate_phoenix_student(school_name='HZ_CXC')
 
