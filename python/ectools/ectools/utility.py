@@ -6,6 +6,7 @@ This module contains some handy function, please refer to bellow function list.
 import csv
 import inspect
 import logging
+import logging.config
 import os
 import random
 import re
@@ -14,6 +15,7 @@ import time
 from datetime import datetime, timedelta
 from functools import wraps
 
+import arrow
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -442,3 +444,58 @@ def is_corp_net():
         return True
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return False
+
+
+def config_sys_logging(to_console=True, log_file_dir=None, log_file_name=None):
+    """
+    Simplify sys logging configuration, call this method to use sys.logging module methods.
+    :param to_console: will output log to console.
+    :param log_file_dir: if set will output log to specified directory, else will not write log to file.
+    :param log_file_name: if not set, will use default log file pattern: YYYY-MM-DD.log
+    :return:
+    """
+    handlers = []
+
+    if to_console:
+        handlers.append('console')
+
+    if log_file_dir:
+        handlers.append('file')
+
+    if not log_file_name:
+        log_file_name = arrow.utcnow().format('YYYY-MM-DD.log')
+
+    if not log_file_dir:
+        log_file_dir = '.'
+
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'default': {
+                'format': '%(asctime)s %(levelname)-7s: %(message)s'
+            }
+        },
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'default',
+                'stream': 'ext://sys.stdout'
+            },
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'formatter': 'default',
+                'filename': os.path.join(log_file_dir, log_file_name),
+                'encoding': 'utf-8'
+            }
+        },
+        'loggers': {
+            '': {
+                'handlers': handlers,
+                'level': 'DEBUG'
+            }
+        }
+    })
+    return logging.getLogger()
