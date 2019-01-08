@@ -210,3 +210,14 @@ def test_get_python_cmd():
 def test_update_pkg():
     update_pkg('ectools')
     update_pkg('requests')
+
+
+def test_config_sys_logging():
+    config_sys_logging(log_file_dir='.')
+    logging.debug('hello')
+
+    config_sys_logging(to_console=False, log_file_dir='.')
+    logging.info('hi')
+
+    config_sys_logging(log_file_dir='.', log_file_name='test_unicode.log')
+    logging.info('你好')
