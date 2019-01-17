@@ -275,6 +275,13 @@ def is_phoenix_product(product):
     return is_item_has_tag(product, 'Phoenix')
 
 
+def is_trial_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'Trial')
+
+
 def is_onlineoc_school(school):
     from ectools.config import config
 
