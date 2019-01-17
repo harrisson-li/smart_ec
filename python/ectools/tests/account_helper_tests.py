@@ -266,7 +266,7 @@ def test_activate_phoenix_socn():
     activate_phoenix_student(school_name='HZ_CXC')
 
 
-def test_activate_phoenix_trail():
+def test_activate_phoenix_trial():
     set_environment('uat')
     set_partner('socn')
     activate_phoenix_student(product_id=165)

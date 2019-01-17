@@ -217,8 +217,8 @@ def activate_account(product_id=None,
         if include_online_pack:
             phoenix_packs.append('Online Pack Basic')
 
-        # for trail product, always use trail pack
-        if is_trail_product(product_id):
+        # for trial product, always use trial pack
+        if is_trial_product(product_id):
             phoenix_packs = ['Phoenix Free Trial']
 
         generate_activation_data_for_phoenix(data, phoenix_packs)
