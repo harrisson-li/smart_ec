@@ -183,9 +183,5 @@ def test_get_phoenix_prod():
     prod = get_any_phoenix_product()
     assert 'Trial' not in prod['tags']
 
-    for i in range(10):
-        prod = get_any_phoenix_product(include_trial=True)
-        if 'Trial' in prod['tags']:
-            return
-
-    assert False, 'should get trial product once!'
+    prod = get_any_phoenix_product(is_trial=True)
+    assert 'Trial' in prod['tags']
