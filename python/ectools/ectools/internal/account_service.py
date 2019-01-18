@@ -156,6 +156,11 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
     # legal duration = main redemption qty
     data['LegalDuration'] = data['RedemptionQty']
 
+    # for trial product, remove legal duration and set qty = 7
+    if phoenix_packs == ['Phoenix Free Trial']:
+        del data['LegalDuration']
+        data['RedemptionQty'] = 7
+
 
 def _refine_account(ecdb_account):
     """Merge the detail fields into account itself, original it is a json string."""
