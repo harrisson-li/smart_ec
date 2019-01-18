@@ -286,6 +286,9 @@ def get_student_tags(student):
     if student['is_onlineoc']:
         tags.append('OC')
 
+    if student['is_trial']:
+        tags.append('Trial')
+
     return tags
 
 
