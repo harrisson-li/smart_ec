@@ -154,6 +154,7 @@ def activate_account(product_id=None,
     # initial student type
     is_lite = is_lite_product(product)
     is_phoenix = is_phoenix_product(product)
+    is_trial = is_trial_product(product)
 
     # check eclite product should match eclite center
     if is_lite:
@@ -180,6 +181,7 @@ def activate_account(product_id=None,
     student['is_e10'] = is_item_has_tag(product, 'E10')
     student['is_eclite'] = is_lite
     student['is_phoenix'] = is_phoenix
+    student['is_trial'] = is_trial
     student['source'] = kwargs.pop('source', 'ectools')
 
     link = get_activate_account_link(student['is_e10'])
@@ -218,7 +220,7 @@ def activate_account(product_id=None,
             phoenix_packs.append('Online Pack Basic')
 
         # for trial product, always use trial pack
-        if is_trial_product(product_id):
+        if is_trial:
             phoenix_packs = ['Phoenix Free Trial']
 
         generate_activation_data_for_phoenix(data, phoenix_packs)
