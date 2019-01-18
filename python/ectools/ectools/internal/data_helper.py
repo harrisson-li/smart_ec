@@ -159,9 +159,12 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=True):
         return get_random_item(found)
 
 
-def get_any_phoenix_product(by_partner=None):
+def get_any_phoenix_product(by_partner=None, include_trial=False):
     found = [x for x in get_products_by_partner(by_partner)
              if is_item_has_tag(x, 'Phoenix')]
+
+    if not include_trial:
+        found = [x for x in found if not is_item_has_tag(x, 'Trial')]
 
     return get_random_item(found)
 

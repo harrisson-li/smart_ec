@@ -175,3 +175,17 @@ def test_get_phoenix_pack():
     set_partner('rupe')
     pack = get_phoenix_pack(config.env, config.partner, 'Intensive Online Fee')
     assert pack['salesforce_id'] == '01t0l000001DYGeAAO'
+
+
+def test_get_phoenix_prod():
+    set_environment('uat')
+    set_partner('socn')
+    prod = get_any_phoenix_product()
+    assert 'Trial' not in prod['tags']
+
+    for i in range(10):
+        prod = get_any_phoenix_product(include_trial=True)
+        if 'Trial' in prod['tags']:
+            return
+
+    assert False, 'should get trial product once!'
