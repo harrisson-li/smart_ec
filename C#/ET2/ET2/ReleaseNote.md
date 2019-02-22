@@ -1,4 +1,8 @@
-﻿## v0.0.0.58
+﻿## v0.0.0.59
+
+1. Handover to Joshua.
+
+## v0.0.0.58
 
 1. Remove autoOnlineOc option, as it is not required and confusing people.
 2. Remove levelQty as it is default to 16 currently.

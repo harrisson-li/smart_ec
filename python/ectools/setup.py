@@ -18,7 +18,8 @@ def main():
             'assertpy',
             'arrow',
             'bs4',
-            'lxml'
+            'lxml',
+            'pymssql'
         ],
         zip_safe=False,
     )
