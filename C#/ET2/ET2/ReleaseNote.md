@@ -1,4 +1,8 @@
-﻿## v0.0.0.59
+﻿## v0.0.0.60
+
+1. Owner transfered to Joshua
+
+## v0.0.0.59
 
 1. Handover to Joshua.
 
