@@ -6,6 +6,7 @@ This module contains some handy function, please refer to bellow function list.
 import csv
 import inspect
 import logging
+import logging.config
 import os
 import random
 import re
@@ -14,6 +15,7 @@ import time
 from datetime import datetime, timedelta
 from functools import wraps
 
+import arrow
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -179,10 +181,10 @@ def detail_on_failure(func):
     return wrapper
 
 
-def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
+def wait_for(method, return_as=None, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
     """
-    Wait for a method with timeout, return its result or raise error.
-    The expecting result should NOT be False or equal to False.
+    Wait for a method with timeout until method return as you expected value, return its result or raise error.
+    If return_as validator is not provided, the expecting result should NOT be False or equal to False.
     """
 
     end_time = time.time() + timeout
@@ -191,8 +193,12 @@ def wait_for(method, timeout=Configuration.default_timeout, poll_time=Configurat
     while True:
         try:
             value = method()
-            if value:
-                return value
+            if not return_as:
+                if value:
+                    return value
+            else:
+                if return_as(value):
+                    return value
 
         except Exception as exc:
             args_as_str = [convert_to_str(x) for x in exc.args]
@@ -271,6 +277,7 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
     """
 
     from ectools.config import get_logger
+    assert retry_times > 0, 'retry_times must larger than 0!'
 
     def wrapper_(func):
         @wraps(wrapped=func)
@@ -283,7 +290,11 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
                     msg = "Retry for {} for {} time...".format(type(exc).__name__, retry)
                     get_logger().info(msg)
                     retry += 1
-                    time.sleep(poll_time)
+
+                    if retry > retry_times:
+                        raise exc
+                    else:
+                        time.sleep(poll_time)
 
         return wrapper
 
@@ -335,7 +346,7 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--disable-gpu')
                 options.add_argument('--window-size=1280x1024')
 
-            browser = webdriver.Chrome(chrome_options=options)
+            browser = webdriver.Chrome(options=options)
         else:
             browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)
@@ -433,3 +444,58 @@ def is_corp_net():
         return True
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return False
+
+
+def config_sys_logging(to_console=True, log_file_dir=None, log_file_name=None):
+    """
+    Simplify sys logging configuration, call this method to use sys.logging module methods.
+    :param to_console: will output log to console.
+    :param log_file_dir: if set will output log to specified directory, else will not write log to file.
+    :param log_file_name: if not set, will use default log file pattern: YYYY-MM-DD.log
+    :return:
+    """
+    handlers = []
+
+    if to_console:
+        handlers.append('console')
+
+    if log_file_dir:
+        handlers.append('file')
+
+    if not log_file_name:
+        log_file_name = arrow.utcnow().format('YYYY-MM-DD.log')
+
+    if not log_file_dir:
+        log_file_dir = '.'
+
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'default': {
+                'format': '%(asctime)s %(levelname)-7s: %(message)s'
+            }
+        },
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'default',
+                'stream': 'ext://sys.stdout'
+            },
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'formatter': 'default',
+                'filename': os.path.join(log_file_dir, log_file_name),
+                'encoding': 'utf-8'
+            }
+        },
+        'loggers': {
+            '': {
+                'handlers': handlers,
+                'level': 'DEBUG'
+            }
+        }
+    })
+    return logging.getLogger()

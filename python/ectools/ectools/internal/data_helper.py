@@ -78,7 +78,7 @@ def get_all_products():
     return Cache.products
 
 
-def get_product_by_id(product, is_s18=False):
+def get_product_by_id(product, is_s18=True):
     product_id = product['id'] if isinstance(product, dict) else product
 
     found = [x for x in get_all_products()
@@ -122,7 +122,7 @@ def get_products_by_partner(partner=None, is_e10=False):
             and is_item_has_tag(x, 'E10') == is_e10]
 
 
-def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
+def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_major=True):
     found = [x for x in get_products_by_partner(by_partner, is_e10)
              if is_item_has_tag(x, 'S18') == is_s18]
 
@@ -133,10 +133,10 @@ def get_any_product(by_partner=None, is_e10=False, is_s18=False, is_major=True):
 
 
 def get_any_e10_product(by_partner=None):
-    return get_any_product(by_partner, is_e10=True, is_major=False)
+    return get_any_product(by_partner, is_e10=True, is_s18=False, is_major=False)
 
 
-def get_any_home_product(by_partner=None, is_major=True, is_s18=False):
+def get_any_home_product(by_partner=None, is_major=True, is_s18=True):
     found = [x for x in get_products_by_partner(by_partner)
              if x['product_type'] == 'Home'
              and is_item_has_tag(x, 'S18') == is_s18]
@@ -147,7 +147,7 @@ def get_any_home_product(by_partner=None, is_major=True, is_s18=False):
         return get_random_item(found)
 
 
-def get_any_school_product(by_partner=None, is_major=True, is_s18=False):
+def get_any_school_product(by_partner=None, is_major=True, is_s18=True):
     found = [x for x in get_products_by_partner(by_partner)
              if x['product_type'] == 'School'
              and is_item_has_tag(x, 'S18') == is_s18
@@ -159,10 +159,11 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=False):
         return get_random_item(found)
 
 
-def get_any_phoenix_product(by_partner=None):
+def get_any_phoenix_product(by_partner=None, is_trial=False):
     found = [x for x in get_products_by_partner(by_partner)
              if is_item_has_tag(x, 'Phoenix')]
 
+    found = [x for x in found if is_item_has_tag(x, 'Trial') == is_trial]
     return get_random_item(found)
 
 
@@ -191,12 +192,21 @@ def get_all_schools(cached=True):
         return read_data('schools')
 
 
-def get_school_by_name(name, cached=False):
+def get_school_by_name(name, cached=False, ignore_socn=True):
     """name should be str or a dict with name key."""
     name = name if isinstance(name, str) else name['name']
     found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
     assert len(found), "No such school: {}!".format(name)
-    return found[0]
+
+    # just return if only one match
+    if len(found) == 1:
+        return found[0]
+    else:
+        # filter socn school as it might be duplicate with cool / mini school
+        if ignore_socn:
+            found = [x for x in found if x['partner'] != 'Socn']
+
+        return found[0]
 
 
 def get_schools_has_tag(tag):
@@ -266,6 +276,13 @@ def is_phoenix_product(product):
     return is_item_has_tag(product, 'Phoenix')
 
 
+def is_trial_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'Trial')
+
+
 def is_onlineoc_school(school):
     from ectools.config import config
 
@@ -275,14 +292,14 @@ def is_onlineoc_school(school):
     if not isinstance(school, dict):
         school = get_school_by_name(school, cached=True)
 
-    return not is_item_has_tag(school, 'OnlineOC-Off')
+    return not is_item_has_tag(school, 'OC-Off')
 
 
-def is_phoenix_school(school):
+def is_virtual_school(school):
     if not isinstance(school, dict):
         school = get_school_by_name(school, cached=True)
 
-    return is_item_has_tag(school, 'Phoenix')
+    return is_item_has_tag(school, 'Virtual')
 
 
 def _pick_one_school(schools):
@@ -294,7 +311,7 @@ def _pick_one_school(schools):
     return get_random_item(schools)
 
 
-def get_any_school(partner=None):
+def get_any_v1_school(partner=None):
     """return v1 school."""
 
     found = [x for x in get_schools_by_partner(partner)
@@ -336,9 +353,9 @@ def get_any_onlineoc_school(partner=None):
     return _pick_one_school(found)
 
 
-def get_any_phoenix_school(partner=None):
-    found = [x for x in get_schools_by_partner(partner)
-             if is_phoenix_school(x)]
+def get_any_phoenix_school(partner=None, is_virtual=True):
+    found = [x for x in get_all_normal_v2_schools(partner)
+             if is_virtual_school(x) == is_virtual]
 
     return _pick_one_school(found)
 

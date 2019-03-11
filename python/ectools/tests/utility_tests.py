@@ -54,6 +54,50 @@ def test_try_wait_for():
     assert not result
 
 
+def foo(*args):
+    return args
+
+
+def bar(**kwargs):
+    return 'no kwargs!' if kwargs == {} else None
+
+
+def bar2(**kwargs):
+    return kwargs
+
+
+def void_func():
+    get_logger().info("This is void function")
+
+
+def test_wait_for_return_as():
+    value = wait_for(method=lambda: foo(1, 2, 3), return_as=lambda r: r is not None)
+    assert value == (1, 2, 3)
+
+    value = wait_for(method=lambda: foo(True), return_as=lambda r: r is not None)
+    assert value == (1,)
+
+    value = wait_for(bar2, return_as=lambda r: r == {})
+    assert value == {}
+
+    value = wait_for(void_func, return_as=lambda r: r is None)
+    assert value is None
+
+
+def test_wait_for_value():
+    value = wait_for(lambda: foo(1, 2, 3))
+    assert value == (1, 2, 3)
+
+    value = wait_for(lambda: foo(1), timeout=5)
+    assert value == (1,)
+
+    value = wait_for(bar, timeout=5, poll_time=1)
+    assert value == 'no kwargs!'
+
+    value = wait_for(lambda: bar(a=1, b=2, c=3) is None)
+    assert value == True  # note: lambada will return True, but the return of function is None
+
+
 def test_retry_for_error():
     @retry_for_error(error=RuntimeError)
     def try_me():
@@ -166,3 +210,14 @@ def test_get_python_cmd():
 def test_update_pkg():
     update_pkg('ectools')
     update_pkg('requests')
+
+
+def test_config_sys_logging():
+    config_sys_logging(log_file_dir='.')
+    logging.debug('hello')
+
+    config_sys_logging(to_console=False, log_file_dir='.')
+    logging.info('hi')
+
+    config_sys_logging(log_file_dir='.', log_file_name='test_unicode.log')
+    logging.info('你好')

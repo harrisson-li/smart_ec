@@ -1,9 +1,9 @@
-from assertpy import assert_that
-
 import ectools.internal.business.score_helper_v1 as s15_submit_tool
+from assertpy import assert_that
 from ectools.config import config, get_logger
 from ectools.token_helper import get_token
 from ectools.utility import get_browser, get_score, retry_for_error
+
 from ..objects import *
 from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
 
@@ -99,18 +99,46 @@ def pass_six_units(score=get_score()):
     pass_to_unit(6, score)
 
 
-def submit_score_for_one_lesson(lesson_sequence, score=get_score()):
+def submit_merged_score_for_one_lesson(lesson_sequence, score=get_score()):
     merged_lesson = _page().get_merged_lesson(lesson_sequence)
     merged_lesson[0].clear()
     merged_lesson[0].send_keys(score)
     merged_lesson[1].click()
 
 
-def verify_lesson_status(lesson_sequence, expected_status):
+def submit_pc_score_for_one_lesson(lesson_sequence, score=get_score()):
+    pc_lesson = _page().get_pc_lesson(lesson_sequence)
+    pc_lesson[0].clear()
+    pc_lesson[0].send_keys(score)
+    pc_lesson[1].click()
+
+
+def submit_mobile_score_for_one_lesson(lesson_sequence, score=get_score()):
+    mobile_lesson = _page().get_mobile_lesson(lesson_sequence)
+    mobile_lesson[0].clear()
+    mobile_lesson[0].send_keys(score)
+    mobile_lesson[1].click()
+
+
+def verify_merged_lesson_status(lesson_sequence, expected_status):
     merged_lesson = _page().get_merged_lesson(lesson_sequence)
     get_logger().info(
         "Actual status is: %s; Expected status is: %s" % (merged_lesson[2][_page().STATUS], expected_status))
     return merged_lesson[2][_page().STATUS] == expected_status
+
+
+def verify_pc_lesson_status(lesson_sequence, expected_status):
+    pc_lesson = _page().get_pc_lesson(lesson_sequence)
+    get_logger().info(
+        "Actual status is: %s; Expected status is: %s" % (pc_lesson[2][_page().STATUS], expected_status))
+    return pc_lesson[2][_page().STATUS] == expected_status
+
+
+def verify_mobile_lesson_status(lesson_sequence, expected_status):
+    mobile_lesson = _page().get_mobile_lesson(lesson_sequence)
+    get_logger().info(
+        "Actual status is: %s; Expected status is: %s" % (mobile_lesson[2][_page().STATUS], expected_status))
+    return mobile_lesson[2][_page().STATUS] == expected_status
 
 
 def get_unit_info():

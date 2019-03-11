@@ -8,6 +8,7 @@ def test_uat_fetch_one():
     print(result)
     assert result is not None
 
+
 def test_uat_query():
     set_environment('uat')
     result = fetch_all('select top 2 * from oboe.dbo.student')
@@ -30,3 +31,16 @@ def test_live_query():
     result = fetch_all('select top 2 * from oboe.dbo.student WITH(NOLOCK)')
     print(result)
     assert result is not None
+
+
+def test_no_result():
+    set_environment('qa')
+    result = fetch_all('select * from oboe.dbo.student where 1>2')
+    assert result == []
+
+
+def test_html_result():
+    set_environment('qa')
+    result = fetch_all("SELECT TOP 2 * FROM WebContent..CmsContent WHERE ContentKey LIKE 'Smart_Page_StudyPlanTerms%'")
+    assert len(result) == 2
+    assert '<!DOCTYPE html>\n<html>\n<head>' in result[0]['Content']

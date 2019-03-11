@@ -16,6 +16,7 @@ import arrow
 
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
+from ectools.ecdb_helper_v2 import get_config_value
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
 from ectools.service_helper import account_service_update_info
@@ -76,7 +77,7 @@ def get_success_message(student):
 
 def get_default_activation_data(product):
     return {'mainRedemptionQty': 3,
-            'freeRedemptionQty': 3,
+            'freeRedemptionQty': 0,
             'startLevel': '0A',
             'levelQty': 16,
             'securityverified': 'on',
@@ -146,11 +147,19 @@ def generate_activation_data_for_phoenix(data, phoenix_packs):
     for key in to_be_deleted:
         data.pop(key, None)
 
-    # workaround: if RedemptionQty <= 12 it probably means months, we update it to days
+    # hack: if RedemptionQty <= 12 we treat it as months, else as days
     qty = int(data['RedemptionQty'])
 
     if qty <= 12:
         data['RedemptionQty'] = qty * 30
+
+    # legal duration = main redemption qty
+    data['LegalDuration'] = data['RedemptionQty']
+
+    # for trial product, remove legal duration and set qty = 7
+    if phoenix_packs == ['Phoenix Free Trial']:
+        del data['LegalDuration']
+        data['RedemptionQty'] = 7
 
 
 def _refine_account(ecdb_account):
@@ -218,10 +227,7 @@ def set_account_info(student):
     4. Update email to include full account info.
     """
 
-    numbers = {'Cool': '18966666666', 'Mini': '18977777777', 'Rupe': '9777777777',
-               'Ecsp': '666666666', 'Indo': '6285555555555', 'Cehk': '0085255555555',
-               'Socn': '18988888888'}
-
+    numbers = get_config_value('test_account_phone', is_json=True)
     created_by = student.get('created_by', getpass.getuser())
     student_id, username = student['member_id'], student['username']
     account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
@@ -279,6 +285,9 @@ def get_student_tags(student):
 
     if student['is_onlineoc']:
         tags.append('OC')
+
+    if student['is_trial']:
+        tags.append('Trial')
 
     return tags
 

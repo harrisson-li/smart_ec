@@ -1,4 +1,18 @@
-﻿## v0.0.0.55
+﻿## v0.0.0.60
+
+1. Owner transfered to Joshua
+
+## v0.0.0.59
+
+1. Handover to Joshua.
+
+## v0.0.0.58
+
+1. Remove autoOnlineOc option, as it is not required and confusing people.
+2. Remove levelQty as it is default to 16 currently.
+3. Use new api to get tips, imporve user experience.
+
+## v0.0.0.55
 
 1. Enhancement - use default product & school when partner changed or account type changed.
 2. Show tips when there is background action running.

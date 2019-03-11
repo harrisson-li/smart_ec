@@ -41,10 +41,11 @@ def test_activate_account_default():
 
 def test_activate_account_kwargs():
     set_environment('staging')
-    student = activate_account(startLevel=3, mainRedemptionQty=1, securityverified=False)
-    assert student['startLevel'] == 3
-    assert student['mainRedemptionQty'] == 1
-    assert not student['securityverified']
+    student = activate_account(startLevel=3, mainRedemptionQty=1, securityverified=False, includesenroll=False)
+    assert student['activation_data']['startLevel'] == 3
+    assert student['activation_data']['mainRedemptionQty'] == 1
+    assert not student['activation_data']['securityverified']
+    assert not student['activation_data']['includesenroll']
 
 
 def test_activate_s18_accounts():
@@ -57,13 +58,13 @@ def test_activate_s18_accounts():
 
 def test_get_s18_products():
     set_partner('cool')
-    product = get_any_school_product()
+    product = get_any_school_product(is_s18=False)
     assert product['main_code'] == 'S15SCHOOLMAIN'
 
     product = get_any_school_product(is_s18=True)
     assert product['main_code'] == 'S18SCHOOLMAIN'
 
-    product = get_any_home_product()
+    product = get_any_home_product(is_s18=False)
     assert product['main_code'] == 'S15HOMEPL20MAIN'
 
     product = get_any_home_product(is_s18=True)
@@ -103,7 +104,7 @@ def test_ignore_eclite_school():
 
 
 def test_activate_account_more():
-    set_environment('staging')
+    set_environment('qa')
     set_partner('mini')
 
     student = activate_e10_student()
@@ -111,11 +112,11 @@ def test_activate_account_more():
     student = activate_school_v2_student()
     assert student['product']['product_type'] == 'School'
     assert student['is_v2']
-    student = activate_home_student()
+    student = activate_home_v1_student()
     assert student['product']['product_type'] == 'Home'
     assert not student['is_v2']
     student = activate_school_student_with_random_level(min_level=2, max_level=3)
-    assert student['startLevel'] in ['0B', 1]
+    assert student['activation_data']['startLevel'] in ['0B', 1]
 
 
 # noinspection PyUnresolvedReferences
@@ -220,16 +221,16 @@ def test_activate_onlineoc_student():
 def test_activate_socn_student():
     set_environment('uat')
     set_partner('socn')
-    activate_account(product_id=157, is_s18=True)
+    activate_account(product_id=157, school_name='CN_TSC')
 
     # activate data with phoenix pack should not hurt
-    activate_account(product_id=157, is_s18=True, center_pack=True, online_pack=True)
+    activate_account(product_id=157, school_name='CN_TSC', center_pack=True, online_pack=True)
 
 
 def test_activate_v1_student():
     set_environment('staging')
     set_partner('mini')
-    activate_s15_student()
+    activate_s15_v1_student()
 
 
 def test_activate_phoenix_student():
@@ -256,9 +257,25 @@ def test_activate_live_student():
 
 
 def test_activate_phoenix_socn():
+    set_environment('staging')
+    set_partner('socn')
+    activate_phoenix_student(school_name='HZ_CXC')
+
+    set_environment('qacn')
+    set_partner('socn')
+    activate_phoenix_student(school_name='HZ_CXC')
+
+
+def test_activate_phoenix_trial():
     set_environment('uat')
     set_partner('socn')
-    activate_phoenix_student(school_name='SH_PSQ')
+    activate_phoenix_student(product_id=165)
+
+    set_partner('rupe')
+    activate_phoenix_student(product_id=163)
+
+    set_partner('ecsp')
+    activate_phoenix_student(product_id=164)
 
 
 def test_activate_default_account():

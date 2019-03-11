@@ -74,6 +74,11 @@ class DbQueryPage(PageBase):
     def get_result(self, as_dict=True):
         self.check_query_error()
 
+        # no result in query, return an empty list
+        if '-1 rows affected.' in self.browser.page_source:
+            return []
+
+        # analyze the table in page source to get result
         doc = etree.HTML(self.browser.page_source)
         element_rows = doc.xpath('//table')[4].find('tbody').findall('tr')
 
@@ -81,14 +86,16 @@ class DbQueryPage(PageBase):
         element_header = element_rows.pop(0)
         headers = []
         for e in element_header.findall('td'):
-            headers.append(e.text)
+            v = etree.tostring(e, encoding='utf8', method='text').decode()
+            headers.append(v.strip())  # header might be empty
 
         rows_as_list = []
         for element_row in element_rows:
             row = []
 
             for e in element_row.findall('td'):
-                row.append(self.parse_value(e.text))
+                v = etree.tostring(e, encoding='utf8', method='text').decode()
+                row.append(self.parse_value(v))
 
             rows_as_list.append(row)
 

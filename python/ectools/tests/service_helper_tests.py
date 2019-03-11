@@ -185,6 +185,14 @@ def test_adjust_level():
         assert str(e) == 'Can not change to same unit!'
 
 
+def test_add_offline_coupon():
+    set_environment('staging')
+    student_id = 14896006
+
+    add_offline_coupon(student_id, 'F2F', 2)
+    add_offline_coupon(student_id, 'WS', 2)
+
+
 def test_update_student_password():
     set_environment('uat')
     student_name = 'stest55675'
