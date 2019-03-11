@@ -8,6 +8,7 @@ from ectools.utility import no_ssl_requests
 
 LOGIN_SERVICE_URL = "{}/login/secure.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
+TROOP_COMMAND_URL = "{0}/services/api/ecplatform/command/{1}?"
 
 DEFAULT_HEADER_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8"
 DEFAULT_PASSWORD = 1
@@ -90,6 +91,21 @@ def query(username, query_string, url_with_context=True, return_first_item=True,
 
     headers = _get_default_header()
     response = get_request_session(username).post(url, headers=headers, data=query_string)
+
+    if response.status_code == 200:
+        result = json.loads(response.text)
+        if result:
+            return result[0] if return_first_item else result
+
+
+def troop_command_service(username, url_troop_command, data, return_first_item=True,
+                          use_default_context=True):
+    url = TROOP_COMMAND_URL.format(config.etown_root, url_troop_command)
+
+    url += _build_context(username, use_default_context)
+
+    headers = {"Content-Type": "application/json"}
+    response = get_request_session(username).post(url, headers=headers, json=data)
 
     if response.status_code == 200:
         result = json.loads(response.text)

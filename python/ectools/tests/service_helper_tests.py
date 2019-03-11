@@ -191,3 +191,14 @@ def test_add_offline_coupon():
 
     add_offline_coupon(student_id, 'F2F', 2)
     add_offline_coupon(student_id, 'WS', 2)
+
+
+def test_update_student_password():
+    set_environment('uat')
+    student_name = 'stest55675'
+    old_password = 'abc123456F'
+    new_password = 'abc123456G'
+    update_student_password(student_name, old_password, new_password)
+    student = account_service_load_student(23973971)
+
+    assert student['password'] == new_password
