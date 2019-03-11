@@ -294,7 +294,6 @@ def adjust_level(student_id, to_level_code):
     sf.change_level(student_id, to_level_code)
 
 
-
 def add_offline_coupon(student_id, coupon_type, add_count):
     """
     Add offline coupons for a student.
@@ -350,4 +349,3 @@ def update_student_password(student_name, old_password, new_password):
         "password": json.dumps(password_info, sort_keys=False)}}
 
     return troop_command_update_information(student_name, data, old_password)
-
