@@ -196,8 +196,8 @@ def test_add_offline_coupon():
 def test_update_student_password():
     set_environment('uat')
     student_name = 'stest55675'
-    old_password = 'abc123456D'
-    new_password = 'abc123456F'
+    old_password = 'abc123456F'
+    new_password = 'abc123456G'
     update_student_password(student_name, old_password, new_password)
     student = account_service_load_student(23973971)
 

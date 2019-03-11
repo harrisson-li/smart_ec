@@ -98,12 +98,11 @@ def query(username, query_string, url_with_context=True, return_first_item=True,
             return result[0] if return_first_item else result
 
 
-def troop_command_service(username, url_troop_command, data, url_with_context=True, return_first_item=True,
+def troop_command_service(username, url_troop_command, data, return_first_item=True,
                           use_default_context=True):
     url = TROOP_COMMAND_URL.format(config.etown_root, url_troop_command)
 
-    if url_with_context:
-        url += _build_context(username, use_default_context)
+    url += _build_context(username, use_default_context)
 
     headers = {"Content-Type": "application/json"}
     response = get_request_session(username).post(url, headers=headers, json=data)
