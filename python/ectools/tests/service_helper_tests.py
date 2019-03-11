@@ -183,3 +183,14 @@ def test_adjust_level():
         adjust_level(student_id, to_level_code=5)
     except SystemError as e:
         assert str(e) == 'Can not change to same unit!'
+
+
+def test_update_student_password():
+    set_environment('uat')
+    student_name = 'stest55675'
+    old_password = 'abc123456D'
+    new_password = 'abc123456F'
+    update_student_password(student_name, old_password, new_password)
+    student = account_service_load_student(23973971)
+
+    assert student['password'] == new_password
