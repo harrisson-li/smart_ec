@@ -100,10 +100,7 @@ def query(username, query_string, url_with_context=True, return_first_item=True,
 
 def troop_command_service(username, url_troop_command, data, url_with_context=True, return_first_item=True,
                           use_default_context=True):
-    if url_troop_command is None:
-        url = TROOP_COMMAND_URL.format(config.etown_root)
-    else:
-        url = TROOP_COMMAND_URL.format(config.etown_root, url_troop_command)
+    url = TROOP_COMMAND_URL.format(config.etown_root, url_troop_command)
 
     if url_with_context:
         url += _build_context(username, use_default_context)
