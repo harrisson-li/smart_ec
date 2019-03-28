@@ -83,7 +83,7 @@ class SubmitScoreHelperS15V2Page(PageBase):
     def element_merged_lesson_status_text(self, lesson_sequence):
         lesson_status_text = self.get_element(
             self.MERGER_LESSON_STATUS_TEXT_XPATH % lesson_sequence).text.strip().split(' ')
-        return {self.SCORE: lesson_status_text[2], self.STATUS: lesson_status_text[-1]}
+        return {self.SCORE: lesson_status_text[-3], self.STATUS: lesson_status_text[-1]}
 
     def get_merged_lesson(self, lesson_sequence):
         merged_lesson_score_text_box = self.element_merged_lesson_score_textbox(lesson_sequence)

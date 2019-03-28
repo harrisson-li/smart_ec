@@ -1,9 +1,9 @@
-import ectools.internal.business.score_helper_v1 as s15_submit_tool
 from assertpy import assert_that
+
+import ectools.internal.business.score_helper_v1 as s15_submit_tool
 from ectools.config import config, get_logger
 from ectools.token_helper import get_token
 from ectools.utility import get_browser, get_score, retry_for_error
-
 from ..objects import *
 from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
 
@@ -104,6 +104,7 @@ def submit_merged_score_for_one_lesson(lesson_sequence, score=get_score()):
     merged_lesson[0].clear()
     merged_lesson[0].send_keys(score)
     merged_lesson[1].click()
+    verify_merged_lesson_score(lesson_sequence, score)
 
 
 def submit_pc_score_for_one_lesson(lesson_sequence, score=get_score()):
@@ -111,6 +112,7 @@ def submit_pc_score_for_one_lesson(lesson_sequence, score=get_score()):
     pc_lesson[0].clear()
     pc_lesson[0].send_keys(score)
     pc_lesson[1].click()
+    verify_pc_lesson_score(lesson_sequence, score)
 
 
 def submit_mobile_score_for_one_lesson(lesson_sequence, score=get_score()):
@@ -118,6 +120,7 @@ def submit_mobile_score_for_one_lesson(lesson_sequence, score=get_score()):
     mobile_lesson[0].clear()
     mobile_lesson[0].send_keys(score)
     mobile_lesson[1].click()
+    verify_mobile_lesson_score(lesson_sequence, score)
 
 
 def verify_merged_lesson_status(lesson_sequence, expected_status):
@@ -153,6 +156,21 @@ def get_unit_info():
 def verify_unit_status(expected_status):
     unit_info = get_unit_info()
     return unit_info[_page().STATUS] == expected_status
+
+
+def verify_pc_lesson_score(lesson_sequence, expected_score):
+    status_text = _page().element_pc_lesson_status_text(lesson_sequence).text
+    assert_that(status_text).contains("Score {}".format(expected_score))
+
+
+def verify_mobile_lesson_score(lesson_sequence, expected_score):
+    status_text = _page().element_mobile_lesson_status_text(lesson_sequence).text
+    assert_that(status_text).contains("Score {}".format(expected_score))
+
+
+def verify_merged_lesson_score(lesson_sequence, expected_score):
+    score_text = _page().element_merged_lesson_status_text(lesson_sequence)[_page().SCORE]
+    assert_that(score_text).is_equal_to(str(expected_score))
 
 
 def pass_level_test(score=get_score()):
