@@ -1,9 +1,9 @@
-from assertpy import assert_that
-
 import ectools.internal.business.score_helper_v1 as s15_submit_tool
+from assertpy import assert_that
 from ectools.config import config, get_logger
 from ectools.token_helper import get_token
 from ectools.utility import get_browser, get_score, retry_for_error
+
 from ..objects import *
 from ..pages.score_helper_page_v2 import SubmitScoreHelperS15V2Page as CurrentPage
 
@@ -99,28 +99,41 @@ def pass_six_units(score=get_score()):
     pass_to_unit(6, score)
 
 
+def get_lesson_score_in_status_text(status_text):
+    score_text = status_text.strip().split(' ')[-3]
+    if score_text == "Score":
+        # PC and mobile lesson has no score when score is 0
+        return 0
+    else:
+        return int(score_text)
+
+
 def submit_merged_score_for_one_lesson(lesson_sequence, score=get_score()):
     merged_lesson = _page().get_merged_lesson(lesson_sequence)
+    current_score = get_lesson_score_in_status_text(
+        _page().element_merged_lesson_status_text(lesson_sequence)[_page().FULL_STATUS_TEXT])
     merged_lesson[0].clear()
     merged_lesson[0].send_keys(score)
     merged_lesson[1].click()
-    verify_merged_lesson_score(lesson_sequence, score)
+    verify_merged_lesson_score(lesson_sequence, current_score, score)
 
 
 def submit_pc_score_for_one_lesson(lesson_sequence, score=get_score()):
     pc_lesson = _page().get_pc_lesson(lesson_sequence)
+    current_score = get_lesson_score_in_status_text(_page().element_pc_lesson_status_text(lesson_sequence).text)
     pc_lesson[0].clear()
     pc_lesson[0].send_keys(score)
     pc_lesson[1].click()
-    verify_pc_lesson_score(lesson_sequence, score)
+    verify_pc_lesson_score(lesson_sequence, current_score, score)
 
 
 def submit_mobile_score_for_one_lesson(lesson_sequence, score=get_score()):
     mobile_lesson = _page().get_mobile_lesson(lesson_sequence)
+    current_score = get_lesson_score_in_status_text(_page().element_mobile_lesson_status_text(lesson_sequence).text)
     mobile_lesson[0].clear()
     mobile_lesson[0].send_keys(score)
     mobile_lesson[1].click()
-    verify_mobile_lesson_score(lesson_sequence, score)
+    verify_mobile_lesson_score(lesson_sequence, current_score, score)
 
 
 def verify_merged_lesson_status(lesson_sequence, expected_status):
@@ -158,19 +171,19 @@ def verify_unit_status(expected_status):
     return unit_info[_page().STATUS] == expected_status
 
 
-def verify_pc_lesson_score(lesson_sequence, expected_score):
+def verify_pc_lesson_score(lesson_sequence, original_score, new_score):
     status_text = _page().element_pc_lesson_status_text(lesson_sequence).text
-    assert_that(status_text).contains("Score {}".format(expected_score))
+    assert_that(status_text).contains("Score {}".format(max(original_score, new_score)))
 
 
-def verify_mobile_lesson_score(lesson_sequence, expected_score):
+def verify_mobile_lesson_score(lesson_sequence, original_score, new_score):
     status_text = _page().element_mobile_lesson_status_text(lesson_sequence).text
-    assert_that(status_text).contains("Score {}".format(expected_score))
+    assert_that(status_text).contains("Score {}".format(max(original_score, new_score)))
 
 
-def verify_merged_lesson_score(lesson_sequence, expected_score):
-    score_text = _page().element_merged_lesson_status_text(lesson_sequence)[_page().SCORE]
-    assert_that(score_text).is_equal_to(str(expected_score))
+def verify_merged_lesson_score(lesson_sequence, original_score, new_score):
+    new_score_text = _page().element_merged_lesson_status_text(lesson_sequence)[_page().SCORE]
+    assert_that(new_score_text).is_equal_to(str(max(original_score, new_score)))
 
 
 def pass_level_test(score=get_score()):

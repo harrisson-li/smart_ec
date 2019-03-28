@@ -29,6 +29,7 @@ class SubmitScoreHelperS15V2Page(PageBase):
     UNIT_HAS_PASSED = "HAS_PASSED"
     SCORE = "SCORE"
     STATUS = "STATUS"
+    FULL_STATUS_TEXT = "STATUS_TEXT"
 
     def __init__(self, browser, token=''):
         super(SubmitScoreHelperS15V2Page, self).__init__(browser)
@@ -82,8 +83,10 @@ class SubmitScoreHelperS15V2Page(PageBase):
 
     def element_merged_lesson_status_text(self, lesson_sequence):
         lesson_status_text = self.get_element(
-            self.MERGER_LESSON_STATUS_TEXT_XPATH % lesson_sequence).text.strip().split(' ')
-        return {self.SCORE: lesson_status_text[-3], self.STATUS: lesson_status_text[-1]}
+            self.MERGER_LESSON_STATUS_TEXT_XPATH % lesson_sequence).text
+        status_text_list = lesson_status_text.strip().split(' ')
+        return {self.SCORE: status_text_list[-3], self.STATUS: status_text_list[-1],
+                self.FULL_STATUS_TEXT: lesson_status_text}
 
     def get_merged_lesson(self, lesson_sequence):
         merged_lesson_score_text_box = self.element_merged_lesson_score_textbox(lesson_sequence)
