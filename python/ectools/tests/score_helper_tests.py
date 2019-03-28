@@ -24,6 +24,16 @@ def test_submit_lesson_score():
     get_logger().info(student)
 
     with submit_score_helper(student_id=student_id):
-        submit_merged_lesson_for_current_unit(1, 100)
-        submit_pc_lesson_for_current_unit(2, 100)
-        submit_mobile_lesson_for_current_unit(3, 100)
+        submit_merged_lesson_for_current_unit(1, 10)
+        submit_merged_lesson_for_current_unit(1, 20)
+        submit_merged_lesson_for_current_unit(1, 10)
+
+        submit_pc_lesson_for_current_unit(2, 10)
+        submit_pc_lesson_for_current_unit(2, 20)
+        submit_pc_lesson_for_current_unit(2, 10)
+
+        submit_mobile_lesson_for_current_unit(3, 10)
+        submit_mobile_lesson_for_current_unit(3, 20)
+        submit_mobile_lesson_for_current_unit(3, 10)
+
+
