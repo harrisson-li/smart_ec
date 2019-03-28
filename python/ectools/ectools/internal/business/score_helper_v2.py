@@ -100,7 +100,7 @@ def pass_six_units(score=get_score()):
 
 
 def get_lesson_score_in_status_text(status_text):
-    score_text = status_text.split(" ")[-3]
+    score_text = status_text.strip().split(' ')[-3]
     if score_text == "Score":
         # PC and mobile lesson has no score when score is 0
         return 0
