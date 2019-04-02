@@ -59,16 +59,12 @@ To get or set logging behavior, you could take the advantage of `get_logger()` m
 -----
 
 """
-import logging
-import sys
 from os.path import dirname, join, abspath
 
-from ectools.logger import get_ptest_logger
 from .internal.constants import HTTP_STATUS_OK
 from .internal.data_helper import get_partner, get_environment, get_database
 from .internal.objects import *
 from .utility import no_ssl_requests
-from .logger import cache_logger_attribute_name
 
 config = Configuration()
 
@@ -108,23 +104,8 @@ def set_partner(partner):
     _setup()
 
 
-def _set_logger():
-    if get_ptest_logger():
-        return
-
-    logger = logging.getLogger(config.name)
-    if not logger.handlers:
-        console_handler = logging.StreamHandler(sys.stdout)
-        formatter = logging.Formatter('%(asctime)s %(levelname)-7s: %(message)s')
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
-        logger.setLevel(logging.DEBUG)
-
-    Cache.__setattr__(cache_logger_attribute_name, logger)
-
-
 def _reset_cache():
-    keys_to_reset = ['connection_info', cache_logger_attribute_name]
+    keys_to_reset = ['connection_info']
     for key in keys_to_reset:
         if hasattr(Cache, key):
             delattr(Cache, key)
@@ -132,7 +113,6 @@ def _reset_cache():
 
 def _setup():
     _reset_cache()
-    _set_logger()
 
     config.base_dir = dirname(abspath(__file__))
     config.data_dir = join(config.base_dir, config.data_dir)

@@ -1,9 +1,23 @@
 import logging
+import sys
 
-from .internal.objects import Cache, Configuration
+from ectools.config import config
+from .internal.objects import Configuration
 
-cache_logger_attribute_name = 'sys_logger'
 config = Configuration
+
+
+def _set_logger():
+    if get_ptest_logger():
+        return
+
+    logger = logging.getLogger(config.name)
+    if not logger.handlers:
+        console_handler = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter('%(asctime)s %(levelname)-7s: %(message)s')
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+        logger.setLevel(logging.DEBUG)
 
 
 def get_logger(force_sys_logging=False):
@@ -13,16 +27,9 @@ def get_logger(force_sys_logging=False):
     :return: a logger object.
     """
     if force_sys_logging:
-        return get_sys_logger()
-    else:
-        return get_ptest_logger() or get_sys_logger()
-
-
-def get_sys_logger():
-    if not hasattr(Cache, cache_logger_attribute_name):
         return logging.getLogger(config.name)
     else:
-        return getattr(Cache, cache_logger_attribute_name)
+        return get_ptest_logger() or logging.getLogger(config.name)
 
 
 def get_ptest_logger():
@@ -31,3 +38,6 @@ def get_ptest_logger():
         return preporter
     except ImportError:
         return None
+
+
+_set_logger()
