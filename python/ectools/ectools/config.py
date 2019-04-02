@@ -63,10 +63,12 @@ import logging
 import sys
 from os.path import dirname, join, abspath
 
+from ectools.logger import get_ptest_logger
 from .internal.constants import HTTP_STATUS_OK
 from .internal.data_helper import get_partner, get_environment, get_database
 from .internal.objects import *
 from .utility import no_ssl_requests
+from .logger import cache_logger_attribute_name
 
 config = Configuration()
 
@@ -108,7 +110,7 @@ def set_partner(partner):
 
 def _set_logger():
     if get_ptest_logger():
-        return get_ptest_logger()
+        return
 
     logger = logging.getLogger(config.name)
     if not logger.handlers:
@@ -117,39 +119,20 @@ def _set_logger():
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
         logger.setLevel(logging.DEBUG)
-    return logger
 
-
-def get_logger(force_sys_logging=False):
-    """
-    If ptest installed will return ptest reporter, else sys logging.
-    :param force_sys_logging: always return sys logging if set to True.
-    :return: a logger object.
-    """
-    if force_sys_logging:
-        return logging.getLogger(config.name)
-
-    return get_ptest_logger() or logging.getLogger(config.name)
-
-
-def get_ptest_logger():
-    try:
-        from ptest.plogger import preporter
-        return preporter
-    except ImportError:
-        return None
+    Cache.__setattr__(cache_logger_attribute_name, logger)
 
 
 def _reset_cache():
-    keys_to_reset = ['connection_info']
+    keys_to_reset = ['connection_info', cache_logger_attribute_name]
     for key in keys_to_reset:
         if hasattr(Cache, key):
             delattr(Cache, key)
 
 
 def _setup():
-    _set_logger()
     _reset_cache()
+    _set_logger()
 
     config.base_dir = dirname(abspath(__file__))
     config.data_dir = join(config.base_dir, config.data_dir)

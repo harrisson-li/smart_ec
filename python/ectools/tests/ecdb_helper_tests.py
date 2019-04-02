@@ -1,5 +1,5 @@
 import ectools.ecdb_helper as db_helper
-from ectools.config import get_logger
+from ectools.logger import get_logger
 
 original = db_helper._remote_db_dir
 

@@ -1,5 +1,5 @@
 import ectools.ecdb_helper_v2 as db_helper
-from ectools.config import get_logger
+from ectools.logger import get_logger
 
 
 def test_fetchone():

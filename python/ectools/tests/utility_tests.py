@@ -2,7 +2,7 @@ from os import remove, path
 from tempfile import NamedTemporaryFile
 from time import sleep
 
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.ecdb_helper import _get_data_dir
 from ectools.utility import *
 
