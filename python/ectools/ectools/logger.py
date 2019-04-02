@@ -1,7 +1,9 @@
 import logging
 import sys
 
-from ectools.config import config
+from ectools.internal.objects import Configuration
+
+config = Configuration
 
 
 def _set_logger():
