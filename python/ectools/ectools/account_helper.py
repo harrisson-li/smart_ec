@@ -287,6 +287,27 @@ def enroll_account(username, password, force=False):
     if response.status_code == 200 and response.json()['success']:
         redirect = response.json()['redirect']
         result = session.get(redirect, allow_redirects=True)
+
+        if 'mobile/beginnerquestionnaire' in result.url:
+            url_questionair = get_beginner_questionair_link()
+            data = {"studentAnswers": {"version": "BegQues_v1",
+                                       "answers": {"BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_NO\"}",
+                                                   "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_NO\"}",
+                                                   "BQ_S1_ANSWER-SIMPLE-QUESTION": "{\"Choice\":\"BQ_S1_OP_ASQ_NO\"}",
+                                                   "BQ_S1_SIMPLE-SENTENCES": "{\"Choice\":\"BQ_S1_OP_SS_NO\"}",
+                                                   "BQ_S1_DIFFERENT-VOCABULARY": "{\"Choice\":\"BQ_S1_OP_DV_NO\"}",
+                                                   "BQ_S2_ACTIVELY-LEARNING": "{\"Choice\":\"BQ_S2_OP_AL_NO\"}",
+                                                   "BQ_S2_SKILLS-AND-STRATEGIES": "{\"Choice\":\"BQ_S2_OP_SNS_NO\"}",
+                                                   "BQ_S2_SPEAKING-TO-OTHERS": "{\"Choice\":\"BQ_S2_OP_STO_NO\"}",
+                                                   "BQ_S2_WITH-STRONGER-LEARNER": "{\"Choice\":\"BQ_S2_OP_WSL_NO\"}",
+                                                   "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_STOP-COMING\"}"},
+                                       "duration": 17702}}
+
+            response_questionair = session.post(url=url_questionair, json=data)
+
+            if response_questionair.status_code == 200 and response_questionair.json()[0]['isSuccess']:
+                result = session.get(redirect, allow_redirects=True)
+
         if 'mobile/welcome' in result.url:
             get_logger().info('Enroll account {} success'.format(username))
         else:
