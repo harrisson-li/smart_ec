@@ -13,7 +13,6 @@ import getpass
 import json
 
 import arrow
-
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.ecdb_helper_v2 import get_config_value
@@ -22,6 +21,7 @@ from ectools.internal.objects import Configuration
 from ectools.service_helper import account_service_update_info
 from ectools.token_helper import get_token
 from ectools.utility import ignore_error, no_ssl_requests
+
 from .constants import HTTP_STATUS_OK
 
 
@@ -62,6 +62,11 @@ def get_activate_pack_link():
 
 def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
+
+
+def get_beginner_questionnaire_link():
+    url = '{}/services/api/proxy/commandproxy/ecplatform/ecapi_myaccount_beginnerquestionnaire/UpdateAnswers'
+    return url.format(config.etown_root_http)
 
 
 def get_success_message(student):
