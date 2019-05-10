@@ -64,7 +64,7 @@ def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
 
 
-def get_beginner_questionair_link():
+def get_beginner_questionnaire_link():
     url = '{}/services/api/proxy/commandproxy/ecplatform/ecapi_myaccount_beginnerquestionnaire/UpdateAnswers'
     return url.format(config.etown_root_http)
 

@@ -289,7 +289,7 @@ def enroll_account(username, password, force=False):
         result = session.get(redirect, allow_redirects=True)
 
         if 'mobile/beginnerquestionnaire' in result.url:
-            url_questionair = get_beginner_questionair_link()
+            url_questionnaire = get_beginner_questionnaire_link()
             data = {"studentAnswers": {"version": "BegQues_v1",
                                        "answers": {"BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_NO\"}",
                                                    "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_NO\"}",
@@ -303,9 +303,9 @@ def enroll_account(username, password, force=False):
                                                    "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_STOP-COMING\"}"},
                                        "duration": 17702}}
 
-            response_questionair = session.post(url=url_questionair, json=data)
+            response_questionnaire = session.post(url=url_questionnaire, json=data)
 
-            if response_questionair.status_code == 200 and response_questionair.json()[0]['isSuccess']:
+            if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
                 result = session.get(redirect, allow_redirects=True)
 
         if 'mobile/welcome' in result.url:
