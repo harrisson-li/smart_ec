@@ -138,7 +138,6 @@ def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
         data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
         data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
         data['PackList[{}].TemplateData'.format(i)] = p['data'] or ''
-        data['PackList[{}].PackTags'.format(i)] = p['tags']
 
     data['OrderId'] = arrow.now().timestamp  # for refund purpose
     data['DaysOfExpiredCouponRetention'] = 30

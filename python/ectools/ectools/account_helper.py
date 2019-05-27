@@ -224,7 +224,7 @@ def activate_account(product_id=None,
         # for trial product, always use trial pack
         if is_trial:
             phoenix_packs = ['Phoenix Free Trial']
-            
+
         generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack)
         student['is_v1_pack'] = is_v1_pack
 
@@ -384,8 +384,10 @@ def activate_phoenix_student(**kwargs):
         is_online = not kwargs.get('center_pack', True)
         kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
 
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = True
+
     kwargs['is_s18'] = True
-    kwargs['is_v1_pack'] = True
     return activate_account_by_dict(kwargs)
 
 
