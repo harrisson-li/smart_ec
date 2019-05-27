@@ -13,7 +13,6 @@ import getpass
 import json
 
 import arrow
-
 from ectools import ecdb_helper_v2 as ecdb_v2
 from ectools.config import config
 from ectools.ecdb_helper_v2 import get_config_value
@@ -22,6 +21,7 @@ from ectools.internal.objects import Configuration
 from ectools.service_helper import account_service_update_info
 from ectools.token_helper import get_token
 from ectools.utility import ignore_error, no_ssl_requests
+
 from .constants import HTTP_STATUS_OK
 
 
@@ -162,6 +162,11 @@ def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
     # legal duration = main redemption qty
     data['LegalDuration'] = data['RedemptionQty']
 
+    # for trial product, remove legal duration and set qty = 7
+    if phoenix_packs == ['Phoenix Free Trial']:
+        del data['LegalDuration']
+        data['RedemptionQty'] = 7
+
 
 def _refine_account(ecdb_account):
     """Merge the detail fields into account itself, original it is a json string."""
@@ -286,6 +291,9 @@ def get_student_tags(student):
 
     if student['is_onlineoc']:
         tags.append('OC')
+
+    if student['is_trial']:
+        tags.append('Trial')
 
     return tags
 

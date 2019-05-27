@@ -1,6 +1,6 @@
 from ectools.config import get_logger, set_environment
 from ectools.service_helper import *
-
+from ectools.utility import password_generator
 
 def test_get_member_site_settings():
     set_environment('qa')
@@ -191,3 +191,16 @@ def test_add_offline_coupon():
 
     add_offline_coupon(student_id, 'F2F', 2)
     add_offline_coupon(student_id, 'WS', 2)
+
+
+def test_update_student_password():
+    set_environment('uat')
+    student_name = 'stest55675'
+    student = account_service_load_student(23973971)
+    old_password = student['password']
+    new_password = password_generator()
+
+    update_student_password(student_name, old_password, new_password)
+    student = account_service_load_student(23973971)
+
+    assert student['password'] == new_password

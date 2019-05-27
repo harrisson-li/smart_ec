@@ -266,6 +266,18 @@ def test_activate_phoenix_socn():
     activate_phoenix_student(school_name='HZ_CXC')
 
 
+def test_activate_phoenix_trial():
+    set_environment('uat')
+    set_partner('socn')
+    activate_phoenix_student(product_id=165)
+
+    set_partner('rupe')
+    activate_phoenix_student(product_id=163)
+
+    set_partner('ecsp')
+    activate_phoenix_student(product_id=164)
+
+
 def test_activate_default_account():
     set_environment('staging')
     for partner, prod in [('Cool', 63), ('Mini', 65), ('Rupe', 159), ('Cehk', 127)]:

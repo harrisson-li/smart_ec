@@ -159,10 +159,11 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=True):
         return get_random_item(found)
 
 
-def get_any_phoenix_product(by_partner=None):
+def get_any_phoenix_product(by_partner=None, is_trial=False):
     found = [x for x in get_products_by_partner(by_partner)
              if is_item_has_tag(x, 'Phoenix')]
 
+    found = [x for x in found if is_item_has_tag(x, 'Trial') == is_trial]
     return get_random_item(found)
 
 
@@ -273,6 +274,13 @@ def is_phoenix_product(product):
         product = get_product_by_id(product)
 
     return is_item_has_tag(product, 'Phoenix')
+
+
+def is_trial_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'Trial')
 
 
 def is_onlineoc_school(school):

@@ -313,3 +313,37 @@ def add_offline_coupon(student_id, coupon_type, add_count):
         'token': 'b175934dbe21f41945759f3797b50c86ac1f'
     })
     assert response.text == 'Coupons granted!', response.text
+
+
+def call_troop_command_service(student_name,
+                               command_url,
+                               data,
+                               login_required=True,
+                               password=DEFAULT_PASSWORD,
+                               return_first_item=True,
+                               use_default_context=True):
+    if login_required:
+        troop_service_helper.login(student_name, password)
+
+    return troop_service_helper.troop_command_service(student_name, command_url, data,
+                                                      return_first_item=return_first_item,
+                                                      use_default_context=use_default_context)
+
+
+def troop_command_update_information(student_name, data, password=DEFAULT_PASSWORD):
+    command_url = 'ecapi_myaccount_information/updateinformation'
+
+    return call_troop_command_service(student_name,
+                                      command_url=command_url,
+                                      data=data,
+                                      password=password)
+
+
+def update_student_password(student_name, old_password, new_password):
+    password_info = {'OldPassword': old_password,
+                     'NewPassword': new_password,
+                     'NewPasswordConfirmed': new_password}
+    data = {"updateItemInfos": {
+        "password": json.dumps(password_info, sort_keys=False)}}
+
+    return troop_command_update_information(student_name, data, old_password)
