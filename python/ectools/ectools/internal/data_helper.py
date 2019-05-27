@@ -370,12 +370,15 @@ def get_all_phoenix_pack():
     return Cache.phoenix_pack
 
 
-def get_phoenix_pack(env_name, partner, pack_name):
+def get_phoenix_pack(env_name, partner, pack_name, is_v1_pack=True):
     found = [x for x in get_all_phoenix_pack() if x['name'] == pack_name]
     # env example: All, UAT, UAT+QA
     found = [x for x in found if x['env'] == 'All' or env_name in x['env']]
     # partner example: All, Cool, Cool+Mini
     found = [x for x in found if x['partner'] == 'All' or partner in x['partner']]
+    # tag contains v1 or v2
+    pack_tag = 'v1' if is_v1_pack else 'v2'
+    found = [x for x in found if pack_tag in x['tags']]
 
-    assert len(found), "No such package: {}/{}/{}!".format(env_name, partner, pack_name)
+    assert len(found), "No such package: {}/{}/{}/{}!".format(env_name, partner, pack_name, pack_tag)
     return found[0]

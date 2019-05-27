@@ -121,6 +121,7 @@ def activate_account(product_id=None,
               - onlineViceProducts= e.g. '{PL:20,CP20:30}'
               - packageProductIds = e.g. '1001,1010'
               - phoenix_packs     = e.g. ['pack1','pack2'], pack name => kiss.dbo.product / ProductName
+              - is_v1_pack     = True
 
 
 
@@ -201,6 +202,7 @@ def activate_account(product_id=None,
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
     phoenix_packs = data.pop('phoenix_packs', [])
+    is_v1_pack = data.pop('is_v1_pack', True)
     assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
 
     # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
@@ -217,7 +219,8 @@ def activate_account(product_id=None,
         if include_online_pack:
             phoenix_packs.append('Online Pack Basic')
 
-        generate_activation_data_for_phoenix(data, phoenix_packs)
+        generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack)
+        student['is_v1_pack'] = is_v1_pack
 
     # post the data to activation tool
     result = no_ssl_requests().post(link, data=data)
@@ -281,6 +284,26 @@ def enroll_account(username, password, force=False):
     if response.status_code == 200 and response.json()['success']:
         redirect = response.json()['redirect']
         result = session.get(redirect, allow_redirects=True)
+        if 'mobile/beginnerquestionnaire' in result.url:
+            url_questionnaire = get_beginner_questionnaire_link()
+            data = {"studentAnswers": {"version": "BegQues_v1",
+                                       "answers": {"BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_NO\"}",
+                                                   "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_NO\"}",
+                                                   "BQ_S1_ANSWER-SIMPLE-QUESTION": "{\"Choice\":\"BQ_S1_OP_ASQ_NO\"}",
+                                                   "BQ_S1_SIMPLE-SENTENCES": "{\"Choice\":\"BQ_S1_OP_SS_NO\"}",
+                                                   "BQ_S1_DIFFERENT-VOCABULARY": "{\"Choice\":\"BQ_S1_OP_DV_NO\"}",
+                                                   "BQ_S2_ACTIVELY-LEARNING": "{\"Choice\":\"BQ_S2_OP_AL_NO\"}",
+                                                   "BQ_S2_SKILLS-AND-STRATEGIES": "{\"Choice\":\"BQ_S2_OP_SNS_NO\"}",
+                                                   "BQ_S2_SPEAKING-TO-OTHERS": "{\"Choice\":\"BQ_S2_OP_STO_NO\"}",
+                                                   "BQ_S2_WITH-STRONGER-LEARNER": "{\"Choice\":\"BQ_S2_OP_WSL_NO\"}",
+                                                   "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_STOP-COMING\"}"},
+                                       "duration": 17702}}
+
+            response_questionnaire = session.post(url=url_questionnaire, json=data)
+
+            if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
+                result = session.get(redirect, allow_redirects=True)
+
         if 'mobile/welcome' in result.url:
             get_logger().info('Enroll account {} success'.format(username))
         else:
@@ -355,6 +378,7 @@ def activate_phoenix_student(**kwargs):
         kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
 
     kwargs['is_s18'] = True
+    kwargs['is_v1_pack'] = True
     return activate_account_by_dict(kwargs)
 
 

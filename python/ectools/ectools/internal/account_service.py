@@ -64,6 +64,11 @@ def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
 
 
+def get_beginner_questionnaire_link():
+    url = '{}/services/api/proxy/commandproxy/ecplatform/ecapi_myaccount_beginnerquestionnaire/UpdateAnswers'
+    return url.format(config.etown_root_http)
+
+
 def get_success_message(student):
     if student['is_phoenix']:
         success_text = '"isSuccess":true'
@@ -124,15 +129,16 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
-def generate_activation_data_for_phoenix(data, phoenix_packs):
+def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
     assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
 
     for i, name in enumerate(phoenix_packs):
-        p = get_phoenix_pack(config.env, config.partner, name)
+        p = get_phoenix_pack(config.env, config.partner, name, is_v1_pack)
         data['PackList[{}].OrderProductId'.format(i)] = p['name']
         data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
         data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
         data['PackList[{}].TemplateData'.format(i)] = p['data'] or ''
+        data['PackList[{}].PackTags'.format(i)] = p['tags']
 
     data['OrderId'] = arrow.now().timestamp  # for refund purpose
     data['DaysOfExpiredCouponRetention'] = 30
