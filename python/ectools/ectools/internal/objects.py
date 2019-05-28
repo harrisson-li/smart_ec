@@ -37,3 +37,4 @@ class Configuration(Base):
     smart_repo = r'\\cns-qaauto5\Shared\git\smart'
     version_file = r"\\cns-etnexus\pypi\ectools\version.txt"
     version_url = 'http://jenkins.englishtown.com:8081/pypi/ectools/version.txt'
+    corp_net_checking_url = 'http://opal.ef.com.cn/wiki'
