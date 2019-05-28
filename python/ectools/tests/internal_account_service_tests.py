@@ -1,6 +1,7 @@
 from ectools.account_helper import *
 from ectools.config import set_environment
 from ectools.internal import account_service
+from ectools.logger import get_logger
 
 
 def test_get_account_by_tag():

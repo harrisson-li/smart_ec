@@ -9,7 +9,8 @@ The flow explained as bellow:
 4. Troop query to get all sections for current level test
 5. Submit score for each section
 """
-from ectools.config import config, get_logger
+from ectools.config import config
+from ectools.logger import get_logger
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import login, get_request_session
 from ectools.service_helper import account_service_load_student

@@ -1,6 +1,7 @@
 import ectools.internal.business.score_helper_v1 as s15_submit_tool
 from assertpy import assert_that
-from ectools.config import config, get_logger
+from ectools.config import config
+from ectools.logger import get_logger
 from ectools.token_helper import get_token
 from ectools.utility import get_browser, get_score, retry_for_error
 

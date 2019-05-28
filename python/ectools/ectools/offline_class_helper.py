@@ -28,7 +28,7 @@ from datetime import datetime, timedelta
 
 import arrow
 
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.db_query import execute_query, fetch_one
 from ectools.internal.objects import Base
 from ectools.service_helper import is_v2_student

@@ -59,8 +59,6 @@ To get or set logging behavior, you could take the advantage of `get_logger()` m
 -----
 
 """
-import logging
-import sys
 from os.path import dirname, join, abspath
 
 from .internal.constants import HTTP_STATUS_OK
@@ -106,40 +104,6 @@ def set_partner(partner):
     _setup()
 
 
-def _set_logger():
-    if get_ptest_logger():
-        return get_ptest_logger()
-
-    logger = logging.getLogger(config.name)
-    if not logger.handlers:
-        console_handler = logging.StreamHandler(sys.stdout)
-        formatter = logging.Formatter('%(asctime)s %(levelname)-7s: %(message)s')
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
-        logger.setLevel(logging.DEBUG)
-    return logger
-
-
-def get_logger(force_sys_logging=False):
-    """
-    If ptest installed will return ptest reporter, else sys logging.
-    :param force_sys_logging: always return sys logging if set to True.
-    :return: a logger object.
-    """
-    if force_sys_logging:
-        return logging.getLogger(config.name)
-
-    return get_ptest_logger() or logging.getLogger(config.name)
-
-
-def get_ptest_logger():
-    try:
-        from ptest.plogger import preporter
-        return preporter
-    except ImportError:
-        return None
-
-
 def _reset_cache():
     keys_to_reset = ['connection_info']
     for key in keys_to_reset:
@@ -148,7 +112,6 @@ def _reset_cache():
 
 
 def _setup():
-    _set_logger()
     _reset_cache()
 
     config.base_dir = dirname(abspath(__file__))

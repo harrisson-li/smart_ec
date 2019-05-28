@@ -1,7 +1,8 @@
 """
 Use this module to query DB for all environments.
 """
-from ectools.config import config, get_logger
+from ectools.config import config
+from ectools.logger import get_logger
 
 
 def _get_executor():

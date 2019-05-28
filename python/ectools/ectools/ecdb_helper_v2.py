@@ -25,6 +25,7 @@ import pymssql
 
 from .ecdb_helper import _to_insert_values, _to_query_clause
 from .internal.objects import Cache
+from .logger import get_logger
 
 _connection_info = ('CNS-ETDEVDB', 'TestUser', 'testuserdev', 'TestAutomation')
 _connection_info_bak = ('den1.mssql6.gear.host', 'ecdb', 'Fi8808P?4s~A', 'ecdb')
@@ -36,8 +37,7 @@ def _connect():
             Cache.ecdb_conn_v2 = pymssql.connect(*_connection_info, login_timeout=10)
             Cache.ecdb_cur_v2 = Cache.ecdb_conn_v2.cursor()
         except Exception as e:
-            # TODO: decouple logger functions from config to remove circular imports to be able to use logger anywhere.
-            print("Error connecting CNS-ETDEVDB, fallback to den1.mssql6.gear.host, Error info: {}".format(e.args))
+            get_logger().warn("Error connecting CNS-ETDEVDB, fallback to den1.mssql6.gear.host, Error info: {}".format(e.args))
             Cache.ecdb_conn_v2 = pymssql.connect(*_connection_info_bak, login_timeout=10)
             Cache.ecdb_cur_v2 = Cache.ecdb_conn_v2.cursor()
     return Cache.ecdb_conn_v2

@@ -24,7 +24,7 @@ For more info about using EFEC test account, please refer to confluence page or 
 
 """
 
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
 from ectools.internal.constants import HTTP_STATUS_OK
