@@ -441,7 +441,7 @@ def ensure_safe_query(sql):
 def is_corp_net():
     """Check current network is in corporation intranet."""
     try:
-        no_ssl_requests().get(Configuration.corp_net_checking_url, timeout=2)
+        no_ssl_requests().get(Configuration.version_url, timeout=2)
         return True
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         return False
