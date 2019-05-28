@@ -1,16 +1,11 @@
 import logging
 import sys
 
-from ectools.internal.objects import Configuration
-
-config = Configuration
+from ectools.internal.objects import Configuration as Config
 
 
 def _set_logger():
-    if get_ptest_logger():
-        return
-
-    logger = logging.getLogger(config.name)
+    logger = logging.getLogger(Config.name)
     if not logger.handlers:
         console_handler = logging.StreamHandler(sys.stdout)
         formatter = logging.Formatter('%(asctime)s %(levelname)-7s: %(message)s')
@@ -26,9 +21,9 @@ def get_logger(force_sys_logging=False):
     :return: a logger object.
     """
     if force_sys_logging:
-        return logging.getLogger(config.name)
+        return logging.getLogger(Config.name)
     else:
-        return get_ptest_logger() or logging.getLogger(config.name)
+        return get_ptest_logger() or logging.getLogger(Config.name)
 
 
 def get_ptest_logger():
