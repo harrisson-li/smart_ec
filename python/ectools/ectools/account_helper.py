@@ -121,6 +121,7 @@ def activate_account(product_id=None,
               - onlineViceProducts= e.g. '{PL:20,CP20:30}'
               - packageProductIds = e.g. '1001,1010'
               - phoenix_packs     = e.g. ['pack1','pack2'], pack name => kiss.dbo.product / ProductName
+              - is_v1_pack     = True
 
 
 
@@ -203,6 +204,7 @@ def activate_account(product_id=None,
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
     phoenix_packs = data.pop('phoenix_packs', [])
+    is_v1_pack = data.pop('is_v1_pack', True)
     assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
 
     # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
@@ -223,7 +225,8 @@ def activate_account(product_id=None,
         if is_trial:
             phoenix_packs = ['Phoenix Free Trial']
 
-        generate_activation_data_for_phoenix(data, phoenix_packs)
+        generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack)
+        student['is_v1_pack'] = is_v1_pack
 
     # post the data to activation tool
     result = no_ssl_requests().post(link, data=data)
@@ -380,6 +383,9 @@ def activate_phoenix_student(**kwargs):
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
         kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = True
 
     kwargs['is_s18'] = True
     return activate_account_by_dict(kwargs)

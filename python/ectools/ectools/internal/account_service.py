@@ -129,11 +129,11 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
-def generate_activation_data_for_phoenix(data, phoenix_packs):
+def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
     assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
 
     for i, name in enumerate(phoenix_packs):
-        p = get_phoenix_pack(config.env, config.partner, name)
+        p = get_phoenix_pack(config.env, config.partner, name, is_v1_pack)
         data['PackList[{}].OrderProductId'.format(i)] = p['name']
         data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
         data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
