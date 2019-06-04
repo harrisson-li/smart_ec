@@ -1,4 +1,4 @@
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.token_helper import get_token
 
 

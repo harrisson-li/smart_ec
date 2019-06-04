@@ -1,4 +1,4 @@
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.token_helper import get_token
 from ectools.utility import get_score, get_browser, retry_for_error
 from ..objects import *

@@ -59,7 +59,8 @@ However, I would recommend you use `connect_database` as d decorator to make sur
 import collections
 import pymssql
 
-from ectools.config import config, get_logger
+from ectools.config import config
+from ectools.logger import get_logger
 from .internal.objects import *
 
 

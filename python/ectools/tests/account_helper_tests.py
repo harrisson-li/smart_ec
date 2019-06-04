@@ -1,5 +1,6 @@
 from ectools.account_helper import *
-from ectools.config import get_logger, set_environment, set_partner
+from ectools.config import set_environment, set_partner
+from ectools.logger import get_logger
 from ectools.internal.objects import *
 
 

@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as conditions
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ectools.config import get_logger
+from ectools.logger import get_logger
 from ectools.utility import detail_on_failure, retry_for_error, convert_to_str
 
 TIMEOUT_SECONDS = 60

@@ -1,5 +1,6 @@
 from ectools.config import set_environment, set_partner
 from ectools.database_helper import *
+from ectools.logger import get_logger
 
 logger = get_logger()
 

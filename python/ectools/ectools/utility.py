@@ -148,7 +148,7 @@ def random_date(start, end, fmt=None):
 def detail_on_failure(func):
     """Decorator to log function and arguments detail when on failure."""
 
-    from ectools.config import get_logger
+    from ectools.logger import get_logger
 
     @wraps(wrapped=func)
     def wrapper(*args, **kwargs):
@@ -221,7 +221,7 @@ def wait_for(method, return_as=None, timeout=Configuration.default_timeout, poll
 def try_wait_for(method, timeout=Configuration.default_timeout, poll_time=Configuration.default_poll_time):
     """Try to wait for a method, return its value or return False when failed."""
 
-    from ectools.config import get_logger
+    from ectools.logger import get_logger
     end_time = time.time() + timeout
 
     while True:
@@ -277,7 +277,7 @@ def retry_for_errors(errors, retry_times=Configuration.default_retry_times,
             pass
     """
 
-    from ectools.config import get_logger
+    from ectools.logger import get_logger
     assert retry_times > 0, 'retry_times must larger than 0!'
 
     def wrapper_(func):
@@ -310,7 +310,7 @@ def ignore_error(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            from ectools.config import get_logger
+            from ectools.logger import get_logger
             get_logger().warn("Ignore error for function: {} - [{}]:{}"
                               .format(func.__name__, type(e).__name__, e.args))
 
