@@ -94,6 +94,7 @@ def activate_account(product_id=None,
                      school_name=None,
                      is_v2=True,
                      is_s18=True,
+                     is_e19=False,
                      auto_onlineoc=True,
                      student=None,
                      **kwargs):
@@ -140,7 +141,7 @@ def activate_account(product_id=None,
     else:
         # auto get product if not specified
         if not product_id:
-            product = get_any_product(is_s18=is_s18)
+            product = get_any_product(is_s18=is_s18, is_e19=is_e19)
         else:
             product = get_product_by_id(product=product_id, is_s18=is_s18)
             is_s18 = is_s18_product(product)
@@ -183,6 +184,7 @@ def activate_account(product_id=None,
     student['is_eclite'] = is_lite
     student['is_phoenix'] = is_phoenix
     student['is_trial'] = is_trial
+    student['is_e19'] = is_e19
     student['source'] = kwargs.pop('source', 'ectools')
 
     link = get_activate_account_link(student['is_e10'])
@@ -191,6 +193,7 @@ def activate_account(product_id=None,
     data['memberId'], data['divisionCode'] = student['member_id'], school['division_code']
     should_enroll = data.get('includesenroll', False)
     level_code = kwargs.get('startLevel', '0A')
+    student['level_code'] = level_code
 
     # online oc student will need to enroll via login, so not include enroll when activate
     if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
@@ -257,7 +260,7 @@ def activate_account(product_id=None,
     # special enroll logic for online oc student and check 2.0 account version
     if should_enroll and student['is_v2']:
         s = account_service_load_student(student['member_id'])
-        enroll_account(s['user_name'], s['password'], is_phoenix)
+        enroll_account(s['user_name'], s['password'], s['member_id'], is_phoenix, is_e19, level_code)
 
         # ensure account version is correct before return
         if is_v2 != is_v2_student(student['member_id']):
@@ -272,7 +275,7 @@ def activate_account(product_id=None,
     return student
 
 
-def enroll_account(username, password, force=False):
+def enroll_account(username, password, student_id, force=False, is_e19=False, level_code='0A'):
     """
     Enroll student with level and course info, only work for online oc students.
     Login via mobile enroll page will do the work.
@@ -282,43 +285,102 @@ def enroll_account(username, password, force=False):
         get_logger().debug('No need to enroll account as it is not in CN partners')
         return
 
-    login_url = get_login_post_link()
-    session = no_ssl_requests()
-    data = {'username': username, 'password': password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
-    response = session.post(url=login_url, data=data)
+    # username = student['user_name']
+    # student_id = student['member_id']
+    # password = student['password']
+    # level_code = student['level_code']
 
-    if response.status_code == 200 and response.json()['success']:
-        redirect = response.json()['redirect']
-        result = session.get(redirect, allow_redirects=True)
+    def login_mobile_web(student_username, student_password):
+        url = get_login_post_link()
+        s = no_ssl_requests()
+        d = {'username': student_username, 'password': student_password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
+        r = s.post(url=url, data=d)
 
-        if 'mobile/beginnerquestionnaire' in result.url:
-            url_questionnaire = get_beginner_questionnaire_link()
-            data = {"studentAnswers": {"version": "BegQues_v1",
-                                       "answers": {"BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_NO\"}",
-                                                   "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_NO\"}",
-                                                   "BQ_S1_ANSWER-SIMPLE-QUESTION": "{\"Choice\":\"BQ_S1_OP_ASQ_NO\"}",
-                                                   "BQ_S1_SIMPLE-SENTENCES": "{\"Choice\":\"BQ_S1_OP_SS_NO\"}",
-                                                   "BQ_S1_DIFFERENT-VOCABULARY": "{\"Choice\":\"BQ_S1_OP_DV_NO\"}",
-                                                   "BQ_S2_ACTIVELY-LEARNING": "{\"Choice\":\"BQ_S2_OP_AL_NO\"}",
-                                                   "BQ_S2_SKILLS-AND-STRATEGIES": "{\"Choice\":\"BQ_S2_OP_SNS_NO\"}",
-                                                   "BQ_S2_SPEAKING-TO-OTHERS": "{\"Choice\":\"BQ_S2_OP_STO_NO\"}",
-                                                   "BQ_S2_WITH-STRONGER-LEARNER": "{\"Choice\":\"BQ_S2_OP_WSL_NO\"}",
-                                                   "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_STOP-COMING\"}"},
+        if r.status_code == 200 and r.json()['success']:
+            redirect_url = r.json()['redirect']
+            redirect_result = s.get(redirect_url, allow_redirects=True)
+        else:
+            raise ValueError('Fail to login with user {} / {}! '.format(student_username, student_password) + r.text)
+
+        return s, redirect_result
+
+    def submit_beginner_questionaire(student_level_code, login_session):
+        url_questionnaire = get_beginner_questionnaire_link()
+
+        if student_level_code == '0A':
+            questionaire_data = {"studentAnswers": {"version": "BegQues_v1",
+                                       "answers": {
+                                           "BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_NO\"}",
+                                           "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_NO\"}",
+                                           "BQ_S1_ANSWER-SIMPLE-QUESTION": "{\"Choice\":\"BQ_S1_OP_ASQ_NO\"}",
+                                           "BQ_S1_SIMPLE-SENTENCES": "{\"Choice\":\"BQ_S1_OP_SS_NO\"}",
+                                           "BQ_S1_DIFFERENT-VOCABULARY": "{\"Choice\":\"BQ_S1_OP_DV_NO\"}",
+                                           "BQ_S2_ACTIVELY-LEARNING": "{\"Choice\":\"BQ_S2_OP_AL_NO\"}",
+                                           "BQ_S2_SKILLS-AND-STRATEGIES": "{\"Choice\":\"BQ_S2_OP_SNS_NO\"}",
+                                           "BQ_S2_SPEAKING-TO-OTHERS": "{\"Choice\":\"BQ_S2_OP_STO_NO\"}",
+                                           "BQ_S2_WITH-STRONGER-LEARNER": "{\"Choice\":\"BQ_S2_OP_WSL_NO\"}",
+                                           "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_STOP-COMING\"}"},
                                        "duration": 17702}}
+        else:
+            questionaire_data = {"studentAnswers": {"version": "BegQues_v1",
+                                       "answers": {
+                                           "BQ_S1_GUESS-WORD-SOUNDING": "{\"Choice\":\"BQ_S1_OP_GWS_YES\"}",
+                                           "BQ_S1_UNDERSTAND-BASIC-IDEA": "{\"Choice\":\"BQ_S1_OP_UBI_YES\"}",
+                                           "BQ_S1_ANSWER-SIMPLE-QUESTION": "{\"Choice\":\"BQ_S1_OP_ASQ_YES\"}",
+                                           "BQ_S1_SIMPLE-SENTENCES": "{\"Choice\":\"BQ_S1_OP_SS_YES\"}",
+                                           "BQ_S1_DIFFERENT-VOCABULARY": "{\"Choice\":\"BQ_S1_OP_DV_YES\"}",
+                                           "BQ_S2_ACTIVELY-LEARNING": "{\"Choice\":\"BQ_S2_OP_AL_YES\"}",
+                                           "BQ_S2_SKILLS-AND-STRATEGIES": "{\"Choice\":\"BQ_S2_OP_SNS_YES\"}",
+                                           "BQ_S2_SPEAKING-TO-OTHERS": "{\"Choice\":\"BQ_S2_OP_STO_YES\"}",
+                                           "BQ_S2_WITH-STRONGER-LEARNER": "{\"Choice\":\"BQ_S2_OP_WSL_YES\"}",
+                                           "BQ_S2_HARDER-THAN-EXPECTED": "{\"Choice\":\"BQ_S2_OP_HTE_CONT-ATTENDING\"}"},
+                                       "duration": 37516}}
 
-            response_questionnaire = session.post(url=url_questionnaire, json=data)
+        response_questionnaire = login_session.post(url=url_questionnaire, json=questionaire_data)
 
-            if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
-                result = session.get(redirect, allow_redirects=True)
+        return response_questionnaire
 
-        if 'mobile/welcome' in result.url:
+    def enroll_new_course(student_username, student_password):
+        login_session, login_result = login_mobile_web(student_username, student_password)
+        enroll_result = login_session.get(get_mobile_enroll_url(), allow_redirects=True)
+
+        if 'mobile/welcome' in enroll_result.url:
             get_logger().info('Enroll account {} success'.format(username))
         else:
             get_logger().error('Enroll to {}, detail: {}'.format(result.url, result.text))
             raise AssertionError('Error occurred when enroll account {}'.format(username))
 
+    def enroll_legacy_course(member_id):
+        level0_tool_link = get_level0_tool_link()
+        enroll_legacy_s18_url = get_enroll_legacy_s18_link()
+        s = no_ssl_requests()
+        response_level0_tool = s.get(level0_tool_link)
+
+        if response_level0_tool.status_code == 200:
+            d = {'studentIds': student_id}
+            response_enroll = s.post(url=enroll_legacy_s18_url, data=d)
+
+            if response_enroll.status_code == 200 and response_enroll.json()['IsSuccess']:
+                get_logger().info('Enroll account {} to legacy S18 course success'.format(member_id))
+            else:
+                raise AssertionError('Error occurred when enroll account {}'.format(member_id))
+        else:
+            raise ValueError('Fail to open level 0 tool with error {}'.format(response_level0_tool.text))
+
+    if is_e19:
+        session, result = login_mobile_web(username, password)
+        # if response.status_code == 200 and response.json()['success']:
+        #     redirect = response.json()['redirect']
+        #     result = session.get(redirect, allow_redirects=True)
+
+        if 'mobile/beginnerquestionnairelv0' in result.url:
+            response_questionnaire = submit_beginner_questionaire(level_code, session)
+            if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
+                enroll_new_course(username, password)
+        else:
+            enroll_new_course()
     else:
-        raise ValueError('Fail to login with user {} / {}! '.format(username, password) + response.text)
+        enroll_legacy_course(student_id)
 
 
 def activate_account_by_dict(data):

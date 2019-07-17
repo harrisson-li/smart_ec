@@ -69,6 +69,21 @@ def get_beginner_questionnaire_link():
     return url.format(config.etown_root_http)
 
 
+def get_level0_tool_link():
+    url = '{}/services/ecsystem/Tools/Level0'
+    return url.format(config.etown_root_http)
+
+
+def get_enroll_legacy_s18_link():
+    url = '{}/services/ecsystem/Tools/Level0/MakeEnrollingToGE?'
+    return url.format(config.etown_root_http)
+
+
+def get_mobile_enroll_url():
+    url = '{}/ecplatform/mvc/mobile/enrollcourse'
+    return url.format(config.etown_root_http)
+
+
 def get_success_message(student):
     if student['is_phoenix']:
         success_text = '"isSuccess":true'

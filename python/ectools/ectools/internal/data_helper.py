@@ -122,9 +122,9 @@ def get_products_by_partner(partner=None, is_e10=False):
             and is_item_has_tag(x, 'E10') == is_e10]
 
 
-def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_major=True):
+def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_e19=False, is_major=True):
     found = [x for x in get_products_by_partner(by_partner, is_e10)
-             if is_item_has_tag(x, 'S18') == is_s18]
+             if (is_item_has_tag(x, 'S18') == is_s18 or is_item_has_tag(x, 'E19') == is_e19)]
 
     if is_major:
         found = get_item_has_tag(found, 'major')
@@ -134,6 +134,10 @@ def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_major=True):
 
 def get_any_e10_product(by_partner=None):
     return get_any_product(by_partner, is_e10=True, is_s18=False, is_major=False)
+
+
+def get_any_e19_product(by_partner=None):
+    return get_any_product(by_partner, is_e10=False, is_s18=True, is_e19=True, is_major=True)
 
 
 def get_any_home_product(by_partner=None, is_major=True, is_s18=True):
@@ -281,6 +285,13 @@ def is_trial_product(product):
         product = get_product_by_id(product)
 
     return is_item_has_tag(product, 'Trial')
+
+
+def is_e19_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'E19')
 
 
 def is_onlineoc_school(school):

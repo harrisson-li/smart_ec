@@ -5,7 +5,7 @@ from ectools.internal.objects import *
 
 
 def test_create_account():
-    set_environment('staging')
+    set_environment('uat')
     student = create_account_without_activation()
     get_logger().info(student)
     assert student is not None
@@ -30,7 +30,7 @@ def test_create_account():
 
 
 def test_activate_account_default():
-    set_environment('staging')
+    set_environment('uat')
     student = activate_account(is_v2=True, mainRedemptionQty=60)
     get_logger().info(student)
     assert student is not None
@@ -41,7 +41,7 @@ def test_activate_account_default():
 
 
 def test_activate_account_kwargs():
-    set_environment('staging')
+    set_environment('uat')
     student = activate_account(startLevel=3, mainRedemptionQty=1, securityverified=False, includesenroll=False)
     assert student['activation_data']['startLevel'] == 3
     assert student['activation_data']['mainRedemptionQty'] == 1
@@ -50,7 +50,7 @@ def test_activate_account_kwargs():
 
 
 def test_activate_s18_accounts():
-    set_environment('staging')
+    set_environment('uat')
     set_partner('cool')
     student = activate_s18_school_student()
     assert student['product']['main_code'] == 'S18SCHOOLMAIN'
@@ -74,7 +74,7 @@ def test_get_s18_products():
 
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
-    set_environment('staging')
+    set_environment('uat')
     set_partner('mini')
 
     activate_account(143)
@@ -152,7 +152,7 @@ def test_sf_suspend_student():
 
 
 def test_get_or_activate_account():
-    set_environment('staging')
+    set_environment('uat')
     account1 = get_or_activate_account(tag='UnitTest')
     account2 = get_or_activate_account(tag='UnitTest')
 
@@ -178,7 +178,7 @@ def test_get_account_by_tag():
 
 
 def test_or_activate_onlineoc_student():
-    set_environment('staging')
+    set_environment('uat')
     account = get_or_activate_account(tag='OnlineOC_UT', method='activate_onlineoc_student')
     assert account['is_onlineoc']
 
@@ -280,8 +280,20 @@ def test_activate_phoenix_trial():
 
 
 def test_activate_default_account():
-    set_environment('staging')
+    set_environment('uat')
     for partner, prod in [('Cool', 63), ('Mini', 65), ('Rupe', 159), ('Cehk', 127)]:
         set_partner(partner)
         account = activate_account()
         assert account['product']['id'] == prod
+
+
+def test_activate_e19_account():
+    student_beginner_low = activate_account(is_e19=True, includesenroll=True)
+    student_beginner_high_0b = activate_account(is_e19=True, includesenroll=True, StartLevel='0B')
+    student_beginner_high_1 = activate_account(is_e19=True, includesenroll=True, StartLevel='1')
+    student_elementary = activate_account(is_e19=True, includesenroll=True, StartLevel='2')
+
+    assert student_beginner_low['is_e19'] is True
+    assert student_beginner_high_0b['is_e19'] is True
+    assert student_beginner_high_1['is_e19'] is True
+    assert student_elementary['is_e19'] is True
