@@ -23,12 +23,13 @@ For more info about using EFEC test account, please refer to confluence page or 
 -----
 
 """
+import uuid
 
-from ectools.logger import get_logger
 from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.data_helper import *
+from ectools.logger import get_logger
 from ectools.service_helper import account_service_load_student
 from ectools.service_helper import is_v2_student
 from ectools.utility import no_ssl_requests
@@ -189,6 +190,7 @@ def activate_account(product_id=None,
     data = get_default_activation_data(product)
     data = merge_activation_data(data, **kwargs)
     data['memberId'], data['divisionCode'] = student['member_id'], school['division_code']
+    data['orderId'] = uuid.uuid1()
     should_enroll = data.get('includesenroll', False)
     level_code = kwargs.get('startLevel', '0A')
 
