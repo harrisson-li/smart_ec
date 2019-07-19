@@ -190,7 +190,7 @@ def activate_account(product_id=None,
     data = get_default_activation_data(product)
     data = merge_activation_data(data, **kwargs)
     data['memberId'], data['divisionCode'] = student['member_id'], school['division_code']
-    data['orderId'] = uuid.uuid1()
+    data['orderId'] = str(uuid.uuid1())
     should_enroll = data.get('includesenroll', False)
     level_code = kwargs.get('startLevel', '0A')
 
