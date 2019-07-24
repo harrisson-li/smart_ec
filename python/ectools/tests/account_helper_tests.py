@@ -4,6 +4,16 @@ from ectools.logger import get_logger
 from ectools.internal.objects import *
 
 
+def test_reactivate_account():
+    set_environment('uat')
+    member_id = 23978355
+    
+    student = {'member_id': member_id}
+    student = activate_account(student=student)
+
+    assert student['member_id'] == member_id
+
+
 def test_create_account():
     set_environment('uat')
     student = create_account_without_activation()
