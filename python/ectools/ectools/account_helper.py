@@ -195,7 +195,8 @@ def activate_account(product_id=None,
     level_code = kwargs.get('startLevel', '0A')
 
     # online oc student will need to enroll via login, so not include enroll when activate
-    if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
+    # others student will use set oc to enroll, so not include enroll when activate
+    if should_enroll:
         del data['includesenroll']
 
     # e10 student cannot set 'levelQty'
@@ -249,22 +250,25 @@ def activate_account(product_id=None,
     student['partner'], student['country_code'] = config.partner, config.country_code
     student['domain'], student['environment'] = config.domain, config.env
 
-    # set hima test level for online oc student who will enroll
-    if should_enable_onlineoc(auto_onlineoc, student, school) and should_enroll:
-        student['is_onlineoc'] = True
-        set_hima = kwargs.get('set_hima', True)
-        if set_hima:
-            sf_set_hima_test(student['member_id'], level_code)
-
-    # special enroll logic for online oc student and check 2.0 account version
     if should_enroll and student['is_v2']:
-        s = account_service_load_student(student['member_id'])
-        enroll_account(s['user_name'], s['password'], is_phoenix)
+        # set hima test level for online oc student who will enroll
+        if should_enable_onlineoc(auto_onlineoc, student, school):
+            student['is_onlineoc'] = True
+            set_hima = kwargs.get('set_hima', True)
+            if set_hima:
+                sf_set_hima_test(student['member_id'], level_code)
 
-        # ensure account version is correct before return
-        if is_v2 != is_v2_student(student['member_id']):
-            raise AssertionError(
-                "Incorrect account version! Please double check target school version: {}".format(school))
+                s = account_service_load_student(student['member_id'])
+                enroll_account(s['user_name'], s['password'], is_phoenix)
+
+                # ensure account version is correct before return
+                if is_v2 != is_v2_student(student['member_id']):
+                    raise AssertionError(
+                        "Incorrect account version! Please double check target school version: {}".format(school))
+            else:
+                raise ValueError("Unable to enroll course without set hima for online oc student")
+        else:
+            set_oc(student['member_id'], level_code)
 
     # save account to EC db then return
     get_logger().debug('New test account: {}'.format(student))
@@ -321,6 +325,18 @@ def enroll_account(username, password, force=False):
 
     else:
         raise ValueError('Fail to login with user {} / {}! '.format(username, password) + response.text)
+
+
+def set_oc(student_id, level_code='0A', level_quantity=16):
+    link = get_set_oc_url()
+    session = no_ssl_requests()
+    data = {'memberId': student_id, 'levelCode': level_code, 'levelQty': level_quantity}
+    result = session.post(url=link, data=data)
+
+    if result.text.strip() == 'True':
+        get_logger().info('Set OC for student {} successfully'.format(student_id))
+    else:
+        raise ValueError('Fail to set OC for student {}! '.format(student_id) + result.text)
 
 
 def activate_account_by_dict(data):
