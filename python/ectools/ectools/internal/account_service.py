@@ -94,6 +94,11 @@ def get_set_oc_url():
     return url.format(config.etown_root_http)
 
 
+def get_set_oc_url():
+    url = '{}/services/oboe2/salesforce/test/SetOC'
+    return url.format(config.etown_root_http)
+
+
 def get_success_message(student):
     if student['is_phoenix']:
         success_text = '"isSuccess":true'
