@@ -170,11 +170,11 @@ def test_get_phoenix_pack():
     assert pack['salesforce_id'] == '01t0l000001DmR2AAK'
 
     pack = get_phoenix_pack(config.env, config.partner, 'Intensive Center Fee')
-    assert pack['salesforce_id'] == '01t0l000001DYGdAAO'
+    assert pack['salesforce_id'] == '01t900000088hq2AAA'
 
     set_partner('rupe')
     pack = get_phoenix_pack(config.env, config.partner, 'Intensive Online Fee')
-    assert pack['salesforce_id'] == '01t0l000001DYGeAAO'
+    assert pack['salesforce_id'] == '01t900000088hq3AAA'
 
 
 def test_get_phoenix_prod():
