@@ -35,7 +35,7 @@ from ectools.service_helper import is_v2_student
 from ectools.utility import no_ssl_requests
 
 
-def get_or_activate_account(tag, expiration_days=365, method='activate_account', **kwargs):
+def get_or_activate_account(tag, expiration_days=360, method='activate_account', **kwargs):
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
     If the account is found by tag, it will contains a key named: found_by_tag.
@@ -55,7 +55,7 @@ def get_or_activate_account(tag, expiration_days=365, method='activate_account',
 
     else:
         # the account activation days should be larger than expiration day
-        kwargs['mainRedemptionQty'] = (expiration_days // 30) + 1
+        kwargs['mainRedemptionQty'] = expiration_days // 30
 
         current_module = sys.modules[__name__].__dict__
         account = current_module[method](**kwargs)
@@ -300,10 +300,6 @@ def set_course_info(member_id, is_e19):
 
     if response.status_code == 200:
         data = {'studentIds': member_id}
-        # header = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        #           'Referer': link}
-        # s.headers.update({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'})
-        # r = s.post(url=url, data=data, headers=header)
 
         r = s.post(url=url, data=data)
         if r.status_code == 200 and r.json()['IsSuccess']:
