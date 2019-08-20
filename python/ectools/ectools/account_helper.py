@@ -268,7 +268,7 @@ def activate_account(product_id=None,
                 sf_set_hima_test(student['member_id'], level_code)
 
                 s = account_service_load_student(student['member_id'])
-                enroll_account(s['user_name'], s['password'], is_phoenix)
+                enroll_account(s['user_name'], s['password'], is_phoenix, level_code)
 
                 # ensure account version is correct before return
                 if is_v2 != is_v2_student(student['member_id']):
@@ -303,7 +303,7 @@ def set_course_info(member_id, is_e19):
 
         r = s.post(url=url, data=data)
         if r.status_code == 200 and r.json()['IsSuccess']:
-            get_logger().info('Set account {} to legacy S18 course info success'.format(member_id))
+            get_logger().info('Set account {} to {} course info success'.format(member_id, 'E19' if is_e19 else 'S18'))
         else:
             raise ValueError('Error occurred when set account {} to legacy S18 course info'.format(member_id))
     else:
