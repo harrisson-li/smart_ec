@@ -15,7 +15,7 @@ def test_reactivate_account():
 
 
 def test_create_account():
-    set_environment('uat')
+    set_environment('staging')
     student = create_account_without_activation()
     get_logger().info(student)
     assert student is not None
@@ -40,7 +40,7 @@ def test_create_account():
 
 
 def test_activate_account_default():
-    set_environment('uat')
+    set_environment('staging')
     student = activate_account(is_v2=True, mainRedemptionQty=60)
     get_logger().info(student)
     assert student is not None
@@ -51,7 +51,7 @@ def test_activate_account_default():
 
 
 def test_activate_account_kwargs():
-    set_environment('uat')
+    set_environment('staging')
     student = activate_account(startLevel=3, mainRedemptionQty=1, securityverified=False, includesenroll=False)
     assert student['activation_data']['startLevel'] == 3
     assert student['activation_data']['mainRedemptionQty'] == 1
@@ -60,7 +60,7 @@ def test_activate_account_kwargs():
 
 
 def test_activate_s18_accounts():
-    set_environment('uat')
+    set_environment('staging')
     set_partner('cool')
     student = activate_s18_school_student()
     assert student['product']['main_code'] == 'S18SCHOOLMAIN'
@@ -84,7 +84,7 @@ def test_get_s18_products():
 
 def test_activate_eclite_account():
     # should raise error with message like mismatch school and product
-    set_environment('uat')
+    set_environment('staging')
     set_partner('mini')
 
     activate_account(143)
@@ -115,7 +115,7 @@ def test_ignore_eclite_school():
 
 
 def test_activate_account_more():
-    set_environment('qa')
+    set_environment('uat')
     set_partner('mini')
 
     student = activate_e10_student()
@@ -132,7 +132,7 @@ def test_activate_account_more():
 
 # noinspection PyUnresolvedReferences
 def test_convert_student_to_object():
-    set_environment('staging')
+    set_environment('uat')
     student = get_or_activate_account(tag='UnitTest')
 
     class Student(Base):
@@ -150,7 +150,7 @@ def test_convert_student_to_object():
 
 
 def test_sf_suspend_student():
-    set_environment('qa')
+    set_environment('uat')
     import datetime
     now = datetime.datetime.now()
     further = now + timedelta(days=5)
@@ -188,7 +188,7 @@ def test_get_account_by_tag():
 
 
 def test_or_activate_onlineoc_student():
-    set_environment('uat')
+    set_environment('staging')
     account = get_or_activate_account(tag='OnlineOC_UT', method='activate_onlineoc_student')
     assert account['is_onlineoc']
 
@@ -225,7 +225,7 @@ def test_set_hima_test_failed():
 
 
 def test_activate_onlineoc_student():
-    set_environment('staging')
+    set_environment('uat')
     activate_onlineoc_school_student(startLevel=3)
 
 
@@ -239,7 +239,7 @@ def test_activate_socn_student():
 
 
 def test_activate_v1_student():
-    set_environment('staging')
+    set_environment('uat')
     set_partner('mini')
     activate_s15_v1_student()
 
@@ -268,11 +268,11 @@ def test_activate_live_student():
 
 
 def test_activate_phoenix_socn():
-    set_environment('staging')
+    set_environment('uat')
     set_partner('socn')
     activate_phoenix_student(school_name='HZ_CXC')
 
-    set_environment('qacn')
+    set_environment('uat')
     set_partner('socn')
     activate_phoenix_student(school_name='HZ_CXC')
 
@@ -290,7 +290,7 @@ def test_activate_phoenix_trial():
 
 
 def test_activate_default_account():
-    set_environment('uat')
+    set_environment('staging')
     for partner, prod in [('Cool', 63), ('Mini', 65), ('Rupe', 159), ('Cehk', 127)]:
         set_partner(partner)
         account = activate_account()
@@ -299,10 +299,10 @@ def test_activate_default_account():
 
 def test_activate_e19_account():
     set_environment('uat')
-    student_beginner_low = activate_account(is_e19=True, includesenroll=True)
-    student_beginner_high_0b = activate_account(is_e19=True, includesenroll=True, startLevel='0B')
-    student_beginner_high_1 = activate_account(is_e19=True, includesenroll=True, startLevel='1')
-    student_elementary = activate_account(is_e19=True, includesenroll=True, startLevel='2')
+    student_beginner_low = activate_account(is_s18=False, is_e19=True, includesenroll=True)
+    student_beginner_high_0b = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='0B')
+    student_beginner_high_1 = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='1')
+    student_elementary = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='2')
 
     assert student_beginner_low['is_e19'] is True
     assert student_beginner_low['level_code'] == '0A'

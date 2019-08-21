@@ -392,18 +392,6 @@ def enroll_account(username, password, force=False, level_code='0A'):
         enroll_course_new_flow(username, password)
 
 
-# def set_oc(student_id, level_code='0A', level_quantity=16):
-#     link = get_set_oc_url()
-#     session = no_ssl_requests()
-#     data = {'memberId': student_id, 'levelCode': level_code, 'levelQty': level_quantity}
-#     result = session.post(url=link, data=data)
-#
-#     if result.text.strip() == 'True':
-#         get_logger().info('Set OC for student {} successfully'.format(student_id))
-#     else:
-#         raise ValueError('Fail to set OC for student {}! '.format(student_id) + result.text)
-
-
 def set_oc(student_id, level_code='0A', level_quantity=16):
     link = get_set_oc_url()
     session = no_ssl_requests()
