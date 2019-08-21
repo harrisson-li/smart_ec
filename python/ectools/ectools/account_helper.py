@@ -138,15 +138,17 @@ def activate_account(product_id=None,
         get_logger().info('Use default product and school.')
         product = get_default_product()
         is_s18 = is_s18_product(product)
-        school = get_default_school()
+        is_e19 = is_e19_product(product)
 
+        school = get_default_school()
     else:
         # auto get product if not specified
         if not product_id:
             product = get_any_product(is_s18=is_s18, is_e19=is_e19)
         else:
-            product = get_product_by_id(product=product_id, is_s18=is_s18)
+            product = get_product_by_id(product=product_id, is_s18=is_s18, is_e19=is_e19)
             is_s18 = is_s18_product(product)
+            is_e19 = is_e19_product(product)
 
         # auto get school if not specified
         if not school_name:
@@ -320,11 +322,6 @@ def enroll_account(username, password, force=False, level_code='0A'):
         get_logger().debug('No need to enroll account as it is not in CN partners')
         return
 
-    # username = student['user_name']
-    # student_id = student['member_id']
-    # password = student['password']
-    # level_code = student['level_code']
-
     def login_mobile_web(student_username, student_password):
         url = get_login_post_link()
         s = no_ssl_requests()
@@ -386,9 +383,6 @@ def enroll_account(username, password, force=False, level_code='0A'):
             raise AssertionError('Error occurred when enroll account {}'.format(username))
 
     session, result = login_mobile_web(username, password)
-    # if response.status_code == 200 and response.json()['success']:
-    #     redirect = response.json()['redirect']
-    #     result = session.get(redirect, allow_redirects=True)
 
     if 'mobile/beginnerquestionnaire' in result.url:  # or 'mobile/beginnerquestionnairelv0' in result.url:
         response_questionnaire = submit_beginner_questionaire(level_code, session)
@@ -398,16 +392,16 @@ def enroll_account(username, password, force=False, level_code='0A'):
         enroll_course_new_flow(username, password)
 
 
-def set_oc(student_id, level_code='0A', level_quantity=16):
-    link = get_set_oc_url()
-    session = no_ssl_requests()
-    data = {'memberId': student_id, 'levelCode': level_code, 'levelQty': level_quantity}
-    result = session.post(url=link, data=data)
-
-    if result.text.strip() == 'True':
-        get_logger().info('Set OC for student {} successfully'.format(student_id))
-    else:
-        raise ValueError('Fail to set OC for student {}! '.format(student_id) + result.text)
+# def set_oc(student_id, level_code='0A', level_quantity=16):
+#     link = get_set_oc_url()
+#     session = no_ssl_requests()
+#     data = {'memberId': student_id, 'levelCode': level_code, 'levelQty': level_quantity}
+#     result = session.post(url=link, data=data)
+#
+#     if result.text.strip() == 'True':
+#         get_logger().info('Set OC for student {} successfully'.format(student_id))
+#     else:
+#         raise ValueError('Fail to set OC for student {}! '.format(student_id) + result.text)
 
 
 def set_oc(student_id, level_code='0A', level_quantity=16):
