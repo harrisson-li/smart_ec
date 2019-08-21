@@ -115,7 +115,7 @@ def test_ignore_eclite_school():
 
 
 def test_activate_account_more():
-    set_environment('uat')
+    set_environment('qa')
     set_partner('mini')
 
     student = activate_e10_student()
@@ -132,7 +132,7 @@ def test_activate_account_more():
 
 # noinspection PyUnresolvedReferences
 def test_convert_student_to_object():
-    set_environment('uat')
+    set_environment('staging')
     student = get_or_activate_account(tag='UnitTest')
 
     class Student(Base):
@@ -150,7 +150,7 @@ def test_convert_student_to_object():
 
 
 def test_sf_suspend_student():
-    set_environment('uat')
+    set_environment('qa')
     import datetime
     now = datetime.datetime.now()
     further = now + timedelta(days=5)
@@ -162,7 +162,7 @@ def test_sf_suspend_student():
 
 
 def test_get_or_activate_account():
-    set_environment('uat')
+    set_environment('staging')
     account1 = get_or_activate_account(tag='UnitTest')
     account2 = get_or_activate_account(tag='UnitTest')
 
@@ -225,7 +225,7 @@ def test_set_hima_test_failed():
 
 
 def test_activate_onlineoc_student():
-    set_environment('uat')
+    set_environment('staging')
     activate_onlineoc_school_student(startLevel=3)
 
 
@@ -239,7 +239,7 @@ def test_activate_socn_student():
 
 
 def test_activate_v1_student():
-    set_environment('uat')
+    set_environment('staging')
     set_partner('mini')
     activate_s15_v1_student()
 
@@ -268,11 +268,11 @@ def test_activate_live_student():
 
 
 def test_activate_phoenix_socn():
-    set_environment('uat')
+    set_environment('staging')
     set_partner('socn')
     activate_phoenix_student(school_name='HZ_CXC')
 
-    set_environment('uat')
+    set_environment('qacn')
     set_partner('socn')
     activate_phoenix_student(school_name='HZ_CXC')
 
