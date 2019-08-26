@@ -1,13 +1,13 @@
 from ectools.account_helper import *
 from ectools.config import set_environment, set_partner
-from ectools.logger import get_logger
 from ectools.internal.objects import *
+from ectools.logger import get_logger
 
 
 def test_reactivate_account():
     set_environment('uat')
     member_id = 23978355
-    
+
     student = {'member_id': member_id}
     student = activate_account(student=student)
 
@@ -295,3 +295,28 @@ def test_activate_default_account():
         set_partner(partner)
         account = activate_account()
         assert account['product']['id'] == prod
+
+
+def test_activate_e19_account():
+    set_environment('uat')
+    student_beginner_low = activate_account(is_s18=False, is_e19=True, includesenroll=True)
+    student_beginner_high_0b = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='0B')
+    student_beginner_high_1 = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='1')
+    student_elementary = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='2')
+
+    assert student_beginner_low['is_e19'] is True
+    assert student_beginner_low['level_code'] == '0A'
+    assert student_beginner_high_0b['is_e19'] is True
+    assert student_beginner_high_0b['level_code'] == '0B'
+    assert student_beginner_high_1['is_e19'] is True
+    assert student_beginner_high_1['level_code'] == '1'
+    assert student_elementary['is_e19'] is True
+    assert student_elementary['level_code'] == '2'
+
+
+def test_activate_s18_legacy_account():
+    set_environment('uat')
+
+    student_legacy = activate_account(is_s18=True, is_e19=False, includeenroll=True)
+    assert student_legacy['member_id'] is not None
+
