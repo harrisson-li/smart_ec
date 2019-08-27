@@ -107,7 +107,7 @@ def activate_account(product_id=None,
     :param school_name: If not specified will randomly get a school from current partner.
     :param is_v2: True will activate Platform 2.0 student.
     :param is_s18: True will use S18 redemption code.
-    :param is_e19: False will use to create ec19 course
+    :param is_e19: True will use to create ec19 course
     :param auto_onlineoc: Will auto determine if should go to online OC flow or not.
     :param student: Specify a student to activate, `student['member_id']` must be valid.
 
