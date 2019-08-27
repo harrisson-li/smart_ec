@@ -71,17 +71,20 @@ def get_beginner_questionnaire_link():
 
 def get_level0_tool_link():
     url = '{}/services/ecsystem/Tools/Level0'
-    return url.format(config.etown_root_http)
+    url = url.format(config.etown_root_http)
+    return append_token(url).replace('&', '?')
 
 
 def get_e19_course_info_link():
     url = '{}/services/ecsystem/Tools/Level0/MarkEnrollingToL0GE?'
-    return url.format(config.etown_root_http)
+    url = url.format(config.etown_root_http)
+    return append_token(url).replace('&', '')
 
 
 def get_s18_course_info_link():
     url = '{}/services/ecsystem/Tools/Level0/MarkEnrollingToGE?'
-    return url.format(config.etown_root_http)
+    url = url.format(config.etown_root_http)
+    return append_token(url).replace('&', '')
 
 
 def get_mobile_enroll_url():
