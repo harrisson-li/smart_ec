@@ -92,14 +92,16 @@ def get_product_by_id(product, is_s18=True, is_e19=False):
     return found[0]
 
 
-def get_default_product(partner=None):
+def get_default_product(partner=None, is_s18=True, is_e19=False):
     from ectools.config import config
     if not partner:
         partner = config.partner
 
     return [x for x in get_all_products()
             if is_item_has_tag(x, 'default')
-            and x['partner'].lower() == partner.lower()][0]
+            and x['partner'].lower() == partner.lower()
+            and is_item_has_tag(x, 'S18') == is_s18
+            and is_item_has_tag(x, 'E19') == is_e19][0]
 
 
 def is_s18_product(product):
