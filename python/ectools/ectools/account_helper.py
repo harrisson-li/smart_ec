@@ -136,7 +136,7 @@ def activate_account(product_id=None,
 
     if not product_id and not school_name:
         get_logger().info('Use default product and school.')
-        product = get_default_product()
+        product = get_default_product(is_s18=is_s18, is_e19=is_e19)
         is_s18 = is_s18_product(product)
         is_e19 = is_e19_product(product)
 
