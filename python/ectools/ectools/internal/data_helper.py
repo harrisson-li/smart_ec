@@ -116,7 +116,7 @@ def get_products_has_tag(tag):
     return get_item_has_tag(get_all_products(), tag)
 
 
-def get_products_by_partner(partner=None, is_e10=False):
+def get_products_by_partner(partner=None, is_e10=False, is_s18=True, is_e19=False):
     from ectools.config import config
 
     if partner is None:
@@ -124,7 +124,9 @@ def get_products_by_partner(partner=None, is_e10=False):
 
     return [x for x in get_all_products() if
             x['partner'].lower() == partner.lower()
-            and is_item_has_tag(x, 'E10') == is_e10]
+            and is_item_has_tag(x, 'E10') == is_e10
+            and is_item_has_tag(x, 'S18') == is_s18
+            and is_item_has_tag(x, 'E19') == is_e19]
 
 
 def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_e19=False, is_major=True):
@@ -147,10 +149,8 @@ def get_any_e19_product(by_partner=None):
 
 
 def get_any_home_product(by_partner=None, is_major=True, is_s18=True, is_e19=False):
-    found = [x for x in get_products_by_partner(by_partner)
-             if x['product_type'] == 'Home'
-             and is_item_has_tag(x, 'S18') == is_s18
-             and is_item_has_tag(x, 'E19') == is_e19]
+    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
+             if x['product_type'] == 'Home']
 
     if is_major:
         return get_item_has_tag(found, 'major')[0]
@@ -159,10 +159,8 @@ def get_any_home_product(by_partner=None, is_major=True, is_s18=True, is_e19=Fal
 
 
 def get_any_school_product(by_partner=None, is_major=True, is_s18=True, is_e19=False):
-    found = [x for x in get_products_by_partner(by_partner)
+    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
              if x['product_type'] == 'School'
-             and is_item_has_tag(x, 'S18') == is_s18
-             and is_item_has_tag(x, 'E19') == is_e19
              and not is_item_has_tag(x, 'ECLite')]
 
     if is_major:
@@ -171,27 +169,27 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=True, is_e19=F
         return get_random_item(found)
 
 
-def get_any_phoenix_product(by_partner=None, is_trial=False):
-    found = [x for x in get_products_by_partner(by_partner)
+def get_any_phoenix_product(by_partner=None, is_trial=False, is_s18=True, is_e19=False):
+    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
              if is_item_has_tag(x, 'Phoenix')]
 
     found = [x for x in found if is_item_has_tag(x, 'Trial') == is_trial]
     return get_random_item(found)
 
 
-def get_eclite_products(partner=None):
+def get_eclite_products(partner=None, is_s18=True, is_e19=False):
     from ectools.config import config
     if partner is None:
         partner = config.partner
 
-    found = [x for x in get_products_by_partner(partner)
+    found = [x for x in get_products_by_partner(partner, is_s18=is_s18, is_e19=is_e19)
              if x['product_type'] == 'School' and is_item_has_tag(x, 'ECLite')]
 
     return found
 
 
-def get_any_eclite_product(by_partner=None):
-    found = get_eclite_products(by_partner)
+def get_any_eclite_product(by_partner=None, is_s18=True, is_e19=False):
+    found = get_eclite_products(by_partner, is_s18=is_s18, is_e19=is_e19)
     return get_random_item(found)
 
 
