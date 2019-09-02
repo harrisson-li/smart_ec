@@ -129,7 +129,7 @@ namespace ET2.ViewModels
                     return;
                 }
 
-                if (ProductList.Where(e => e.Name == value).Count() == 0)
+                if (ProductList.Where(e => e.Name == _name).Count() == 0)
                 {
                     return;
                 }
