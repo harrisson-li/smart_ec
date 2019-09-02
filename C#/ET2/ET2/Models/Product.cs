@@ -11,6 +11,8 @@ namespace ET2.Models
         private string _name;
         private bool _isE10;
         private bool _isPhoenix;
+        private bool _isS18;
+        private bool _isE19;
 
         public bool IsE10
         {
@@ -30,6 +32,28 @@ namespace ET2.Models
             {
                 if (value == _isPhoenix) return;
                 _isPhoenix = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsS18
+        {
+            get { return _isS18; }
+            set 
+            {
+                if (value == _isS18) return;
+                _isS18 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsE19
+        {
+            get { return _isE19; }
+            set
+            {
+                if (value == _isE19) return;
+                _isE19 = value;
                 OnPropertyChanged();
             }
         }

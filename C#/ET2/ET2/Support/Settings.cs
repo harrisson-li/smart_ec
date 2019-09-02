@@ -335,6 +335,8 @@ namespace ET2.Support
                     StartLevel = "0A",
                     IsE10 = e["tags"].ToString().Contains("E10"),
                     IsPhoenix = e["tags"].ToString().Contains("Phoenix"),
+                    IsS18 = e["tags"].ToString().Contains("S18"),
+                    IsE19 = e["tags"].ToString().Contains("E19"),
                     Tags = e["tags"].ToString()
                 }).ToList();
             }

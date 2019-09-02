@@ -13,7 +13,8 @@ namespace ET2.Models
     {
         E10,
         S15,
-        S15_V2
+        S15_V2,
+        E19
     }
 
     public class TestAccount : INotifyPropertyChanged
@@ -22,7 +23,7 @@ namespace ET2.Models
         private string _memberId;
         private string _password;
 
-        private AccountTypes _accountTypes = AccountTypes.S15;
+        private AccountTypes _accountTypes = AccountTypes.S15_V2;
 
         public AccountTypes AccountType
         {
@@ -32,6 +33,8 @@ namespace ET2.Models
                 if (value == _accountTypes) return;
                 _accountTypes = value;
                 OnPropertyChanged();
+                OnPropertyChanged("IsS18");
+                OnPropertyChanged("IsE19");
                 OnPropertyChanged("IsV2");
                 OnPropertyChanged("IsE10");
             }
@@ -71,14 +74,24 @@ namespace ET2.Models
             }
         }
 
-        public bool IsV2
+        public bool IsE10
+        {
+            get { return this.AccountType == AccountTypes.E10; }
+        }
+
+        public bool IsS18
         {
             get { return this.AccountType == AccountTypes.S15_V2; }
         }
 
-        public bool IsE10
+        public bool IsE19
         {
-            get { return this.AccountType == AccountTypes.E10; }
+            get { return this.AccountType == AccountTypes.E19; }
+        }
+
+        public bool IsV2
+        {
+            get { return (this.IsS18 || this.IsE19); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
