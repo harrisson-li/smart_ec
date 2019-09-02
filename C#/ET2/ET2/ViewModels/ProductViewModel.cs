@@ -15,6 +15,8 @@ namespace ET2.ViewModels
         private string _partner = Settings.LoadCurrentProduct().Partner;
         private bool _isV2 = Settings.LoadCurrentTestAccount().IsV2;
         private bool _isE10 = Settings.LoadCurrentTestAccount().IsE10;
+        private bool _isS18 = Settings.LoadCurrentTestAccount().IsS18;
+        private bool _isE19 = Settings.LoadCurrentTestAccount().IsE19;
 
         private void UpdateDefaultSchool()
         {
@@ -48,7 +50,9 @@ namespace ET2.ViewModels
 
             var validProducts = this.ProductList
                 .Where(e => e.Partner == CurrentPartner)
-                .Where(e => e.IsE10 == _isE10);
+                .Where(e => e.IsE10 == _isE10)
+                .Where(e => e.IsS18 == _isS18)
+                .Where(e => e.IsE19 == _isE19);
 
             // get default product
             var defaultProduct = validProducts.Where(e => e.Tags.Contains("default")).FirstOrDefault();
@@ -67,8 +71,10 @@ namespace ET2.ViewModels
         public void NotifyAccountTypeChanged()
         {
             // get current account status
-            _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
             _isE10 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsE10;
+            _isS18 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsS18;
+            _isE19 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsE19;
+            _isV2 = ShellViewModel.Instance.TestAccountVM.CurrentTestAccount.IsV2;
 
             UpdateDefaultSchool();
             UpdateDefaultProduct();
@@ -123,7 +129,7 @@ namespace ET2.ViewModels
                     return;
                 }
 
-                if (ProductList.Where(e => e.Name == _name).Count() == 0)
+                if (ProductList.Where(e => e.Name == value).Count() == 0)
                 {
                     return;
                 }

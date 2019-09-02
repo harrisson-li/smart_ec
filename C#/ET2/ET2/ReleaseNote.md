@@ -1,4 +1,8 @@
-﻿## v0.0.0.60
+﻿## v0.0.0.63
+
+1. Add E19 account type
+
+## v0.0.0.60
 
 1. Owner transfered to Joshua
 

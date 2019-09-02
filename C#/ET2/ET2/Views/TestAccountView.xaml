@@ -79,6 +79,15 @@
                                             Converter={StaticResource EnumBoolean},
                                             ConverterParameter=S15_V2,
                                             Mode=TwoWay}" />
+                    <CheckBox
+                        Name="chkIsE19"
+                        Margin="5 0 0 0"
+                        Checked="CheckBox_Checked"
+                        Content="E19"
+                        IsChecked="{Binding Path=TestAccountVM.CurrentTestAccount.AccountType,
+                                            Converter={StaticResource EnumBoolean},
+                                            ConverterParameter=E19,
+                                            Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel
