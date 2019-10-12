@@ -183,7 +183,7 @@ def activate_account(product_id=None,
         assert isinstance(student, dict)
 
     # set course info in membersitesetting, eg. student.course.version = course.version.ec_e19 or course.version.ec_e17
-    if product['partner'] in ['Socn', 'Cool', 'Mini']:
+    if product['partner'] in ['Socn', 'Cool', 'Mini'] and not is_e19:
         set_course_info(student['member_id'], is_e19)
 
     # generate activation data
