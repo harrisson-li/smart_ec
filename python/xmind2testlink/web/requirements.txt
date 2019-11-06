@@ -1,3 +1,3 @@
 flask
-xmind2testlink
+git+https://bitbucket.eflabs.cn/scm/test/efec_tools.git#subdirectory=python/xmind2testlink
 arrow
