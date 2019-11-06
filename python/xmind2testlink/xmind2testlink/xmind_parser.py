@@ -38,18 +38,7 @@ def parse_xmind_content():
         logging.error('Cannot find any topic in your xmind!')
         raise
 
-    root_suite = TestSuite()
-    root_suite.sub_suites = []
-    suite_nodes = children_topics_of(xml_root_suite)
-
-    if suite_nodes is None:
-        raise ValueError("Cannot find any test suite in xmind!")
-
-    for node in suite_nodes:
-        suite = parse_suite(node)
-        root_suite.sub_suites.append(suite)
-
-    return root_suite
+    return parse_suite(xml_root_suite)
 
 
 def xmind_content_to_etree(content):
@@ -103,6 +92,8 @@ def children_topics_of(topic_node):
 
     if children is not None:
         return children.find('./topics[@type="attached"]')
+    else:
+        return None
 
 
 def parse_step(step_node):
@@ -146,11 +137,34 @@ def parse_suite(suite_node):
     suite.name = title_of(suite_node)
     suite.details = note_of(suite_node)
     suite.testcase_list = []
-    testcase_nodes = children_topics_of(suite_node)
-
-    if testcase_nodes is not None:
-        for node in testcase_nodes:
-            testcase = parse_testcase(node)
-            suite.testcase_list.append(testcase)
+    suite.sub_suites = []
+    children_topics = children_topics_of(suite_node)
+    if children_topics is not None:
+        for node in children_topics:
+            if is_testcase_node(node):
+                testcase = parse_testcase(node)
+                suite.testcase_list.append(testcase)
+            else:
+                sub_suite = parse_suite(node)
+                suite.sub_suites.append(sub_suite)
 
     return suite
+
+
+def is_testcase_node(node):
+    """
+    if current node is test case node, node structure should be like below.
+    node
+    --test step1
+    ----test step1 expectation (Only if this node doesn't have children node, is the given node test case node)
+    :param node:
+    :return: True if current node is test case node, False otherwise
+    """
+    steps = children_topics_of(node)
+
+    if steps:
+        expectation = children_topics_of(steps[0])
+        if expectation:
+            return not children_topics_of(expectation[0])
+
+    return False
