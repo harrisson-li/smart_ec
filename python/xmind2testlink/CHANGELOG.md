@@ -2,7 +2,7 @@ Change Log
 ----------
 2.0.0
 
-enable xmind2testlink to keep original suite structure in xmind
+Enable xmind2testlink to keep original suite structure in xmind
 
 1.1.4
 
