@@ -1,5 +1,9 @@
 Change Log
 ----------
+2.0.0
+
+Enable xmind2testlink to keep original suite structure in xmind
+
 1.1.4
 
 Fix potential failure if test action node is empty.
