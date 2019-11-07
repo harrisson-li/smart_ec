@@ -1,5 +1,9 @@
 Change Log
 ----------
+2.0.1
+
+Enable xmind2testlink to keep newlines in 'details', 'summary', 'preconditions', 'actions', 'expectedresults'
+
 2.0.0
 
 Enable xmind2testlink to keep original suite structure in xmind

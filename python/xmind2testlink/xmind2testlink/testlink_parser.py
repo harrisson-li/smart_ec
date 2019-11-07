@@ -32,6 +32,10 @@ class Attributes():
     name = 'name'
 
 
+# Only text in CDATA can support newlines in testlink
+CDATA_Tags = ['details', 'summary', 'preconditions', 'actions', 'expectedresults']
+
+
 def to_testlink_xml_file(testsuite, path_to_xml):
     """Save test suite object to testlink xml file."""
     content = to_testlink_xml_content(testsuite)
@@ -50,17 +54,22 @@ def _convert_importance(importance_value):
         return '2'
 
 
+def should_parse(item):
+    return isinstance(item, str) and not item.startswith('!')
+
+
 def to_testlink_xml_content(testsuite):
     assert isinstance(testsuite, TestSuite)
     root_suite = Element(Tags.testsuite)
     root_suite.set(Attributes.name, testsuite.name)
+
+    if should_parse(testsuite.details):
+        e = SubElement(root_suite, Tags.details)
+        e.text = testsuite.details
     cache['testcase_count'] = 0
 
     def should_skip(item):
         return item is None or not isinstance(item, str) or item.strip() == '' or item.startswith('!')
-
-    def should_parse(item):
-        return isinstance(item, str) and not item.startswith('!')
 
     def append_testcase(suite_element, testcase):
         assert isinstance(testcase, TestCase)
@@ -103,10 +112,11 @@ def to_testlink_xml_content(testsuite):
                     e.text = step.action
 
                 e = SubElement(step_element, Tags.expected)
+
                 expectation_text = ''
                 for ex in step.expected_list:
                     if should_parse(ex):
-                        expectation_text += "{}{}".format(ex, '\r\n')
+                        expectation_text += "{}{}".format(ex, "\r\n")
                 e.text = expectation_text
 
                 if should_parse(step.execution_type):
@@ -150,4 +160,34 @@ def prettify_xml(xml_string):
     """Return a pretty-printed XML string for the Element.
     """
     reparsed = minidom.parseString(xml_string)
-    return reparsed.toprettyxml(indent="\t", newl="\r\n")
+    return reparsed.toprettyxml(indent="\t")
+
+
+def format_lines_into_p_tag(text):
+    """
+    only text in p tag can be displayed as newline in testlink
+    :param step_text:
+    :return:
+    """
+    texts = text.split('\r\n')
+    formated_text = ""
+    if len(texts) > 1:
+        for text in texts:
+            formated_text = "{}<p>{}</p>".format(formated_text, text)
+
+    return formated_text
+
+
+ElementTree._original_serialize_xml = ElementTree._serialize_xml
+
+
+def serialize_xml_with_CDATA(write, elem, qnames, namespaces, short_empty_elements, **kwargs):
+    """Original xml serializer escaped all CDATA text, monkey patch it to generate CDATA text to be used in testlink"""
+    if elem.tag in CDATA_Tags and elem.text:
+        cdata_text = "<![CDATA[{}]]>".format(format_lines_into_p_tag(elem.text))
+        write("<{}>{}</{}>".format(elem.tag, cdata_text, elem.tag))
+        return
+    return ElementTree._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements, **kwargs)
+
+
+ElementTree._serialize_xml = ElementTree._serialize['xml'] = serialize_xml_with_CDATA
