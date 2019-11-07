@@ -17,7 +17,7 @@ class TestCase():
 class TestStep():
     number = 1
     action = ""
-    expected = ""
+    expected_list = None
     execution_type = ""
 
 

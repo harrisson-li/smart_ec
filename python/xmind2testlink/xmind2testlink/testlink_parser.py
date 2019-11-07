@@ -102,9 +102,12 @@ def to_testlink_xml_content(testsuite):
                     e = SubElement(step_element, Tags.actions)
                     e.text = step.action
 
-                if should_parse(step.expected):
-                    e = SubElement(step_element, Tags.expected)
-                    e.text = step.expected
+                e = SubElement(step_element, Tags.expected)
+                expectation_text = ''
+                for ex in step.expected_list:
+                    if should_parse(ex):
+                        expectation_text += "{}{}".format(ex, '\r\n')
+                e.text = expectation_text
 
                 if should_parse(step.execution_type):
                     e = SubElement(step_element, Tags.execution_type)
@@ -147,4 +150,4 @@ def prettify_xml(xml_string):
     """Return a pretty-printed XML string for the Element.
     """
     reparsed = minidom.parseString(xml_string)
-    return reparsed.toprettyxml(indent="\t")
+    return reparsed.toprettyxml(indent="\t", newl="\r\n")

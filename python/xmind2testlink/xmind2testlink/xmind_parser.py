@@ -99,10 +99,11 @@ def children_topics_of(topic_node):
 def parse_step(step_node):
     step = TestStep()
     step.action = title_of(step_node)
-    expected_node = children_topics_of(step_node)
+    step.expected_list = []
+    expected_nodes = children_topics_of(step_node)
 
-    if expected_node is not None:
-        step.expected = title_of(expected_node[0])
+    for expection in expected_nodes:
+        step.expected_list.append(title_of(expection))
 
     return step
 
