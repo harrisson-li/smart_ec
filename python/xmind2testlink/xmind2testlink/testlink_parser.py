@@ -188,8 +188,8 @@ def serialize_xml_with_CDATA(write, elem, qnames, namespaces, short_empty_elemen
     if elem.tag in CDATA_Tags and elem.text:
         cdata_text = "<![CDATA[{}]]>".format(format_lines_into_p_tag(elem.text))
         write("<{}>{}</{}>".format(elem.tag, cdata_text, elem.tag))
-        return
-    return ElementTree._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements, **kwargs)
+    else:
+        ElementTree._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements, **kwargs)
 
 
 ElementTree._serialize_xml = ElementTree._serialize['xml'] = serialize_xml_with_CDATA
