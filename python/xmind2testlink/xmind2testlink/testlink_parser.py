@@ -116,7 +116,7 @@ def to_testlink_xml_content(testsuite):
                 expectation_text = ''
                 for ex in step.expected_list:
                     if should_parse(ex):
-                        expectation_text += "{}{}".format(ex, "\r\n")
+                        expectation_text += "{}{}".format(ex, os.linesep)
                 e.text = expectation_text
 
                 if should_parse(step.execution_type):
@@ -169,11 +169,13 @@ def format_lines_into_p_tag(text):
     :param step_text:
     :return:
     """
-    texts = text.split('\r\n')
+    # CR+LF (\r\n) or LF(\n) is most commonly used newline charactor in most os (posix, windows nt)
+    # this line is compatible with CR+LF and LF(\n)
+    texts = text.replace('\r', '').split('\n')
     formated_text = ""
-    if len(texts) > 1:
-        for text in texts:
-            formated_text = "{}<p>{}</p>".format(formated_text, text)
+
+    for text in texts:
+        formated_text = "{}<p>{}</p>".format(formated_text, text)
 
     return formated_text
 
