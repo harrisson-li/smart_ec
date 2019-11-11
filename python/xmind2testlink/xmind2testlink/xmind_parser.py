@@ -154,7 +154,8 @@ def parse_suite(suite_node):
 
 def is_testcase_node(node):
     """
-    if current node is test case node, node structure should be like below.
+    If current node is test case node, node structure should be like below.
+    That is all its children nodes have and only have one level of children nodes
     node
     --test step1
     ----test step1 expectation (Only if this node doesn't have children node, is the given node test case node)
@@ -162,10 +163,16 @@ def is_testcase_node(node):
     :return: True if current node is test case node, False otherwise
     """
     steps = children_topics_of(node)
-
     if steps:
-        expectation = children_topics_of(steps[0])
-        if expectation:
-            return not children_topics_of(expectation[0])
+        is_step_has_expectation = []
+        for step in steps:
+            expectations = children_topics_of(step)
+            if expectations:
+                for exp in expectations:
+                    is_step_has_expectation.append(not children_topics_of(exp))
+            else:
+                # any step doesn't have expectation, node is not testcase
+                return False
+        return is_step_has_expectation is not [] and all(is_step_has_expectation)
 
     return False
