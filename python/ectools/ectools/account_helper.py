@@ -461,7 +461,7 @@ def activate_school_v1_student(**kwargs):
 
 def activate_phoenix_student(**kwargs):
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_any_phoenix_product()['id']
+        kwargs['product_id'] = get_any_phoenix_product(**kwargs)['id']
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
@@ -470,7 +470,11 @@ def activate_phoenix_student(**kwargs):
     if 'is_v1_pack' not in kwargs:
         kwargs['is_v1_pack'] = True
 
-    kwargs['is_s18'] = True
+    if 'is_s18' not in kwargs:
+        kwargs['is_s18'] = True
+
+    if 'is_e19' not in kwargs:
+        kwargs['is_e19'] = False
     return activate_account_by_dict(kwargs)
 
 

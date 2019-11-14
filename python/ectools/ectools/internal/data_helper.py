@@ -78,8 +78,18 @@ def get_all_products():
     return Cache.products
 
 
-def get_product_by_id(product, is_s18=True, is_e19=False):
+def get_product_by_id(product, **kwargs):
     product_id = product['id'] if isinstance(product, dict) else product
+
+    if 'is_s18' in kwargs:
+        is_s18 = kwargs['is_s18']
+    else:
+        is_s18 = True
+
+    if 'is_e19' in kwargs:
+        is_e19 = kwargs['is_e19']
+    else:
+        is_e19 = False
 
     found = [x for x in get_all_products()
              if int(x['id']) == int(product_id)]
@@ -92,10 +102,20 @@ def get_product_by_id(product, is_s18=True, is_e19=False):
     return found[0]
 
 
-def get_default_product(partner=None, is_s18=True, is_e19=False):
+def get_default_product(partner=None, **kwargs):
     from ectools.config import config
     if not partner:
         partner = config.partner
+
+    if 'is_s18' in kwargs:
+        is_s18 = kwargs['is_s18']
+    else:
+        is_s18 = True
+
+    if 'is_e19' in kwargs:
+        is_e19 = kwargs['is_e19']
+    else:
+        is_e19 = False
 
     return [x for x in get_all_products()
             if is_item_has_tag(x, 'default')
@@ -118,11 +138,26 @@ def get_products_has_tag(tag):
     return get_item_has_tag(get_all_products(), tag)
 
 
-def get_products_by_partner(partner=None, is_e10=False, is_s18=True, is_e19=False):
+def get_products_by_partner(partner=None, **kwargs):
     from ectools.config import config
 
     if partner is None:
         partner = config.partner
+
+    if 'is_e10' in kwargs:
+        is_e10 = kwargs['is_e10']
+    else:
+        is_e10 = False
+
+    if 'is_s18' in kwargs:
+        is_s18 = kwargs['is_s18']
+    else:
+        is_s18 = True
+
+    if 'is_e19' in kwargs:
+        is_e19 = kwargs['is_e19']
+    else:
+        is_e19 = False
 
     return [x for x in get_all_products() if
             x['partner'].lower() == partner.lower()
@@ -131,10 +166,12 @@ def get_products_by_partner(partner=None, is_e10=False, is_s18=True, is_e19=Fals
             and is_item_has_tag(x, 'E19') == is_e19]
 
 
-def get_any_product(by_partner=None, is_e10=False, is_s18=True, is_e19=False, is_major=True):
-    found = [x for x in get_products_by_partner(by_partner, is_e10)
-             if is_item_has_tag(x, 'S18') == is_s18
-             and is_item_has_tag(x, 'E19') == is_e19]
+def get_any_product(by_partner=None, **kwargs):
+    if 'is_major' in kwargs:
+        is_major = kwargs['is_major']
+    else:
+        is_major = True
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)]
 
     if is_major:
         found = get_item_has_tag(found, 'major')
@@ -150,8 +187,8 @@ def get_any_e19_product(by_partner=None):
     return get_any_product(by_partner, is_e10=False, is_s18=False, is_e19=True, is_major=True)
 
 
-def get_any_home_product(by_partner=None, is_major=True, is_s18=True, is_e19=False):
-    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
+def get_any_home_product(by_partner=None, is_major=True, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
              if x['product_type'] == 'Home']
 
     if is_major:
@@ -160,8 +197,8 @@ def get_any_home_product(by_partner=None, is_major=True, is_s18=True, is_e19=Fal
         return get_random_item(found)
 
 
-def get_any_school_product(by_partner=None, is_major=True, is_s18=True, is_e19=False):
-    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
+def get_any_school_product(by_partner=None, is_major=True, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
              if x['product_type'] == 'School'
              and not is_item_has_tag(x, 'ECLite')]
 
@@ -171,27 +208,32 @@ def get_any_school_product(by_partner=None, is_major=True, is_s18=True, is_e19=F
         return get_random_item(found)
 
 
-def get_any_phoenix_product(by_partner=None, is_trial=False, is_s18=True, is_e19=False):
-    found = [x for x in get_products_by_partner(by_partner, is_s18=is_s18, is_e19=is_e19)
+def get_any_phoenix_product(by_partner=None, **kwargs):
+    if 'is_trial' in kwargs:
+        is_trial = kwargs['is_trial']
+    else:
+        is_trial = False
+
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
              if is_item_has_tag(x, 'Phoenix')]
 
     found = [x for x in found if is_item_has_tag(x, 'Trial') == is_trial]
     return get_random_item(found)
 
 
-def get_eclite_products(partner=None, is_s18=True, is_e19=False):
+def get_eclite_products(partner=None, **kwargs):
     from ectools.config import config
     if partner is None:
         partner = config.partner
 
-    found = [x for x in get_products_by_partner(partner, is_s18=is_s18, is_e19=is_e19)
+    found = [x for x in get_products_by_partner(partner, **kwargs)
              if x['product_type'] == 'School' and is_item_has_tag(x, 'ECLite')]
 
     return found
 
 
-def get_any_eclite_product(by_partner=None, is_s18=True, is_e19=False):
-    found = get_eclite_products(by_partner, is_s18=is_s18, is_e19=is_e19)
+def get_any_eclite_product(by_partner=None, **kwargs):
+    found = get_eclite_products(by_partner, **kwargs)
     return get_random_item(found)
 
 
@@ -204,7 +246,7 @@ def get_all_schools(cached=True):
         return read_data('schools')
 
 
-def get_school_by_name(name, cached=False, ignore_socn=True):
+def get_school_by_name(name, cached=False, ignore_socn=False):
     """name should be str or a dict with name key."""
     name = name if isinstance(name, str) else name['name']
     found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
@@ -217,6 +259,8 @@ def get_school_by_name(name, cached=False, ignore_socn=True):
         # filter socn school as it might be duplicate with cool / mini school
         if ignore_socn:
             found = [x for x in found if x['partner'] != 'Socn']
+        else:
+            found = [x for x in found if x['partner'] == 'Socn']
 
         return found[0]
 
