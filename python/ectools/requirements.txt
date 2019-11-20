@@ -4,7 +4,8 @@
 #
 requests
 selenium
-pymssql
+# pymssql discontinued, see https://github.com/pymssql/pymssql/issues/668
+pymssql<3.0
 assertpy
 sphinx
 pytest
