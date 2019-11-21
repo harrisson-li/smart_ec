@@ -138,11 +138,11 @@ def get_products_has_tag(tag):
     return get_item_has_tag(get_all_products(), tag)
 
 
-def get_products_by_partner(partner=None, **kwargs):
+def get_products_by_partner(by_partner=None, **kwargs):
     from ectools.config import config
 
-    if partner is None:
-        partner = config.partner
+    if by_partner is None:
+        by_partner = config.partner
 
     if 'is_e10' in kwargs:
         is_e10 = kwargs['is_e10']
@@ -161,7 +161,7 @@ def get_products_by_partner(partner=None, **kwargs):
         is_e19 = False
 
     return [x for x in get_all_products() if
-            x['partner'].lower() == partner.lower()
+            x['partner'].lower() == by_partner.lower()
             and is_item_has_tag(x, 'E10') == is_e10
             and is_item_has_tag(x, 'S18') == is_s18
             and is_item_has_tag(x, 'E19') == is_e19]
