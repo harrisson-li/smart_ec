@@ -149,6 +149,7 @@ def get_products_by_partner(partner=None, **kwargs):
     else:
         is_e10 = False
 
+    # TODO: make the "default value" manage in a dedicated place
     if 'is_s18' in kwargs:
         is_s18 = kwargs['is_s18']
     else:
@@ -246,7 +247,7 @@ def get_all_schools(cached=True):
         return read_data('schools')
 
 
-def get_school_by_name(name, cached=False, ignore_socn=False):
+def get_school_by_name(name, cached=False, ignore_socn=True):
     """name should be str or a dict with name key."""
     name = name if isinstance(name, str) else name['name']
     found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
@@ -259,7 +260,7 @@ def get_school_by_name(name, cached=False, ignore_socn=False):
         # filter socn school as it might be duplicate with cool / mini school
         if ignore_socn:
             found = [x for x in found if x['partner'] != 'Socn']
-        else:
+        else:  # when check socn student basic info, still need socn partner
             found = [x for x in found if x['partner'] == 'Socn']
 
         return found[0]
