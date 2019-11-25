@@ -1,6 +1,7 @@
 from lxml import etree
 
 from . import PageBase
+from ..constants import ELEMENT_TIMEOUT_DEFAULT
 
 
 class DbQueryPage(PageBase):
@@ -37,7 +38,7 @@ class DbQueryPage(PageBase):
             self.get_element(self.LOGIN_PASS).send_keys(password)
             self.get_element(self.LOGIN_NEXT).click()
 
-            if self.is_xpath_present(self.LOGIN_NEXT, timeout=5):
+            if self.is_xpath_present(self.LOGIN_NEXT, timeout=ELEMENT_TIMEOUT_DEFAULT):
                 self.get_element(self.LOGIN_NEXT).click()
 
         self.wait_until_xpath_visible(self.TEXT_QUERY)
