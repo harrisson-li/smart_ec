@@ -1,7 +1,6 @@
 from lxml import etree
 
 from . import PageBase
-from ..constants import ELEMENT_TIMEOUT_DEFAULT
 
 
 class DbQueryPage(PageBase):
