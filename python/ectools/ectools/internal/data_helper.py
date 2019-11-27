@@ -78,27 +78,35 @@ def get_all_products():
     return Cache.products
 
 
+def get_products_by_type(**kwargs):
+    is_e10 = kwargs.get('is_e10', False)
+    is_s18 = kwargs.get('is_s18', True)
+    is_e19 = kwargs.get('is_e19', False)
+
+    found = [x for x in get_all_products() if (is_item_has_tag(x, 'E10') == is_e10
+                                               and is_item_has_tag(x, 'S18') == is_s18
+                                               and is_item_has_tag(x, 'E19') == is_e19)]
+
+    assert len(found), "No such product: is_e10 = {0}, is_s18 = {1}, is_e19 = {2}!".format(is_e10, is_s18, is_e19)
+    return found
+
+
+# def get_products_by_id(product_id):
+#     found = [x for x in get_all_products()
+#              if int(x['id']) == int(product_id)]
+#
+#     assert len(found), "No such product: {}!".format(product_id)
+#     return found
+
+
 def get_product_by_id(product, **kwargs):
     product_id = product['id'] if isinstance(product, dict) else product
 
-    if 'is_s18' in kwargs:
-        is_s18 = kwargs['is_s18']
-    else:
-        is_s18 = True
-
-    if 'is_e19' in kwargs:
-        is_e19 = kwargs['is_e19']
-    else:
-        is_e19 = False
-
-    found = [x for x in get_all_products()
+    found = [x for x in get_products_by_type(**kwargs)
              if int(x['id']) == int(product_id)]
 
-    # if more results found, filter by s18, else ignore it
-    if len(found) > 1:
-        found = [x for x in found if (is_item_has_tag(x, 'S18') == is_s18 and is_item_has_tag(x, 'E19') == is_e19)]
-
     assert len(found), "No such product: {}!".format(product_id)
+
     return found[0]
 
 
@@ -106,22 +114,13 @@ def get_default_product(partner=None, **kwargs):
     from ectools.config import config
     if not partner:
         partner = config.partner
+    #
+    # is_s18 = kwargs.get('is_s18', True)
+    # is_e19 = kwargs.get('is_e19', False)
 
-    if 'is_s18' in kwargs:
-        is_s18 = kwargs['is_s18']
-    else:
-        is_s18 = True
-
-    if 'is_e19' in kwargs:
-        is_e19 = kwargs['is_e19']
-    else:
-        is_e19 = False
-
-    return [x for x in get_all_products()
-            if is_item_has_tag(x, 'default')
-            and x['partner'].lower() == partner.lower()
-            and is_item_has_tag(x, 'S18') == is_s18
-            and is_item_has_tag(x, 'E19') == is_e19][0]
+    return [x for x in get_products_by_type(**kwargs)
+            if (is_item_has_tag(x, 'default')
+                and x['partner'].lower() == partner.lower())][0]
 
 
 def is_s18_product(product):
@@ -144,34 +143,37 @@ def get_products_by_partner(by_partner=None, **kwargs):
     if by_partner is None:
         by_partner = config.partner
 
-    if 'is_e10' in kwargs:
-        is_e10 = kwargs['is_e10']
-    else:
-        is_e10 = False
+    # if 'is_e10' in kwargs:
+    #     is_e10 = kwargs['is_e10']
+    # else:
+    #     is_e10 = False
+    # is_e10 = kwargs.get('is_e10', False)
 
     # TODO: make the "default value" manage in a dedicated place
-    if 'is_s18' in kwargs:
-        is_s18 = kwargs['is_s18']
-    else:
-        is_s18 = True
+    # if 'is_s18' in kwargs:
+    #     is_s18 = kwargs['is_s18']
+    # else:
+    #     is_s18 = True
+    #
+    # if 'is_e19' in kwargs:
+    #     is_e19 = kwargs['is_e19']
+    # else:
+    #     is_e19 = False
 
-    if 'is_e19' in kwargs:
-        is_e19 = kwargs['is_e19']
-    else:
-        is_e19 = False
+    # is_s18 = kwargs.get('is_s18', True)
+    # is_e19 = kwargs.get('is_e19', False)
 
-    return [x for x in get_all_products() if
-            x['partner'].lower() == by_partner.lower()
-            and is_item_has_tag(x, 'E10') == is_e10
-            and is_item_has_tag(x, 'S18') == is_s18
-            and is_item_has_tag(x, 'E19') == is_e19]
+    return [x for x in get_products_by_type(**kwargs) if x['partner'].lower() == by_partner.lower()]
 
 
 def get_any_product(by_partner=None, **kwargs):
-    if 'is_major' in kwargs:
-        is_major = kwargs['is_major']
-    else:
-        is_major = True
+    # if 'is_major' in kwargs:
+    #     is_major = kwargs['is_major']
+    # else:
+    #     is_major = True
+
+    is_major = kwargs.get('is_major', True)
+
     found = [x for x in get_products_by_partner(by_partner, **kwargs)]
 
     if is_major:
