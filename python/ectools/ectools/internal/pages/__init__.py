@@ -14,7 +14,7 @@ from ectools.utility import detail_on_failure, retry_for_error, convert_to_str
 
 TIMEOUT_SECONDS = 60
 TIMEOUT_FOR_ELEMENT_WAITING = 120
-TIMEOUT_FOR_ELEMENT_PRESENT = 10
+TIMEOUT_FOR_ELEMENT_PRESENT = 30
 
 
 class PageBase(object):

@@ -299,6 +299,7 @@ def test_activate_default_account():
 
 def test_activate_e19_account():
     set_environment('uat')
+    set_partner('Cool')
     student_beginner_low = activate_account(is_s18=False, is_e19=True, includesenroll=True)
     student_beginner_high_0b = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='0B')
     student_beginner_high_1 = activate_account(is_s18=False, is_e19=True, includesenroll=True, startLevel='1')
