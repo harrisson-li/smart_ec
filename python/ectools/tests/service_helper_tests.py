@@ -3,6 +3,7 @@ from ectools.logger import get_logger
 from ectools.service_helper import *
 from ectools.utility import password_generator
 
+
 def test_get_member_site_settings():
     set_environment('qa')
     student_id = 10806560
@@ -205,3 +206,10 @@ def test_update_student_password():
     student = account_service_load_student(23973971)
 
     assert student['password'] == new_password
+
+
+def test_clear_membercached():
+    set_environment('uat')
+    cache_key = get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=23998728)
+
+    assert clear_memcached(cache_key) == 'success'

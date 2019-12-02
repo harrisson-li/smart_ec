@@ -14,11 +14,12 @@ from xml.etree import ElementTree
 import arrow
 
 from ectools.config import config
+from ectools.constant import Memcached
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
-from ectools.token_helper import get_token
+from ectools.token_helper import get_token, get_site_version
 from ectools.utility import camelcase_to_underscore, no_ssl_requests
 
 
@@ -347,3 +348,43 @@ def update_student_password(student_name, old_password, new_password):
         "password": json.dumps(password_info, sort_keys=False)}}
 
     return troop_command_update_information(student_name, data, old_password)
+
+
+def clear_memcached(cache_key):
+    target_url = "{}/services/ecplatform/Tools/CacheClear/Clear?token={}".format(config.etown_root, get_token())
+    data = {
+        'cachetype': 'MemcachedValueClear',
+        'paras': cache_key
+    }
+
+    response = no_ssl_requests().post(target_url, data)
+
+    if response.status_code == HTTP_STATUS_OK:
+        return response.text
+    else:
+        raise ValueError(response.text)
+
+
+def get_memcached_key(cache_key_string, **kwargs):
+    """
+    Get the membercached key with certain format
+    :param cache_key_string: cache key string is Memcached in constant.py
+    :param kwargs: give the parameters as the {} in cache_key_string,
+    eg. _{site_version}_, then should pass site_version = xxx
+    :return:
+    """
+    return cache_key_string.format(**kwargs)
+
+
+def clear_offline_class_taken_cache(student_id):
+    clear_memcached(
+        get_memcached_key(Memcached.CLASS_TAKEN_OFFLINE, site_version=get_site_version(), student_id=student_id))
+
+
+def clear_online_class_taken_cache(student_id):
+    clear_memcached(get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=student_id))
+
+
+def clear_class_taken_memcached(student_id):
+    clear_offline_class_taken_cache(student_id)
+    clear_online_class_taken_cache(student_id)
