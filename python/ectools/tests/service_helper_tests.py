@@ -208,8 +208,20 @@ def test_update_student_password():
     assert student['password'] == new_password
 
 
-def test_clear_membercached():
+def test_clear_memcached():
     set_environment('uat')
     cache_key = get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=23998728)
 
     assert clear_memcached(cache_key) == 'success'
+
+
+def test_get_student_active_subscription():
+    set_environment('uat')
+
+    # active student
+    active_student_id = 23999956
+    student_active_subscription = get_student_active_subscription(active_student_id)
+
+    # expired student
+    expired_student_id = 23999880
+    student_subscription = get_student_active_subscription(expired_student_id)
