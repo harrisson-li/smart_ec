@@ -247,16 +247,7 @@ def account_service_load_student(student_name_or_id):
         assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
         response_xml = name_response.text
 
-    # get all return field names
-    fields = re.findall('<a:([^>/]+)>', response_xml)
-
-    # get all field value and convert to dict
-    info = {}
-    for field in fields:
-        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
-        info[camelcase_to_underscore(field)] = value
-
-    return info
+    return parse_xml(response_xml)
 
 
 def account_service_update_phone2(student_id, phone_number):
@@ -388,3 +379,39 @@ def clear_online_class_taken_cache(student_id):
 def clear_class_taken_memcached(student_id):
     clear_offline_class_taken_cache(student_id)
     clear_online_class_taken_cache(student_id)
+
+
+def get_student_active_subscription(student_id):
+    """load student active subscription info via /services/commerce/1.0/SubscriptionService.svc"""
+    target_url = config.etown_root_http + '/services/commerce/1.0/SubscriptionService.svc'
+    headers = {'Content-Type': 'text/xml',
+               'SOAPAction': 'http://tempuri.org/ISubscriptionService/GetActiveSubscription'}
+    body = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <tem:GetActiveSubscription>
+                    <!--Optional:-->
+                    <tem:member_id>{}</tem:member_id>
+                    </tem:GetActiveSubscription>
+                </soapenv:Body>
+            </soapenv:Envelope>""".format(student_id)
+
+    response = no_ssl_requests().post(target_url, data=body, headers=headers)
+    response_xml = response.text
+
+    assert response.status_code == HTTP_STATUS_OK
+
+    return parse_xml(response_xml)
+
+
+def parse_xml(response_xml):
+    # get all return field names
+    fields = re.findall('<a:([^>/]+)>', response_xml)
+
+    # get all field value and convert to dict
+    info = {}
+    for field in fields:
+        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
+        info[camelcase_to_underscore(field)] = value
+
+    return info

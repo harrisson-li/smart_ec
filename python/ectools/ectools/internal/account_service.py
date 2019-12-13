@@ -19,7 +19,7 @@ from ectools.config import config
 from ectools.ecdb_helper_v2 import get_config_value
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
-from ectools.service_helper import account_service_update_info
+from ectools.service_helper import account_service_update_info, get_student_active_subscription
 from ectools.token_helper import get_token
 from ectools.utility import ignore_error, no_ssl_requests
 from .constants import HTTP_STATUS_OK
@@ -247,9 +247,9 @@ def _db_get_accounts_by_tag(tag, expiration_days=None):
     return [_refine_account(a) for a in accounts]
 
 
-def is_account_expired(account, expiration_days):
-    expired_date = arrow.utcnow().shift(days=-expiration_days)
-    return arrow.get(account['created_on']) < expired_date
+def is_account_expired(member_id):
+    active_subscription = get_student_active_subscription(member_id)
+    return len(active_subscription) == 0
 
 
 def set_account_info(student):

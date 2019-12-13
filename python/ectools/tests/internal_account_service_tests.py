@@ -41,9 +41,9 @@ def test_get_account_by_member_id():
 
 
 def test_is_account_expired():
-    account = {'created_on': str(arrow.utcnow().shift(years=-1, days=-1))}
-    assert is_account_expired(account, expiration_days=350)
-    assert not is_account_expired(account, expiration_days=370)
+    set_environment('uat')
+    assert is_account_expired(23999880)
+    assert not is_account_expired(23999956)
 
 
 def test_save_account():
