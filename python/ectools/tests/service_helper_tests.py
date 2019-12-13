@@ -221,7 +221,9 @@ def test_get_student_active_subscription():
     # active student
     active_student_id = 23999956
     student_active_subscription = get_student_active_subscription(active_student_id)
+    assert student_active_subscription['is_active'], "The student is not active"
 
     # expired student
     expired_student_id = 23999880
     student_subscription = get_student_active_subscription(expired_student_id)
+    assert len(student_subscription) == 0

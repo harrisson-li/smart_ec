@@ -47,7 +47,7 @@ def get_or_activate_account(tag, expiration_days=360, method='activate_account',
     """
     accounts = get_accounts_by_tag(tag)
 
-    if accounts and not is_account_expired(accounts[0], expiration_days):
+    if accounts and not is_account_expired(accounts[0]['member_id']):
         account = accounts[0]
         account['found_by_tag'] = tag  # for call back actions
         get_logger().info('Found account with tag "{}": {}'.format(tag, account))

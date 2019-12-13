@@ -247,16 +247,7 @@ def account_service_load_student(student_name_or_id):
         assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
         response_xml = name_response.text
 
-    # get all return field names
-    fields = re.findall('<a:([^>/]+)>', response_xml)
-
-    # get all field value and convert to dict
-    info = {}
-    for field in fields:
-        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
-        info[camelcase_to_underscore(field)] = value
-
-    return info
+    return parse_xml(response_xml)
 
 
 def account_service_update_phone2(student_id, phone_number):
@@ -409,4 +400,18 @@ def get_student_active_subscription(student_id):
     response_xml = response.text
 
     assert response.status_code == HTTP_STATUS_OK
-    return response_xml
+
+    return parse_xml(response_xml)
+
+
+def parse_xml(response_xml):
+    # get all return field names
+    fields = re.findall('<a:([^>/]+)>', response_xml)
+
+    # get all field value and convert to dict
+    info = {}
+    for field in fields:
+        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
+        info[camelcase_to_underscore(field)] = value
+
+    return info
