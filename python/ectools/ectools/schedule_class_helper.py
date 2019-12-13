@@ -134,7 +134,7 @@ def schedule_class_topic(**kwargs):
     return smart_oboe_svc.schedule_class_topic(**kwargs)
 
 
-def schedule_class(env=None, partner=None, **kwargs):
+def schedule_class(**kwargs):
     """
     Schedule class via OBOE service, for more detail please refer to:
 
@@ -148,12 +148,7 @@ def schedule_class(env=None, partner=None, **kwargs):
     from business.oboe.service import schedule_class_services as smart_oboe_svc
     from settings import helper as smart_helper
 
-    if env:
-        config.env = env
-    if partner:
-        config.partner = partner
-
-    e, p = config.env, config.partner
-    smart_helper.set_environment(e)
-    smart_helper.set_partner(p)
+    env, partner = config.env, config.partner
+    smart_helper.set_environment(env)
+    smart_helper.set_partner(partner)
     return smart_oboe_svc.schedule_class(**kwargs)

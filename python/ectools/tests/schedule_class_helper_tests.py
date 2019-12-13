@@ -1,5 +1,4 @@
-from ectools.config import set_environment, set_partner
-from ectools.logger import get_logger
+from ectools.config import get_logger, set_environment, set_partner
 from ectools.schedule_class_helper import *
 
 
@@ -21,9 +20,10 @@ def test_schedule_class_topic():
 def test_schedule_class():
     set_environment('staging')
     set_partner('cool')
+
     schedule_date = get_future_date(1)  # tomorrow
 
-    detail = schedule_class(env='staging', partner='cool', schedule_date=schedule_date,
+    detail = schedule_class(schedule_date=schedule_date,
                             school_name='BJ_DFG',
                             class_category='LC')
 
