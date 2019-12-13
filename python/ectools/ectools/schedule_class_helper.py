@@ -125,10 +125,11 @@ def schedule_class_topic(**kwargs):
     :return: class topic info, dict data type.
     """
     _import_smart()
+    # config should be backup before importing 'setting', to avoid overridden by default value in setting init
+    env, partner = config.env, config.partner
     from business.oboe.service import schedule_class_services as smart_oboe_svc
     from settings import helper as smart_helper
 
-    env, partner = config.env, config.partner
     smart_helper.set_environment(env)
     smart_helper.set_partner(partner)
     return smart_oboe_svc.schedule_class_topic(**kwargs)
@@ -145,10 +146,11 @@ def schedule_class(**kwargs):
     :return: class info, dict data type.
     """
     _import_smart()
+    # config should be backup before importing 'setting', to avoid overridden by default value in setting init
+    env, partner = config.env, config.partner
     from business.oboe.service import schedule_class_services as smart_oboe_svc
     from settings import helper as smart_helper
 
-    env, partner = config.env, config.partner
     smart_helper.set_environment(env)
     smart_helper.set_partner(partner)
     return smart_oboe_svc.schedule_class(**kwargs)
