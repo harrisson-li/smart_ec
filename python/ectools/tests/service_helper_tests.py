@@ -1,4 +1,4 @@
-from ectools.config import set_environment
+from ectools.config import set_environment, set_partner
 from ectools.logger import get_logger
 from ectools.service_helper import *
 from ectools.utility import password_generator
@@ -33,7 +33,6 @@ def test_set_member_site_settings():
     set_member_site_settings(student_id, 'test_key', 'test_value', site_area='school_ec')
     settings = get_member_site_settings(student_id, site_area='school_ec')
     assert settings['test_key'] == 'test_value'
-
 
 def test_is_v2_student():
     set_environment('qa')
@@ -221,7 +220,8 @@ def test_get_student_active_subscription():
     # active student
     active_student_id = 23999956
     student_active_subscription = get_student_active_subscription(active_student_id)
-    assert student_active_subscription['is_active'], "The student is not active"
+    assert len(student_active_subscription) > 0, "The student is not active"
+    assert student_active_subscription['is_active']
 
     # expired student
     expired_student_id = 23999880
