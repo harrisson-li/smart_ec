@@ -34,7 +34,6 @@ def test_set_member_site_settings():
     settings = get_member_site_settings(student_id, site_area='school_ec')
     assert settings['test_key'] == 'test_value'
 
-
 def test_is_v2_student():
     set_environment('qa')
     student_id = 10806560
@@ -221,7 +220,8 @@ def test_get_student_active_subscription():
     # active student
     active_student_id = 23999956
     student_active_subscription = get_student_active_subscription(active_student_id)
-    assert student_active_subscription['is_active'], "The student is not active"
+    assert len(student_active_subscription) > 0, "The student is not active"
+    assert student_active_subscription['is_active']
 
     # expired student
     expired_student_id = 23999880
