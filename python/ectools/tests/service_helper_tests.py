@@ -1,4 +1,4 @@
-from ectools.config import set_environment, set_partner
+from ectools.config import set_environment
 from ectools.logger import get_logger
 from ectools.service_helper import *
 from ectools.utility import password_generator
