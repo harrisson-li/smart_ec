@@ -25,6 +25,29 @@ from ectools.utility import camelcase_to_underscore, no_ssl_requests
 
 GRAPHQL_SERVICE_URL = "/services/api/ecplatform/graphql"
 
+STUDENT_BASICS = {"URL": "/services/ecsystem/Tools/StudentInspection/Basics",
+                  "DATA": "studentId"}
+STUDENT_PRODUCTS = {"URL": "/services/ecsystem/Tools/StudentInspection/Products",
+                    "DATA": "studentId"}
+STUDENT_SUBSCRIPTIONS = {"URL": "/services/ecsystem/Tools/StudentInspection/Subscriptions",
+                         "DATA": "studentId"}
+STUDENT_STATUS_AND_SETTINGS = {"URL": "/services/ecsystem/Tools/StudentInspection/StatusAndSettings",
+                               "DATA": "studentId"}
+STUDENT_FAGS = {"URL": "/services/ecsystem/Tools/StudentInspection/FAGs",
+                "DATA": "studentId"}
+STUDENT_ENROLLMENTS = {"URL": "/services/ecsystem/Tools/StudentInspection/Enrollments",
+                       "DATA": "studentId"}
+STUDENT_ONLINE_CLASSES = {"URL": "/services/ecsystem/Tools/StudentInspection/OnlineClasses",
+                          "DATA": "studentId"}
+STUDENT_OFFLINE_CLASSES = {"URL": "/services/ecsystem/Tools/StudentInspection/OfflineClasses",
+                           "DATA": "studentId"}
+STUDENT_COUPONS = {"URL": "/services/ecsystem/Tools/StudentInspection/Coupons",
+                   "DATA": "studentId"}
+STUDENT_PACKAGES = {"URL": "/services/ecsystem/Tools/StudentInspection/Packages",
+                    "DATA": "studentId"}
+STUDENT_MAINTENANCE_HISTORIES = {"URL": "/services/ecsystem/Tools/StudentInspection/StudentMaintenanceHistories",
+                                 "DATA": "studentId"}
+
 
 def is_v2_student(student_id):
     site_settings = get_member_site_settings(student_id)
