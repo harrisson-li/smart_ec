@@ -458,3 +458,9 @@ def get_student_info_graphql(student, info):
                                             "X-EC-LANG": "en"})
 
     return graphql_result.json()["data"]["student"][info]
+
+
+def get_student_password_by_service(student):
+    url = config.etown_root + STUDENT_BASICS["URL"]
+    result = requests.post(url, data={STUDENT_BASICS["DATA"]: student.member_id})
+    return result.json()["Password"]
