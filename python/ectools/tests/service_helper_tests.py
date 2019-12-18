@@ -1,3 +1,5 @@
+from assertpy import assert_that
+
 from ectools.config import set_environment
 from ectools.logger import get_logger
 from ectools.service_helper import *
@@ -227,3 +229,15 @@ def test_get_student_active_subscription():
     expired_student_id = 23999880
     student_subscription = get_student_active_subscription(expired_student_id)
     assert len(student_subscription) == 0
+
+
+def test_get_student_basics():
+    set_environment('uat')
+
+    url1 = config.etown_root + STUDENT_BASICS["URL"]
+    result1 = requests.post(url1, data={STUDENT_BASICS["DATA"]: "23990631"})
+    assert_that(result1.json()['Email']).is_equal_to('637019489788342643@qp1.org')
+
+    url2 = config.etown_root + STUDENT_PRODUCTS["URL"]
+    result2 = requests.post(url2, data={STUDENT_PRODUCTS["DATA"]: "23990631"})
+    assert_that(result2.json()['StudentId']).is_equal_to(23990631)

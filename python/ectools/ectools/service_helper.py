@@ -443,7 +443,7 @@ def parse_xml(response_xml):
     return info
 
 
-def get_student_info_graphql(student, info):
+def get_student_info_by_graphql(student, info):
     troop_service_helper.login(student.username, student.password)
     client = troop_service_helper.get_request_session(student.username)
 
@@ -458,9 +458,3 @@ def get_student_info_graphql(student, info):
                                             "X-EC-LANG": "en"})
 
     return graphql_result.json()["data"]["student"][info]
-
-
-def get_student_password_by_service(student):
-    url = config.etown_root + STUDENT_BASICS["URL"]
-    result = requests.post(url, data={STUDENT_BASICS["DATA"]: student.member_id})
-    return result.json()["Password"]
