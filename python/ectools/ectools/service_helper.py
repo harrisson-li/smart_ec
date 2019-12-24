@@ -409,7 +409,7 @@ def get_memcached_key(cache_key_string, **kwargs):
 
 
 def clear_booking_mem_cache_by_date_range(student_id):
-    clear_memcached_by_type(ClearCacheType.MEM_CACHED_VALUE_CLEAR, student_id)
+    clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, student_id)
 
 
 def clear_offline_class_taken_cache(student_id):
