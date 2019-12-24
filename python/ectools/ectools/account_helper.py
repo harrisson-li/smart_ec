@@ -25,6 +25,8 @@ For more info about using EFEC test account, please refer to confluence page or 
 """
 import uuid
 
+from requests import utils
+
 from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
 from ectools.internal.constants import HTTP_STATUS_OK
@@ -69,7 +71,10 @@ def create_account_without_activation(is_e10=False, **kwargs):
     student = {'is_e10': is_e10, 'environment': config.env, 'partner': config.partner}
     student.update(kwargs)
     link = get_new_account_link(is_e10)
-    result = no_ssl_requests().get(link)
+
+    # try to solve the DB disconnect issue
+    with utils.total_timeout(seconds=3):
+        result = no_ssl_requests().get(link)
 
     assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
     info = result.text.split('<br />')[0]

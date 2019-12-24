@@ -34,6 +34,7 @@ def test_set_member_site_settings():
     settings = get_member_site_settings(student_id, site_area='school_ec')
     assert settings['test_key'] == 'test_value'
 
+
 def test_is_v2_student():
     set_environment('qa')
     student_id = 10806560
@@ -205,6 +206,11 @@ def test_update_student_password():
     student = account_service_load_student(23973971)
 
     assert student['password'] == new_password
+
+
+def test_clear_memcached_by_type():
+    set_environment('uat')
+    assert clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, 24001345) == 'success'
 
 
 def test_clear_memcached():

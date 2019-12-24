@@ -34,3 +34,8 @@ class Memcached(object):
 
     # class attendance for online class, cache = 2 hours
     CLASS_ATTENDANCE_ONLINE = 'student_totalclassattendance_{student_id}'
+
+
+class ClearCacheType(object):
+    MEM_CACHED_VALUE_CLEAR = 'MemcachedValueClear'
+    BOOKING_MEM_CACHE_BY_DATE_RANGE = 'BookingMemCacheByDateRange'
