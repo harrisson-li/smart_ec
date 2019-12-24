@@ -15,7 +15,7 @@ import arrow
 import requests
 
 from ectools.config import config
-from ectools.constant import Memcached
+from ectools.constant import Memcached, ClearCacheType
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
@@ -368,10 +368,14 @@ def update_student_password(student_name, old_password, new_password):
 
 
 def clear_memcached(cache_key):
+    return clear_memcached_by_type(ClearCacheType.MEM_CACHED_VALUE_CLEAR, cache_key)
+
+
+def clear_memcached_by_type(cache_type, paras):
     target_url = "{}/services/ecplatform/Tools/CacheClear/Clear?token={}".format(config.etown_root, get_token())
     data = {
-        'cachetype': 'MemcachedValueClear',
-        'paras': cache_key
+        'cachetype': cache_type,
+        'paras': paras
     }
 
     response = no_ssl_requests().post(target_url, data)
@@ -391,6 +395,10 @@ def get_memcached_key(cache_key_string, **kwargs):
     :return:
     """
     return cache_key_string.format(**kwargs)
+
+
+def clear_booking_mem_cache_by_date_range(student_id):
+    return clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, student_id)
 
 
 def clear_offline_class_taken_cache(student_id):
