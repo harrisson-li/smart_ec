@@ -181,7 +181,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
 
 def _get_class_type_mapping():
     """ClassTypeName: [CouponClassCategoryGroup_id,ClassType_id]"""
-    return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 3], 'life_club': [6, 4]}
+    return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 4], 'life_club': [6, 4]}
 
 
 def _get_past_class_item(class_category_id, student_id):
