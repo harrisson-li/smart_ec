@@ -214,6 +214,9 @@ def test_clear_memcached_by_type():
     set_environment('uat')
     assert clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, 24001345) == 'success'
 
+def test_clear_booking_mem_cached():
+    set_environment('uat')
+    assert clear_booking_mem_cache_by_date_range(24001345) == 'success'
 
 def test_clear_memcached():
     set_environment('uat')
