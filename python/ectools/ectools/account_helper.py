@@ -672,3 +672,28 @@ def sf_set_hima_test(student_id, level_code='0A', ignore_if_already_set=True):
             assert str(e) == "Can't do this, please check student data if already done.", str(e)
         else:
             raise
+
+
+def activate_oboe_package(student_id, package_product_ids):
+    """
+    Activate oboe package for the student, eg. career track, skills clinics, osc, spin etc.
+    :param student_id:
+    :param package_product_id: list of package_product_id, which is PackageProduct_id column of
+    table oboe.dbo.PackageProduct, eg. 1001,1002,1020
+    :return:
+    """
+    link = get_activate_oboe_package_link()
+    session = no_ssl_requests()
+    order_id = str(uuid.uuid1())
+    data = {'memberId': student_id,
+            'orderId': order_id,
+            'packageProductIds': package_product_ids,
+            'templateData': ''}
+    result = session.post(url=link, data=data)
+
+    if result.status_code == HTTP_STATUS_OK and 'Success,IsSuccess:True' in result.text:
+        get_logger().info(
+            'Activate oboe package {0} for student {1} successfully'.format(package_product_ids, student_id))
+    else:
+        raise ValueError(
+            'Fail to activate oboe package {0} for student {1}! '.format(package_product_ids, student_id) + result.text)
