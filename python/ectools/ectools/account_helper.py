@@ -479,6 +479,47 @@ def activate_phoenix_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
+def activate_e19_phoenix_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_phoenix_product(**kwargs)['id']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = False
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_product(is_s18=False, is_e19=True)['id']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_home_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product(is_s18=False, is_e19=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_school_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product(is_s18=False, is_e19=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
 def activate_s18_student(**kwargs):
     kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
