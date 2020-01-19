@@ -310,6 +310,8 @@ def get_student_tags(student):
         tags.append('Phoenix')
     elif student['is_e10']:
         tags.append('E10')
+    elif student['is_e19']:
+        tags.append('E19')
     else:
         tags.append('S18' if student['is_s18'] else 'S15')
 
