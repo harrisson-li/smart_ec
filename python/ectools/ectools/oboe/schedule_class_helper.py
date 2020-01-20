@@ -60,7 +60,7 @@ For more detail about schedule class topic and schedule topic, please refer to s
 
 from ectools.config import config
 
-from .utility import _import_smart
+from ectools.oboe import _import_smart
 
 
 def get_future_date(days_delta=0, date_format='%m/%d/%Y'):

@@ -36,7 +36,7 @@ manage_class_status(student_id, booking_id, schedule_class_id, ClassStatus.CHECK
 
 from ectools.config import config
 
-from .utility import _import_smart
+from ectools.oboe import _import_smart
 
 
 def class_status_name():
@@ -55,7 +55,7 @@ def manage_class_status(student_id, booking_id, schedule_class_id, status_from, 
     """
      Manage class status via OBOE service, for more detail please refer to:
 
-        - smart\\business\service\mmanage_class_status_services\__init__.py
+        - smart\\business\oboe\service\manage_class_status_services\__init__.py
     """
 
     # config should be backup before importing 'setting', to avoid overridden by default value in setting init

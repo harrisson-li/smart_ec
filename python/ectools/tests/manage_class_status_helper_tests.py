@@ -1,6 +1,6 @@
 from ectools.config import set_environment, set_partner
 
-from python.ectools.ectools.manage_class_status_helper import *
+from ectools.oboe.manage_class_status_helper import *
 
 
 def test_manage_class_status():

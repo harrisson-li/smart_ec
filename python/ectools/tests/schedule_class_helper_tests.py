@@ -1,6 +1,6 @@
 from ectools.config import set_environment, set_partner
 from ectools.logger import get_logger
-from ectools.schedule_class_helper import *
+from ectools.oboe.schedule_class_helper import *
 
 
 def test_schedule_class_topic():
