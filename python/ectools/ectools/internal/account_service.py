@@ -96,6 +96,9 @@ def get_set_oc_url():
     url = '{}/services/oboe2/salesforce/test/SetOC'
     return url.format(config.etown_root_http)
 
+def get_activate_oboe_package_link():
+    url = '{}/services/oboe2/salesforce/test/ActivatePackage'
+    return url.format(config.etown_root_http)
 
 def get_success_message(student):
     if student['is_phoenix']:
@@ -310,6 +313,8 @@ def get_student_tags(student):
         tags.append('Phoenix')
     elif student['is_e10']:
         tags.append('E10')
+    elif student['is_e19']:
+        tags.append('E19')
     else:
         tags.append('S18' if student['is_s18'] else 'S15')
 

@@ -479,6 +479,47 @@ def activate_phoenix_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
+def activate_e19_phoenix_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_phoenix_product(**kwargs)['id']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = False
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_product(is_s18=False, is_e19=True)['id']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_home_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product(is_s18=False, is_e19=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_school_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product(is_s18=False, is_e19=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
 def activate_s18_student(**kwargs):
     kwargs['is_s18'] = True
     if 'product_id' not in kwargs:
@@ -631,3 +672,28 @@ def sf_set_hima_test(student_id, level_code='0A', ignore_if_already_set=True):
             assert str(e) == "Can't do this, please check student data if already done.", str(e)
         else:
             raise
+
+
+def activate_oboe_package(student_id, package_product_ids):
+    """
+    Activate oboe package for the student, eg. career track, skills clinics, osc, spin etc.
+    :param student_id:
+    :param package_product_id: list of package_product_id, which is PackageProduct_id column of
+    table oboe.dbo.PackageProduct, eg. 1001,1002,1020
+    :return:
+    """
+    link = get_activate_oboe_package_link()
+    session = no_ssl_requests()
+    order_id = str(uuid.uuid1())
+    data = {'memberId': student_id,
+            'orderId': order_id,
+            'packageProductIds': package_product_ids,
+            'templateData': ''}
+    result = session.post(url=link, data=data)
+
+    if result.status_code == HTTP_STATUS_OK and 'Success,IsSuccess:True' in result.text:
+        get_logger().info(
+            'Activate oboe package {0} for student {1} successfully'.format(package_product_ids, student_id))
+    else:
+        raise ValueError(
+            'Fail to activate oboe package {0} for student {1}! '.format(package_product_ids, student_id) + result.text)
