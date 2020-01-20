@@ -505,4 +505,3 @@ def config_sys_logging(to_console=True, log_file_dir=None, log_file_name=None):
 def password_generator(password_length=8):
     letters_digits = string.ascii_lowercase + string.ascii_uppercase + string.digits
     return ''.join(random.sample(letters_digits, password_length))
-
