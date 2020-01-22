@@ -24,4 +24,6 @@ def set_smart_repo(repo_path):
         raise ValueError('Invalid path: {}!'.format(repo_path))
 
     config.smart_repo = repo_path
-    delattr(Cache, 'not_import_smart')
+
+    if getattr(Cache, 'not_import_smart', False):
+        delattr(Cache, 'not_import_smart')
