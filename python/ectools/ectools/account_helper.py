@@ -218,7 +218,12 @@ def activate_account(product_id=None,
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
     phoenix_packs = data.pop('phoenix_packs', [])
-    is_v1_pack = data.pop('is_v1_pack', True)
+
+    if product['partner'] in ['Socn', 'Cool', 'Mini']:
+        is_v1_pack = data.pop('is_v1_pack', False)
+    else:
+        is_v1_pack = True
+
     assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
 
     # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
@@ -230,10 +235,12 @@ def activate_account(product_id=None,
         link = get_activate_pack_link()
 
         if include_center_pack:
-            phoenix_packs.append('Center Pack Basic')
+            default_center_pack_name = 'Center Pack Basic' if is_v1_pack else '1 Year Basic'
+            phoenix_packs.append(default_center_pack_name)
 
         if include_online_pack:
-            phoenix_packs.append('Online Pack Basic')
+            default_online_pack_name = 'Online Pack Basic' if is_v1_pack else '1 Year Private'
+            phoenix_packs.append(default_online_pack_name)
 
         # for trial product, always use trial pack
         if is_trial:
@@ -469,7 +476,7 @@ def activate_phoenix_student(**kwargs):
         kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
 
     if 'is_v1_pack' not in kwargs:
-        kwargs['is_v1_pack'] = True
+        kwargs['is_v1_pack'] = False
 
     if 'is_s18' not in kwargs:
         kwargs['is_s18'] = True
