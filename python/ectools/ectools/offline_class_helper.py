@@ -32,7 +32,7 @@ from ectools.db_query import execute_query, fetch_one
 from ectools.internal.objects import Base
 from ectools.logger import get_logger
 from ectools.service_helper import is_v2_student, clear_booking_mem_cache_by_date_range, \
-    clear_offline_class_taken_cache, clear_online_class_taken_cache
+    clear_offline_class_taken_cache, clear_online_class_taken_cache, clear_course_progress
 from ectools.utility import get_score, random_date
 
 
@@ -307,6 +307,7 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
         count -= 1
         clear_booking_mem_cache_by_date_range(student_id)
         clear_offline_class_taken_cache(student_id)
+        clear_course_progress(student_id)
 
 
 def _class_taken_for_online_class(student_id, count, type_code):
@@ -359,6 +360,7 @@ def _class_taken_for_online_class(student_id, count, type_code):
 
     clear_booking_mem_cache_by_date_range(student_id)
     clear_online_class_taken_cache(student_id)
+    clear_course_progress(student_id)
 
 
 def _main(student_id, **kwargs):
