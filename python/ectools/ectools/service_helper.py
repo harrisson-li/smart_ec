@@ -54,6 +54,11 @@ def is_v2_student(student_id):
     return site_settings.get('student.platform.version', '1.0') == '2.0'
 
 
+def is_e19_student(student_id):
+    site_settings = get_member_site_settings(student_id)
+    return site_settings.get('student.platform.mapcode', 'ec') == 'ec19'
+
+
 def get_member_site_settings(student_id, site_area='school'):
     service_url = '/services/shared/1.0/membersettings.svc'
     headers = {'SOAPAction': "EFSchools.Englishtown.SharedServices.Client.MemberSettings/"
@@ -406,6 +411,27 @@ def clear_offline_class_taken_cache(student_id):
         get_memcached_key(Memcached.CLASS_TAKEN_OFFLINE, site_version=get_site_version(), student_id=student_id))
 
 
+def clear_course_progress(student_id):
+    if is_e19_student(student_id):
+        clear_course_progress_cache_e19(student_id)
+    else:
+        clear_course_progress_cache_s18(student_id)
+
+
+def clear_course_progress_cache_s18(student_id):
+    # S18 GE course id: 10000014
+    clear_memcached(get_memcached_key(Memcached.COURSE_PROGRESS,
+                                      student_id=student_id,
+                                      course_id=10000014))
+
+
+def clear_course_progress_cache_e19(student_id):
+    # E19 GE course id: 10000119
+    clear_memcached(get_memcached_key(Memcached.COURSE_PROGRESS,
+                                      student_id=student_id,
+                                      course_id=10000119))
+
+
 def clear_online_class_taken_cache(student_id):
     clear_memcached(get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=student_id))
 
@@ -413,6 +439,10 @@ def clear_online_class_taken_cache(student_id):
 def clear_class_taken_memcached(student_id):
     clear_offline_class_taken_cache(student_id)
     clear_online_class_taken_cache(student_id)
+
+
+def clear_student_basic_info_cache(student_id):
+    clear_memcached_by_type(ClearCacheType.STUDENT_BASIC_INFO, student_id)
 
 
 def get_student_active_subscription(student_id):
