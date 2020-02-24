@@ -338,6 +338,16 @@ def add_offline_coupon(student_id, coupon_type, add_count):
     assert response.text == 'Coupons granted!', response.text
 
 
+def adjust_coupon(student_id, coupon_tye, adjust_count):
+    url = '{}/services/oboe2/salesforce/test/AdjustCoupon'.format(config.etown_root)
+    data = {'MemberId': student_id,
+            'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
+            }
+
+    response = no_ssl_requests().post(url, data=data)
+    assert "Success" in response.text, response.text
+
+
 def call_troop_command_service(student_name,
                                command_url,
                                data,

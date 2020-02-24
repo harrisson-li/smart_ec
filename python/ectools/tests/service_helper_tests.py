@@ -197,6 +197,21 @@ def test_add_offline_coupon():
     add_offline_coupon(student_id, 'WS', 2)
 
 
+def test_adjust_coupon():
+    set_environment('uat')
+    student_id = 24006538
+    adjust_coupon(student_id, 'F2F', 5)
+    adjust_coupon(student_id, 'F2F', -3)
+    adjust_coupon(student_id, 'WS', 5)
+    adjust_coupon(student_id, 'WS', -3)
+    adjust_coupon(student_id, 'LC', 5)
+    adjust_coupon(student_id, 'LC', -3)
+    adjust_coupon(student_id, 'PL40', 5)
+    adjust_coupon(student_id, 'PL40', -3)
+    adjust_coupon(student_id, 'GL', 5)
+    adjust_coupon(student_id, 'GL', -3)
+
+
 def test_update_student_password():
     set_environment('uat')
     student_name = 'stest55675'
@@ -214,9 +229,11 @@ def test_clear_memcached_by_type():
     set_environment('uat')
     assert clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, 24001345) == 'success'
 
+
 def test_clear_booking_mem_cached():
     set_environment('uat')
     assert clear_booking_mem_cache_by_date_range(24001345) == 'success'
+
 
 def test_clear_memcached():
     set_environment('uat')
