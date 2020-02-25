@@ -338,6 +338,23 @@ def add_offline_coupon(student_id, coupon_type, add_count):
     assert response.text == 'Coupons granted!', response.text
 
 
+def adjust_coupon(student_id, coupon_tye, adjust_count):
+    """
+    increase or reduce the coupon count
+    :param student_id:
+    :param coupon_tye: eg. F2F, WS, LC, PL40, GL
+    :param adjust_count: eg. 10 or -10
+    :return:
+    """
+    url = '{}/services/oboe2/salesforce/test/AdjustCoupon'.format(config.etown_root)
+    data = {'MemberId': student_id,
+            'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
+            }
+
+    response = no_ssl_requests().post(url, data=data)
+    assert "Success" in response.text, response.text
+
+
 def call_troop_command_service(student_name,
                                command_url,
                                data,
@@ -496,3 +513,66 @@ def get_student_info_by_graphql(student, info):
                                             "X-EC-LANG": "en"})
 
     return graphql_result.json()["data"]["student"][info]
+
+
+def get_student_coupon_info(student_id):
+    """
+    Get the student coupon info
+    :param student_id:
+    :return: coupon info, eg.
+    {'ClassicCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                        {'CouponName': 'Workshop', 'Count': 5},
+                        {'CouponName': 'LifeClub', 'Count': 5}],
+     'LegacyCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'MergedCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'SpecialCoupons': [],
+     'OnlineCoupons': [{'CouponName': 'PL40', 'Count': 50},
+                       {'CouponName': 'GL', 'Count': 155}],
+     'IsSuccess': True,
+     'Message': ''
+    }
+    """
+    target_url = config.etown_root + STUDENT_COUPONS['URL']
+    data = {
+        STUDENT_COUPONS['DATA']: student_id
+    }
+
+    response = no_ssl_requests().post(target_url, data=data)
+    return response.json()
+
+
+def get_basic_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    offline_basic_coupon_info = info['ClassicCoupons']
+
+    for c in offline_basic_coupon_info:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_special_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    special_coupon = info['SpecialCoupons']
+
+    for c in special_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_online_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    online_coupon = info['OnlineCoupons']
+
+    for c in online_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
