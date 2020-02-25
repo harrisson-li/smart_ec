@@ -543,3 +543,36 @@ def get_student_coupon_info(student_id):
 
     response = no_ssl_requests().post(target_url, data=data)
     return response.json()
+
+
+def get_basic_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    offline_basic_coupon_info = info['ClassicCoupons']
+
+    for c in offline_basic_coupon_info:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_special_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    special_coupon = info['SpecialCoupons']
+
+    for c in special_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_online_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    online_coupon = info['OnlineCoupons']
+
+    for c in online_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
