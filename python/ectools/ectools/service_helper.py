@@ -506,3 +506,33 @@ def get_student_info_by_graphql(student, info):
                                             "X-EC-LANG": "en"})
 
     return graphql_result.json()["data"]["student"][info]
+
+
+def get_student_coupon_info(student_id):
+    """
+    Get the student coupon info
+    :param student_id:
+    :return: coupon info, eg.
+    {'ClassicCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                        {'CouponName': 'Workshop', 'Count': 5},
+                        {'CouponName': 'LifeClub', 'Count': 5}],
+     'LegacyCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'MergedCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'SpecialCoupons': [],
+     'OnlineCoupons': [{'CouponName': 'PL40', 'Count': 50},
+                       {'CouponName': 'GL', 'Count': 155}],
+     'IsSuccess': True,
+     'Message': ''
+    }
+    """
+    target_url = config.etown_root + STUDENT_COUPONS['URL']
+    data = {
+        STUDENT_COUPONS['DATA']: student_id
+    }
+
+    response = no_ssl_requests().post(target_url, data=data)
+    return response.json()

@@ -267,3 +267,9 @@ def test_get_student_basics():
     url2 = config.etown_root + STUDENT_PRODUCTS["URL"]
     result2 = requests.post(url2, data={STUDENT_PRODUCTS["DATA"]: "23990631"})
     assert_that(result2.json()['StudentId']).is_equal_to(23990631)
+
+
+def test_get_student_coupon_info():
+    set_environment('uat')
+    coupon_info = get_student_coupon_info(24006538)
+    assert_that(coupon_info['IsSuccess']).is_true()
