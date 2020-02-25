@@ -339,6 +339,13 @@ def add_offline_coupon(student_id, coupon_type, add_count):
 
 
 def adjust_coupon(student_id, coupon_tye, adjust_count):
+    """
+    increase or reduce the coupon count
+    :param student_id:
+    :param coupon_tye: eg. F2F, WS, LC, PL40, GL
+    :param adjust_count: eg. 10 or -10
+    :return:
+    """
     url = '{}/services/oboe2/salesforce/test/AdjustCoupon'.format(config.etown_root)
     data = {'MemberId': student_id,
             'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
