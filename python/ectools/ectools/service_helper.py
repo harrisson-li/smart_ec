@@ -12,19 +12,51 @@ from io import StringIO
 from xml.etree import ElementTree
 
 import arrow
+import requests
 
 from ectools.config import config
+from ectools.constant import Memcached, ClearCacheType
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
-from ectools.token_helper import get_token
+from ectools.token_helper import get_token, get_site_version
 from ectools.utility import camelcase_to_underscore, no_ssl_requests
+
+GRAPHQL_SERVICE_URL = "/services/api/ecplatform/graphql"
+
+STUDENT_BASICS = {"URL": "/services/ecsystem/Tools/StudentInspection/Basics",
+                  "DATA": "studentId"}
+STUDENT_PRODUCTS = {"URL": "/services/ecsystem/Tools/StudentInspection/Products",
+                    "DATA": "studentId"}
+STUDENT_SUBSCRIPTIONS = {"URL": "/services/ecsystem/Tools/StudentInspection/Subscriptions",
+                         "DATA": "studentId"}
+STUDENT_STATUS_AND_SETTINGS = {"URL": "/services/ecsystem/Tools/StudentInspection/StatusAndSettings",
+                               "DATA": "studentId"}
+STUDENT_FAGS = {"URL": "/services/ecsystem/Tools/StudentInspection/FAGs",
+                "DATA": "studentId"}
+STUDENT_ENROLLMENTS = {"URL": "/services/ecsystem/Tools/StudentInspection/Enrollments",
+                       "DATA": "studentId"}
+STUDENT_ONLINE_CLASSES = {"URL": "/services/ecsystem/Tools/StudentInspection/OnlineClasses",
+                          "DATA": "studentId"}
+STUDENT_OFFLINE_CLASSES = {"URL": "/services/ecsystem/Tools/StudentInspection/OfflineClasses",
+                           "DATA": "studentId"}
+STUDENT_COUPONS = {"URL": "/services/ecsystem/Tools/StudentInspection/Coupons",
+                   "DATA": "studentId"}
+STUDENT_PACKAGES = {"URL": "/services/ecsystem/Tools/StudentInspection/Packages",
+                    "DATA": "studentId"}
+STUDENT_MAINTENANCE_HISTORIES = {"URL": "/services/ecsystem/Tools/StudentInspection/StudentMaintenanceHistories",
+                                 "DATA": "studentId"}
 
 
 def is_v2_student(student_id):
     site_settings = get_member_site_settings(student_id)
     return site_settings.get('student.platform.version', '1.0') == '2.0'
+
+
+def is_e19_student(student_id):
+    site_settings = get_member_site_settings(student_id)
+    return site_settings.get('student.platform.mapcode', 'ec') == 'ec19'
 
 
 def get_member_site_settings(student_id, site_area='school'):
@@ -246,16 +278,7 @@ def account_service_load_student(student_name_or_id):
         assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
         response_xml = name_response.text
 
-    # get all return field names
-    fields = re.findall('<a:([^>/]+)>', response_xml)
-
-    # get all field value and convert to dict
-    info = {}
-    for field in fields:
-        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
-        info[camelcase_to_underscore(field)] = value
-
-    return info
+    return parse_xml(response_xml)
 
 
 def account_service_update_phone2(student_id, phone_number):
@@ -315,6 +338,23 @@ def add_offline_coupon(student_id, coupon_type, add_count):
     assert response.text == 'Coupons granted!', response.text
 
 
+def adjust_coupon(student_id, coupon_tye, adjust_count):
+    """
+    increase or reduce the coupon count
+    :param student_id:
+    :param coupon_tye: eg. F2F, WS, LC, PL40, GL
+    :param adjust_count: eg. 10 or -10
+    :return:
+    """
+    url = '{}/services/oboe2/salesforce/test/AdjustCoupon'.format(config.etown_root)
+    data = {'MemberId': student_id,
+            'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
+            }
+
+    response = no_ssl_requests().post(url, data=data)
+    assert "Success" in response.text, response.text
+
+
 def call_troop_command_service(student_name,
                                command_url,
                                data,
@@ -347,3 +387,192 @@ def update_student_password(student_name, old_password, new_password):
         "password": json.dumps(password_info, sort_keys=False)}}
 
     return troop_command_update_information(student_name, data, old_password)
+
+
+def clear_memcached(cache_key):
+    return clear_memcached_by_type(ClearCacheType.MEM_CACHED_VALUE_CLEAR, cache_key)
+
+
+def clear_memcached_by_type(cache_type, paras):
+    target_url = "{}/services/ecplatform/Tools/CacheClear/Clear?token={}".format(config.etown_root, get_token())
+    data = {
+        'cachetype': cache_type,
+        'paras': paras
+    }
+
+    response = no_ssl_requests().post(target_url, data)
+
+    if response.status_code == HTTP_STATUS_OK:
+        return response.text
+    else:
+        raise ValueError(response.text)
+
+
+def get_memcached_key(cache_key_string, **kwargs):
+    """
+    Get the membercached key with certain format
+    :param cache_key_string: cache key string is Memcached in constant.py
+    :param kwargs: give the parameters as the {} in cache_key_string,
+    eg. _{site_version}_, then should pass site_version = xxx
+    :return:
+    """
+    return cache_key_string.format(**kwargs)
+
+
+def clear_booking_mem_cache_by_date_range(student_id):
+    return clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, student_id)
+
+
+def clear_offline_class_taken_cache(student_id):
+    clear_memcached(
+        get_memcached_key(Memcached.CLASS_TAKEN_OFFLINE, site_version=get_site_version(), student_id=student_id))
+
+
+def clear_course_progress(student_id):
+    if is_e19_student(student_id):
+        clear_course_progress_cache_e19(student_id)
+    else:
+        clear_course_progress_cache_s18(student_id)
+
+
+def clear_course_progress_cache_s18(student_id):
+    # S18 GE course id: 10000014
+    clear_memcached(get_memcached_key(Memcached.COURSE_PROGRESS,
+                                      student_id=student_id,
+                                      course_id=10000014))
+
+
+def clear_course_progress_cache_e19(student_id):
+    # E19 GE course id: 10000119
+    clear_memcached(get_memcached_key(Memcached.COURSE_PROGRESS,
+                                      student_id=student_id,
+                                      course_id=10000119))
+
+
+def clear_online_class_taken_cache(student_id):
+    clear_memcached(get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=student_id))
+
+
+def clear_class_taken_memcached(student_id):
+    clear_offline_class_taken_cache(student_id)
+    clear_online_class_taken_cache(student_id)
+
+
+def clear_student_basic_info_cache(student_id):
+    clear_memcached_by_type(ClearCacheType.STUDENT_BASIC_INFO, student_id)
+
+
+def get_student_active_subscription(student_id):
+    """load student active subscription info via /services/commerce/1.0/SubscriptionService.svc"""
+    target_url = config.etown_root_http + '/services/commerce/1.0/SubscriptionService.svc'
+    headers = {'Content-Type': 'text/xml',
+               'SOAPAction': 'http://tempuri.org/ISubscriptionService/GetActiveSubscription'}
+    body = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <tem:GetActiveSubscription>
+                    <!--Optional:-->
+                    <tem:member_id>{}</tem:member_id>
+                    </tem:GetActiveSubscription>
+                </soapenv:Body>
+            </soapenv:Envelope>""".format(student_id)
+
+    response = no_ssl_requests().post(target_url, data=body, headers=headers)
+    response_xml = response.text
+
+    assert response.status_code == HTTP_STATUS_OK
+
+    return parse_xml(response_xml)
+
+
+def parse_xml(response_xml):
+    # get all return field names
+    fields = re.findall('<a:([^>/]+)>', response_xml)
+
+    # get all field value and convert to dict
+    info = {}
+    for field in fields:
+        value = re.findall('<a:{0}>(.*)</a:{0}>'.format(field), response_xml)[0]
+        info[camelcase_to_underscore(field)] = value
+
+    return info
+
+
+def get_student_info_by_graphql(student, info):
+    troop_service_helper.login(student.username, student.password)
+    client = troop_service_helper.get_request_session(student.username)
+
+    data = {"variables": {},
+            "query": "{student {" + info + "}}"}
+    graphql_url = config.etown_root + GRAPHQL_SERVICE_URL
+
+    graphql_result = requests.post(graphql_url,
+                                   data=json.dumps(data),
+                                   headers={"X-EC-CMUS": client.cookies['CMus'],
+                                            "X-EC-SID": client.cookies['et_sid'],
+                                            "X-EC-LANG": "en"})
+
+    return graphql_result.json()["data"]["student"][info]
+
+
+def get_student_coupon_info(student_id):
+    """
+    Get the student coupon info
+    :param student_id:
+    :return: coupon info, eg.
+    {'ClassicCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                        {'CouponName': 'Workshop', 'Count': 5},
+                        {'CouponName': 'LifeClub', 'Count': 5}],
+     'LegacyCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'MergedCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+     'SpecialCoupons': [],
+     'OnlineCoupons': [{'CouponName': 'PL40', 'Count': 50},
+                       {'CouponName': 'GL', 'Count': 155}],
+     'IsSuccess': True,
+     'Message': ''
+    }
+    """
+    target_url = config.etown_root + STUDENT_COUPONS['URL']
+    data = {
+        STUDENT_COUPONS['DATA']: student_id
+    }
+
+    response = no_ssl_requests().post(target_url, data=data)
+    return response.json()
+
+
+def get_basic_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    offline_basic_coupon_info = info['ClassicCoupons']
+
+    for c in offline_basic_coupon_info:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_special_offline_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    special_coupon = info['SpecialCoupons']
+
+    for c in special_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info
+
+
+def get_online_coupon_info(student_id):
+    coupon_info = {}
+    info = get_student_coupon_info(student_id)
+    online_coupon = info['OnlineCoupons']
+
+    for c in online_coupon:
+        coupon_info[c['CouponName']] = c['Count']
+
+    return coupon_info

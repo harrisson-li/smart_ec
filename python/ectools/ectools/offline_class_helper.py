@@ -28,10 +28,11 @@ from datetime import datetime, timedelta
 
 import arrow
 
-from ectools.logger import get_logger
 from ectools.db_query import execute_query, fetch_one
 from ectools.internal.objects import Base
-from ectools.service_helper import is_v2_student
+from ectools.logger import get_logger
+from ectools.service_helper import is_v2_student, clear_booking_mem_cache_by_date_range, \
+    clear_offline_class_taken_cache, clear_online_class_taken_cache, clear_course_progress
 from ectools.utility import get_score, random_date
 
 
@@ -168,11 +169,11 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
             extra_data = re.sub(r'("enrollDate":"[\d\-T\:]*")', '"enrollDate":"{}"'.format(enroll_date), extra_data)
 
         sql = """UPDATE school_{0}.dbo.StudentCourseItem
-        SET ExtraData = '{1}'
-        WHERE StudentCourseItem_id = '{2}'
-        AND student_id = {3}"""
+        SET ExtraData = '{1}', StartDate = '{2}'
+        WHERE StudentCourseItem_id = '{3}'
+        AND student_id = {4}"""
 
-        execute_query(sql.format(db_suffix, extra_data, course_item_id, student_id))
+        execute_query(sql.format(db_suffix, extra_data, enroll_date, course_item_id, student_id))
 
     update_level_enrollment_date()
     _main(student_id, **kwargs)
@@ -180,7 +181,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
 
 def _get_class_type_mapping():
     """ClassTypeName: [CouponClassCategoryGroup_id,ClassType_id]"""
-    return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 3], 'life_club': [6, 4]}
+    return {'f2f': [1, 1], 'workshop': [2, 2], 'apply': [3, 4], 'life_club': [6, 4]}
 
 
 def _get_past_class_item(class_category_id, student_id):
@@ -304,6 +305,9 @@ def _class_taken(student_id, class_type, count, ignore_if_no_coupon=False):
         schedule_class = _get_past_class_item(class_category_id, student_id)
         _insert_booking_id(student_id, schedule_class, coupon_category_id)
         count -= 1
+        clear_booking_mem_cache_by_date_range(student_id)
+        clear_offline_class_taken_cache(student_id)
+        clear_course_progress(student_id)
 
 
 def _class_taken_for_online_class(student_id, count, type_code):
@@ -353,6 +357,10 @@ def _class_taken_for_online_class(student_id, count, type_code):
 
     for i in range(count):
         execute_query(sql.format(student_id, type_code, random_date(start, end), get_score()))
+
+    clear_booking_mem_cache_by_date_range(student_id)
+    clear_online_class_taken_cache(student_id)
+    clear_course_progress(student_id)
 
 
 def _main(student_id, **kwargs):

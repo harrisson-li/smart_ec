@@ -138,17 +138,18 @@ def get_products_has_tag(tag):
     return get_item_has_tag(get_all_products(), tag)
 
 
-def get_products_by_partner(partner=None, **kwargs):
+def get_products_by_partner(by_partner=None, **kwargs):
     from ectools.config import config
 
-    if partner is None:
-        partner = config.partner
+    if by_partner is None:
+        by_partner = config.partner
 
     if 'is_e10' in kwargs:
         is_e10 = kwargs['is_e10']
     else:
         is_e10 = False
 
+    # TODO: make the "default value" manage in a dedicated place
     if 'is_s18' in kwargs:
         is_s18 = kwargs['is_s18']
     else:
@@ -160,7 +161,7 @@ def get_products_by_partner(partner=None, **kwargs):
         is_e19 = False
 
     return [x for x in get_all_products() if
-            x['partner'].lower() == partner.lower()
+            x['partner'].lower() == by_partner.lower()
             and is_item_has_tag(x, 'E10') == is_e10
             and is_item_has_tag(x, 'S18') == is_s18
             and is_item_has_tag(x, 'E19') == is_e19]
@@ -246,7 +247,7 @@ def get_all_schools(cached=True):
         return read_data('schools')
 
 
-def get_school_by_name(name, cached=False, ignore_socn=False):
+def get_school_by_name(name, cached=False, ignore_socn=True):
     """name should be str or a dict with name key."""
     name = name if isinstance(name, str) else name['name']
     found = [x for x in get_all_schools(cached=cached) if x['name'] == name]
@@ -259,7 +260,7 @@ def get_school_by_name(name, cached=False, ignore_socn=False):
         # filter socn school as it might be duplicate with cool / mini school
         if ignore_socn:
             found = [x for x in found if x['partner'] != 'Socn']
-        else:
+        else:  # when check socn student basic info, still need socn partner
             found = [x for x in found if x['partner'] == 'Socn']
 
         return found[0]

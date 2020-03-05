@@ -58,33 +58,9 @@ For more detail about schedule class topic and schedule topic, please refer to s
 
 """
 
-import sys
-from os.path import exists
+from ectools.config import config
 
-from ectools.config import config, Cache
-
-
-def _import_smart():
-    """Only import smart one time then cache the status."""
-    if getattr(Cache, 'not_import_smart', True):
-        sys.path.insert(0, config.smart_repo)
-        setattr(Cache, 'not_import_smart', False)
-
-
-def set_smart_repo(repo_path):
-    """
-    Provide another smart repo instead use default value, required for Mac/Linux or when
-    you cannot connect default smart repo. The default smart repo only support Windows system:
-
-      - ``\\\\cns-qaauto5\Shared\git\smart``
-
-    :param repo_path: e.g. ``/path/for/mac/linux``
-    """
-    if not exists(repo_path):
-        raise ValueError('Invalid path: {}!'.format(repo_path))
-
-    config.smart_repo = repo_path
-    delattr(Cache, 'not_import_smart')
+from ectools.oboe import _import_smart
 
 
 def get_future_date(days_delta=0, date_format='%m/%d/%Y'):
@@ -125,10 +101,11 @@ def schedule_class_topic(**kwargs):
     :return: class topic info, dict data type.
     """
     _import_smart()
+    # config should be backup before importing 'setting', to avoid overridden by default value in setting init
+    env, partner = config.env, config.partner
     from business.oboe.service import schedule_class_services as smart_oboe_svc
     from settings import helper as smart_helper
 
-    env, partner = config.env, config.partner
     smart_helper.set_environment(env)
     smart_helper.set_partner(partner)
     return smart_oboe_svc.schedule_class_topic(**kwargs)
@@ -145,10 +122,11 @@ def schedule_class(**kwargs):
     :return: class info, dict data type.
     """
     _import_smart()
+    # config should be backup before importing 'setting', to avoid overridden by default value in setting init
+    env, partner = config.env, config.partner
     from business.oboe.service import schedule_class_services as smart_oboe_svc
     from settings import helper as smart_helper
 
-    env, partner = config.env, config.partner
     smart_helper.set_environment(env)
     smart_helper.set_partner(partner)
     return smart_oboe_svc.schedule_class(**kwargs)

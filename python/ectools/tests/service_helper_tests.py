@@ -1,7 +1,10 @@
+from assertpy import assert_that
+
 from ectools.config import set_environment
 from ectools.logger import get_logger
 from ectools.service_helper import *
 from ectools.utility import password_generator
+
 
 def test_get_member_site_settings():
     set_environment('qa')
@@ -194,6 +197,21 @@ def test_add_offline_coupon():
     add_offline_coupon(student_id, 'WS', 2)
 
 
+def test_adjust_coupon():
+    set_environment('uat')
+    student_id = 24006538
+    adjust_coupon(student_id, 'F2F', 5)
+    adjust_coupon(student_id, 'F2F', -3)
+    adjust_coupon(student_id, 'WS', 5)
+    adjust_coupon(student_id, 'WS', -3)
+    adjust_coupon(student_id, 'LC', 5)
+    adjust_coupon(student_id, 'LC', -3)
+    adjust_coupon(student_id, 'PL40', 5)
+    adjust_coupon(student_id, 'PL40', -3)
+    adjust_coupon(student_id, 'GL', 5)
+    adjust_coupon(student_id, 'GL', -3)
+
+
 def test_update_student_password():
     set_environment('uat')
     student_name = 'stest55675'
@@ -205,3 +223,53 @@ def test_update_student_password():
     student = account_service_load_student(23973971)
 
     assert student['password'] == new_password
+
+
+def test_clear_memcached_by_type():
+    set_environment('uat')
+    assert clear_memcached_by_type(ClearCacheType.BOOKING_MEM_CACHE_BY_DATE_RANGE, 24001345) == 'success'
+
+
+def test_clear_booking_mem_cached():
+    set_environment('uat')
+    assert clear_booking_mem_cache_by_date_range(24001345) == 'success'
+
+
+def test_clear_memcached():
+    set_environment('uat')
+    cache_key = get_memcached_key(Memcached.CLASS_ATTENDANCE_ONLINE, student_id=23998728)
+
+    assert clear_memcached(cache_key) == 'success'
+
+
+def test_get_student_active_subscription():
+    set_environment('uat')
+
+    # active student
+    active_student_id = 23999956
+    student_active_subscription = get_student_active_subscription(active_student_id)
+    assert len(student_active_subscription) > 0, "The student is not active"
+    assert student_active_subscription['is_active']
+
+    # expired student
+    expired_student_id = 23999880
+    student_subscription = get_student_active_subscription(expired_student_id)
+    assert len(student_subscription) == 0
+
+
+def test_get_student_basics():
+    set_environment('uat')
+
+    url1 = config.etown_root + STUDENT_BASICS["URL"]
+    result1 = requests.post(url1, data={STUDENT_BASICS["DATA"]: "23990631"})
+    assert_that(result1.json()['Email']).is_equal_to('637019489788342643@qp1.org')
+
+    url2 = config.etown_root + STUDENT_PRODUCTS["URL"]
+    result2 = requests.post(url2, data={STUDENT_PRODUCTS["DATA"]: "23990631"})
+    assert_that(result2.json()['StudentId']).is_equal_to(23990631)
+
+
+def test_get_student_coupon_info():
+    set_environment('uat')
+    coupon_info = get_student_coupon_info(24006538)
+    assert_that(coupon_info['IsSuccess']).is_true()

@@ -47,7 +47,7 @@ def get_or_activate_account(tag, expiration_days=360, method='activate_account',
     """
     accounts = get_accounts_by_tag(tag)
 
-    if accounts and not is_account_expired(accounts[0], expiration_days):
+    if accounts and not is_account_expired(accounts[0]['member_id']):
         account = accounts[0]
         account['found_by_tag'] = tag  # for call back actions
         get_logger().info('Found account with tag "{}": {}'.format(tag, account))
@@ -69,6 +69,7 @@ def create_account_without_activation(is_e10=False, **kwargs):
     student = {'is_e10': is_e10, 'environment': config.env, 'partner': config.partner}
     student.update(kwargs)
     link = get_new_account_link(is_e10)
+
     result = no_ssl_requests().get(link)
 
     assert result.status_code == HTTP_STATUS_OK and 'Success' in result.text, result.text
@@ -217,7 +218,12 @@ def activate_account(product_id=None,
     include_center_pack = data.pop('center_pack', True)
     include_online_pack = data.pop('online_pack', True)
     phoenix_packs = data.pop('phoenix_packs', [])
-    is_v1_pack = data.pop('is_v1_pack', True)
+
+    if product['partner'] in ['Socn', 'Cool', 'Mini']:
+        is_v1_pack = data.pop('is_v1_pack', False)
+    else:
+        is_v1_pack = True
+
     assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
 
     # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
@@ -229,10 +235,12 @@ def activate_account(product_id=None,
         link = get_activate_pack_link()
 
         if include_center_pack:
-            phoenix_packs.append('Center Pack Basic')
+            default_center_pack_name = 'Center Pack Basic' if is_v1_pack else '1 Year Basic'
+            phoenix_packs.append(default_center_pack_name)
 
         if include_online_pack:
-            phoenix_packs.append('Online Pack Basic')
+            default_online_pack_name = 'Online Pack Basic' if is_v1_pack else '1 Year Private'
+            phoenix_packs.append(default_online_pack_name)
 
         # for trial product, always use trial pack
         if is_trial:
@@ -468,13 +476,54 @@ def activate_phoenix_student(**kwargs):
         kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
 
     if 'is_v1_pack' not in kwargs:
-        kwargs['is_v1_pack'] = True
+        kwargs['is_v1_pack'] = False
 
     if 'is_s18' not in kwargs:
         kwargs['is_s18'] = True
 
     if 'is_e19' not in kwargs:
         kwargs['is_e19'] = False
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_phoenix_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_phoenix_product(**kwargs)['id']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = False
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_product(is_s18=False, is_e19=True)['id']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_home_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_home_product(is_s18=False, is_e19=True)['id']
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_school_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_any_school_product(is_s18=False, is_e19=True)['id']
     return activate_account_by_dict(kwargs)
 
 
@@ -630,3 +679,28 @@ def sf_set_hima_test(student_id, level_code='0A', ignore_if_already_set=True):
             assert str(e) == "Can't do this, please check student data if already done.", str(e)
         else:
             raise
+
+
+def activate_oboe_package(student_id, package_product_ids):
+    """
+    Activate oboe package for the student, eg. career track, skills clinics, osc, spin etc.
+    :param student_id:
+    :param package_product_id: list of package_product_id, which is PackageProduct_id column of
+    table oboe.dbo.PackageProduct, eg. 1001,1002,1020
+    :return:
+    """
+    link = get_activate_oboe_package_link()
+    session = no_ssl_requests()
+    order_id = str(uuid.uuid1())
+    data = {'memberId': student_id,
+            'orderId': order_id,
+            'packageProductIds': package_product_ids,
+            'templateData': ''}
+    result = session.post(url=link, data=data)
+
+    if result.status_code == HTTP_STATUS_OK and 'Success,IsSuccess:True' in result.text:
+        get_logger().info(
+            'Activate oboe package {0} for student {1} successfully'.format(package_product_ids, student_id))
+    else:
+        raise ValueError(
+            'Fail to activate oboe package {0} for student {1}! '.format(package_product_ids, student_id) + result.text)
