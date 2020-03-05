@@ -19,9 +19,18 @@ class DbQueryPage(PageBase):
         assert env != 'UAT', 'DbQuery page not support UAT!'
 
         self.env = env.lower()
-        self.url_base = "https://{}deepblue2.englishtown.com/dbquery/{}"
+        if self.env[-2:] == 'cn':
+            self.url_base = "https://{}deepblue2.englishtown.cn/dbquery/{}"
+        else:
+            self.url_base = "https://{}deepblue2.englishtown.com/dbquery/{}"
 
-        e = '' if self.env == 'live' else self.env
+        if self.env == 'live':
+            e = ''
+        elif self.env[-2:] == 'cn':
+            e = self.env[:-2]
+        else:
+            e = self.env
+
         self.url = self.url_base.format(e, 'dbquery.aspx')
 
     def login(self, username=None, password=None):
