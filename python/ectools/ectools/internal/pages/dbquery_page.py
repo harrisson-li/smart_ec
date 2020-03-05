@@ -19,6 +19,8 @@ class DbQueryPage(PageBase):
         assert env != 'UAT', 'DbQuery page not support UAT!'
 
         self.env = env.lower()
+
+        # self.env = 'qacn', self.env[-2:] = 'cn', self.env[:-2] = 'qa'
         if self.env[-2:] == 'cn':
             self.url_base = "https://{}deepblue2.englishtown.cn/dbquery/{}"
         else:
