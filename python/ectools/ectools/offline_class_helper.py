@@ -145,12 +145,12 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
     def update_level_enrollment_date():
         get_logger().info("Update level enroll date")
 
-        sql = """SELECT * 
-        FROM school_{0}.dbo.StudentCourseItem sci 
-        WHERE sci.Student_id = {1} 
-        AND ItemType_id = 2 
-        AND CompleteDate IS NOT NULL 
-        AND sci.ExtraData LIKE '%levelCode"%' 
+        sql = """SELECT *
+        FROM school_{0}.dbo.StudentCourseItem sci
+        WHERE sci.Student_id = {1}
+        AND ItemType_id = 2
+        AND CompleteDate IS NOT NULL
+        AND sci.ExtraData LIKE '%levelCode"%'
         ORDER BY sci.SeqNo DESC"""
 
         if not HelperConfig.LevelMustComplete:
