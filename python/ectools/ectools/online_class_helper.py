@@ -1,4 +1,5 @@
 import arrow
+
 from ectools.db_query import fetch_one
 from ectools.internal.online_class_service_helper import online_class_helper_api
 
@@ -181,7 +182,7 @@ def get_teacher_center(teacher_member_id):
         ON Members.MemberId = TeacherProfile.TeacherMember_id
         WHERE MemberId = {}""".format(teacher_member_id)
 
-    return fetch_one(sql, as_dict=False).CenterCode
+    return fetch_one(sql,as_dict=True)['CenterCode']
 
 
 def schedule_class(teacher_member_id, class_type, start_time, class_count=1):
