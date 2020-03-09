@@ -145,7 +145,7 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
     def update_level_enrollment_date():
         get_logger().info("Update level enroll date")
 
-        sql = """SELECT	*
+        sql = """SELECT *
         FROM school_{0}.dbo.StudentCourseItem sci
         WHERE sci.Student_id = {1}
         AND ItemType_id = 2
@@ -157,9 +157,10 @@ def achieve_minimum_class_taken_v2(student_id, **kwargs):
             sql = sql.replace('AND CompleteDate IS NOT NULL', '')
 
         db_suffix = str(student_id)[-1]
-        row = fetch_one(sql.format(db_suffix, student_id), as_dict=False)
-        extra_data = row.ExtraData
-        course_item_id = row.StudentCourseItem_id
+        row = fetch_one(sql.format(db_suffix, student_id), as_dict=True)
+        extra_data = row['ExtraData']
+        course_item_id = row['StudentCourseItem_id']
+
         pattern = r'.*enrollDate":"([\d\-T\:]*)"'
         match = re.match(pattern, extra_data)
 
@@ -334,7 +335,7 @@ def _class_taken_for_online_class(student_id, count, type_code):
           )
         VALUES
          ( '{0}',
-           '700000',
+           '{4}',
            '{1}',
            'Courseware',
            '{2:%Y-%m-%d %I:%M}',
@@ -356,7 +357,8 @@ def _class_taken_for_online_class(student_id, count, type_code):
     end = datetime.now() + timedelta(**HelperConfig.ClassTakenUntil)
 
     for i in range(count):
-        execute_query(sql.format(student_id, type_code, random_date(start, end), get_score()))
+        class_id = 700000 + i
+        execute_query(sql.format(student_id, type_code, random_date(start, end), get_score(), str(class_id)))
 
     clear_booking_mem_cache_by_date_range(student_id)
     clear_online_class_taken_cache(student_id)
