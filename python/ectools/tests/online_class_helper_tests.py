@@ -1,4 +1,6 @@
-from ectools.online_class_helper import get_class_type, allocate_class, set_availability, assign_class
+from ectools.config import set_environment
+from ectools.online_class_helper import get_class_type, allocate_class, set_availability, assign_class, schedule_class, \
+    get_teacher_center
 
 
 def test_get_class_type():
@@ -37,3 +39,17 @@ def test_assign_class():
     class_id = 1130787
     teacher_id = 10708789
     assign_class(class_id, teacher_id)
+
+
+def test_schedule_class():
+    teacher_id = 10708789
+    class_type = 2104
+    start_time = "2020-03-09 22:00:00"
+    schedule_class(teacher_id, class_type, start_time)
+
+
+def test_get_teacher_center_code():
+    set_environment('qa')
+    teacher_id = 10708789
+    center_code = get_teacher_center(teacher_id)
+    print(center_code)

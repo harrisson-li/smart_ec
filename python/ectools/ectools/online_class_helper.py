@@ -1,3 +1,5 @@
+import arrow
+from ectools.db_query import fetch_one
 from ectools.internal.online_class_service_helper import online_class_helper_api
 
 classTypeGroup = {
@@ -154,3 +156,68 @@ def assign_class(class_id: int, teacher_id: int):
         "classId": class_id,
         "teacherMemberId": teacher_id
     })
+
+
+def calculate_time_range(begin_time, shift, count):
+    begin_time = arrow.get(begin_time, 'YYYY-MM-DD HH:mm:ss')
+    start = begin_time.shift(seconds=int(shift) * (count - 1) * 60)
+    statt_time_string = start.format('YYYY-MM-DD HH:mm:ss')
+    end = begin_time.shift(seconds=int(shift) * count * 60)
+    end_time_string = end.format('YYYY-MM-DD HH:mm:ss')
+    start_time = statt_time_string[:10] + 'T' + statt_time_string[11:] + 'Z'
+    end_time = end_time_string[:10] + 'T' + end_time_string[11:] + 'Z'
+
+    return (start_time, end_time)
+
+
+def get_teacher_center(teacher_member_id):
+    """Get a teacher info base on teacher's member id."""
+    sql = """SELECT
+        CenterCode
+        FROM ET_Main..Members
+        INNER JOIN Teachers..Teacher
+        ON Members.MemberId = Teacher.Member_id
+        INNER JOIN Teachers..TeacherProfile
+        ON Members.MemberId = TeacherProfile.TeacherMember_id
+        WHERE MemberId = {}""".format(teacher_member_id)
+
+    return fetch_one(sql, as_dict=False).CenterCode
+
+
+def schedule_class(teacher_member_id, class_type, start_time, class_count=1):
+    """
+        schedule class to teacher.
+    :param teacher_member_id: member id of teacher you want to schedule class
+    :param class_type: class type you want to schedule class
+    :param start_time: start time to schedule class, format "YYYY-MM-DD HH-mm-ss" eg:"2020-03-10 01:00:00"
+    :param class_count: how many class you want to schedule one time (limit to 12)
+    :return class_id_list：class id of all the scheduled classes
+    """
+    if class_count > 12:  # limit maxinum class schedule one time <= 12
+        raise Exception("Only can schedule <=12 classes one time, current value is %d" % (class_count))
+    class_type_list = get_class_type()
+    class_type_dict = [x for x in class_type_list if x['classTypeId'] == class_type][0]
+    service_type = class_type_dict['serviceType']
+    service_subtype = class_type_dict['serviceSubType']
+    level = class_type_dict['level']
+    partner = class_type_dict['partner']
+    market = class_type_dict['market']
+    language = class_type_dict['language']
+    teaching_item = class_type_dict['teachingItem']
+    evc_server = class_type_dict['evcServer']
+    duration = class_type_dict['duration']
+    center_code = get_teacher_center(teacher_member_id)
+    class_id_list = []
+    for i in range(1, class_count + 1):
+        class_id = \
+        allocate_class(service_type, service_subtype, level, partner, market, language, teaching_item, evc_server,
+                       duration,
+                       start_time=calculate_time_range(start_time, class_type_dict['duration'], i)[0],
+                       end_time=calculate_time_range(start_time, class_type_dict['duration'], i)[1],
+                       center_code=center_code, source_type_Code='Allocated')[0]['classId']
+        class_id_list.append(class_id)
+    set_availability(teacher_member_id, calculate_time_range(start_time, class_type_dict['duration'], 1)[0],
+                     calculate_time_range(start_time, class_type_dict['duration'], class_count + 1)[1])
+    for class_id in class_id_list:
+        assign_class(class_id, teacher_member_id)
+    return class_id_list
