@@ -1,42 +1,61 @@
-import requests
-
 from urllib.parse import urljoin
 
-UAT = "uat"
-QA = "qa"
-STG = "stg"
+import requests
 
-current_env = QA
-
-AXIS_URL = {
-    UAT: "https://lolita.englishtown.com",
-    QA: "https://qa.englishtown.com",
-    STG: "http://staging.englishtown.com"
-}[current_env]
+from ectools.config import config
 
 AXIS_API_TOKEN = {
-    UAT: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEsI" +
-         "mlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqd" +
-         "GkiOiJhMjE1NTNkZTAzNzI0OTQxOTU4NTlhYmI0ZDRlMjY5MCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlb" +
-         "WFpbCI6ImZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZ" +
-         "XhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTUzMjY3MTMzOH0.Mk7UndCv-M6usXSOsXWjT24uEShTl_w9h" +
-         "Rmj60TM4svlx5GRMNiGc-1DOva29OqU1MhRuOgJLAz71E2v3fFu5aW8TvkREmJ8XnZOmYHDpNqvEYxOa" +
-         "lpTEd4Og4nVKaAirOQbtyGiHeOYi-cE6Lp6AaJE4y5aqCgAjmwyr5q5WnU",
-    QA: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
-        "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGki" +
-        "OiIxZTE5YmY5M2U4NmY0NDk1OGNlNDljMGQ0NWI2MmNkMCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6I" +
-        "mZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MD" +
-        "IzMDA3OTksImlhdCI6MTUzMjY3MjM0MH0.u3su1QekuCK-Q70vcmW1-MLqUZG-tPgZSAznBWSG0-PIlepNteBi" +
-        "QEjKWH1hBNGLXUTnIQwEJTWrvUkxWSpOBSB2AabOHO5KhAjUM1qF00wC5FRNRHdtKGwxISYSpwWY-bR7mE95RMJ" +
-        "jjZm-5vq6RxtHnIp8ASkeSDdoSZAPAdI",
-    STG: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
-         "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGkiOiI4O" +
-         "WZmMGVlYjZhZTY0NDUzYjMwM2I5NDdiYjc0YjQ2NyIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6ImZyZXNobW" +
-         "VhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MDIzMDA3OTksIml" +
-         "hdCI6MTUzMjY3MjIxMH0.sZBGgKc-ZTwZVI4A_eTRpXlfzzpHBJ3cCCZ1BbiwjDbT4O_pg59_1q3m2jQJUt4c4DAwx" +
-         "hwdv_RjMdxPt_MwBCrU1bZ1vD-FYHplUZJsySssAvVH2VU7-61mKshsrocc5tdcNgN8CcfedXkQk9w0aafr7OCZdjF" +
-         "znSRBjmo9V20"
-}[current_env]
+    'UAT': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEsI" +
+           "mlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqd" +
+           "GkiOiJhMjE1NTNkZTAzNzI0OTQxOTU4NTlhYmI0ZDRlMjY5MCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlb" +
+           "WFpbCI6ImZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZ" +
+           "XhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTUzMjY3MTMzOH0.Mk7UndCv-M6usXSOsXWjT24uEShTl_w9h" +
+           "Rmj60TM4svlx5GRMNiGc-1DOva29OqU1MhRuOgJLAz71E2v3fFu5aW8TvkREmJ8XnZOmYHDpNqvEYxOa" +
+           "lpTEd4Og4nVKaAirOQbtyGiHeOYi-cE6Lp6AaJE4y5aqCgAjmwyr5q5WnU",
+    'UATCN': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEsI" +
+             "mlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqd" +
+             "GkiOiJhMjE1NTNkZTAzNzI0OTQxOTU4NTlhYmI0ZDRlMjY5MCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlb" +
+             "WFpbCI6ImZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZ" +
+             "XhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTUzMjY3MTMzOH0.Mk7UndCv-M6usXSOsXWjT24uEShTl_w9h" +
+             "Rmj60TM4svlx5GRMNiGc-1DOva29OqU1MhRuOgJLAz71E2v3fFu5aW8TvkREmJ8XnZOmYHDpNqvEYxOa" +
+             "lpTEd4Og4nVKaAirOQbtyGiHeOYi-cE6Lp6AaJE4y5aqCgAjmwyr5q5WnU",
+    'QA': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
+          "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGki" +
+          "OiIxZTE5YmY5M2U4NmY0NDk1OGNlNDljMGQ0NWI2MmNkMCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6I" +
+          "mZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MD" +
+          "IzMDA3OTksImlhdCI6MTUzMjY3MjM0MH0.u3su1QekuCK-Q70vcmW1-MLqUZG-tPgZSAznBWSG0-PIlepNteBi" +
+          "QEjKWH1hBNGLXUTnIQwEJTWrvUkxWSpOBSB2AabOHO5KhAjUM1qF00wC5FRNRHdtKGwxISYSpwWY-bR7mE95RMJ" +
+          "jjZm-5vq6RxtHnIp8ASkeSDdoSZAPAdI",
+    'QACN': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
+            "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGki" +
+            "OiIxZTE5YmY5M2U4NmY0NDk1OGNlNDljMGQ0NWI2MmNkMCIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6I" +
+            "mZyZXNobWVhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MD" +
+            "IzMDA3OTksImlhdCI6MTUzMjY3MjM0MH0.u3su1QekuCK-Q70vcmW1-MLqUZG-tPgZSAznBWSG0-PIlepNteBi" +
+            "QEjKWH1hBNGLXUTnIQwEJTWrvUkxWSpOBSB2AabOHO5KhAjUM1qF00wC5FRNRHdtKGwxISYSpwWY-bR7mE95RMJ" +
+            "jjZm-5vq6RxtHnIp8ASkeSDdoSZAPAdI",
+    'Staging': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
+               "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGkiOiI4O" +
+               "WZmMGVlYjZhZTY0NDUzYjMwM2I5NDdiYjc0YjQ2NyIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6ImZyZXNobW" +
+               "VhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MDIzMDA3OTksIml" +
+               "hdCI6MTUzMjY3MjIxMH0.sZBGgKc-ZTwZVI4A_eTRpXlfzzpHBJ3cCCZ1BbiwjDbT4O_pg59_1q3m2jQJUt4c4DAwx" +
+               "hwdv_RjMdxPt_MwBCrU1bZ1vD-FYHplUZJsySssAvVH2VU7-61mKshsrocc5tdcNgN8CcfedXkQk9w0aafr7OCZdjF" +
+               "znSRBjmo9V20",
+    'StagingCN': "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleXMvcHVibGljL2F4aXMvYXhpcy5wZW0ifQ.eyJzdWIiOjEs" +
+                 "ImlzcyI6ImF4aXMuZW5nbGlzaHRvd24uY29tIiwiYXVkIjoiYXhpcy5lbmdsaXNodG93bi5jb20iLCJqdGkiOiI4O" +
+                 "WZmMGVlYjZhZTY0NDUzYjMwM2I5NDdiYjc0YjQ2NyIsIm5hbWUiOiJmcmVzaG1lYXQiLCJlbWFpbCI6ImZyZXNobW" +
+                 "VhdEBxcDEub3JnIiwiZ2VuZGVyIjoiTSIsInJvbGUiOiJTdXBlckFkbWluIiwiZXhwIjoyNTM0MDIzMDA3OTksIml" +
+                 "hdCI6MTUzMjY3MjIxMH0.sZBGgKc-ZTwZVI4A_eTRpXlfzzpHBJ3cCCZ1BbiwjDbT4O_pg59_1q3m2jQJUt4c4DAwx" +
+                 "hwdv_RjMdxPt_MwBCrU1bZ1vD-FYHplUZJsySssAvVH2VU7-61mKshsrocc5tdcNgN8CcfedXkQk9w0aafr7OCZdjF" +
+                 "znSRBjmo9V20"
+}
+
+
+def get_axis_root():
+    return config.axis_root
+
+
+def get_axis_token():
+    return AXIS_API_TOKEN[config.env]
 
 
 class JwtAuthWebRequest:
@@ -147,6 +166,3 @@ class OnlineClassApi(JwtAuthWebRequest):
         if response.status_code != 204:  # no content
             raise Exception(
                 "Request failed, status code: %s, content: %s" % (response.status_code, response.content.decode()))
-
-
-online_class_helper_api = OnlineClassApi(AXIS_URL, AXIS_API_TOKEN)

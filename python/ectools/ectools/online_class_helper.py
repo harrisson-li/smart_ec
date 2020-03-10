@@ -1,8 +1,9 @@
 import arrow
 
 from ectools.db_query import fetch_one
-from ectools.internal.online_class_service_helper import online_class_helper_api
+from ectools.internal.online_class_service_helper import OnlineClassApi, get_axis_root, get_axis_token
 
+# class type for class schedule
 classTypeGroup = {
     "Common": {
         "GL-General-EvcUS1 for all levels": 1001,
@@ -65,114 +66,34 @@ classTypeGroup = {
 }
 
 
-def get_class_type():
-    class_type = online_class_helper_api.get_class_type()
-    return class_type
+def get_arrow_time(time_value):
+    """Convert time value to Arrow object."""
+    return time_value if isinstance(time_value, arrow.Arrow) else arrow.get(time_value)
 
 
-def allocate_class(service_type: str, service_subtype: str, level: str, partner: str, market: str, language: str,
-                   teaching_item: str, evc_server: str, duration: str, start_time: str, end_time: str, center_code: str,
-                   source_type_Code: str):
+def calculate_time_range(begin_time, duration, class_index):
     """
-         Allocate class
-    :param service_type: the class id
-    :param service_subtype: the member id of teacher
-    :param level:
-    :param partner:
-    :param market:
-    :param language:
-    :param teaching_item:
-    :param evc_server:
-    :param duration:
-    :param start_time:
-    :param end_time:
-    :param center_code:
-    :param source_type_Code:
-    :return class_info:
+        calculate start time and end time
+    :param begin_time: begin time for the class schedule plan
+    :param duration: duration of each class
+    :param class_index: class index plan to schedule
+    return (start_time, end_time):
     """
-    class_info = online_class_helper_api.allocate_class({
-        "classes": [
-            {
-                "allocationClassTypes": [
-                    {
-                        "serviceType": service_type,
-                        "serviceSubType": service_subtype,
-                        "level": level,
-                        "partner": partner,
-                        "market": market,
-                        "language": language,
-                        "teachingItem": teaching_item,
-                        "evcServer": evc_server,
-                        "duration": duration
-                    }
-                ],
-                "startTime": start_time,
-                "endTime": end_time,
-                "centerCode": center_code,
-                "sourceTypeCode": source_type_Code
-            }
-        ],
-        "operator": {
-            "operatedBy": "AxisTool",
-            "operatorType": "AxisTool"
-        }
-    })
-    return class_info
+    begin_time = get_arrow_time(begin_time)
+    start_time = begin_time.shift(seconds=int(duration) * (class_index - 1) * 60)
+    start_time_string = start_time.format('YYYY-MM-DD HH:mm:ss')
+    end_time = begin_time.shift(seconds=int(duration) * class_index * 60)
+    end_time_string = end_time.format('YYYY-MM-DD HH:mm:ss')
 
+    # format time string to 2020-03-04T11:00:00Z
+    start_time_string = start_time_string[:10] + 'T' + start_time_string[11:] + 'Z'
+    end_time_string = end_time_string[:10] + 'T' + end_time_string[11:] + 'Z'
 
-def set_availability(teacher_member_id: int, start_time: str, end_time: str):
-    """
-        Set teacher availability.
-    :param teacher_member_id: the member id of teacher
-    :param start_time: start time of teacher's availability
-    :param end_time: end time of teacher's availability
-    """
-    online_class_helper_api.set_availability(
-        {
-            "timeRange": {
-                "startTime": start_time,
-                "endTime": end_time
-            },
-            "teacherCriteria": {
-                "teacherMemberId": teacher_member_id
-            },
-            "availabilities": [
-                {
-                    "teacherMemberId": teacher_member_id,
-                    "startTime": start_time,
-                    "endTime": end_time
-                }
-            ]
-        }
-    )
-
-
-def assign_class(class_id: int, teacher_id: int):
-    """
-        Assign class to teacher.
-    :param class_id: the class id
-    :param teacher_id: the member id of teacher
-    """
-    online_class_helper_api.assign_class({
-        "classId": class_id,
-        "teacherMemberId": teacher_id
-    })
-
-
-def calculate_time_range(begin_time, shift, count):
-    begin_time = arrow.get(begin_time, 'YYYY-MM-DD HH:mm:ss')
-    start = begin_time.shift(seconds=int(shift) * (count - 1) * 60)
-    statt_time_string = start.format('YYYY-MM-DD HH:mm:ss')
-    end = begin_time.shift(seconds=int(shift) * count * 60)
-    end_time_string = end.format('YYYY-MM-DD HH:mm:ss')
-    start_time = statt_time_string[:10] + 'T' + statt_time_string[11:] + 'Z'
-    end_time = end_time_string[:10] + 'T' + end_time_string[11:] + 'Z'
-
-    return (start_time, end_time)
+    return (start_time_string, end_time_string)
 
 
 def get_teacher_center(teacher_member_id):
-    """Get a teacher info base on teacher's member id."""
+    """Get a teacher's centercode base on teacher's member id."""
     sql = """SELECT
         CenterCode
         FROM ET_Main..Members
@@ -182,43 +103,148 @@ def get_teacher_center(teacher_member_id):
         ON Members.MemberId = TeacherProfile.TeacherMember_id
         WHERE MemberId = {}""".format(teacher_member_id)
 
-    return fetch_one(sql,as_dict=True)['CenterCode']
+    return fetch_one(sql, as_dict=True)['CenterCode']
 
 
-def schedule_class(teacher_member_id, class_type, start_time, class_count=1):
-    """
-        schedule class to teacher.
-    :param teacher_member_id: member id of teacher you want to schedule class
-    :param class_type: class type you want to schedule class
-    :param start_time: start time to schedule class, format "YYYY-MM-DD HH-mm-ss" eg:"2020-03-10 01:00:00"
-    :param class_count: how many class you want to schedule one time (limit to 12)
-    :return class_id_list：class id of all the scheduled classes
-    """
-    if class_count > 12:  # limit maxinum class schedule one time <= 12
-        raise Exception("Only can schedule <=12 classes one time, current value is %d" % (class_count))
-    class_type_list = get_class_type()
-    class_type_dict = [x for x in class_type_list if x['classTypeId'] == class_type][0]
-    service_type = class_type_dict['serviceType']
-    service_subtype = class_type_dict['serviceSubType']
-    level = class_type_dict['level']
-    partner = class_type_dict['partner']
-    market = class_type_dict['market']
-    language = class_type_dict['language']
-    teaching_item = class_type_dict['teachingItem']
-    evc_server = class_type_dict['evcServer']
-    duration = class_type_dict['duration']
-    center_code = get_teacher_center(teacher_member_id)
-    class_id_list = []
-    for i in range(1, class_count + 1):
-        class_id = \
-        allocate_class(service_type, service_subtype, level, partner, market, language, teaching_item, evc_server,
-                       duration,
-                       start_time=calculate_time_range(start_time, class_type_dict['duration'], i)[0],
-                       end_time=calculate_time_range(start_time, class_type_dict['duration'], i)[1],
-                       center_code=center_code, source_type_Code='Allocated')[0]['classId']
-        class_id_list.append(class_id)
-    set_availability(teacher_member_id, calculate_time_range(start_time, class_type_dict['duration'], 1)[0],
-                     calculate_time_range(start_time, class_type_dict['duration'], class_count + 1)[1])
-    for class_id in class_id_list:
-        assign_class(class_id, teacher_member_id)
-    return class_id_list
+class OnlineClassHelper():
+    def __init__(self):
+        self.__api = OnlineClassApi(get_axis_root(), get_axis_token())
+
+    def get_class_type(self):
+        class_type = self.__api.get_class_type()
+        return class_type
+
+    def allocate_class(self, service_type: str, service_subtype: str, level: str, partner: str, market: str,
+                       language: str,
+                       teaching_item: str, evc_server: str, duration: str, start_time: str, end_time: str,
+                       center_code: str,
+                       source_type_Code: str):
+        """
+             Allocate class
+        :param service_type: the class id
+        :param service_subtype: the member id of teacher
+        :param level:
+        :param partner:
+        :param market:
+        :param language:
+        :param teaching_item:
+        :param evc_server:
+        :param duration:
+        :param start_time:
+        :param end_time:
+        :param center_code:
+        :param source_type_Code:
+        :return class_info:
+        """
+        class_info = self.__api.allocate_class({
+            "classes": [
+                {
+                    "allocationClassTypes": [
+                        {
+                            "serviceType": service_type,
+                            "serviceSubType": service_subtype,
+                            "level": level,
+                            "partner": partner,
+                            "market": market,
+                            "language": language,
+                            "teachingItem": teaching_item,
+                            "evcServer": evc_server,
+                            "duration": duration
+                        }
+                    ],
+                    "startTime": start_time,
+                    "endTime": end_time,
+                    "centerCode": center_code,
+                    "sourceTypeCode": source_type_Code
+                }
+            ],
+            "operator": {
+                "operatedBy": "Automation",
+                "operatorType": "Automation"
+            }
+        })
+        return class_info
+
+    def set_availability(self, teacher_member_id: int, start_time: str, end_time: str):
+        """
+            Set teacher availability.
+        :param teacher_member_id: the member id of teacher
+        :param start_time: start time of teacher's availability
+        :param end_time: end time of teacher's availability
+        """
+        self.__api.set_availability(
+            {
+                "timeRange": {
+                    "startTime": start_time,
+                    "endTime": end_time
+                },
+                "teacherCriteria": {
+                    "teacherMemberId": teacher_member_id
+                },
+                "availabilities": [
+                    {
+                        "teacherMemberId": teacher_member_id,
+                        "startTime": start_time,
+                        "endTime": end_time
+                    }
+                ]
+            }
+        )
+
+    def assign_class(self, class_id: int, teacher_id: int):
+        """
+            Assign class to teacher.
+        :param class_id: the class id
+        :param teacher_id: the member id of teacher
+        """
+        self.__api.assign_class({
+            "classId": class_id,
+            "teacherMemberId": teacher_id
+        })
+
+    def schedule_class(self, teacher_member_id, class_type, start_time, class_count=1):
+        """
+            schedule class to teacher.
+        :param teacher_member_id: member id of teacher you want to schedule class
+        :param class_type: class type you want to schedule class, refer classTypeGroup dict
+        :param start_time: start time to schedule class, format "YYYY-MM-DD HH-mm-ss" eg:"2020-03-10 01:00:00"
+        :param class_count: how many class you want to schedule one time (limit to 12)
+        :return class_id_list：class id of all the scheduled classes
+        """
+        if class_count > 12:  # limit maxinum class schedule one time <= 12
+            raise ValueError("Only can schedule <=12 classes one time, current value is %d" % (class_count))
+        class_type_list = self.get_class_type()
+        class_type_dict = [x for x in class_type_list if x['classTypeId'] == class_type][0]
+
+        # generate params from class_type_dict for api calls
+        service_type = class_type_dict['serviceType']
+        service_subtype = class_type_dict['serviceSubType']
+        level = class_type_dict['level']
+        partner = class_type_dict['partner']
+        market = class_type_dict['market']
+        language = class_type_dict['language']
+        teaching_item = class_type_dict['teachingItem']
+        evc_server = class_type_dict['evcServer']
+        duration = class_type_dict['duration']
+        center_code = get_teacher_center(teacher_member_id)
+
+        # allocate class and get the allocated class id list
+        class_id_list = []
+        for i in range(1, class_count + 1):
+            class_id = \
+                self.allocate_class(service_type, service_subtype, level, partner, market, language, teaching_item,
+                                    evc_server,
+                                    duration,
+                                    start_time=calculate_time_range(start_time, class_type_dict['duration'], i)[0],
+                                    end_time=calculate_time_range(start_time, class_type_dict['duration'], i)[1],
+                                    center_code=center_code, source_type_Code='Allocated')[0]['classId']
+            class_id_list.append(class_id)
+
+        # set availability for teacher
+        self.set_availability(teacher_member_id, calculate_time_range(start_time, class_type_dict['duration'], 1)[0],
+                              calculate_time_range(start_time, class_type_dict['duration'], class_count)[1])
+
+        # assign class from the class id list to teacher
+        for class_id in class_id_list:
+            self.assign_class(class_id, teacher_member_id)
+        return class_id_list
