@@ -121,6 +121,7 @@ def _setup():
     config.etown_root = env['etown_url']
     config.etown_root_http = config.etown_root.replace('https', 'http')
     config.oboe_root = env['oboe_url']
+    config.axis_root = env['axis_url']
 
 
 def is_api_available():

@@ -26,6 +26,7 @@ class Configuration(Base):
     etown_root = ''  # https default
     etown_root_http = ''
     oboe_root = '',
+    axis_root = ''
     browser_id = 'internal_browser'
     browser_type = 'Chrome'
     browser_headless = False
