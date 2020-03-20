@@ -162,6 +162,7 @@ def activate_account(product_id=None,
     is_lite = is_lite_product(product)
     is_phoenix = is_phoenix_product(product)
     is_trial = is_trial_product(product)
+    is_smart_plus = is_smart_plus_product(product)
 
     # check eclite product should match eclite center
     if is_lite:
@@ -194,6 +195,7 @@ def activate_account(product_id=None,
     student['is_phoenix'] = is_phoenix
     student['is_trial'] = is_trial
     student['is_e19'] = is_e19
+    student['is_smart_plus'] = is_smart_plus
     student['source'] = kwargs.pop('source', 'ectools')
 
     link = get_activate_account_link(student['is_e10'])
@@ -226,6 +228,10 @@ def activate_account(product_id=None,
 
     assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
 
+    # For smart plus product, need phoenix_packs provided, don't need center pack + online pack
+    if is_smart_plus:
+        assert len(phoenix_packs) > 0
+
     # if phoenix_pack provided, will ignore 'center_pack' and 'online_pack' in argument
     if len(phoenix_packs):
         include_center_pack = False
@@ -246,7 +252,7 @@ def activate_account(product_id=None,
         if is_trial:
             phoenix_packs = ['Phoenix Free Trial']
 
-        generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack)
+        generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack, is_smart_plus)
         student['is_v1_pack'] = is_v1_pack
 
     # post the data to activation tool
@@ -498,6 +504,23 @@ def activate_e19_phoenix_student(**kwargs):
 
     if 'is_v1_pack' not in kwargs:
         kwargs['is_v1_pack'] = False
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_e19_smart_plus_pro_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_smart_plus_pro_product(**kwargs)['id']
+
+    if 'phoenix_packs' not in kwargs:
+        kwargs['phoenix_packs'] = ['Smart Plus Pro']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
 
     return activate_account_by_dict(kwargs)
 

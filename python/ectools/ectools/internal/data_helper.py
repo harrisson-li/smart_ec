@@ -222,6 +222,13 @@ def get_any_phoenix_product(by_partner=None, **kwargs):
     return get_random_item(found)
 
 
+def get_smart_plus_pro_product(by_partner=None, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
+             if is_item_has_tag(x, 'Smart plus Pro')]
+
+    return get_random_item(found)
+
+
 def get_eclite_products(partner=None, **kwargs):
     from ectools.config import config
     if partner is None:
@@ -331,6 +338,13 @@ def is_phoenix_product(product):
         product = get_product_by_id(product)
 
     return is_item_has_tag(product, 'Phoenix')
+
+
+def is_smart_plus_product(product):
+    if not isinstance(product, dict):
+        product = get_product_by_id(product)
+
+    return is_item_has_tag(product, 'Smart Plus')
 
 
 def is_trial_product(product):
