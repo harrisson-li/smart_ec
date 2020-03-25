@@ -30,12 +30,12 @@ output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'tests')
-pypi_dir = r"\\cns-etnexus\pypi\ectools"
+pypi_dir = r"\\DESKTOP-0FKD0NP\pypi\ectools"
 setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
-version_file = r"\\cns-etnexus\pypi\ectools\version.txt"
+version_file = r"\\DESKTOP-0FKD0NP\pypi\ectools\version.txt"
 
 
 def prepare():
@@ -94,7 +94,7 @@ def make_package():
             last_build = max(glob.iglob(pypi_dir + '/*.gz'), key=os.path.getctime)
             print("Latest build on server: {}".format(last_build))
 
-            last_version = re.search('([\d.]+)', last_build).group(1)[0:-1]  # e.g. 1.5.33
+            last_version = re.search('(\d+\.)+', last_build).group(0)[0:-1]  # e.g. 1.5.33
             current_version = update_version(int(last_version.split('.')[2]) + 1)
 
             # save current version to version file

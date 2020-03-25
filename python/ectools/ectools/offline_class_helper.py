@@ -194,16 +194,14 @@ def _get_past_class_item(class_category_id, student_id):
     AND EndDate < GETDATE() + {2}
     AND IsPublished = 1
     AND IsDeleted = 0
-    AND ScheduledClass_id NOT IN (
-	SELECT ScheduledClass_id FROM oboe.dbo.Booking
-	WHERE Student_id = {3}
-	AND BookingStatus_id NOT IN (0,4))
+    AND ScheduledClass_id NOT IN (SELECT ScheduledClass_id 
+    FROM oboe.dbo.Booking WHERE Student_id = {3} AND BookingStatus_id NOT IN (0,4))
     """
 
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
                                 HelperConfig.ClassTakenUntil['days'],
-                                student_id), as_dict=False)
+                                student_id), as_dict=True)
 
 
 def _get_coupon_count(student_id, coupon_type_id):
