@@ -35,6 +35,6 @@ class Configuration(Base):
     default_retry_times = 3
     db_path = 'to_be_set'
     remote_api = 'http://cnshhq-w0633/api/'
-    smart_repo = r'\\DESKTOP-0FKD0NP\Shared\git\smart'
-    version_file = r"\\DESKTOP-0FKD0NP\pypi\ectools\version.txt"
-    version_url = 'http://10.128.42.94:8081/pypi/ectools/version.txt'
+    smart_repo = r'\\cnshhq-w0633\Shared\git\smart'
+    version_file = r"\\cnshhq-w0633\pypi\ectools\version.txt"
+    version_url = 'http://10.128.42.214:8081/pypi/ectools/version.txt'
