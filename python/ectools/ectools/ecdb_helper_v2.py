@@ -27,7 +27,7 @@ from .ecdb_helper import _to_insert_values, _to_query_clause
 from .internal.objects import Cache
 from .logger import get_logger
 
-_connection_info = ('10.128.34.249', 'TestUser', 'testuserdev', 'TestAutomation')
+_connection_info = ('10.179.236.72', 'TestUser', 'testuserdev', 'TestAutomation')
 _connection_info_bak = ('den1.mssql6.gear.host', 'ecdb', 'Fi8808P?4s~A', 'ecdb')
 
 

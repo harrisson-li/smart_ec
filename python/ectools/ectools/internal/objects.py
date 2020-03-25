@@ -34,7 +34,7 @@ class Configuration(Base):
     default_poll_time = 0.5
     default_retry_times = 3
     db_path = 'to_be_set'
-    remote_api = 'http://cns-qaauto5/api/'
-    smart_repo = r'\\cns-qaauto5\Shared\git\smart'
-    version_file = r"\\cns-etnexus\pypi\ectools\version.txt"
-    version_url = 'http://jenkins.englishtown.com:8081/pypi/ectools/version.txt'
+    remote_api = 'http://cnshhq-w0633/api/'
+    smart_repo = r'\\DESKTOP-0FKD0NP\Shared\git\smart'
+    version_file = r"\\DESKTOP-0FKD0NP\pypi\ectools\version.txt"
+    version_url = 'http://10.128.42.94:8081/pypi/ectools/version.txt'
