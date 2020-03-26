@@ -36,7 +36,7 @@ namespace CAS.Core.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=CNS-ETDEVDB;Initial Catalog=Oboe;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.179.236.72;Initial Catalog=Oboe;Integrated Security=True")]
         public string OboeConnectionString1 {
             get {
                 return ((string)(this["OboeConnectionString1"]));
