@@ -1,5 +1,5 @@
 """
-This module is a shortcut to query db: CNS-ETDEVDB / TestAutomation
+This module is a shortcut to query db: 10.179.236.72 / TestAutomation
 
 Due to performance and stability reason, we will use this DB as a backup for test data.
 For long term, we might retire sqlite. The usage for this module is similar as ecdb_module.
@@ -37,7 +37,7 @@ def _connect():
             Cache.ecdb_conn_v2 = pymssql.connect(*_connection_info, login_timeout=10)
             Cache.ecdb_cur_v2 = Cache.ecdb_conn_v2.cursor()
         except Exception as e:
-            get_logger().warn("Error connecting CNS-ETDEVDB, fallback to den1.mssql6.gear.host, Error info: {}".format(e.args))
+            get_logger().warn("Error connecting 10.179.236.72, fallback to den1.mssql6.gear.host, Error info: {}".format(e.args))
             Cache.ecdb_conn_v2 = pymssql.connect(*_connection_info_bak, login_timeout=10)
             Cache.ecdb_cur_v2 = Cache.ecdb_conn_v2.cursor()
     return Cache.ecdb_conn_v2

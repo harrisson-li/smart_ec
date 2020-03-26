@@ -1,4 +1,4 @@
-INSERT INTO databases (name, domain, server, user, password, tags) VALUES ('UAT', 'all', 'CNS-ETDEVDB', 'TestUser', 'testuserdev', '');
+INSERT INTO databases (name, domain, server, user, password, tags) VALUES ('UAT', 'all', '10.179.236.72', 'TestUser', 'testuserdev', '');
 INSERT INTO databases (name, domain, server, user, password, tags) VALUES ('QA', 'all', '10.162.102.73', 'TestUser', 'testuserqa', '');
 INSERT INTO databases (name, domain, server, user, password, tags) VALUES ('Staging', 'all', '10.162.106.91', 'tempuser', 'tempuserstg', '');
 INSERT INTO databases (name, domain, server, user, password, tags) VALUES ('Live', 'cn', '10.17.4.158', 'etownreader', 'fishing22', '');
