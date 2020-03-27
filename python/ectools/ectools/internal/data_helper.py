@@ -91,12 +91,18 @@ def get_product_by_id(product, **kwargs):
     else:
         is_e19 = False
 
+    if 'is_smart_plus' in kwargs:
+        is_smart_plus = kwargs['is_smart_plus']
+    else:
+        is_smart_plus = False
+
     found = [x for x in get_all_products()
              if int(x['id']) == int(product_id)]
 
     # if more results found, filter by s18, else ignore it
     if len(found) > 1:
-        found = [x for x in found if (is_item_has_tag(x, 'S18') == is_s18 and is_item_has_tag(x, 'E19') == is_e19)]
+        found = [x for x in found if (is_item_has_tag(x, 'S18') == is_s18 and is_item_has_tag(x, 'E19') == is_e19
+                                      and is_item_has_tag(x, 'Smart_Plus') == is_smart_plus)]
 
     assert len(found), "No such product: {}!".format(product_id)
     return found[0]
@@ -117,11 +123,17 @@ def get_default_product(partner=None, **kwargs):
     else:
         is_e19 = False
 
+    if 'is_smart_plus' in kwargs:
+        is_smart_plus = kwargs['is_smart_plus']
+    else:
+        is_smart_plus = False
+
     return [x for x in get_all_products()
             if is_item_has_tag(x, 'default')
             and x['partner'].lower() == partner.lower()
             and is_item_has_tag(x, 'S18') == is_s18
-            and is_item_has_tag(x, 'E19') == is_e19][0]
+            and is_item_has_tag(x, 'E19') == is_e19
+            and is_item_has_tag(x, 'Smart_Plus') == is_smart_plus][0]
 
 
 def is_s18_product(product):
@@ -132,6 +144,11 @@ def is_s18_product(product):
 def is_e19_product(product):
     assert isinstance(product, dict)
     return is_item_has_tag(product, 'E19')
+
+
+def is_smart_plus_product(product):
+    assert isinstance(product, dict)
+    return is_item_has_tag(product, 'Smart_Plus')
 
 
 def get_products_has_tag(tag):
@@ -160,11 +177,28 @@ def get_products_by_partner(by_partner=None, **kwargs):
     else:
         is_e19 = False
 
+    if 'is_smart_plus' in kwargs:
+        is_smart_plus = kwargs['is_smart_plus']
+    else:
+        is_smart_plus = False
+
     return [x for x in get_all_products() if
             x['partner'].lower() == by_partner.lower()
             and is_item_has_tag(x, 'E10') == is_e10
             and is_item_has_tag(x, 'S18') == is_s18
-            and is_item_has_tag(x, 'E19') == is_e19]
+            and is_item_has_tag(x, 'E19') == is_e19
+            and is_item_has_tag(x, 'Smart_Plus') == is_smart_plus]
+
+
+def get_product_by_product_name(product_name, by_partner=None):
+    from ectools.config import config
+
+    if by_partner is None:
+        by_partner = config.partner
+
+    return [x for x in get_all_products() if
+            x['partner'].lower() == by_partner.lower()
+            and x['name'] == product_name][0]
 
 
 def get_any_product(by_partner=None, **kwargs):
@@ -224,7 +258,21 @@ def get_any_phoenix_product(by_partner=None, **kwargs):
 
 def get_smart_plus_pro_product(by_partner=None, **kwargs):
     found = [x for x in get_products_by_partner(by_partner, **kwargs)
-             if is_item_has_tag(x, 'Smart plus Pro')]
+             if is_item_has_tag(x, 'Pro')]
+
+    return get_random_item(found)
+
+
+def get_smart_plus_flex_center_product(by_partner=None, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
+             if is_item_has_tag(x, 'Flex_Center')]
+
+    return get_random_item(found)
+
+
+def get_smart_plus_flex_ts_product(by_partner=None, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
+             if is_item_has_tag(x, 'Flex_TS')]
 
     return get_random_item(found)
 
@@ -338,13 +386,6 @@ def is_phoenix_product(product):
         product = get_product_by_id(product)
 
     return is_item_has_tag(product, 'Phoenix')
-
-
-def is_smart_plus_product(product):
-    if not isinstance(product, dict):
-        product = get_product_by_id(product)
-
-    return is_item_has_tag(product, 'Smart Plus')
 
 
 def is_trial_product(product):

@@ -321,3 +321,26 @@ def test_activate_s18_legacy_account():
     student_legacy = activate_account(is_s18=True, is_e19=False, includeenroll=True)
     assert student_legacy['member_id'] is not None
 
+
+def test_activate_smart_plus_pro_account():
+    set_environment('qa')
+    set_partner('socn')
+    activate_smart_plus_pro_student(includeenroll=True, product_id=173)
+
+
+def test_activate_smart_plus_flex_center_account():
+    set_environment('qacn')
+    set_partner('socn')
+    activate_smart_plus_flex_center_student(includeenroll=True, product_id=173)
+    activate_smart_plus_flex_center_student(includeenroll=True)
+
+
+def test_activate_smart_plus_flex_ts_account():
+    set_environment('qa')
+    set_partner('socn')
+    activate_smart_plus_flex_ts_student(includeenroll=True)
+    activate_smart_plus_flex_ts_student(includeenroll=True, phoenix_packs=['Smart Plus - Flex TS - 1YPL'])
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=True, product_id=162)
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=True)
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
+                     phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
