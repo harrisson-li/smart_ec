@@ -555,6 +555,12 @@ def activate_smart_plus_flex_center_student(**kwargs):
 
 
 def activate_smart_plus_flex_ts_student(**kwargs):
+    """
+    If you want to pass flex ts related pack, can refer following packs:
+    'Smart Plus - Flex TS - 1YGL'
+    'Smart Plus - Flex TS - 1YPL'
+    'Smart Plus - Flex TS - 1YPL+'
+    """
     kwargs['is_s18'] = False
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
