@@ -428,13 +428,13 @@ def ensure_safe_query(sql):
     """Should not allow dangerous query."""
     sql = sql.lower()
 
-    if 'select' in sql:
+    if sql.startswith('select'):
         assert 'top' in sql or 'where' in sql, 'Do not allow SELECT without TOP or WHERE!'
 
-    if 'update' in sql:
+    if sql.startswith('update'):
         assert 'where' in sql, 'Do not allow UPDATE without WHERE!'
 
-    if 'delete' in sql:
+    if sql.startswith('delete'):
         assert 'where' in sql, 'Do not allow DELETE without WHERE!'
 
 
