@@ -96,9 +96,11 @@ def get_set_oc_url():
     url = '{}/services/oboe2/salesforce/test/SetOC'
     return url.format(config.etown_root_http)
 
+
 def get_activate_oboe_package_link():
     url = '{}/services/oboe2/salesforce/test/ActivatePackage'
     return url.format(config.etown_root_http)
+
 
 def get_success_message(student):
     if student['is_phoenix']:
@@ -160,7 +162,7 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
-def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
+def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
     assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
 
     for i, name in enumerate(phoenix_packs):
@@ -174,7 +176,11 @@ def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True):
     data['DaysOfExpiredCouponRetention'] = 30
     data['RedemptionCode'] = data['mainRedemptionCode']
     data['RedemptionQty'] = data['mainRedemptionQty']
-    data['ExtendSubscriptionType'] = 'FromNow'
+
+    if not is_smart_plus:
+        data['ExtendSubscriptionType'] = 'FromNow'
+    else:
+        data['ExtendSubscriptionType'] = 'FromExpiredDate'
 
     to_be_deleted = ['includesenroll', 'mainRedemptionCode', 'mainRedemptionQty',
                      'startLevel', 'levelQty', 'productId', 'freeRedemptionCode',
