@@ -273,3 +273,8 @@ def test_get_student_coupon_info():
     set_environment('uat')
     coupon_info = get_student_coupon_info(24006538)
     assert_that(coupon_info['IsSuccess']).is_true()
+
+
+def test_get_student_enrollments_info():
+    set_environment('uat')
+    assert_that(get_current_level_number(24010365)).is_equal_to(2)
