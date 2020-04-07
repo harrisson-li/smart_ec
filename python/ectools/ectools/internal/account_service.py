@@ -34,7 +34,7 @@ def append_token(url, join_by='&'):
 
 def get_new_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/CreateMemberFore14hz?ctr={}&partner={}'
-    url = url.format(config.etown_root_http, config.country_code, config.partner)
+    url = url.format(config.etown_root, config.country_code, config.partner)
 
     if is_e10:
         url = url.replace('e14hz', config.partner)
@@ -46,7 +46,7 @@ def get_new_account_link(is_e10):
 
 def get_activate_account_link(is_e10):
     url = '{}/services/oboe2/salesforce/test/ActivateV2'
-    url = url.format(config.etown_root_http)
+    url = url.format(config.etown_root)
 
     if is_e10:
         url = url.replace('V2', 'E10')
@@ -56,7 +56,7 @@ def get_activate_account_link(is_e10):
 
 def get_activate_pack_link():
     url = '{}/services/Oboe2/SalesForce/test/ActivatePack?r=json'
-    url = url.format(config.etown_root_http)
+    url = url.format(config.etown_root)
     return append_token(url)
 
 
@@ -66,39 +66,39 @@ def get_login_post_link():
 
 def get_beginner_questionnaire_link():
     url = '{}/services/api/proxy/commandproxy/ecplatform/ecapi_myaccount_beginnerquestionnaire/UpdateAnswers'
-    return url.format(config.etown_root_http)
+    return url.format(config.etown_root)
 
 
 def get_level0_tool_link():
     url = '{}/services/ecsystem/Tools/Level0'
-    url = url.format(config.etown_root_http)
+    url = url.format(config.etown_root)
     return append_token(url).replace('&', '?')
 
 
 def get_e19_course_info_link():
     url = '{}/services/ecsystem/Tools/Level0/MarkEnrollingToL0GE?'
-    url = url.format(config.etown_root_http)
+    url = url.format(config.etown)
     return append_token(url).replace('&', '')
 
 
 def get_s18_course_info_link():
     url = '{}/services/ecsystem/Tools/Level0/MarkEnrollingToGE?'
-    url = url.format(config.etown_root_http)
+    url = url.format(config.etown_root)
     return append_token(url).replace('&', '')
 
 
 def get_mobile_enroll_url():
     url = '{}/ecplatform/mvc/mobile/enrollcourse'
-    return url.format(config.etown_root_http)
+    return url.format(config.etown_root)
 
 
 def get_set_oc_url():
     url = '{}/services/oboe2/salesforce/test/SetOC'
-    return url.format(config.etown_root_http)
+    return url.format(config.etown_root)
 
 def get_activate_oboe_package_link():
     url = '{}/services/oboe2/salesforce/test/ActivatePackage'
-    return url.format(config.etown_root_http)
+    return url.format(config.etown_root)
 
 def get_success_message(student):
     if student['is_phoenix']:

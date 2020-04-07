@@ -519,20 +519,23 @@ def get_student_coupon_info(student_id):
     """
     Get the student coupon info
     :param student_id
-    :return: coupon info, eg. {'ClassicCoupons': [{'CouponName': 'F2F', 'Count': 5},
-                                                  {'CouponName': 'Workshop', 'Count': 5},
-                                                  {'CouponName': 'LifeClub', 'Count': 5}],
-                               'LegacyCoupons': [{'CouponName': 'F2F', 'Count': 5},
-                                                 {'CouponName': 'Workshop', 'Count': 5},
-                                                 {'CouponName': 'LifeClub', 'Count': 5}],
-                               'MergedCoupons': [{'CouponName': 'F2F', 'Count': 5},
-                                                 {'CouponName': 'Workshop', 'Count': 5},
-                                                 {'CouponName': 'LifeClub', 'Count': 5}],
-                               'SpecialCoupons': [],
-                               'OnlineCoupons': [{'CouponName': 'PL40', 'Count': 50},
-                                                 {'CouponName': 'GL', 'Count': 155}],
-                               'IsSuccess': True,
-                               'Message': ''}
+    :return: coupon info, eg.
+{
+    'ClassicCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                       {'CouponName': 'Workshop', 'Count': 5},
+                       {'CouponName': 'LifeClub', 'Count': 5}],
+    'LegacyCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                      {'CouponName': 'Workshop', 'Count': 5},
+                      {'CouponName': 'LifeClub', 'Count': 5}],
+    'MergedCoupons': [{'CouponName': 'F2F', 'Count': 5},
+                      {'CouponName': 'Workshop', 'Count': 5},
+                      {'CouponName': 'LifeClub', 'Count': 5}],
+    'SpecialCoupons': [],
+    'OnlineCoupons': [{'CouponName': 'PL40', 'Count': 50},
+                      {'CouponName': 'GL', 'Count': 155}],
+    'IsSuccess': True,
+    'Message': ''
+}
     """
     target_url = config.etown_root + STUDENT_COUPONS['URL']
     data = {
@@ -541,6 +544,274 @@ def get_student_coupon_info(student_id):
 
     response = no_ssl_requests().post(target_url, data=data)
     return response.json()
+
+
+def get_student_enrollments_info(student_id):
+    """
+    Get the student enrollments info
+    :param student_id:
+    :return: enrollments info, eg.
+{
+    "EnrolledGEStageLevels": [
+        "5"
+    ],
+    "EnrolledGELevels": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+    ],
+    "EnrolledGELevelsValidation": {
+        "ErrorLevel": null,
+        "ErrorLevelString": "",
+        "Cause": null
+    },
+    "CurrentLocation": {
+        "StudentCourse": {
+            "CourseItemId": 10000014,
+            "StudentCourseItemId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+            "CourseVersion": "2.0.1.0",
+            "StatusId": 0
+        },
+        "StudentLevel": {
+            "CourseItemId": 20000754,
+            "StudentCourseItemId": "fa1b4aec-3044-4a4e-be9a-f08040a54f4c",
+            "CourseVersion": "2.0.1.0",
+            "StatusId": 0
+        },
+        "StudentUnit": {
+            "CourseItemId": 30003007,
+            "StudentCourseItemId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+            "CourseVersion": "2.0.1.0",
+            "StatusId": 0
+        },
+        "StudentLesson": {
+            "CourseItemId": 40013234,
+            "StudentCourseItemId": "076c0d91-5de9-4e96-9739-d96588da11b5",
+            "CourseVersion": "2.0.1.0",
+            "StatusId": 0
+        }
+    },
+    "CurrentGECourseLocation": {
+        "CourseVersion": "2.0.1.0",
+        "CourseId": 10000014,
+        "CourseTypeCode": "GE",
+        "Levels": [
+            {
+                "RootStudentCourseItemId": "00000000-0000-0000-0000-000000000000",
+                "StudentLevelId": "00000000-0000-0000-0000-000000000000",
+                "LevelId": 20000754,
+                "LevelCode": "5",
+                "LevelNo": 7,
+                "StartDate": null,
+                "CourseVersion": null,
+                "EnrollDate": null,
+                "Units": [
+                    {
+                        "UnitId": 30003007,
+                        "UnitNo": 1,
+                        "UnitName": null,
+                        "StatusId": 0,
+                        "CourseVersion": null,
+                        "RootStudentCourseItemId": "00000000-0000-0000-0000-000000000000",
+                        "StudentUnitId": "00000000-0000-0000-0000-000000000000",
+                        "Lessons": [
+                            {
+                                "LessonId": 40013234,
+                                "LessonNo": 1,
+                                "PCPassed": false,
+                                "MOBPassed": false,
+                                "LessonName": null,
+                                "LessonDescr": null,
+                                "LessonImage": null
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "StudentGELevels": [
+        {
+            "StudentLevelId": "fa1b4aec-3044-4a4e-be9a-f08040a54f4c",
+            "StudentId": 24010444,
+            "TemplateLevelId": 20000754,
+            "CourseVersion": "2.0.1.0",
+            "LevelName": "getTrans::176689",
+            "ParentId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+            "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+            "LevelNo": 7,
+            "LevelCode": "5",
+            "LegacyLevelId": 548,
+            "HasCertificate": false,
+            "CertificateDate": null,
+            "StatusId": 0,
+            "Score": null,
+            "StartDate": null,
+            "CompleteDate": null,
+            "LastModifiedDate": "2020-04-03T06:15:11.127",
+            "StudentUnits": [
+                {
+                    "StudentUnitId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+                    "StudentId": 24010444,
+                    "TemplateUnitId": 30003007,
+                    "CourseVersion": "2.0.1.0",
+                    "UnitName": "getTrans::479205",
+                    "ParentId": "fa1b4aec-3044-4a4e-be9a-f08040a54f4c",
+                    "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+                    "UnitNo": 1,
+                    "UnitImage": "getMedia::179958",
+                    "UnitDescr": null,
+                    "LegacyUnitId": 1990,
+                    "StatusId": 0,
+                    "Score": null,
+                    "StartDate": null,
+                    "CompleteDate": null,
+                    "LastModifiedDate": "2020-04-03T06:15:11.127",
+                    "StudentLessons": [
+                        {
+                            "StudentLessonId": "076c0d91-5de9-4e96-9739-d96588da11b5",
+                            "StudentId": 24010444,
+                            "TemplateLessonId": 40013234,
+                            "CourseVersion": "2.0.1.0",
+                            "LessonName": "getTrans::479206",
+                            "LessonNo": 1,
+                            "LessonImage": "getMedia::130099",
+                            "LessonDescr": "getTrans::664775",
+                            "LessonTypeId": 1,
+                            "LegacyLessonId": 8515,
+                            "ParentId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+                            "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+                            "StatusId": 0,
+                            "Score": null,
+                            "StartDate": null,
+                            "CompleteDate": null,
+                            "LastModifiedDate": "2020-04-03T06:15:11.583",
+                            "StudentSteps": [ ],
+                            "CreateDate": "2020-04-03T06:15:00",
+                            "ItemTypeId": 4,
+                            "TimeSpentInMins": null,
+                            "PCPassed": false,
+                            "MOBPassed": false
+                        },
+                        {
+                            "StudentLessonId": "af139039-df6a-4e6a-ad8a-c842bac3b1df",
+                            "StudentId": 24010444,
+                            "TemplateLessonId": 40013235,
+                            "CourseVersion": "2.0.1.0",
+                            "LessonName": "getTrans::479212",
+                            "LessonNo": 2,
+                            "LessonImage": "getMedia::130100",
+                            "LessonDescr": "getTrans::664794",
+                            "LessonTypeId": 1,
+                            "LegacyLessonId": 8516,
+                            "ParentId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+                            "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+                            "StatusId": 0,
+                            "Score": null,
+                            "StartDate": null,
+                            "CompleteDate": null,
+                            "LastModifiedDate": "2020-04-03T06:15:11.127",
+                            "StudentSteps": [ ],
+                            "CreateDate": "2020-04-03T06:15:00",
+                            "ItemTypeId": 4,
+                            "TimeSpentInMins": null,
+                            "PCPassed": false,
+                            "MOBPassed": false
+                        },
+                        {
+                            "StudentLessonId": "8a4f8463-587d-47fb-8323-a23d18300291",
+                            "StudentId": 24010444,
+                            "TemplateLessonId": 40013236,
+                            "CourseVersion": "2.0.1.0",
+                            "LessonName": "getTrans::479218",
+                            "LessonNo": 3,
+                            "LessonImage": "getMedia::130101",
+                            "LessonDescr": "getTrans::664815",
+                            "LessonTypeId": 1,
+                            "LegacyLessonId": 8517,
+                            "ParentId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+                            "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+                            "StatusId": 0,
+                            "Score": null,
+                            "StartDate": null,
+                            "CompleteDate": null,
+                            "LastModifiedDate": "2020-04-03T06:15:11.127",
+                            "StudentSteps": [ ],
+                            "CreateDate": "2020-04-03T06:15:00",
+                            "ItemTypeId": 4,
+                            "TimeSpentInMins": null,
+                            "PCPassed": false,
+                            "MOBPassed": false
+                        },
+                        {
+                            "StudentLessonId": "00e7231d-73de-482e-ba34-352d835fd19e",
+                            "StudentId": 24010444,
+                            "TemplateLessonId": 40013237,
+                            "CourseVersion": "2.0.1.0",
+                            "LessonName": "getTrans::479223",
+                            "LessonNo": 4,
+                            "LessonImage": "getMedia::130098",
+                            "LessonDescr": "getTrans::664830",
+                            "LessonTypeId": 1,
+                            "LegacyLessonId": 8518,
+                            "ParentId": "c16c36a2-9c2a-4692-8dd6-f95ecc87ab1a",
+                            "RootId": "37758110-9bc1-419b-89f5-bcb5819c6e98",
+                            "StatusId": 0,
+                            "Score": null,
+                            "StartDate": null,
+                            "CompleteDate": null,
+                            "LastModifiedDate": "2020-04-03T06:15:11.127",
+                            "StudentSteps": [ ],
+                            "CreateDate": "2020-04-03T06:15:00",
+                            "ItemTypeId": 4,
+                            "TimeSpentInMins": null,
+                            "PCPassed": false,
+                            "MOBPassed": false
+                        }
+                    ],
+                    "CreateDate": "2020-04-03T06:15:00"
+                }
+            ],
+            "EnrollDate": "2020-04-03T06:15:11",
+            "CreateDate": "2020-04-03T06:15:00",
+            "StudentLevelTest": null
+        }
+    ],
+    "InitialLevelCode": "5",
+    "InitialLevelCodeValidation": {
+        "ErrorLevel": null,
+        "ErrorLevelString": "",
+        "Cause": null
+    },
+    "E12Enrolled": "True",
+    "E12EnrolledValidation": {
+        "ErrorLevel": null,
+        "ErrorLevelString": "",
+        "Cause": null
+    },
+    "IsSuccess": true,
+    "Message": ""
+}
+    """
+    target_url = config.etown_root + STUDENT_ENROLLMENTS['URL']
+    data = {
+        STUDENT_ENROLLMENTS['DATA']: student_id
+    }
+
+    response = no_ssl_requests().post(target_url, data=data)
+    return response.json()
+
+
+def get_current_level_number(student_id):
+    enrollment_info = get_student_enrollments_info(24010365)
+    return enrollment_info['CurrentGECourseLocation']['Levels'][0]['LevelNo']
 
 
 def get_basic_offline_coupon_info(student_id):
