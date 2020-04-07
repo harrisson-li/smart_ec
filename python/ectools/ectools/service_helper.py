@@ -810,7 +810,7 @@ def get_student_enrollments_info(student_id):
 
 
 def get_current_level_number(student_id):
-    enrollment_info = get_student_enrollments_info(24010365)
+    enrollment_info = get_student_enrollments_info(student_id)
     return enrollment_info['CurrentGECourseLocation']['Levels'][0]['LevelNo']
 
 
