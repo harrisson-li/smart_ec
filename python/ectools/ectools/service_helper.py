@@ -537,7 +537,7 @@ def get_student_coupon_info(student_id):
     'Message': ''
 }
     """
-    target_url = config.etown_root + STUDENT_COUPONS['URL']
+    target_url = config.etown_root + STUDENT_COUPONS['URL'] + '?token={}'.format(get_token())
     data = {
         STUDENT_COUPONS['DATA']: student_id
     }
@@ -800,13 +800,17 @@ def get_student_enrollments_info(student_id):
     "Message": ""
 }
     """
-    target_url = config.etown_root + STUDENT_ENROLLMENTS['URL']
+    target_url = config.etown_root + STUDENT_ENROLLMENTS['URL'] + '?token={}'.format(get_token())
+
     data = {
         STUDENT_ENROLLMENTS['DATA']: student_id
     }
 
     response = no_ssl_requests().post(target_url, data=data)
-    return response.json()
+    if response.status_code == HTTP_STATUS_OK:
+        return response.json()
+    else:
+        raise ValueError(response.text)
 
 
 def get_current_level_number(student_id):
