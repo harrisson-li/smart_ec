@@ -77,7 +77,7 @@ def get_level0_tool_link():
 
 def get_e19_course_info_link():
     url = '{}/services/ecsystem/Tools/Level0/MarkEnrollingToL0GE?'
-    url = url.format(config.etown)
+    url = url.format(config.etown_root)
     return append_token(url).replace('&', '')
 
 
