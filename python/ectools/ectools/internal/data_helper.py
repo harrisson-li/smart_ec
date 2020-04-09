@@ -454,3 +454,19 @@ def get_phoenix_pack(env_name, partner, pack_name, is_v1_pack=True):
 
     assert len(found), "No such package: {}/{}/{}/{}!".format(env_name, partner, pack_name, pack_tag)
     return found[0]
+
+
+def get_all_move_on_info():
+    if not hasattr(Cache, 'move_on_info'):
+        Cache.move_on_info = read_data('move_on_info')
+    return Cache.move_on_info
+
+
+def get_move_on_info(product_id, tag=None):
+    found = [x for x in get_all_move_on_info() if x['product_id'] == product_id]
+
+    if tag:
+        found = [x for x in found if tag in x['tags']]
+
+    assert len(found), "No such move on info: {}/{}!".format(product_id, tag)
+    return found[0]
