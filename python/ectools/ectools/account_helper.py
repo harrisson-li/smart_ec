@@ -536,16 +536,52 @@ def activate_smart_plus_pro_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
-def activate_smart_plus_flex_center_student(**kwargs):
+def activate_smart_plus_flex_pl_student(**kwargs):
     kwargs['is_s18'] = False
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
 
     if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_smart_plus_flex_center_product(**kwargs)['id']
+        kwargs['product_id'] = get_smart_plus_flex_pl_product(**kwargs)['id']
 
     if 'phoenix_packs' not in kwargs:
-        kwargs['phoenix_packs'] = ['Smart Plus - Flex Center']
+        kwargs['phoenix_packs'] = ['Smart Plus - Flex PL']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_flex_gl_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    kwargs['is_smart_plus'] = True
+
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_smart_plus_flex_gl_product(**kwargs)['id']
+
+    if 'phoenix_packs' not in kwargs:
+        kwargs['phoenix_packs'] = ['Smart Plus - Flex GL']
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_flex_vip_student(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+    kwargs['is_smart_plus'] = True
+
+    if 'product_id' not in kwargs:
+        kwargs['product_id'] = get_smart_plus_flex_vip_product(**kwargs)['id']
+
+    if 'phoenix_packs' not in kwargs:
+        kwargs['phoenix_packs'] = ['Smart Plus - Flex VIP']
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
