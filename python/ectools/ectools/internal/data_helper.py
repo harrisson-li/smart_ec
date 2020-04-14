@@ -263,9 +263,23 @@ def get_smart_plus_pro_product(by_partner=None, **kwargs):
     return get_random_item(found)
 
 
-def get_smart_plus_flex_center_product(by_partner=None, **kwargs):
+def get_smart_plus_flex_pl_product(by_partner=None, **kwargs):
     found = [x for x in get_products_by_partner(by_partner, **kwargs)
-             if is_item_has_tag(x, 'Flex_Center')]
+             if is_item_has_tag(x, 'Flex_PL')]
+
+    return get_random_item(found)
+
+
+def get_smart_plus_flex_gl_product(by_partner=None, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
+             if is_item_has_tag(x, 'Flex_GL')]
+
+    return get_random_item(found)
+
+
+def get_smart_plus_flex_vip_product(by_partner=None, **kwargs):
+    found = [x for x in get_products_by_partner(by_partner, **kwargs)
+             if is_item_has_tag(x, 'Flex_VIP')]
 
     return get_random_item(found)
 
