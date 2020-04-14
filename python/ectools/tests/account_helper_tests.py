@@ -340,7 +340,7 @@ def test_activate_smart_plus_flex_pl_account():
 def test_activate_smart_plus_flex_gl_account():
     set_environment('uat')
     set_partner('socn')
-    activate_smart_plus_flex_gl_student(includeenroll=True, product_id=173)
+    activate_smart_plus_flex_gl_student(includeenroll=True, product_id=173, school_name='HZ_CXC')
     activate_smart_plus_flex_gl_student(includeenroll=True)
 
 
@@ -361,8 +361,3 @@ def test_activate_smart_plus_flex_ts_account():
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
                      phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
 
-
-if __name__ == '__main__':
-    # test_activate_smart_plus_flex_pl_account()
-    test_activate_smart_plus_flex_gl_account()
-    # test_activate_smart_plus_flex_vip_account()
