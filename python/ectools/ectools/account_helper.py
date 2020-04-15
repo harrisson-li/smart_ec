@@ -342,8 +342,8 @@ def enroll_account(username, password, force=False, level_code='0A'):
     Login via mobile enroll page will do the work.
     """
 
-    if not force and config.partner not in ['Cool', 'Mini', 'Socn']:
-        get_logger().debug('No need to enroll account as it is not in CN partners')
+    if not force and config.partner not in ['Cool', 'Mini', 'Socn', 'Indo']:
+        get_logger().debug('No need to enroll account as it is not following Online OC flow')
         return
 
     def login_mobile_web(student_username, student_password):

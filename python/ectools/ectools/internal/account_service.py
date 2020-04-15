@@ -133,7 +133,7 @@ def should_enable_onlineoc(auto_determine, student, school):
         return False
 
     # China student will enable Online OC by default, except E10 or some test center turn it off
-    if config.partner in ['Cool', 'Mini', 'Socn'] \
+    if config.partner in ['Cool', 'Mini', 'Socn', 'Indo'] \
             and not student['is_e10'] \
             and 'OnlineOC-Off' not in school['tags'] \
             and student['is_v2']:
