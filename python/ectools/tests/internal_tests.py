@@ -188,7 +188,7 @@ def test_get_phoenix_prod():
 
 
 def test_get_latest_android_build_number_for_cn():
-    build_info = get_latest_android_build_number_for_cn()
+    build_info = get_latest_android_build_info_for_cn()
 
     assert build_info['version'] == '2.1.1'
     assert build_info['platform'] == 'Android'

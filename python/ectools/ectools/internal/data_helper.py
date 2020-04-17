@@ -547,7 +547,7 @@ def get_all_mobile_build_info():
     return Cache.mobile_build_info
 
 
-def get_latest_android_build_number_for_cn():
+def get_latest_android_build_info_for_cn():
     found = [x for x in get_all_mobile_build_info() if x['platform'] == 'Android' and 'Juno' in x['tags']]
 
     found = sorted(found, key=lambda x: x['release_date'], reverse=True)
