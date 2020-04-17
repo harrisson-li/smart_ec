@@ -539,3 +539,18 @@ def get_move_on_info(product_id, tag=None):
 
     assert len(found), "No such move on info: {}/{}!".format(product_id, tag)
     return found[0]
+
+
+def get_all_mobile_build_info():
+    if not hasattr(Cache, 'mobile_build_info'):
+        Cache.mobile_build_info = read_data('mobile_build_info')
+    return Cache.mobile_build_info
+
+
+def get_latest_android_build_info_for_cn():
+    found = [x for x in get_all_mobile_build_info() if x['platform'] == 'Android' and 'Juno' in x['tags']]
+
+    found = sorted(found, key=lambda x: x['release_date'], reverse=True)
+
+    assert len(found), "No Android Juno build info found."
+    return found[0]

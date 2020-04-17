@@ -185,3 +185,10 @@ def test_get_phoenix_prod():
 
     prod = get_any_phoenix_product(is_trial=True)
     assert 'Trial' in prod['tags']
+
+
+def test_get_latest_android_build_number_for_cn():
+    build_info = get_latest_android_build_info_for_cn()
+
+    assert build_info['platform'] == 'Android'
+    assert 'Juno' in build_info['tags']
