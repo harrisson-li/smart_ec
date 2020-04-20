@@ -333,6 +333,9 @@ def get_student_tags(student):
     if student['is_trial']:
         tags.append('Trial')
 
+    if student['is_smart_plus']:
+        tags.append('SmartPlus')
+
     return tags
 
 
