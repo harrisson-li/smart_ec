@@ -523,8 +523,10 @@ def activate_smart_plus_pro_student(**kwargs):
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
 
-    if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_smart_plus_pro_product(**kwargs)['id']
+    # For Flex and Pro both use same product id but use different redemption code
+    # so, create special account, all use pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
 
     if 'phoenix_packs' not in kwargs:
         kwargs['phoenix_packs'] = ['Smart Plus - Pro']
@@ -541,8 +543,10 @@ def activate_smart_plus_flex_pl_student(**kwargs):
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
 
-    if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_smart_plus_flex_pl_product(**kwargs)['id']
+    # For Flex and Pro both use same product id but use different redemption code
+    # so, create special account, all use pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
 
     if 'phoenix_packs' not in kwargs:
         kwargs['phoenix_packs'] = ['Smart Plus - Flex PL']
@@ -559,8 +563,10 @@ def activate_smart_plus_flex_gl_student(**kwargs):
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
 
-    if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_smart_plus_flex_gl_product(**kwargs)['id']
+    # For Flex and Pro both use same product id but use different redemption code
+    # so, create special account, all use pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
 
     if 'phoenix_packs' not in kwargs:
         kwargs['phoenix_packs'] = ['Smart Plus - Flex GL']
