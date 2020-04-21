@@ -360,4 +360,3 @@ def test_activate_smart_plus_flex_ts_account():
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True)
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
                      phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
-
