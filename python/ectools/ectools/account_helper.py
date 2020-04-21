@@ -583,8 +583,10 @@ def activate_smart_plus_flex_vip_student(**kwargs):
     kwargs['is_e19'] = True
     kwargs['is_smart_plus'] = True
 
-    if 'product_id' not in kwargs:
-        kwargs['product_id'] = get_smart_plus_flex_vip_product(**kwargs)['id']
+    # smart plus flex vip has different redemption code,
+    # which can only get by the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
 
     if 'phoenix_packs' not in kwargs:
         kwargs['phoenix_packs'] = ['Smart Plus - Flex VIP']
