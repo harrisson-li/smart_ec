@@ -1,7 +1,7 @@
 """
 This module will help achieve the minimum class taken to move on to next level. For now, it supports class taken for:
-  - f2f
-  - workshop
+  - f2f_pl
+  - workshop_gl
   - apply
   - life_club
   - online_gl
@@ -11,7 +11,7 @@ Example to use this module::
   from ectools.offline_class_helper import achieve_minimum_class_taken
 
   student_id = 123456
-  achieve_minimum_class_taken(student_id, f2f=3, workshop=3, apply_or_lc=1)
+  achieve_minimum_class_taken(student_id, f2f_pl=3, workshop_gl=3, apply_or_lc=1)
 
   # for cehk student they have to do 12 GL
   achieve_minimum_class_taken(student_id, online_gl=12)
@@ -41,7 +41,7 @@ class HelperConfig(Base):
     LevelEnrollDateShift = {'days': -30}
     ClassTakenSince = {'days': -29}
     ClassTakenUntil = {'days': -1}
-    DefaultMinimumClassTaken = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    DefaultMinimumClassTaken = {'f2f_pl': 3, 'workshop_gl': 3, 'apply_or_lc': 1}
     DefaultPLCode = 'CP20'
 
 
@@ -51,7 +51,7 @@ def reset_config():
     HelperConfig.LevelEnrollDateShift = {'days': -30}
     HelperConfig.ClassTakenSince = {'days': -29}
     HelperConfig.ClassTakenUntil = {'days': -1}
-    HelperConfig.DefaultMinimumClassTaken = {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    HelperConfig.DefaultMinimumClassTaken = {'f2f_pl': 3, 'workshop_gl': 3, 'apply_or_lc': 1}
     HelperConfig.DefaultPLCode = 'CP20'
 
 
@@ -62,8 +62,8 @@ def achieve_minimum_class_taken(student_id, **kwargs):
     :param student_id: the student id.
     :keyword: specify the class type to be taken, example `f2f=3`.
 
-             - f2f
-             - workshop
+             - f2f_pl
+             - workshop_gl
              - apply_event
              - life_club
              - online_gl
@@ -201,7 +201,7 @@ def _get_past_class_item(class_category_id, student_id):
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
                                 HelperConfig.ClassTakenUntil['days'],
-                                student_id), as_dict=True)
+                                student_id), as_dict=False)
 
 
 def _get_coupon_count(student_id, coupon_type_id):
@@ -367,8 +367,8 @@ def _main(student_id, **kwargs):
     """Taken specific count for each type of class."""
     assert len(kwargs) > 0
 
-    f2f = kwargs.get('f2f')
-    workshop = kwargs.get('workshop')
+    f2f = kwargs.get('f2f_pl')
+    workshop = kwargs.get('workshop_gl')
     apply_event = kwargs.get('apply_event')
     life_club = kwargs.get('life_club')
     online_gl = kwargs.get('online_gl')
@@ -407,8 +407,8 @@ def take_class(student_id, start_date=None, end_date=None, **kwargs):
     :param end_date: UTC end_time in popular format or Arrow object.
     :param kwargs:  specify the class type to be taken, example `f2f=3`.
 
-             - f2f
-             - workshop
+             - f2f_pl
+             - workshop_gl
              - apply_event
              - life_club
              - online_gl
