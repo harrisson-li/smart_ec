@@ -278,3 +278,9 @@ def test_get_student_coupon_info():
 def test_get_student_enrollments_info():
     set_environment('uat')
     assert_that(get_current_level_number(24010365)).is_equal_to(2)
+
+
+def test_cancel_student():
+    set_environment('qa')
+    student_id = 11580650
+    account_service_cancel_student(student_id)

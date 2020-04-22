@@ -313,6 +313,32 @@ def account_service_update_info(student_id, info):
     assert 'Success>true' in response.text, response.text
 
 
+def account_service_cancel_student(student_id):
+    """cancel student via /services/commerce/1.0/AccountService.svc"""
+    target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
+    headers = {'Content-Type': 'text/xml',
+               'SOAPAction': 'http://tempuri.org/IAccountService/CancelAccountForMember'}
+
+    body = """
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:efs="EFSchools.Englishtown.Commerce.Client.Accounts">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <tem:CancelAccountForMember>
+                 <!--Optional:-->
+                 <tem:cancelAccountParams>
+                    <efs:Member_id>{0}</efs:Member_id>
+                    <efs:Reason>{1}</efs:Reason>
+                    <!--Optional:-->
+                    <efs:Comments>'test'</efs:Comments>
+                 </tem:cancelAccountParams>
+              </tem:CancelAccountForMember>
+           </soapenv:Body>
+        </soapenv:Envelope>""".format(student_id, 'Others')  # 'Others' is special str, can always be 'Others'
+
+    response = no_ssl_requests().post(target_url, data=body, headers=headers)
+    assert 'Succeed>true' in response.text, response.text
+
+
 def adjust_level(student_id, to_level_code):
     sf.change_level(student_id, to_level_code)
 
