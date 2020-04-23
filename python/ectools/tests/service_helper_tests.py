@@ -284,3 +284,10 @@ def test_cancel_student():
     set_environment('qa')
     student_id = 11580650
     account_service_cancel_student(student_id)
+
+
+def test_get_student_top_level_code():
+    set_environment('uat')
+    student_id = 24013927
+
+    assert get_student_top_level_code(student_id) == '10'
