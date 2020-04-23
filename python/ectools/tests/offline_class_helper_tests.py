@@ -13,7 +13,7 @@ def test_use_config():
     HelperConfig.LevelMustComplete = False
 
     # default setting if not args passed in minimum class taken function
-    assert HelperConfig.DefaultMinimumClassTaken == {'f2f': 3, 'workshop': 3, 'apply_or_lc': 1}
+    assert HelperConfig.DefaultMinimumClassTaken == {'f2f_pl': 3, 'workshop_gl': 3, 'apply_or_lc': 1}
 
     # default shift value for level progress start date / enroll date
     assert HelperConfig.LevelEnrollDateShift == {'days': -30}
@@ -42,6 +42,7 @@ def test_class_taken_online():
 def test_class_taken_offline():
     set_environment('uat')
     set_partner('cool')
-    student_id = 23964729
+    student_id = 24013734
     add_offline_coupon(student_id, 'WS', 1)
-    achieve_minimum_class_taken(student_id, workshop=1)
+    HelperConfig.LevelMustComplete = False
+    achieve_minimum_class_taken(student_id, workshop_gl=1)
