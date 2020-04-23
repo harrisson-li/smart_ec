@@ -193,7 +193,19 @@ def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, i
     qty = int(data['RedemptionQty'])
 
     if qty <= 12:
-        data['RedemptionQty'] = qty * 30
+        # Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
+        # which can get from table CommerceContent.dbo.PaymentPlanFeature
+        def is_flex_vip_pack():
+            for pack in phoenix_packs:
+                if 'Flex VIP' in pack:
+                    return True
+
+            return False
+
+        if is_flex_vip_pack():
+            data['RedemptionQty'] = qty
+        else:
+            data['RedemptionQty'] = qty * 30
 
     # legal duration = main redemption qty
     data['LegalDuration'] = data['RedemptionQty']
