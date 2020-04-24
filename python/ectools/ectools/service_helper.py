@@ -875,3 +875,8 @@ def get_online_coupon_info(student_id):
         coupon_info[c['CouponName']] = c['Count']
 
     return coupon_info
+
+
+def get_student_top_level_code(student_id):
+    enrollment_info = get_student_enrollments_info(student_id)
+    return enrollment_info['EnrolledGEStageLevels'][-1]
