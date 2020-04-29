@@ -880,3 +880,18 @@ def get_online_coupon_info(student_id):
 def get_student_top_level_code(student_id):
     enrollment_info = get_student_enrollments_info(student_id)
     return enrollment_info['EnrolledGEStageLevels'][-1]
+
+
+def change_expiration_date(student_id, days_offset):
+    """
+    update the expiration date
+    :param student_id: expired student id
+    :param days_offset: less than 0
+    :return:
+    """
+    url = '{}/services/oboe2/SalesForce/Test/UpdateStudentExpirationDate'.format(config.etown_root)
+    data = {'studentId': student_id,
+            'dayOffset': days_offset}
+
+    response = no_ssl_requests().post(url, data=data)
+    assert '"Success":true' in response.text, response.text
