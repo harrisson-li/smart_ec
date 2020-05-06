@@ -291,3 +291,35 @@ def test_get_student_top_level_code():
     student_id = 24013927
 
     assert get_student_top_level_code(student_id) == '10'
+
+
+def test_change_expiration_date():
+    set_environment('uat')
+
+    # active student gets exception
+    student_id = 24015038
+
+    try:
+        change_expiration_date(student_id, -10)
+    except AssertionError as e:
+        assert e.args[0] == '{"Success":false,"ErrorCode":"HasActiveSubscription"}'
+
+    # expired & reactivated student get exception
+    student_id = 24014999
+
+    try:
+        change_expiration_date(student_id, -10)
+    except AssertionError as e:
+        assert e.args[0] == '{"Success":false,"ErrorCode":"HasActiveSubscription"}'
+
+    # offset >= 0 gets exception
+    student_id = 24015046
+    try:
+        change_expiration_date(student_id, 0)
+    except AssertionError as e:
+        assert e.args[0] == '{"Success":false,"ErrorCode":"NegativeDayOffsetExpected"}'
+
+    # expired student & days_offset < 0
+    student_id = 24015046
+    change_expiration_date(student_id, -10)
+
