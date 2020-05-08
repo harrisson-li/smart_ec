@@ -201,7 +201,7 @@ def _get_past_class_item(class_category_id, student_id):
     return fetch_one(sql.format(class_category_id,
                                 HelperConfig.ClassTakenSince['days'],
                                 HelperConfig.ClassTakenUntil['days'],
-                                student_id), as_dict=False)
+                                student_id), as_dict=True)
 
 
 def _get_coupon_count(student_id, coupon_type_id):

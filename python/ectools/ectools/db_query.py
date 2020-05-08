@@ -6,7 +6,8 @@ from ectools.logger import get_logger
 
 
 def _get_executor():
-    if config.env == 'UAT' or (config.env == 'Live' and config.domain == 'CN'):
+    # if config.env == 'UAT' or (config.env == 'Live' and config.domain == 'CN'):
+    if 'UAT' in config.env or config.env == 'QA':
         import ectools.database_helper as e
         return e
     else:
