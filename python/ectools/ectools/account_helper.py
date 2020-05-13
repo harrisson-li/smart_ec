@@ -24,7 +24,6 @@ For more info about using EFEC test account, please refer to confluence page or 
 
 """
 import uuid
-from time import sleep
 
 from ectools.internal import sf_service_helper
 from ectools.internal.account_service import *
@@ -286,10 +285,6 @@ def activate_account(product_id=None,
     student['domain'], student['environment'] = config.domain, config.env
 
     if should_enroll and student['is_v2']:
-        # try to fix the issue activated in uatcn
-        # INTERNAL SERVER ERROR(500): {"error":"AssertionError","message":"
-        # ('General: MemberId:xxxxxx Student with id xxxxxx could not be found.',)"}
-        sleep(3)
         # set hima test level for online oc student who will enroll
         if should_enable_onlineoc(auto_onlineoc, student, school):
             student['is_onlineoc'] = True
