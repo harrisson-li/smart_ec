@@ -845,6 +845,11 @@ def get_current_level_number(student_id):
 
 
 def get_basic_offline_coupon_info(student_id):
+    """
+    Get offline left coupon
+    :param student_id:
+    :return: eg. {'F2F': 1, 'Workshop': 1, 'LCApply': 1, 'EEA': 0}
+    """
     coupon_info = {}
     info = get_student_coupon_info(student_id)
     offline_basic_coupon_info = info['ClassicCoupons']
@@ -856,6 +861,11 @@ def get_basic_offline_coupon_info(student_id):
 
 
 def get_special_offline_coupon_info(student_id):
+    """
+    Get offline special left coupon, eg. career track, skills clinics
+    :param student_id:
+    :return: eg. {'CareerWorkshop': 8, 'Skills': 18}
+    """
     coupon_info = {}
     info = get_student_coupon_info(student_id)
     special_coupon = info['SpecialCoupons']
@@ -867,6 +877,11 @@ def get_special_offline_coupon_info(student_id):
 
 
 def get_online_coupon_info(student_id):
+    """
+    Get online left coupon
+    :param student_id:
+    :return: eg. {'GL': 0, 'PL20': 1, 'OSC': 18}
+    """
     coupon_info = {}
     info = get_student_coupon_info(student_id)
     online_coupon = info['OnlineCoupons']
