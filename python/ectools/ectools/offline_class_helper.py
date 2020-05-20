@@ -228,7 +228,7 @@ def _is_coupon_free_student(student_id):
 
 def _insert_booking_id(student_id, schedule_class, coupon_category_id):
     """Insert booking record and set status as checked in."""
-    scheduled_id = schedule_class.ScheduledClass_id
+    scheduled_id = schedule_class['ScheduledClass_id']
     get_logger().debug('Insert booking record for class: {}'.format(scheduled_id))
 
     sql = """INSERT INTO oboe.dbo.Booking 
@@ -245,7 +245,7 @@ def _insert_booking_id(student_id, schedule_class, coupon_category_id):
     """
     execute_query(sql.format(scheduled_id,
                              student_id,
-                             schedule_class.EndDate))
+                             schedule_class['EndDate']))
 
     # if student is coupon free, no need to update coupon table, just return
     if _is_coupon_free_student(student_id):
