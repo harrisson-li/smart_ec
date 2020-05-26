@@ -1,5 +1,6 @@
 from assertpy import assert_that
 
+from ectools.account_helper import activate_e19_student
 from ectools.config import set_environment
 from ectools.logger import get_logger
 from ectools.service_helper import *
@@ -323,3 +324,8 @@ def test_change_expiration_date():
     student_id = 24015046
     change_expiration_date(student_id, -10)
 
+
+def test_convert_to_smart_plus():
+    set_environment('uat')
+    student = activate_e19_student()
+    convert_to_smart_plus(student['member_id'])

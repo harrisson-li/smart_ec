@@ -910,3 +910,17 @@ def change_expiration_date(student_id, days_offset):
 
     response = no_ssl_requests().post(url, data=data)
     assert '"Success":true' in response.text, response.text
+
+
+def convert_to_smart_plus(student_id):
+    url = '{}/services/oboe2/ProductConversion/Conversion/ConvertToSmartPlus'.format(config.etown_root)
+
+    data = {
+        'studentId': student_id,
+        'operatorUser': 'qa.testauto',
+        'token': '62c79778-c497-434f-89ab-e6debe4f2a18'
+    }
+
+    response = no_ssl_requests().post(url, data=data)
+
+    assert response.status_code == HTTP_STATUS_OK and '"Success":true' in response.text, response.text
