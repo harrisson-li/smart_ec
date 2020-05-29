@@ -389,6 +389,9 @@ def no_ssl_requests():
     """get requests instance without SSL verify."""
 
     s = requests.Session()
+    s.headers = {
+        'User-Agent': 'Mozilla (Windows NT 10.0; Win64; x64) AppleWebKit (KHTML, like Gecko) Chrome Safari'
+    }
     s.verify = False
     return s
 
