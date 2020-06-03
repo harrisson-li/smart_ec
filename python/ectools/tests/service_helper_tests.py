@@ -278,7 +278,11 @@ def test_get_student_coupon_info():
 
 def test_get_student_enrollments_info():
     set_environment('uat')
-    assert_that(get_current_level_number(24010365)).is_equal_to(2)
+    current_enrollment = get_current_level_unit(24010365)
+    current_level = current_enrollment[0]
+    current_unit = current_enrollment[1]
+    assert_that(current_level).is_equal_to(2)
+    assert_that(current_unit).is_equal_to(1)
 
 
 def test_cancel_student():
