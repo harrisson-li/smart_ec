@@ -360,3 +360,34 @@ def test_activate_smart_plus_flex_ts_account():
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True)
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
                      phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
+
+def test_activate_phoenix_with_dict_coupon_info():
+    pack_info = {'Center Pack Basic': {
+        "coupons": [
+            {
+                "name": "F2F",
+                "count": 1
+            },
+            {
+                "name": "WS",
+                "count": 1
+            },
+            {
+                "name": "LC",
+                "count": 1
+            }
+        ]
+    }}
+
+    set_environment('uat')
+    set_partner('rupe')
+    activate_phoenix_student(school_name='QA_RUC', is_s18=True, is_e19=False, phoenix_packs=pack_info)
+
+
+def test_activate_phoenix_with_string_coupon_info():
+    pack_info = {
+        '1 Year Basic': '{"coupons":[{"name":"PL40","count":1},{"name":"GL","count":1},{"name":"LC","count":1}]}'}
+
+    set_environment('uat')
+    set_partner('socn')
+    activate_phoenix_student(school_name='QA_T1C', is_s18=False, is_e19=True, phoenix_packs=pack_info)

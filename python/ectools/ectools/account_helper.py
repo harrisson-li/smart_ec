@@ -235,7 +235,7 @@ def activate_account(product_id=None,
     else:
         is_v1_pack = True
 
-    assert isinstance(phoenix_packs, list), 'phoenix_packs should be a list!'
+    assert isinstance(phoenix_packs, list) or isinstance(phoenix_packs, dict), 'phoenix_packs should be a list or dict!'
 
     # For smart plus product, need phoenix_packs provided, don't need center pack + online pack
     if is_smart_plus:
