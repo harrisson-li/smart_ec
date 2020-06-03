@@ -163,14 +163,63 @@ def merge_activation_data(source_dict, **more):
 
 
 def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
-    assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
+    """
 
-    for i, name in enumerate(phoenix_packs):
-        p = get_phoenix_pack(config.env, config.partner, name, is_v1_pack)
-        data['PackList[{}].OrderProductId'.format(i)] = p['name']
-        data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
-        data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
-        data['PackList[{}].TemplateData'.format(i)] = p['data'] or ''
+    :param data:
+    :param phoenix_packs: list, eg. ['1 Year Basic', '1 Year Private']
+    dict, eg. {'1 Year Basic': {
+    "coupons": [
+        {
+            "name": "F2F",
+            "count": 1
+        },
+        {
+            "name": "WS",
+            "count": 1
+        },
+        {
+            "name": "LC",
+            "count": 1
+        }
+    ]
+},
+    '1 Year Private': {
+        "coupons": [
+            {
+                "name": "PL20",
+                "count": 1,
+            },
+            {
+                "name": "GL",
+                "count": 1
+            }
+        ]
+    }
+}
+or
+{'1 Year Basic': '{"coupons":[{"name":"PL40","count":1},{"name":"GL","count":1},{"name":"LC","count":1}]}'}
+    :param is_v1_pack:
+    :param is_smart_plus:
+    :return:
+    """
+    # assert isinstance(phoenix_packs, list) and len(phoenix_packs) > 0
+
+    if isinstance(phoenix_packs, list) and len(phoenix_packs) > 0:
+        for i, name in enumerate(phoenix_packs):
+            p = get_phoenix_pack(config.env, config.partner, name, is_v1_pack)
+            data['PackList[{}].OrderProductId'.format(i)] = p['name']
+            data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
+            data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
+            data['PackList[{}].TemplateData'.format(i)] = p['data'] or ''
+    elif isinstance(phoenix_packs, dict) and len(phoenix_packs) > 0:
+        i = 0
+        for name, coupon in phoenix_packs.items():
+            p = get_phoenix_pack(config.env, config.partner, name, is_v1_pack)
+            data['PackList[{}].OrderProductId'.format(i)] = p['name']
+            data['PackList[{}].PackageProductId'.format(i)] = p['package_id']
+            data['PackList[{}].SalesforceProductId'.format(i)] = p['salesforce_id']
+            data['PackList[{}].TemplateData'.format(i)] = json.dumps(coupon) if isinstance(coupon, dict) else coupon
+            i = i + 1
 
     data['OrderId'] = arrow.now().timestamp  # for refund purpose
     data['DaysOfExpiredCouponRetention'] = 30

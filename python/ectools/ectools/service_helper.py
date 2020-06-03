@@ -839,9 +839,11 @@ def get_student_enrollments_info(student_id):
         raise ValueError(response.text)
 
 
-def get_current_level_number(student_id):
+def get_current_level_unit(student_id):
     enrollment_info = get_student_enrollments_info(student_id)
-    return enrollment_info['CurrentGECourseLocation']['Levels'][0]['LevelNo']
+    current_level = enrollment_info['CurrentGECourseLocation']['Levels'][0]['LevelNo']
+    current_unit = enrollment_info['CurrentGECourseLocation']['Levels'][0]['Units'][0]['UnitNo']
+    return current_level, current_unit
 
 
 def get_basic_offline_coupon_info(student_id):
