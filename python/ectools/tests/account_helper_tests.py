@@ -334,7 +334,7 @@ def test_activate_smart_plus_flex_pl_account():
     activate_smart_plus_flex_pl_student(includeenroll=True, product_id=173)
     activate_smart_plus_flex_pl_student(includeenroll=True)
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='HZ_CXC',
-                     phoenix_packs=['Smart Plus - Flex PL'])
+                     product_name='Smart Plus - Flex PL')
 
 
 def test_activate_smart_plus_flex_gl_account():
@@ -349,6 +349,8 @@ def test_activate_smart_plus_flex_vip_account():
     set_partner('socn')
     activate_smart_plus_flex_vip_student(includeenroll=True, product_id=173)
     activate_smart_plus_flex_vip_student(includeenroll=True)
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='HZ_CXC',
+                     product_name='Smart Plus - Flex VIP')
 
 
 def test_activate_smart_plus_flex_ts_account():
@@ -360,6 +362,7 @@ def test_activate_smart_plus_flex_ts_account():
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True)
     activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
                      phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
+
 
 def test_activate_phoenix_with_dict_coupon_info():
     pack_info = {'Center Pack Basic': {
@@ -391,3 +394,26 @@ def test_activate_phoenix_with_string_coupon_info():
     set_environment('uat')
     set_partner('socn')
     activate_phoenix_student(school_name='QA_T1C', is_s18=False, is_e19=True, phoenix_packs=pack_info)
+
+
+def test_activate_phoenix_with_eea():
+    set_environment('uat')
+    set_partner('socn')
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=False, is_phoenix=True, school_name='HZ_CXC',
+                     product_name='Phoenix - Socn - EEA')
+    activate_e19_phoenix_student_with_eea()
+    activate_e19_phoenix_student_with_eea(phoenix_packs=['1 Year Basic'])
+
+
+def test_activate_phoenix_without_eea():
+    set_environment('uat')
+    set_partner('socn')
+    activate_account(is_s18=False, is_e19=True, is_smart_plus=False, is_phoenix=True, school_name='CN_TSC',
+                     product_name='Phoenix - Socn', online_pack=True, center_pack=False)
+
+
+def test_activate_s18_using_product_name():
+    set_environment('uat')
+    set_partner('cool')
+    activate_account(is_s18=False, is_e19=True, school_name='SH_JAT', product_name='Smart 18 - School - E19')
+
