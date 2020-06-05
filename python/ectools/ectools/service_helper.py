@@ -8,11 +8,10 @@ This module provides methods to get or set student flags, as well as member site
 import json
 import re
 from datetime import datetime
-from io import StringIO
-from xml.etree import ElementTree
 
 import arrow
 import requests
+from lxml import etree
 
 from ectools.config import config
 from ectools.constant import Memcached, ClearCacheType
@@ -60,46 +59,27 @@ def is_e19_student(student_id):
 
 
 def get_member_site_settings(student_id, site_area='school'):
-    service_url = '/services/shared/1.0/membersettings.svc'
-    headers = {'SOAPAction': "EFSchools.Englishtown.SharedServices.Client.MemberSettings/"
-                             "IMemberSettingsService/LoadMemberSiteSettings",
-               'Content-type': 'text/xml',
-               'Accept': 'text/plain'}
-
-    data = """<s:Envelope
-                xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-                <s:Body>
-                    <LoadMemberSiteSettings
-                        xmlns="EFSchools.Englishtown.SharedServices.Client.MemberSettings">
-                        <input
-                            xmlns:a="EFSchools.Englishtown.SharedServices.Client.MemberSettings.DataContracts"
-                            xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-                            <a:Member_id>{}</a:Member_id>
-                            <a:SiteArea>{}</a:SiteArea>
-                        </input>
-                    </LoadMemberSiteSettings>
-                </s:Body>
-            </s:Envelope>"""
-    result = no_ssl_requests().post(config.etown_root_http + service_url, data=data.format(student_id, site_area),
-                                    headers=headers)
-    assert result.status_code == HTTP_STATUS_OK, "Failed to call membersettings.svc: {}".format(result.text)
-
     site_settings = {}
     datetime_format = "%Y-%m-%d %H:%M:%S"
-    setting_xpath = ".//b:KeyValueOfstringstring"
 
-    root = ElementTree.fromstring(result.text)
-    namespaces = dict([node for _, node in ElementTree.iterparse(
-        StringIO(result.text), events=['start-ns'])])
+    target_url = "{}/services/ecplatform/Tools/StudentSettings?id={}&token={}".format(
+        config.etown_root, student_id, get_token())
+    result = no_ssl_requests().get(target_url)
 
-    for element in root.findall(setting_xpath, namespaces):
-        key = element.find('b:Key', namespaces).text
-        value = element.find('b:Value', namespaces).text
+    assert result.status_code == HTTP_STATUS_OK, "Failed to get student settings: {}".format(result.text)
 
-        if value and re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
-            value = datetime.strptime(value, datetime_format)
+    html = etree.HTML(result.text)
+    site_areas = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[1]/text()")
+    setting_keys = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[2]/text()")
+    setting_values = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[3]/text()")
 
-        site_settings[key] = value
+    for i, area in enumerate(site_areas):
+        if area == site_area:
+            key = setting_keys[i]
+            value = setting_values[i]
+            if value and re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
+                value = datetime.strptime(value, datetime_format)
+            site_settings[key] = value
 
     return site_settings
 
