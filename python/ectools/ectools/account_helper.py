@@ -136,30 +136,23 @@ def activate_account(product_id=None,
     get_logger().info('Start to activate test account...')
     get_logger().debug('Arguments: {}'.format(locals()))
     created_by = kwargs.pop('created_by', getpass.getuser())
+    product_name = kwargs.pop('product_name', None)
 
-    if not product_id and not school_name and not kwargs.get('phoenix_packs', False):
+    if not product_id and not school_name and not product_name:
         get_logger().info('Use default product and school.')
         product = get_default_product(is_s18=is_s18, is_e19=is_e19, is_smart_plus=is_smart_plus)
-        is_s18 = is_s18_product(product)
-        is_e19 = is_e19_product(product)
-        is_smart_plus = is_smart_plus_product(product)
         school = get_default_school()
 
     else:
         # auto get product if not specified
-        if not product_id:
-            if is_smart_plus and kwargs.get('phoenix_packs', False):
-                # if having packs for smart plus product, will get product info by product name
-                # and which based on product name is same with pack name
-                product = get_product_by_product_name(kwargs['phoenix_packs'][0])
-            else:
-                product = get_any_product(is_s18=is_s18, is_e19=is_e19, is_smart_plus=is_smart_plus)
+        if not product_id and product_name:
+            product = get_product_by_product_name(product_name)
+
+        elif product_id:
+            product = get_product_by_id(product=product_id, is_s18=is_s18, is_e19=is_e19, is_smart_plus=is_smart_plus)
 
         else:
-            product = get_product_by_id(product=product_id, is_s18=is_s18, is_e19=is_e19, is_smart_plus=is_smart_plus)
-            is_s18 = is_s18_product(product)
-            is_e19 = is_e19_product(product)
-            is_smart_plus = is_smart_plus_product(product)
+            product = get_any_product(is_s18=is_s18, is_e19=is_e19, is_smart_plus=is_smart_plus)
 
         # auto get school if not specified
         if not school_name:
@@ -169,6 +162,9 @@ def activate_account(product_id=None,
             is_v2 = is_v2_school(school_name)  # fix account version according to school
 
     # initial student type
+    is_s18 = is_s18_product(product)
+    is_e19 = is_e19_product(product)
+    is_smart_plus = is_smart_plus_product(product)
     is_lite = is_lite_product(product)
     is_phoenix = is_phoenix_product(product)
     is_trial = is_trial_product(product)
@@ -518,6 +514,28 @@ def activate_e19_phoenix_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
+def activate_e19_phoenix_student_with_eea(**kwargs):
+    kwargs['is_s18'] = False
+    kwargs['is_e19'] = True
+
+    # create phoenix(except for PHX TS)for China partner, will add eea coupon, using different redemption code,
+    # but, still use same product id. So using product name to get redemption code
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Phoenix - Socn - EEA'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    if 'is_v1_pack' not in kwargs:
+        kwargs['is_v1_pack'] = False
+
+    return activate_account_by_dict(kwargs)
+
+
 def activate_smart_plus_pro_student(**kwargs):
     kwargs['is_s18'] = False
     kwargs['is_e19'] = True
@@ -528,8 +546,8 @@ def activate_smart_plus_pro_student(**kwargs):
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
 
-    if 'phoenix_packs' not in kwargs:
-        kwargs['phoenix_packs'] = ['Smart Plus - Pro']
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Pro'
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
@@ -548,8 +566,8 @@ def activate_smart_plus_flex_pl_student(**kwargs):
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
 
-    if 'phoenix_packs' not in kwargs:
-        kwargs['phoenix_packs'] = ['Smart Plus - Flex PL']
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Flex PL'
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
@@ -568,8 +586,8 @@ def activate_smart_plus_flex_gl_student(**kwargs):
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
 
-    if 'phoenix_packs' not in kwargs:
-        kwargs['phoenix_packs'] = ['Smart Plus - Flex GL']
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Flex GL'
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
@@ -588,8 +606,8 @@ def activate_smart_plus_flex_vip_student(**kwargs):
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
 
-    if 'phoenix_packs' not in kwargs:
-        kwargs['phoenix_packs'] = ['Smart Plus - Flex VIP']
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Flex VIP'
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
@@ -610,7 +628,7 @@ def activate_smart_plus_flex_ts_student(**kwargs):
     kwargs['is_smart_plus'] = True
     kwargs['school_name'] = 'CN_TSC'
 
-    if 'phoenix_packs' not in kwargs and 'product_id' not in kwargs:
+    if 'product_name' not in kwargs and 'product_id' not in kwargs:
         kwargs['product_id'] = get_smart_plus_flex_ts_product(**kwargs)['id']
 
     return activate_account_by_dict(kwargs)
