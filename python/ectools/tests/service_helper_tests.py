@@ -102,20 +102,8 @@ def test_load_student_via_ecplatform_service():
     set_environment('uat')
     student_id = 23904718
     result = ecplatform_load_student(student_id)
-    assert result['CourseVersion'] == 1
-    assert result['CurrentLevelCode'] == '1'
-
-    result = ecplatform_load_student_basic_info(student_id)
-    assert result['StudentBasicInfo'][0]['Key'] == 'EliteCode'
-    assert result['StudentBasicInfo'][0]['Value'] == 'te23904718'
-
-
-def test_load_status_flag():
-    set_environment('uat')
-    student_id = 23904718
-    result = ecplatform_load_student_status_flag(student_id)
-    assert result['StatusFlags'][0]['Key'] == 5
-    assert result['StatusFlags'][0]['Value'] == 'True'
+    assert result['course_version'] == 'E12'
+    assert result['current_level'] == '3'
 
 
 def test_troop_load_student():
@@ -250,7 +238,7 @@ def test_get_student_active_subscription():
     active_student_id = 23999956
     student_active_subscription = get_student_active_subscription(active_student_id)
     assert len(student_active_subscription) > 0, "The student is not active"
-    assert student_active_subscription['is_active']
+    assert student_active_subscription[0]['is_active']
 
     # expired student
     expired_student_id = 23999880

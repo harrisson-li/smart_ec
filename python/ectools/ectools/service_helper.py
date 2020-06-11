@@ -117,7 +117,7 @@ def get_student_info(student_id):
     username, email = get_name_and_email(student_id)
     info = {'username': username, 'email': email, 'member_id': student_id}
 
-    more_info = {camelcase_to_underscore(k): v for k, v in ecplatform_load_student(student_id).items()}
+    more_info = ecplatform_load_student(student_id)
     info.update(more_info)
 
     more_info = score_helper_load_student(student_id)
@@ -133,42 +133,50 @@ def get_student_info(student_id):
     del info['user_name']
     del info['oboe_division_code']
     del info['is_success']
+    del info['collapsed']
+    del info['id']
 
     return info
 
 
-def call_ecplatform_service(service_url, payload):
-    headers = {
-        '_ECToken': '9657ade8014d71344604800e3d34a3579bd1',
-        'Content-Type': 'application/json',
-        'Accept': 'text/plain'
-    }
-    response = no_ssl_requests().post(config.etown_root_http + service_url, json=payload, headers=headers)
-    if response.status_code == HTTP_STATUS_OK:
-        return json.loads(response.text)
-    else:
-        raise ValueError(response.text)
+def get_student_basics(student_id):
+    url = config.etown_root + STUDENT_BASICS["URL"]
+    result = requests.post(url, data={STUDENT_BASICS["DATA"]: student_id})
 
+    info = {}
+    for k, v in result.json().items():
+        info[camelcase_to_underscore(k)] = v
+
+    return info
+
+def get_student_product(student_id):
+    url = config.etown_root + STUDENT_PRODUCTS["URL"]
+    result = requests.post(url, data={STUDENT_PRODUCTS["DATA"]: student_id})
+
+    info = {}
+    for k, v in result.json().items():
+        info[camelcase_to_underscore(k)] = v
+
+    return info
 
 def ecplatform_load_student(student_id):
-    """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudent"""
-    service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudent"
-    payload = {"StudentId": "{}".format(student_id)}
-    return call_ecplatform_service(service_url, payload)
+    basics = get_student_basics(student_id)
+    product = get_student_product(student_id)
+
+    query_string = 'q=ecapi_student!current'
+    student_info = query_troop_service(basics['user_name'],
+                                       query_string=query_string,
+                                       password=basics['password'])
 
 
-def ecplatform_load_student_basic_info(student_id):
-    """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudentBasicInfo"""
-    service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudentBasicInfo"
-    payload = {"StudentId": "{}".format(student_id)}
-    return call_ecplatform_service(service_url, payload)
 
+    info = {}
+    for k, v in student_info.items():
+        info[camelcase_to_underscore(k)] = v
 
-def ecplatform_load_student_status_flag(student_id):
-    """Call service: EFSchools.EC.Platform.Service.IStudentService | LoadStudentStatusFlag"""
-    service_url = "/services/ecplatform/studentservice.svc/rest/LoadStudentStatusFlag"
-    payload = {"StudentId": "{}".format(student_id)}
-    return call_ecplatform_service(service_url, payload)
+    info.update(basics)
+    info.update(product)
+    return info
 
 
 def score_helper_load_student(student_name_or_id):
@@ -389,8 +397,35 @@ def update_student_password(student_name, old_password, new_password):
     password_info = {'OldPassword': old_password,
                      'NewPassword': new_password,
                      'NewPasswordConfirmed': new_password}
-    data = {"updateItemInfos": {
-        "password": json.dumps(password_info, sort_keys=False)}}
+    data = {'updateItemInfos': {
+        'password': json.dumps(password_info, sort_keys=False)}}
+
+    return troop_command_update_information(student_name, data, old_password)
+
+
+def update_student_first_name(student_name, old_password, new_first_name):
+    data = {'updateItemInfos': {'firstname': new_first_name}}
+
+    return troop_command_update_information(student_name, data, old_password)
+
+
+def update_student_last_name(student_name, old_password, new_last_name):
+    data = {'updateItemInfos': {'firstname': new_last_name}}
+
+    return troop_command_update_information(student_name, data, old_password)
+
+
+def update_student_display_name(student_name, old_password, new_display_name):
+    data = {'updateItemInfo': {'displayname': new_display_name}}
+
+    return troop_command_update_information(student_name, data, old_password)
+
+
+def update_student_email(student_name, old_password, new_email):
+    data = {'updateItemInfos': {'email': {
+        'Email': new_email,
+        'Password': old_password
+    }}}
 
     return troop_command_update_information(student_name, data, old_password)
 
@@ -469,26 +504,24 @@ def clear_student_basic_info_cache(student_id):
 
 
 def get_student_active_subscription(student_id):
-    """load student active subscription info via /services/commerce/1.0/SubscriptionService.svc"""
-    target_url = config.etown_root_http + '/services/commerce/1.0/SubscriptionService.svc'
-    headers = {'Content-Type': 'text/xml',
-               'SOAPAction': 'http://tempuri.org/ISubscriptionService/GetActiveSubscription'}
-    body = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
-                <soapenv:Header/>
-                <soapenv:Body>
-                    <tem:GetActiveSubscription>
-                    <!--Optional:-->
-                    <tem:member_id>{}</tem:member_id>
-                    </tem:GetActiveSubscription>
-                </soapenv:Body>
-            </soapenv:Envelope>""".format(student_id)
+    """
+    Get active subscriptions
+    :param student_id:
+    :return: list
+    """
+    url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"]
+    result = requests.post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
 
-    response = no_ssl_requests().post(target_url, data=body, headers=headers)
-    response_xml = response.text
+    assert result.status_code == HTTP_STATUS_OK
+    active_subscriptions = []
+    for subscription in result.json()['Subscriptions']:
+        if subscription['IsActive']:
+            info = {}
+            for k, v in subscription.items():
+                info[camelcase_to_underscore(k)] = v
+            active_subscriptions.append(info)
 
-    assert response.status_code == HTTP_STATUS_OK
-
-    return parse_xml(response_xml)
+    return active_subscriptions
 
 
 def parse_xml(response_xml):
