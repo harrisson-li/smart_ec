@@ -15,6 +15,7 @@ from lxml import etree
 
 from ectools.config import config
 from ectools.constant import Memcached, ClearCacheType
+from ectools.db_query import fetch_one
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
@@ -139,25 +140,34 @@ def get_student_info(student_id):
     return info
 
 
+def get_member_password(student_id):
+    sql = """select Password from ET_main.dbo.members with (NOLOCK) where memberId = {}""".format(student_id)
+
+    return fetch_one(sql, as_dict=False)[0]
+
+
 def get_student_basics(student_id):
     url = config.etown_root + STUDENT_BASICS["URL"]
-    result = requests.post(url, data={STUDENT_BASICS["DATA"]: student_id})
+    result = no_ssl_requests().post(url, data={STUDENT_BASICS["DATA"]: student_id})
 
     info = {}
     for k, v in result.json().items():
         info[camelcase_to_underscore(k)] = v
 
+    info['password'] = get_member_password(student_id)
     return info
+
 
 def get_student_product(student_id):
     url = config.etown_root + STUDENT_PRODUCTS["URL"]
-    result = requests.post(url, data={STUDENT_PRODUCTS["DATA"]: student_id})
+    result = no_ssl_requests().post(url, data={STUDENT_PRODUCTS["DATA"]: student_id})
 
     info = {}
     for k, v in result.json().items():
         info[camelcase_to_underscore(k)] = v
 
     return info
+
 
 def ecplatform_load_student(student_id):
     basics = get_student_basics(student_id)
@@ -167,8 +177,6 @@ def ecplatform_load_student(student_id):
     student_info = query_troop_service(basics['user_name'],
                                        query_string=query_string,
                                        password=basics['password'])
-
-
 
     info = {}
     for k, v in student_info.items():
@@ -343,7 +351,7 @@ def add_offline_coupon(student_id, coupon_type, add_count):
            'WS': 'WSQty', 'Workshop': 'WSQty',
            'LC': 'LCQty', 'Life Club': 'LCQty',
            'Apply': 'ApplyQty'}
-    url = '{}/services/oboe2/salesforce/test/UpsellCoupon'.format(config.etown_root)
+    url = '{}/services/oboe2/salesforce/test/UpsellCoupon?token={}'.format(config.etown_root, get_token())
     response = no_ssl_requests().post(url, data={
         'memberId': student_id,
         map[coupon_type]: add_count,
@@ -360,7 +368,7 @@ def adjust_coupon(student_id, coupon_tye, adjust_count):
     :param adjust_count: eg. 10 or -10
     :return:
     """
-    url = '{}/services/oboe2/salesforce/test/AdjustCoupon'.format(config.etown_root)
+    url = '{}/services/oboe2/salesforce/test/AdjustCoupon?token={}'.format(config.etown_root, get_token())
     data = {'MemberId': student_id,
             'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
             }
@@ -919,7 +927,7 @@ def change_expiration_date(student_id, days_offset):
     :param days_offset: less than 0
     :return:
     """
-    url = '{}/services/oboe2/SalesForce/Test/UpdateStudentExpirationDate'.format(config.etown_root)
+    url = '{}/services/oboe2/SalesForce/Test/UpdateStudentExpirationDate?token={}'.format(config.etown_root, get_token())
     data = {'studentId': student_id,
             'dayOffset': days_offset}
 
