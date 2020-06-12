@@ -86,10 +86,7 @@ def get_member_site_settings(student_id, site_area='school'):
         except IndexError:
             value = ''
 
-    # for i, area in enumerate(site_areas):
         if area == site_area:
-            # key = setting_keys[i]
-            # value = setting_values[i]
             if value and re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
                 value = datetime.strptime(value, datetime_format)
             site_settings[key] = value
