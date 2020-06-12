@@ -69,14 +69,24 @@ def get_member_site_settings(student_id, site_area='school'):
     assert result.status_code == HTTP_STATUS_OK, "Failed to get student settings: {}".format(result.text)
 
     html = etree.HTML(result.text)
-    site_areas = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[1]/text()")
-    setting_keys = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[2]/text()")
-    setting_values = html.xpath("//table[@id='membersitesetting']/tbody/tr/td[3]/text()")
+    items = html.xpath("//table[@id='membersitesetting']/tbody/tr")
+    for i, item in enumerate(items):
+        try:
+            area = html.xpath("//table[@id='membersitesetting']/tbody/tr[{}]/td[1]/text()".format(i + 1))[0]
+        except IndexError:
+            area = ''
 
-    for i, area in enumerate(site_areas):
+        try:
+            key = html.xpath("//table[@id='membersitesetting']/tbody/tr[{}]/td[2]/text()".format(i + 1))[0]
+        except IndexError:
+            key = ''
+
+        try:
+            value = html.xpath("//table[@id='membersitesetting']/tbody/tr[{}]/td[3]/text()".format(i + 1))[0]
+        except IndexError:
+            value = ''
+
         if area == site_area:
-            key = setting_keys[i]
-            value = setting_values[i]
             if value and re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', value):
                 value = datetime.strptime(value, datetime_format)
             site_settings[key] = value
@@ -149,6 +159,7 @@ def get_student_basics(student_id):
 
     return info
 
+
 def get_student_product(student_id):
     url = config.etown_root + STUDENT_PRODUCTS["URL"]
     result = requests.post(url, data={STUDENT_PRODUCTS["DATA"]: student_id})
@@ -159,6 +170,7 @@ def get_student_product(student_id):
 
     return info
 
+
 def ecplatform_load_student(student_id):
     basics = get_student_basics(student_id)
     product = get_student_product(student_id)
@@ -167,8 +179,6 @@ def ecplatform_load_student(student_id):
     student_info = query_troop_service(basics['user_name'],
                                        query_string=query_string,
                                        password=basics['password'])
-
-
 
     info = {}
     for k, v in student_info.items():
