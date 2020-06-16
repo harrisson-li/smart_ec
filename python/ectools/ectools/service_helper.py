@@ -164,7 +164,8 @@ def get_student_basics(student_id):
     for k, v in result.json().items():
         info[camelcase_to_underscore(k)] = v
 
-    info['password'] = get_member_password(student_id)
+    result2 = account_service_load_student(student_id)
+    info.update(result2)
     return info
 
 
@@ -260,89 +261,57 @@ def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
 
 
 def account_service_load_student(student_name_or_id):
-    """load account info via /services/commerce/1.0/AccountService.svc"""
-    target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
-    headers = {'Content-Type': 'text/xml',
-               'SOAPAction': 'http://tempuri.org/IAccountService/GetMemberInfo'}
-
-    body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' \
-           '<s:Body><GetMemberInfo xmlns="http://tempuri.org/"><member_id>{}</member_id>' \
-           ' </GetMemberInfo></s:Body></s:Envelope>'.format(student_name_or_id)
-
-    id_response = no_ssl_requests().post(target_url, data=body, headers=headers)
-    response_xml = id_response.text
+    datetime_format = "%Y-%m-%d %H:%M:%S"
+    target_url = "{}/services/oboe2/salesforce/Account/GetMemberInfo/{}?token={}".format(
+        config.etown_root, student_name_or_id, get_token())
+    id_response = no_ssl_requests().post(target_url)
 
     # try to load as username if failed to load by id
-    if id_response.status_code != HTTP_STATUS_OK:
-        headers['SOAPAction'] = 'http://tempuri.org/IAccountService/GetMemberByEmailOrUserName'
-        body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' \
-               '<s:Body><GetMemberByEmailOrUserName xmlns="http://tempuri.org/">' \
-               '<emailOrUserName>{}</emailOrUserName></GetMemberByEmailOrUserName>' \
-               '</s:Body></s:Envelope>'.format(student_name_or_id)
+    if '"IsSuccess":false' in id_response.text:
+        target_url = "{}/services/oboe2/salesforce/Account/GetMemberByEmailOrUserName/{}?token={}".format(
+            config.etown_root, student_name_or_id, get_token())
 
-        name_response = no_ssl_requests().post(target_url, data=body, headers=headers)
+        name_response = no_ssl_requests().post(target_url)
         assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
-        response_xml = name_response.text
+        response = json.loads(name_response.text)
+    else:
+        response = json.loads(id_response.text)
 
-    return parse_xml(response_xml)
+    # convert the key from camelcase to underscore
+    info = {}
+    for key, value in response.items():
+        if isinstance(value, str) and re.match(r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}:\d{1,2}', value):
+            # value = eg. '3/15/2017 3:42:00 AM'
+            value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S %p").strftime(datetime_format)
+        info[camelcase_to_underscore(key)] = value
+
+    return info
 
 
 def account_service_update_phone2(student_id, phone_number):
-    """update telephone2 via /services/commerce/1.0/AccountService.svc"""
-    account_service_update_info(student_id, {'MobilePhone': phone_number})
+    account_service_update_info(student_id, {'mobile': phone_number})
 
 
 def account_service_update_info(student_id, info):
     """
-    update basic info via /services/commerce/1.0/AccountService.svc
-    info: dict data to update the account, e.g.{'MobilePhone':123, FirstName:'test', LastName:'test'}
+    info: dict data to update the account, e.g.{'mobile':123, firstName:'test', lastName:'test'}
     """
-    target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
-    headers = {'Content-Type': 'text/xml',
-               'SOAPAction': 'http://tempuri.org/IAccountService/UpdateBasicInfo'}
-
-    updates = '<efs:Member_id>{}</efs:Member_id>'.format(student_id)
-
+    url_partial = ''
     for k, v in info.items():
-        updates += '<efs:{0}>{1}</efs:{0}>'.format(k, v)
+        url_partial = url_partial + '&{}={}'.format(k, v)
+    target_url = '{}/services/oboe2/salesforce/Account/UpdateAccountForMember/{}?token={}{}'.format(
+        config.etown_root, student_id, get_token(), url_partial)
 
-    body = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:efs="EFSchools.Englishtown.Commerce.Client.Members">
-                   <soapenv:Header/>
-                   <soapenv:Body>
-                      <tem:UpdateBasicInfo>
-                         <tem:member>{}</tem:member>
-                      </tem:UpdateBasicInfo>
-                   </soapenv:Body>
-                </soapenv:Envelope> """.format(updates)
-
-    response = no_ssl_requests().post(target_url, data=body, headers=headers)
-    assert 'Success>true' in response.text, response.text
+    response = no_ssl_requests().post(target_url)
+    assert response.status_code == HTTP_STATUS_OK and '"IsSuccess":true' in response.text, response.text
 
 
 def account_service_cancel_student(student_id):
-    """cancel student via /services/commerce/1.0/AccountService.svc"""
-    target_url = config.etown_root_http + '/services/commerce/1.0/AccountService.svc'
-    headers = {'Content-Type': 'text/xml',
-               'SOAPAction': 'http://tempuri.org/IAccountService/CancelAccountForMember'}
+    target_url = '{}/services/oboe2/salesforce/Account/CancelAccountForMember/{}?reason=Vacation&token={}'.format(
+        config.etown_root, student_id, get_token())
 
-    body = """
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:efs="EFSchools.Englishtown.Commerce.Client.Accounts">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <tem:CancelAccountForMember>
-                 <!--Optional:-->
-                 <tem:cancelAccountParams>
-                    <efs:Member_id>{0}</efs:Member_id>
-                    <efs:Reason>{1}</efs:Reason>
-                    <!--Optional:-->
-                    <efs:Comments>'test'</efs:Comments>
-                 </tem:cancelAccountParams>
-              </tem:CancelAccountForMember>
-           </soapenv:Body>
-        </soapenv:Envelope>""".format(student_id, 'Others')  # 'Others' is special str, can always be 'Others'
-
-    response = no_ssl_requests().post(target_url, data=body, headers=headers)
-    assert 'Succeed>true' in response.text, response.text
+    response = no_ssl_requests().post(target_url)
+    assert '"IsSuccess":true' in response.text, response.text
 
 
 def adjust_level(student_id, to_level_code):
@@ -937,7 +906,8 @@ def change_expiration_date(student_id, days_offset):
     :param days_offset: less than 0
     :return:
     """
-    url = '{}/services/oboe2/SalesForce/Test/UpdateStudentExpirationDate?token={}'.format(config.etown_root, get_token())
+    url = '{}/services/oboe2/SalesForce/Test/UpdateStudentExpirationDate?token={}'.format(config.etown_root,
+                                                                                          get_token())
     data = {'studentId': student_id,
             'dayOffset': days_offset}
 
