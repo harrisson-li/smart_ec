@@ -130,13 +130,14 @@ def test_troop_translate_blurb():
 def test_account_service_load_student():
     set_environment('uat')
     student_id = '23904718'
-    expected = '{"last_name": "test", "local_name": "s14hz test", ' \
-               '"first_name": "s14hz", "user_name": "stest24561", ' \
-               '"partner_code": "Mini", "email": "te636251605203525074@qp1.org", ' \
-               '"country_code": "cn", "member_type": "M", "password": "1", ' \
-               '"member_id": "23904718", "creation_date": "2017-03-15T03:43:10.69", ' \
-               '"date_of_birth": "2017-03-15T03:42:00.353", "language_code": "en", ' \
-               '"email_language_code": "en", "data_store": "US1"}'
+    expected = '{"member_id": 23904718, "user_name": "stest24561", "first_name": "s14hz", "last_name": "test", ' \
+               '"password": "1", "email": "te636251605203525074@qp1.org", "home_phone": "", "country_code": "cn", ' \
+               '"partner_code": "Mini", "state_code": "", "city_code": "", "address1": "", "address2": "", ' \
+               '"postal_code": "", "email_language_code": "en", "e_tag": "", "member_type_code": "M", ' \
+               '"date_of_birth": "2017-03-15 03:42:00", "local_name": "s14hz test", "gender_code": "", ' \
+               '"mobile_phone": null, "display_name": null, "language_code": "en", "address": "", ' \
+               '"occupation": "", "omniture_friendly_name": "", "data_store": "US1", ' \
+               '"creation_date": "2017-03-15 03:43:10", "success": false, "error_code": null}'
 
     result = account_service_load_student(student_id)
     assert result == json.loads(expected)
@@ -154,7 +155,7 @@ def test_account_service_update_phone2():
     try:
         account_service_update_phone2(123, 66666666)
     except Exception as e:
-        assert 'no such member' in str(e)
+        assert '"IsSuccess":false' in str(e)
     else:
         assert False, 'should raise error!'
 

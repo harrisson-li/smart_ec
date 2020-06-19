@@ -333,7 +333,7 @@ def set_account_info(student):
     numbers = get_config_value('test_account_phone', is_json=True)
     created_by = student.get('created_by', getpass.getuser())
     student_id, username = student['member_id'], student['username']
-    account_service_update_info(student_id, {'MobilePhone': numbers[config.partner]})
+    account_service_update_info(student_id, {'Mobile': numbers[config.partner]})
     account_service_update_info(student_id, {'FirstName': created_by})
     account_service_update_info(student_id, {'LastName': student_id})
     account_service_update_info(student_id, {'Email': '{}_{}_{}_{}@qp1.org'
