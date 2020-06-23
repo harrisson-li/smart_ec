@@ -399,7 +399,8 @@ def no_ssl_requests():
         'User-Agent': 'Mozilla (Windows NT 10.0; Win64; x64) AppleWebKit (KHTML, like Gecko) Chrome Safari',
         'Referer': referer_url
     }
-    s.verify = False
+
+    s.verify = True
     return s
 
 

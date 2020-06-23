@@ -99,7 +99,8 @@ def set_member_site_settings(student_id, key_name, key_value, site_area='school'
     if is_time_value:
         key_value = arrow.get(key_value).format('M/D/YYYY hh:mm:ss')
 
-    url = '{}/services/ecplatform/Tools/StudentSettings/SaveMemberSiteSetting'.format(config.etown_root)
+    url = '{}/services/ecplatform/Tools/StudentSettings/SaveMemberSiteSetting?token={}'.format(config.etown_root,
+                                                                                               get_token())
     data = {'studentId': student_id,
             'siteArea': site_area,
             'key': key_name,
@@ -157,7 +158,7 @@ def get_member_password(student_id):
 
 
 def get_student_basics(student_id):
-    url = config.etown_root + STUDENT_BASICS["URL"]
+    url = config.etown_root + STUDENT_BASICS["URL"] + '?token={}'.format(get_token())
     result = no_ssl_requests().post(url, data={STUDENT_BASICS["DATA"]: student_id})
 
     info = {}
@@ -170,7 +171,7 @@ def get_student_basics(student_id):
 
 
 def get_student_product(student_id):
-    url = config.etown_root + STUDENT_PRODUCTS["URL"]
+    url = config.etown_root + STUDENT_PRODUCTS["URL"] + '?token={}'.format(get_token())
     result = no_ssl_requests().post(url, data={STUDENT_PRODUCTS["DATA"]: student_id})
 
     info = {}
@@ -496,7 +497,7 @@ def get_student_active_subscription(student_id):
     :param student_id:
     :return: list
     """
-    url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"]
+    url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"] + '?token={}'.format(get_token())
     result = requests.post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
 
     assert result.status_code == HTTP_STATUS_OK
@@ -530,7 +531,7 @@ def get_student_info_by_graphql(student, info):
 
     data = {"variables": {},
             "query": "{student {" + info + "}}"}
-    graphql_url = config.etown_root + GRAPHQL_SERVICE_URL
+    graphql_url = config.etown_root + GRAPHQL_SERVICE_URL + '?token={}'.format(get_token())
 
     graphql_result = requests.post(graphql_url,
                                    data=json.dumps(data),
