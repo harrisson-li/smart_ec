@@ -275,7 +275,10 @@ def test_get_student_feature_access_grants():
 def test_get_EEA_coupon():
     set_environment('uatcn')
     coupon_info = get_EEA_coupon(24123877)
+
+    # Check total coupon count
     assert_that(coupon_info[0]).is_equal_to(360)
+    # Check remaining coupon count
     assert_that(coupon_info[1]).is_equal_to(360)
 
 
