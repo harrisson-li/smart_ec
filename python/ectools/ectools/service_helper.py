@@ -654,7 +654,10 @@ def get_EEA_coupon(student_id):
     found = [(feature['TotalQuantity'], feature['RemainingQuantity'])
              for feature in features if feature['FeatureAccess'] == 'EEA']
 
-    total_remaining_coupon = numpy.sum(found, axis=0)
+    if len(found) > 0:
+        total_remaining_coupon = numpy.sum(found, axis=0)
+    else:
+        return [0, 0]
     return total_remaining_coupon
 
 
