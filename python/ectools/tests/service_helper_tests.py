@@ -265,6 +265,20 @@ def test_get_student_coupon_info():
     assert_that(coupon_info['IsSuccess']).is_true()
 
 
+def test_get_student_feature_access_grants():
+    set_environment('uatcn')
+    feature_info = get_student_feature_access_grants(24123877)
+    assert_that(
+        len([feature for feature in feature_info if feature['FeatureAccess'] == 'SelfStudy_Extendable'])).is_equal_to(1)
+
+
+def test_get_EEA_coupon():
+    set_environment('uatcn')
+    coupon_info = get_EEA_coupon(24123877)
+    assert_that(coupon_info[0]).is_equal_to(360)
+    assert_that(coupon_info[1]).is_equal_to(360)
+
+
 def test_get_student_enrollments_info():
     set_environment('uat')
     current_enrollment = get_current_level_unit(24010365)
