@@ -10,6 +10,7 @@ import re
 from datetime import datetime
 
 import arrow
+import numpy
 import requests
 from lxml import etree
 
@@ -570,7 +571,94 @@ def get_student_coupon_info(student_id):
     }
 
     response = no_ssl_requests().post(target_url, data=data)
+
+    assert response.status_code == HTTP_STATUS_OK, response.text
+
     return response.json()
+
+
+def get_student_feature_access_grants(student_id):
+    """
+    Get the student coupon info
+    :param student_id
+    :return: coupon info, eg.
+[{'FeatureAccessGrantId': 4006314, 'FeatureAccessId': 4, 'FeatureAccess': 'FaceToFace', 'TotalQuantity': -1,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006315, 'FeatureAccessId': 11, 'FeatureAccess': 'GroupLesson', 'TotalQuantity': 0,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006316, 'FeatureAccessId': 12, 'FeatureAccess': 'TOEICTrainer', 'TotalQuantity': 12,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006317, 'FeatureAccessId': 15, 'FeatureAccess': 'TOEICTest_Blue', 'TotalQuantity': 12,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006318, 'FeatureAccessId': 16, 'FeatureAccess': 'TOEFLTrainer', 'TotalQuantity': 12,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006319, 'FeatureAccessId': 19, 'FeatureAccess': 'TOEFLTest_Blue', 'TotalQuantity': 12,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006320, 'FeatureAccessId': 21, 'FeatureAccess': 'SelfStudy_Extendable', 'TotalQuantity': -1,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006321, 'FeatureAccessId': 33, 'FeatureAccess': 'WritingClassUnlimited', 'TotalQuantity': -1,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006322, 'FeatureAccessId': 42, 'FeatureAccess': 'PL20', 'TotalQuantity': 1,
+'RemainingQuantity': 1, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006323, 'FeatureAccessId': 43, 'FeatureAccess': 'PL20UnitMoveOn', 'TotalQuantity': -1,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006324, 'FeatureAccessId': 44, 'FeatureAccess': 'GLDaliyDelivert', 'TotalQuantity': -1,
+'RemainingQuantity': 0, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None},
+{'FeatureAccessGrantId': 4006325, 'FeatureAccessId': 56, 'FeatureAccess': 'EEA', 'TotalQuantity': 360,
+'RemainingQuantity': 360, 'CostQuantity': 0, 'ActiveFromESTDate': '2020-07-09T02:22:03.477',
+'ActiveFromUTCDate': '2020-07-09T06:22:03.477Z', 'ActiveToESTDate': '2021-07-04T02:22:03.477',
+'ActiveToUTCDate': '2021-07-04T06:22:03.477Z', 'OrderId': 452182, 'OrderItemId': 452182, 'Status': None}]
+    """
+    target_url = config.etown_root + STUDENT_FAGS['URL'] + '?token={}'.format(get_token())
+    data = {
+        STUDENT_COUPONS['DATA']: student_id
+    }
+
+    response = no_ssl_requests().post(target_url, data=data)
+
+    assert response.status_code == HTTP_STATUS_OK, response.text
+
+    return response.json()['FAGs']
+
+
+def get_EEA_coupon(student_id):
+    """
+    Get EEA total coupon count and remaining coupon count
+    :param student_id:
+    :return: [total_coupon_count, remaining_coupon_count]
+    """
+    features = get_student_feature_access_grants(student_id)
+
+    found = [(feature['TotalQuantity'], feature['RemainingQuantity'])
+             for feature in features if feature['FeatureAccess'] == 'EEA']
+
+    if len(found) > 0:
+        total_remaining_coupon = numpy.sum(found, axis=0)
+    else:
+        return [0, 0]
+    return total_remaining_coupon
 
 
 def get_student_enrollments_info(student_id):
