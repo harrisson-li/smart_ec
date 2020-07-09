@@ -6,7 +6,7 @@ def main():
         name="ectools",
         description="Toolbox from EFEC QA team.",
         long_description="Library to help with EFEC testing, such as create test account, submit score, get tokens.",
-        version="1.8.37",
+        version="1.8.38",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
         url="https://confluence.eflabs.cn/display/SMart/ectools+-+Introduction",
@@ -19,7 +19,8 @@ def main():
             'arrow',
             'bs4',
             'lxml',
-            'pymssql'
+            'pymssql',
+            'numpy'
         ],
         zip_safe=False,
     )
