@@ -501,7 +501,7 @@ def get_student_active_subscription(student_id):
     url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"] + '?token={}'.format(get_token())
     result = requests.post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
 
-    assert result.status_code == HTTP_STATUS_OK
+    assert result.status_code == HTTP_STATUS_OK, result.text
     active_subscriptions = []
     for subscription in result.json()['Subscriptions']:
         if subscription['IsActive']:
