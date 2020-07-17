@@ -353,17 +353,6 @@ def test_activate_smart_plus_flex_vip_account():
                      product_name='Smart Plus - Flex VIP')
 
 
-def test_activate_smart_plus_flex_ts_account():
-    set_environment('qa')
-    set_partner('socn')
-    activate_smart_plus_flex_ts_student(includeenroll=True)
-    activate_smart_plus_flex_ts_student(includeenroll=True, phoenix_packs=['Smart Plus - Flex TS - 1YPL'])
-    activate_account(is_s18=False, is_e19=True, is_smart_plus=True, product_id=162)
-    activate_account(is_s18=False, is_e19=True, is_smart_plus=True)
-    activate_account(is_s18=False, is_e19=True, is_smart_plus=True, school_name='CN_TSC',
-                     phoenix_packs=['Smart Plus - Flex TS - 1YPL+'])
-
-
 def test_activate_phoenix_with_dict_coupon_info():
     pack_info = {'Center Pack Basic': {
         "coupons": [

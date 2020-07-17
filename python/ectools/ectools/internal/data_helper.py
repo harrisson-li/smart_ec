@@ -284,13 +284,6 @@ def get_smart_plus_flex_vip_product(by_partner=None, **kwargs):
     return get_random_item(found)
 
 
-def get_smart_plus_flex_ts_product(by_partner=None, **kwargs):
-    found = [x for x in get_products_by_partner(by_partner, **kwargs)
-             if is_item_has_tag(x, 'Flex_TS')]
-
-    return get_random_item(found)
-
-
 def get_eclite_products(partner=None, **kwargs):
     from ectools.config import config
     if partner is None:
