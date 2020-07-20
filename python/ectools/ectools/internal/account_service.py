@@ -98,8 +98,8 @@ def get_set_oc_url():
 
 
 def get_activate_oboe_package_link():
-    url = '{}/services/oboe2/salesforce/test/ActivatePackage'
-    return url.format(config.etown_root)
+    url = '{}/services/oboe2/salesforce/test/ActivatePackage?token={}'
+    return url.format(config.etown_root, get_token())
 
 
 def get_success_message(student):

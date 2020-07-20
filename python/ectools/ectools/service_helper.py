@@ -264,20 +264,20 @@ def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
 
 def account_service_load_student(student_name_or_id):
     datetime_format = "%Y-%m-%d %H:%M:%S"
-    target_url = "{}/services/oboe2/salesforce/Account/GetMemberInfo/{}?token={}".format(
-        config.etown_root, student_name_or_id, get_token())
-    id_response = no_ssl_requests().post(target_url)
 
-    # try to load as username if failed to load by id
-    if '"IsSuccess":false' in id_response.text:
+    if isinstance(student_name_or_id, int) or (isinstance(student_name_or_id, str) and student_name_or_id.isdigit()):
+        target_url = "{}/services/oboe2/salesforce/Account/GetMemberInfo/{}?token={}".format(
+            config.etown_root, student_name_or_id, get_token())
+        id_response = no_ssl_requests().post(target_url)
+        assert id_response.status_code == HTTP_STATUS_OK, id_response.text
+        response = json.loads(id_response.text)
+    else:
         target_url = "{}/services/oboe2/salesforce/Account/GetMemberByEmailOrUserName/{}?token={}".format(
             config.etown_root, student_name_or_id, get_token())
 
         name_response = no_ssl_requests().post(target_url)
-        assert name_response.status_code == HTTP_STATUS_OK, id_response.text + name_response.text
+        assert name_response.status_code == HTTP_STATUS_OK, name_response.text
         response = json.loads(name_response.text)
-    else:
-        response = json.loads(id_response.text)
 
     # convert the key from camelcase to underscore
     info = {}
@@ -501,7 +501,7 @@ def get_student_active_subscription(student_id):
     url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"] + '?token={}'.format(get_token())
     result = requests.post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
 
-    assert result.status_code == HTTP_STATUS_OK
+    assert result.status_code == HTTP_STATUS_OK, result.text
     active_subscriptions = []
     for subscription in result.json()['Subscriptions']:
         if subscription['IsActive']:
