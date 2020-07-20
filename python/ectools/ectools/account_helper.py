@@ -396,7 +396,7 @@ def enroll_account(username, password, force=False, level_code='0A'):
         login_session, login_result = login_mobile_web(student_username, student_password)
         enroll_result = login_session.get(get_mobile_enroll_url(), allow_redirects=True)
 
-        if 'mobile/welcome' in enroll_result.url:
+        if 'mobile/welcome' in enroll_result.url.lower():
             get_logger().info('Enroll account {} success'.format(username))
         else:
             get_logger().error('Enroll to {}, detail: {}'.format(result.url, result.text))
@@ -404,7 +404,7 @@ def enroll_account(username, password, force=False, level_code='0A'):
 
     session, result = login_mobile_web(username, password)
 
-    if 'mobile/beginnerquestionnaire' in result.url:  # or 'mobile/beginnerquestionnairelv0' in result.url:
+    if 'mobile/beginnerquestionnaire' in result.url.lower():  # or 'mobile/beginnerquestionnairelv0' in result.url:
         response_questionnaire = submit_beginner_questionaire(level_code, session)
         if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
             enroll_course_new_flow(username, password)
