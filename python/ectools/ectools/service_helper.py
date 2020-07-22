@@ -499,7 +499,7 @@ def get_student_active_subscription(student_id):
     :return: list
     """
     url = config.etown_root + STUDENT_SUBSCRIPTIONS["URL"] + '?token={}'.format(get_token())
-    result = requests.post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
+    result = no_ssl_requests().post(url, data={STUDENT_SUBSCRIPTIONS["DATA"]: student_id})
 
     assert result.status_code == HTTP_STATUS_OK, result.text
     active_subscriptions = []
@@ -534,7 +534,7 @@ def get_student_info_by_graphql(student, info):
             "query": "{student {" + info + "}}"}
     graphql_url = config.etown_root + GRAPHQL_SERVICE_URL + '?token={}'.format(get_token())
 
-    graphql_result = requests.post(graphql_url,
+    graphql_result = no_ssl_requests().post(graphql_url,
                                    data=json.dumps(data),
                                    headers={"X-EC-CMUS": client.cookies['CMus'],
                                             "X-EC-SID": client.cookies['et_sid'],
