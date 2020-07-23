@@ -388,20 +388,21 @@ def camelcase_to_underscore(name):
 
 def no_ssl_requests():
     """get requests instance without SSL verify."""
-
+    from ectools.config import config
     s = requests.Session()
 
-    if Configuration.domain == 'CN':
-        referer_url = '{}/partner/englishcenters/cn?z=1234567'.format(Configuration.etown_root)
+    if config.domain == 'CN':
+        referer_url = '{}/partner/englishcenters/cn?z=1234567'.format(config.etown_root)
     else:
-        referer_url = '{}/partner/englishcenters?z=1234567'.format(Configuration.etown_root)
+        referer_url = '{}/partner/englishcenters?z=1234567'.format(config.etown_root)
 
     s.headers = {
         'User-Agent': 'Mozilla (Windows NT 10.0; Win64; x64) AppleWebKit (KHTML, like Gecko) Chrome Safari',
         'Referer': referer_url
     }
 
-    s.verify = True
+    s.verify = False
+
     return s
 
 
