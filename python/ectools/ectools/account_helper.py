@@ -55,7 +55,8 @@ def get_or_activate_account(tag, expiration_days=360, method='activate_account',
 
     else:
         # the account activation days should be larger than expiration day
-        kwargs['mainRedemptionQty'] = expiration_days // 30
+        length_months = expiration_days // 30
+        kwargs['mainRedemptionQty'] = length_months if length_months > 0 else expiration_days
 
         current_module = sys.modules[__name__].__dict__
         account = current_module[method](**kwargs)

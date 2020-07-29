@@ -26,8 +26,7 @@ from .constants import HTTP_STATUS_OK
 
 
 def append_token(url, join_by='&'):
-    if config.env == 'Live':
-        url += join_by + 'token=' + get_token()
+    url += join_by + 'token=' + get_token()
 
     return url
 
