@@ -11,7 +11,6 @@ from datetime import datetime
 
 import arrow
 import numpy
-import requests
 from lxml import etree
 
 from ectools.config import config
@@ -419,6 +418,21 @@ def update_student_email(student_name, old_password, new_email):
     return troop_command_update_information(student_name, data, old_password)
 
 
+def update_student_address(student_name, student_password=DEFAULT_PASSWORD,
+                           country_code='cn', state_code='',
+                           city_code='', billing_address='',
+                           postal_code=''):
+    data = {"updateItemInfos": {
+        "billinginfo": "{\"CountryCode\":" + "\"" + country_code + "\""
+                       + ",\"StateCode\":" + "\"" + state_code + "\""
+                       + ",\"CityCode\":" + "\"" + city_code + "\""
+                       + ",\"Address\":" + "\"" + billing_address + "\""
+                       + ",\"PostalCode\":" + "\"" + postal_code + "\"}"
+    }}
+
+    return troop_command_update_information(student_name, data=data, password=student_password)
+
+
 def clear_memcached(cache_key):
     return clear_memcached_by_type(ClearCacheType.MEM_CACHED_VALUE_CLEAR, cache_key)
 
@@ -535,10 +549,10 @@ def get_student_info_by_graphql(student, info):
     graphql_url = config.etown_root + GRAPHQL_SERVICE_URL + '?token={}'.format(get_token())
 
     graphql_result = no_ssl_requests().post(graphql_url,
-                                   data=json.dumps(data),
-                                   headers={"X-EC-CMUS": client.cookies['CMus'],
-                                            "X-EC-SID": client.cookies['et_sid'],
-                                            "X-EC-LANG": "en"})
+                                            data=json.dumps(data),
+                                            headers={"X-EC-CMUS": client.cookies['CMus'],
+                                                     "X-EC-SID": client.cookies['et_sid'],
+                                                     "X-EC-LANG": "en"})
 
     return graphql_result.json()["data"]["student"][info]
 
