@@ -342,7 +342,11 @@ def test_convert_to_smart_plus():
 
 def test_update_student_address():
     set_environment('uatcn')
-    # student = activate_e19_student()
-    # print("student name = {}, student id = {}".format(student['username'], student['member_id']))
-    student_name = 'stestc13832'
-    update_student_address(student_name, country_code='cn', state_code='', city_code='', billing_address='Test Address2')
+    student = activate_e19_student()
+    student_name = student['username']
+    student_password = student['password']
+    updated_address = 'Test Address2'
+    update_student_address(student_name, student_password,
+                           billing_address=updated_address)
+    student_info = account_service_load_student(student['username'])
+    assert_that(student_info['address1']).is_equal_to(updated_address)
