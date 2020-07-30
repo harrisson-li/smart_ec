@@ -339,3 +339,10 @@ def test_convert_to_smart_plus():
     set_environment('uat')
     student = activate_e19_student()
     convert_to_smart_plus(student['member_id'])
+
+def test_update_student_address():
+    set_environment('uatcn')
+    # student = activate_e19_student()
+    # print("student name = {}, student id = {}".format(student['username'], student['member_id']))
+    student_name = 'stestc13832'
+    update_student_address(student_name, country_code='cn', state_code='', city_code='', billing_address='Test Address2')

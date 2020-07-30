@@ -419,6 +419,15 @@ def update_student_email(student_name, old_password, new_email):
     return troop_command_update_information(student_name, data, old_password)
 
 
+def update_student_address(student_name, country_code='', state_code='', city_code='', billing_address='',
+                           postal_code=''):
+    data = {"updateItemInfos": {
+        "billinginfo": "{\"CountryCode\":" + "\"" + country_code + "\"" + ",\"StateCode\":" + "\"" + state_code + "\"" + ",\"CityCode\":" + "\"" + city_code + "\"" + ",\"Address\":" + "\"" + billing_address + "\"" + ",\"PostalCode\":" + "\"" + postal_code+ "\"}"
+        }}
+
+    return troop_command_update_information(student_name, data=data)
+
+
 def clear_memcached(cache_key):
     return clear_memcached_by_type(ClearCacheType.MEM_CACHED_VALUE_CLEAR, cache_key)
 
