@@ -7,6 +7,7 @@ Supported options:
     -p  generate package.
     -d  generate document.
     -u  upload package and document to server.
+    -o
 
 Examples:
     python build.py
@@ -30,12 +31,14 @@ output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'tests')
-pypi_dir = r"\\cnshhq-w0633\pypi\ectools"
+# pypi_dir = r"\\cnshhq-w0633\pypi\ectools"
+pypi_dir = join('opt', 'ectools_packages', 'pypi', 'ectools')
 setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
-version_file = r"\\cnshhq-w0633\pypi\ectools\version.txt"
+version_file = join(pypi_dir, 'version.txt')
+# version_file = r"\\cnshhq-w0633\pypi\ectools\version.txt"
 
 
 def prepare():
@@ -143,6 +146,9 @@ if __name__ == '__main__':
         upload_doc()
 
     else:
+        if '-o' in args:
+            pypi_dir = sys.argv[-1]
+
         if '-t' in args:
             unit_tests()
 
