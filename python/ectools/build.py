@@ -141,7 +141,7 @@ if __name__ == '__main__':
     if len(args) == 1:
         unit_tests()
         make_package()
-        make_doc()
+        # make_doc()
         upload_package()
         upload_doc()
 
@@ -156,7 +156,8 @@ if __name__ == '__main__':
             make_package()
 
         if '-d' in args:
-            make_doc()
+            pass
+            # make_doc()
 
         if '-u' in args:
             upload_package()
