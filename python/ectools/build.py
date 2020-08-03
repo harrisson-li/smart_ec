@@ -117,7 +117,7 @@ def upload_package():
         src = join(package_dir, package)
         dst = join(pypi_dir, package)
         print("-> {}...".format(package))
-        shutil.copy(src, dst)
+        shutil.copyfile(src, dst)
 
 
 def make_doc():
@@ -143,7 +143,7 @@ if __name__ == '__main__':
         make_package()
         # make_doc()
         upload_package()
-        upload_doc()
+        # upload_doc()
 
     else:
         if '-o' in args:
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
         if '-u' in args:
             upload_package()
-            upload_doc()
+            # upload_doc()
 
         if '-h' in args:
             print(__doc__)
