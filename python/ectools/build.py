@@ -107,7 +107,7 @@ def make_package():
     except AssertionError:
         print('ERROR: Cannot access to pypi server: {}'.format(pypi_dir))
 
-    os.system('python "{}" sdist'.format(setup_py))
+    os.system('{} "{}" sdist'.format(sys.executable, setup_py))
 
 
 def upload_package():
@@ -148,6 +148,7 @@ if __name__ == '__main__':
     else:
         if '-o' in args:
             pypi_dir = sys.argv[-1]
+            version_file = join(pypi_dir, 'version.txt')
 
         if '-t' in args:
             unit_tests()
