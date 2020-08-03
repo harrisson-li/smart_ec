@@ -117,7 +117,7 @@ def upload_package():
         src = join(package_dir, package)
         dst = join(pypi_dir, package)
         print("-> {}...".format(package))
-        shutil.copyfile(src, dst)
+        shutil.copy2(src, dst)
 
 
 def make_doc():
