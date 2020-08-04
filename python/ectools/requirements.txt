@@ -6,7 +6,7 @@ requests
 selenium
 # pymssql discontinued, see https://github.com/pymssql/pymssql/issues/668
 # pymssql==2.1.4
-# workround for ubuntu (jenkins slave)
+# Workround for ubuntu (jenkins slave)
 pymssql-linux
 assertpy
 sphinx
