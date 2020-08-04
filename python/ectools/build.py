@@ -7,6 +7,7 @@ Supported options:
     -p  generate package.
     -d  generate document.
     -u  upload package and document to server.
+    -o  able to config the pypi dir
 
 Examples:
     python build.py
@@ -30,12 +31,12 @@ output_dir = join(project_dir, 'output')
 package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'tests')
-pypi_dir = r"\\cnshhq-w0633\pypi\ectools"
+pypi_dir = join('/opt', 'ectools_packages', 'pypi', 'ectools')
 setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
 doc_cmd = join(doc_dir, 'make.bat')
 doc_server = join(pypi_dir, 'doc')
-version_file = r"\\cnshhq-w0633\pypi\ectools\version.txt"
+version_file = join(pypi_dir, 'version.txt')
 
 
 def prepare():
@@ -104,7 +105,7 @@ def make_package():
     except AssertionError:
         print('ERROR: Cannot access to pypi server: {}'.format(pypi_dir))
 
-    os.system('python "{}" sdist'.format(setup_py))
+    os.system('{} "{}" sdist'.format(sys.executable, setup_py))
 
 
 def upload_package():
@@ -138,11 +139,15 @@ if __name__ == '__main__':
     if len(args) == 1:
         unit_tests()
         make_package()
-        make_doc()
+        # make_doc() # temporarily comment it because bat file is in windows format
         upload_package()
-        upload_doc()
+        # upload_doc() # temporarily comment it because bat file is in windows format
 
     else:
+        if '-o' in args:
+            pypi_dir = sys.argv[-1]
+            version_file = join(pypi_dir, 'version.txt')
+
         if '-t' in args:
             unit_tests()
 
@@ -150,11 +155,12 @@ if __name__ == '__main__':
             make_package()
 
         if '-d' in args:
-            make_doc()
+            pass
+            # make_doc() # temporarily comment it because bat file is in windows format
 
         if '-u' in args:
             upload_package()
-            upload_doc()
+            # upload_doc() # temporarily comment it because bat file is in windows format
 
         if '-h' in args:
             print(__doc__)
