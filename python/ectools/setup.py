@@ -19,7 +19,7 @@ def main():
             'arrow',
             'bs4',
             'lxml',
-            'pymssql',
+            'pymssql-linux',
             'numpy'
         ],
         zip_safe=False,
