@@ -32,7 +32,6 @@ package_dir = join(project_dir, 'dist')
 test_result_dir = join(output_dir, 'results')
 unit_test_dir = join(project_dir, 'tests')
 # pypi_dir = r"\\cnshhq-w0633\pypi\ectools"
-# pypi_dir = join('/home', 'jenkins', 'ectools_packages', 'pypi', 'ectools')
 pypi_dir = join('/opt', 'ectools_packages', 'pypi', 'ectools')
 setup_py = join(project_dir, 'setup.py')
 doc_dir = join(project_dir, 'docs')
