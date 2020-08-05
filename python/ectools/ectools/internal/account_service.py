@@ -92,8 +92,8 @@ def get_mobile_enroll_url():
 
 
 def get_set_oc_url():
-    url = '{}/services/oboe2/salesforce/test/SetOC'
-    return url.format(config.etown_root)
+    url = '{}/services/oboe2/salesforce/test/SetOC?token={}'
+    return url.format(config.etown_root, get_token())
 
 
 def get_activate_oboe_package_link():
