@@ -29,7 +29,7 @@ class Configuration(Base):
     axis_root = ''
     browser_id = 'internal_browser'
     browser_type = 'Chrome'
-    browser_headless = False
+    browser_headless = True
     default_timeout = 60
     default_poll_time = 0.5
     default_retry_times = 3
