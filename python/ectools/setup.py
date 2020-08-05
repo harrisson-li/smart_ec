@@ -1,7 +1,14 @@
+import os
+
 from setuptools import setup, find_packages
 
 
 def main():
+    if os.name == 'posix':
+        pymssql_pack = 'pymssql-linux'
+    else:
+        pymssql_pack = 'pymssql'
+
     setup(
         name="ectools",
         description="Toolbox from EFEC QA team.",
@@ -19,7 +26,7 @@ def main():
             'arrow',
             'bs4',
             'lxml',
-            'pymssql-linux',
+            pymssql_pack,
             'numpy'
         ],
         zip_safe=False,
