@@ -1,12 +1,19 @@
+import os
+
 from setuptools import setup, find_packages
 
 
 def main():
+    if os.name == 'posix':
+        pymssql_pack = 'pymssql-linux'
+    else:
+        pymssql_pack = 'pymssql'
+
     setup(
         name="ectools",
         description="Toolbox from EFEC QA team.",
         long_description="Library to help with EFEC testing, such as create test account, submit score, get tokens.",
-        version="1.8.44",
+        version="1.8.46",
         author="Toby Qin",
         author_email="toby.qin@ef.com",
         url="https://confluence.eflabs.cn/display/SMart/ectools+-+Introduction",
@@ -19,7 +26,7 @@ def main():
             'arrow',
             'bs4',
             'lxml',
-            'pymssql-linux',
+            pymssql_pack,
             'numpy'
         ],
         zip_safe=False,
