@@ -344,16 +344,11 @@ def enroll_account(username, password, force=False, level_code='0A'):
         return
 
     def login_mobile_web(student_username, student_password):
-        url = get_login_post_link()
         s = no_ssl_requests()
-        d = {'username': student_username, 'password': student_password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
-        r = s.post(url=url, data=d)
-
-        if r.status_code == 200 and r.json()['success']:
-            redirect_url = r.json()['redirect']
-            redirect_result = s.get(redirect_url, allow_redirects=True)
-        else:
-            raise ValueError('Fail to login with user {} / {}! '.format(student_username, student_password) + r.text)
+        url = get_login_url(student_username, student_password,
+                            '{}/ecplatform/mvc/mobile/dropin'.format(config.etown_root))
+        redirect_result = s.get(url)
+        assert redirect_result.status_code == 200, "Fail to go to /ecplatform/mvc/mobile/dropin page"
 
         return s, redirect_result
 
@@ -394,8 +389,9 @@ def enroll_account(username, password, force=False, level_code='0A'):
         return response_questionnaire
 
     def enroll_course_new_flow(student_username, student_password):
-        login_session, login_result = login_mobile_web(student_username, student_password)
-        enroll_result = login_session.get(get_mobile_enroll_url(), allow_redirects=True)
+        s = no_ssl_requests()
+        url = get_login_url(student_username, student_password, get_mobile_enroll_url())
+        enroll_result = s.get(url)
 
         if 'mobile/welcome' in enroll_result.url.lower():
             get_logger().info('Enroll account {} success'.format(username))

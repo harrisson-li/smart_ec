@@ -63,6 +63,30 @@ def get_login_post_link():
     return '{}/login/secure.ashx'.format(config.etown_root)
 
 
+def get_login_url(username, password, on_success_url=None):
+    url = '{}/services/oboe2/salesforce/test/login'.format(config.etown_root)
+
+    default_on_success_url = '{}/school/course/currentcourse/handler.aspx?entry=true&lng=en&ctr={}'.format(
+        config.etown_root, config.domain)
+
+    if on_success_url is None:
+        on_success_url = default_on_success_url
+
+    data = {
+        'UserName': username,
+        'Password': password,
+        'Domain': config.etown_root,
+        'OnSuccessUrl': on_success_url,
+        'Token': get_token()
+    }
+
+    response = no_ssl_requests().post(url, data=data)
+
+    assert response.status_code == HTTP_STATUS_OK, response.text
+
+    return response.text
+
+
 def get_beginner_questionnaire_link():
     url = '{}/services/api/proxy/commandproxy/ecplatform/ecapi_myaccount_beginnerquestionnaire/UpdateAnswers'
     return url.format(config.etown_root)
