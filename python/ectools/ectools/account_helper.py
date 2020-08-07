@@ -345,10 +345,16 @@ def enroll_account(username, password, force=False, level_code='0A'):
 
     def login_mobile_web(student_username, student_password):
         s = no_ssl_requests()
-        url = get_login_url(student_username, student_password,
-                            '{}/ecplatform/mvc/mobile/dropin'.format(config.etown_root))
-        redirect_result = s.get(url)
-        assert redirect_result.status_code == 200, "Fail to go to /ecplatform/mvc/mobile/dropin page"
+
+        url = get_login_post_link()
+        d = {'username': student_username, 'password': student_password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
+        r = s.post(url=url, data=d)
+
+        if r.status_code == 200 and r.json()['success']:
+            redirect_url = r.json()['redirect']
+            redirect_result = s.get(redirect_url, allow_redirects=True)
+        else:
+            raise ValueError('Fail to login with user {} / {}! '.format(student_username, student_password) + r.text)
 
         return s, redirect_result
 
@@ -386,12 +392,17 @@ def enroll_account(username, password, force=False, level_code='0A'):
 
         response_questionnaire = login_session.post(url=url_questionnaire, json=questionaire_data)
 
+        if not response_questionnaire.status_code == 200:
+            raise ValueError('Fail to complete beginner questionaire.')
         return response_questionnaire
 
     def enroll_course_new_flow(student_username, student_password):
-        s = no_ssl_requests()
-        url = get_login_url(student_username, student_password, get_mobile_enroll_url())
-        enroll_result = s.get(url)
+        login_session, login_result = login_mobile_web(student_username, student_password)
+        enroll_result = login_session.get(get_mobile_enroll_url(), allow_redirects=True)
+
+        if not enroll_result.status_code == 200:
+            raise ValueError("Fail to enroll account, get error: {} {}".format(
+                enroll_result.status_code, enroll_result.text))
 
         if 'mobile/welcome' in enroll_result.url.lower():
             get_logger().info('Enroll account {} success'.format(username))
