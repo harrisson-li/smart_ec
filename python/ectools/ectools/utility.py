@@ -350,7 +350,7 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--window-size=1280x1024')
                 options.add_argument('--ignore-certificate-errors')
             from ectools.logger import get_logger
-            get_logger().info('chrome driver options {}'.format(options))
+            get_logger().info('chrome driver options {}'.format(options.arguments))
 
             browser = webdriver.Chrome(options=options)
         else:
