@@ -321,11 +321,11 @@ def set_course_info(member_id, is_e19):
     s = no_ssl_requests()
     response = s.get(link)
 
-    if response.status_code == 200:
+    if response.status_code == HTTP_STATUS_OK:
         data = {'studentIds': member_id}
 
         r = s.post(url=url, data=data)
-        if r.status_code == 200 and r.json()['IsSuccess']:
+        if r.status_code == HTTP_STATUS_OK and r.json()['IsSuccess']:
             get_logger().info('Set account {} to {} course info success'.format(member_id, 'E19' if is_e19 else 'S18'))
         else:
             raise ValueError('Error occurred when set account {} to legacy S18 course info'.format(member_id))
@@ -344,12 +344,13 @@ def enroll_account(username, password, force=False, level_code='0A'):
         return
 
     def login_mobile_web(student_username, student_password):
-        url = get_login_post_link()
         s = no_ssl_requests()
+
+        url = get_login_post_link()
         d = {'username': student_username, 'password': student_password, 'onsuccess': '/ecplatform/mvc/mobile/dropin'}
         r = s.post(url=url, data=d)
 
-        if r.status_code == 200 and r.json()['success']:
+        if r.status_code == HTTP_STATUS_OK and r.json()['success']:
             redirect_url = r.json()['redirect']
             redirect_result = s.get(redirect_url, allow_redirects=True)
         else:
@@ -391,11 +392,17 @@ def enroll_account(username, password, force=False, level_code='0A'):
 
         response_questionnaire = login_session.post(url=url_questionnaire, json=questionaire_data)
 
+        if response_questionnaire.status_code != HTTP_STATUS_OK:
+            raise ValueError('Fail to complete beginner questionaire.')
         return response_questionnaire
 
     def enroll_course_new_flow(student_username, student_password):
         login_session, login_result = login_mobile_web(student_username, student_password)
         enroll_result = login_session.get(get_mobile_enroll_url(), allow_redirects=True)
+
+        if enroll_result.status_code != HTTP_STATUS_OK:
+            raise ValueError("Fail to enroll account, get error: {} {}".format(
+                enroll_result.status_code, enroll_result.text))
 
         if 'mobile/welcome' in enroll_result.url.lower():
             get_logger().info('Enroll account {} success'.format(username))
@@ -407,7 +414,7 @@ def enroll_account(username, password, force=False, level_code='0A'):
 
     if 'mobile/beginnerquestionnaire' in result.url.lower():  # or 'mobile/beginnerquestionnairelv0' in result.url:
         response_questionnaire = submit_beginner_questionaire(level_code, session)
-        if response_questionnaire.status_code == 200 and response_questionnaire.json()[0]['isSuccess']:
+        if response_questionnaire.status_code == HTTP_STATUS_OK and response_questionnaire.json()[0]['isSuccess']:
             enroll_course_new_flow(username, password)
     else:
         enroll_course_new_flow(username, password)

@@ -1,4 +1,5 @@
 """Where to place all object models"""
+from os.path import join
 
 
 class Base(object):
@@ -36,5 +37,5 @@ class Configuration(Base):
     db_path = 'to_be_set'
     remote_api = 'http://cnshhq-w0633/api/'
     smart_repo = r'\\cnshhq-w0633\Shared\git\smart'
-    version_file = r"\\cnshhq-w0633\pypi\ectools\version.txt"
-    version_url = 'http://10.128.42.214:8081/pypi/ectools/version.txt'
+    version_file = join('/opt', 'ectools_packages', 'pypi', 'ectools', 'version.txt')
+    version_url = 'http://10.179.237.165:8081/pypi/ectools/version.txt'

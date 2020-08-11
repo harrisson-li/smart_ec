@@ -432,8 +432,8 @@ def update_pkg(name='ectools', *args):
     arguments.extend(args)
 
     if name in ['ectools', 'ef-common']:
-        arguments.append('--extra-index-url http://10.128.42.214:8081/pypi')
-        arguments.append('--trusted-host 10.128.42.214')
+        arguments.append('--extra-index-url http://10.179.237.165:8081/pypi')
+        arguments.append('--trusted-host 10.179.237.165')
 
     cmd = ' '.join(arguments)
 
