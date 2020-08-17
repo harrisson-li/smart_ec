@@ -338,16 +338,21 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
         if browser_type == 'Chrome':
             options = Options()
             options.add_argument('--disable-infobars')
+            from ectools.logger import get_logger
+            get_logger().info(config)
 
-            if headless == None:
+            if headless is None:
                 headless = config.browser_headless
+                get_logger().info(headless)
 
             if headless:
+                options.add_argument('--disable-dev-shm-usage')
                 options.add_argument('--no-sandbox')
                 options.add_argument('--headless')
                 options.add_argument('--disable-gpu')
                 options.add_argument('--window-size=1280x1024')
                 options.add_argument('--ignore-certificate-errors')
+            get_logger().info('chrome driver options {}'.format(options.arguments))
 
             browser = webdriver.Chrome(options=options)
         else:
