@@ -18,6 +18,11 @@ def test_get_member_site_settings():
     settings = get_member_site_settings(student_id)
     get_logger().info(settings)
 
+def test_get_student_status_flag():
+    set_environment('uat')
+    student_id = 24026829
+    status_flag = get_student_status_flag(student_id)
+    get_logger().info(status_flag)
 
 def test_set_member_site_settings():
     set_environment('uat')
