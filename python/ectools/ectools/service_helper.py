@@ -261,6 +261,27 @@ def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
     return query_troop_service(student_name, query_string=query_string, password=password)
 
 
+def troop_service_reminder_settings(student_name, password=DEFAULT_PASSWORD):
+    query_string = 'q=ecapi_notificationprofile!current'
+    return query_troop_service(student_name, query_string=query_string, password=password)
+
+
+def get_sms_reminder_mobile_phone(student_name, password=DEFAULT_PASSWORD):
+    sms_reminder_info = troop_service_reminder_settings(student_name, password)
+
+    return sms_reminder_info[0]['defaultMobile']
+
+
+def get_sms_reminder_settings(student_name, password=DEFAULT_PASSWORD):
+    sms_reminder_info = troop_service_reminder_settings(student_name, password)
+
+    settings = {}
+    for item in sms_reminder_info[0]['items']:
+        settings[camelcase_to_underscore(item['name'])] = item['isOn']
+
+    return settings
+
+
 def account_service_load_student(student_name_or_id):
     datetime_format = "%Y-%m-%d %H:%M:%S"
 
