@@ -296,14 +296,14 @@ def troop_service_reminder_settings(student_name, password=DEFAULT_PASSWORD):
 def get_sms_reminder_mobile_phone(student_name, password=DEFAULT_PASSWORD):
     sms_reminder_info = troop_service_reminder_settings(student_name, password)
 
-    return sms_reminder_info[0]['defaultMobile']
+    return sms_reminder_info['items'][0]['target']
 
 
 def get_sms_reminder_settings(student_name, password=DEFAULT_PASSWORD):
     sms_reminder_info = troop_service_reminder_settings(student_name, password)
 
     settings = {}
-    for item in sms_reminder_info[0]['items']:
+    for item in sms_reminder_info['items']:
         settings[camelcase_to_underscore(item['name'])] = item['isOn']
 
     return settings
