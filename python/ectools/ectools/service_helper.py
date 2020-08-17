@@ -95,6 +95,33 @@ def get_member_site_settings(student_id, site_area='school'):
     return site_settings
 
 
+def get_student_status_flag(student_id):
+    student_status_flag = {}
+    target_url = "{}/services/ecplatform/Tools/StudentSettings?id={}&token={}".format(
+        config.etown_root, student_id, get_token())
+    result = no_ssl_requests().get(target_url)
+
+    assert result.status_code == HTTP_STATUS_OK, "Failed to get student settings: {}".format(result.text)
+    html = etree.HTML(result.text)
+    items = html.xpath("//table[@id='statusFlag']/tbody/tr")
+
+    for i, item in enumerate(items):
+        try:
+            key = html.xpath("//table[@id='statusFlag']/tbody/tr[{}]/td[2]/text()".format(i + 1))[0]
+        except IndexError:
+            key = ''
+
+        try:
+
+            value = html.xpath("//table[@id='statusFlag']/tbody/tr[{}]/td[3]/text()".format(i + 1))[0]
+        except IndexError:
+            value = ''
+
+        student_status_flag[key] = value if value != 'N/A' else None
+
+    return student_status_flag
+
+
 def set_member_site_settings(student_id, key_name, key_value, site_area='school', is_time_value=False):
     if is_time_value:
         key_value = arrow.get(key_value).format('M/D/YYYY hh:mm:ss')
@@ -666,7 +693,11 @@ def get_EEA_coupon(student_id):
     features = get_student_feature_access_grants(student_id)
 
     found = [(feature['TotalQuantity'], feature['RemainingQuantity'])
-             for feature in features if feature['FeatureAccess'] == 'EEA']
+             for feature in features if
+             feature['FeatureAccess'] == 'EEA'
+             and datetime.strptime(feature['ActiveToESTDate'].replace('T', ' ').split('.')[0],
+                                                                     '%Y-%m-%d %H:%M:%S') > datetime.now()
+             ]
 
     if len(found) > 0:
         total_remaining_coupon = numpy.sum(found, axis=0)
