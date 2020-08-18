@@ -258,17 +258,21 @@ def score_helper_load_student(student_name_or_id):
     return result
 
 
-def query_troop_service(student_name,
+def query_troop_service(student_or_teacher_name,
                         query_string,
                         login_required=True,
                         password=DEFAULT_PASSWORD,
                         return_first_item=True,
-                        use_default_context=True):
+                        use_default_context=True,
+                        is_to_axis=False):
     if login_required:
-        troop_service_helper.login(student_name, password)
+        if is_to_axis:
+            troop_service_helper.login_axis(student_or_teacher_name, password)
+        else:
+            troop_service_helper.login(student_or_teacher_name, password)
 
-    url_with_context = True if student_name else False
-    return troop_service_helper.query(student_name,
+    url_with_context = True if student_or_teacher_name else False
+    return troop_service_helper.query(student_or_teacher_name,
                                       query_string,
                                       url_with_context=url_with_context,
                                       return_first_item=return_first_item,
@@ -291,6 +295,16 @@ def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
 def troop_service_reminder_settings(student_name, password=DEFAULT_PASSWORD):
     query_string = 'q=ecapi_notificationprofile!current'
     return query_troop_service(student_name, query_string=query_string, password=password)
+
+
+def troop_service_get_teacher_info(teacher_name_or_id, password=DEFAULT_PASSWORD):
+    query_string = 'q=axis_profile!current'
+
+    teacher = account_service_load_student(teacher_name_or_id)
+    teacher_name = teacher['user_name']
+    password = teacher['password']
+
+    return query_troop_service(teacher_name, query_string=query_string, password=password, is_to_axis=True)['data']
 
 
 def get_sms_reminder_mobile_phone(student_name, password=DEFAULT_PASSWORD):
@@ -717,7 +731,7 @@ def get_EEA_coupon(student_id):
              for feature in features if
              feature['FeatureAccess'] == 'EEA'
              and datetime.strptime(feature['ActiveToESTDate'].replace('T', ' ').split('.')[0],
-                                                                     '%Y-%m-%d %H:%M:%S') > datetime.now()
+                                   '%Y-%m-%d %H:%M:%S') > datetime.now()
              ]
 
     if len(found) > 0:

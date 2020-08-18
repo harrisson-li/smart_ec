@@ -7,6 +7,7 @@ from ectools.internal.objects import Cache
 from ectools.utility import no_ssl_requests
 
 LOGIN_SERVICE_URL = "{}/login/secure.ashx"
+LOGIN_SERVICE_AXIS_URL = "{}/login/handler.ashx"
 TROOP_SERVICE_URL = "{}/services/api/proxy/queryproxy?"
 TROOP_COMMAND_URL = "{0}/services/api/ecplatform/command/{1}?"
 
@@ -52,6 +53,27 @@ def login(username, password=DEFAULT_PASSWORD):
         setattr(Cache, username + '_login_success', True)
     else:
         raise ValueError('Failed to login troop service by {}/{}'.format(username, password))
+
+
+def login_axis(username, password=DEFAULT_PASSWORD):
+    """Login a username to axis/home."""
+    if getattr(Cache, username + '_login_success', False):
+        return
+
+    parameters = {
+        'UserName': username,
+        'Password': password,
+        'onsuccess': '/axis/home'
+    }
+
+    url = LOGIN_SERVICE_URL.format(config.axis_root)
+    session = get_request_session(username)
+    response = session.post(url, data=parameters, headers=_get_default_header())
+
+    if '"success":true' in response.text:
+        setattr(Cache, username + '_login_success', True)
+    else:
+        raise ValueError('Failed to login axis troop service by {}/{}'.format(username, password))
 
 
 def query_current_context(username):
