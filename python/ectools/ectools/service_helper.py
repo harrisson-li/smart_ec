@@ -1068,6 +1068,22 @@ def get_student_top_level_code(student_id):
     return enrollment_info['EnrolledGEStageLevels'][-1]
 
 
+def get_student_account_info(student_name, password):
+    """
+    Get student info details which include accountInfo, basicInfo, contactInfo and preferenceInfo
+    :param student:
+    :return: eg.
+        [
+            {"accountInfoDetail":{"nameBlurbId": 712631, ..., "displayOrder":10}},
+            {"basicInfoDetail": {"allowBatchUpdate": True, ..., "items": [...]}},
+            {"contactInfoDetail": {"nameBlurbId": 121832, ..., "items": [...]}},
+            {"preferenceInfoDetail": {"nameBlurbId": 712634, ..., "items": [...]}}
+        ]
+    """
+    query_string = 'q=ecapi_myaccount_information!current'
+    return query_troop_service(student_name, query_string, password=password, login_required=True)
+
+
 def change_expiration_date(student_id, days_offset):
     """
     update the expiration date
