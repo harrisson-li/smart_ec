@@ -1,7 +1,7 @@
 import arrow
 
-from ectools.db_query import fetch_one
 from ectools.internal.online_class_service_helper import OnlineClassApi, get_axis_root, get_axis_token
+from ectools.service_helper import troop_service_get_teacher_info
 
 # class type for class schedule
 classTypeGroup = {
@@ -92,18 +92,10 @@ def calculate_time_range(begin_time, duration, class_index):
     return (start_time_string, end_time_string)
 
 
-def get_teacher_center(teacher_member_id):
+def get_teacher_center(teacher_member_id_or_name):
     """Get a teacher's centercode base on teacher's member id."""
-    sql = """SELECT
-        CenterCode
-        FROM ET_Main..Members
-        INNER JOIN Teachers..Teacher
-        ON Members.MemberId = Teacher.Member_id
-        INNER JOIN Teachers..TeacherProfile
-        ON Members.MemberId = TeacherProfile.TeacherMember_id
-        WHERE MemberId = {}""".format(teacher_member_id)
-
-    return fetch_one(sql, as_dict=True)['CenterCode']
+    teacher_info = troop_service_get_teacher_info(teacher_member_id_or_name)
+    return teacher_info['centerCode']
 
 
 class OnlineClassHelper():

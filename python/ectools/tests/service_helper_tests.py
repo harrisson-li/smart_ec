@@ -18,11 +18,13 @@ def test_get_member_site_settings():
     settings = get_member_site_settings(student_id)
     get_logger().info(settings)
 
+
 def test_get_student_status_flag():
     set_environment('uat')
     student_id = 24026829
     status_flag = get_student_status_flag(student_id)
     get_logger().info(status_flag)
+
 
 def test_set_member_site_settings():
     set_environment('uat')
@@ -345,6 +347,7 @@ def test_convert_to_smart_plus():
     student = activate_e19_student()
     convert_to_smart_plus(student['member_id'])
 
+
 def test_update_student_address():
     set_environment('uatcn')
     student = activate_e19_student()
@@ -355,3 +358,18 @@ def test_update_student_address():
                            billing_address=updated_address)
     student_info = account_service_load_student(student['username'])
     assert_that(student_info['address1']).is_equal_to(updated_address)
+
+
+def test_troop_service_get_teacher_info():
+    set_environment('uat')
+    teacher = 'cefec'
+    teacher_info = troop_service_get_teacher_info(teacher)
+    assert_that(teacher_info['centerCode']).is_equal_to('FWW')
+
+    teacher = '23740917'
+    teacher_info = troop_service_get_teacher_info(teacher)
+    assert_that(teacher_info['centerCode']).is_equal_to('FWW')
+
+    teacher = 23740917
+    teacher_info = troop_service_get_teacher_info(teacher)
+    assert_that(teacher_info['centerCode']).is_equal_to('FWW')
