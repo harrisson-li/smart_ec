@@ -32,7 +32,7 @@ from ectools.db_query import execute_query, fetch_one
 from ectools.internal.objects import Base
 from ectools.logger import get_logger
 from ectools.service_helper import is_v2_student, clear_booking_mem_cache_by_date_range, \
-    clear_offline_class_taken_cache, clear_online_class_taken_cache, clear_course_progress
+    clear_offline_class_taken_cache, clear_online_class_taken_cache, clear_course_progress, account_service_load_student
 from ectools.utility import get_score, random_date
 
 
@@ -216,14 +216,14 @@ def _get_coupon_count(student_id, coupon_type_id):
 
 
 def _is_coupon_free_student(student_id):
-    sql = """SELECT COUNT(*) FROM oboe.dbo.ProductFeatureMapping_lnk pfm
-    JOIN oboe.dbo.Product_lkp p ON p.Product_id = pfm.Product_id
-    JOIN oboe.dbo.Student s ON s.Product_id = p.Product_id
-    WHERE  pfm.ProductFeatureCode ='CouponFree'
-    AND s.Student_id = {}"""
+    student = account_service_load_student(student_id)
 
-    is_coupon_free = int(fetch_one(sql.format(student_id), as_dict=False)[0])
-    return is_coupon_free > 0
+    # coupon free product ids get from sql script below:
+    # select * from oboe.dbo.productfeaturemapping_lnk where ProductFeatureCode = 'CouponFree'
+    if student.product.id in (150, 151, 152, 153):
+        return True
+    else:
+        return False
 
 
 def _insert_booking_id(student_id, schedule_class, coupon_category_id):
