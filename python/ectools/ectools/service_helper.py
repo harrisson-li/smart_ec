@@ -166,12 +166,6 @@ def get_student_info(student_id):
     return info
 
 
-def get_member_password(student_id):
-    sql = """select Password from ET_main.dbo.members with (NOLOCK) where memberId = {}""".format(student_id)
-
-    return fetch_one(sql, as_dict=False)[0]
-
-
 def get_student_basics(student_id):
     url = config.etown_root + STUDENT_BASICS["URL"] + '?token={}'.format(get_token())
     result = no_ssl_requests().post(url, data={STUDENT_BASICS["DATA"]: student_id})
