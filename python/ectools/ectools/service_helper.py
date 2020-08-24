@@ -155,7 +155,6 @@ def get_student_info(student_id):
     # dict key name refine
     info['partner'] = info['oboe_partner']
     info['division_code'] = info['oboe_division_code']
-    info['username'] = info['user_name']
 
     del info['oboe_partner']
     del info['user_name']
