@@ -373,3 +373,9 @@ def test_troop_service_get_teacher_info():
     teacher = 23740917
     teacher_info = troop_service_get_teacher_info(teacher)
     assert_that(teacher_info['centerCode']).is_equal_to('FWW')
+
+
+def test_adjust_stage():
+    set_environment('uat')
+    student_id = 24029862
+    adjust_stage(student_id, 3)

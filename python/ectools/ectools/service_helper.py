@@ -15,7 +15,6 @@ from lxml import etree
 
 from ectools.config import config
 from ectools.constant import Memcached, ClearCacheType
-from ectools.db_query import fetch_one
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
 from ectools.internal.constants import HTTP_STATUS_OK
@@ -373,6 +372,10 @@ def account_service_cancel_student(student_id):
 
 def adjust_level(student_id, to_level_code):
     sf.change_level(student_id, to_level_code)
+
+
+def adjust_stage(student_id, to_stage_number):
+    sf.adjust_stage(student_id, to_stage_number)
 
 
 def add_offline_coupon(student_id, coupon_type, add_count):
