@@ -246,3 +246,51 @@ xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://temp
     if doc.find('IsSuccess').string != 'true':
         msg = doc.find('ErrorMessage').string
         raise SystemError(msg)
+
+
+def adjust_stage(member_id, to_stage_number):
+    """
+    :param member_id: student's member id
+    :param to_stage_number: stage number from 0 - 5 stands for Beginner Starter, Beginner High, Elementary,
+    Intermediate, Upper-Intermediate, Advanced, Upper-Advanced
+    :return:
+    """
+    headers = {
+        'SOAPAction': "\"http://tempuri.org/ISalesForceService/AdjustStage\"",
+        'Content-type': 'text/xml'
+    }
+
+    data = """
+        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+        <s:Header>
+        <o:Security s:mustUnderstand="1" xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+        <o:UsernameToken>
+        <o:Username>{}</o:Username>
+        <o:Password>{}</o:Password>
+        </o:UsernameToken>
+        </o:Security>
+        </s:Header>
+
+        <s:Body>
+        <AdjustStage xmlns="http://tempuri.org/"><param xmlns:a="http://schemas.datacontract.org/2004/07/EFSchools.Englishtown.Oboe.Services.DataContracts.SalesForce.Params" xmlns:i="http://www.w3.org/2001/XMLSchema">
+        <a:MemberId>{}</a:MemberId>
+        <a:OperatorName>ectools</a:OperatorName>
+        <a:StageNo>{}</a:StageNo>
+        </param>
+        </AdjustStage>
+        </s:Body>
+    </s:Envelope>
+    """
+    
+    result = no_ssl_requests().post(config.etown_root + SF_SERVICE_URL,
+                                    data=data.format(SALESFORCE_USERNAME,
+                                                     SALESFORCE_PASSWORD,
+                                                     member_id,
+                                                     to_stage_number),
+                                    headers=headers)
+
+    assert result.status_code == HTTP_STATUS_OK, result.text
+    doc = bs(result.content, 'xml')
+    if doc.find('IsSuccess').string != 'true':
+        msg = doc.find('ErrorMessage').string
+        raise SystemError(msg)
