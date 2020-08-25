@@ -141,23 +141,11 @@ def get_student_info(student_id):
     """
     Will return a dict contains student information.
     """
-
-    def get_name_and_email(student_id):
-        target_url = "{}/services/ecplatform/Tools/StudentView?id={}&token={}".format(
-            config.etown_root, student_id, get_token())
-        response = no_ssl_requests().get(target_url)
-
-        if response.status_code == HTTP_STATUS_OK:
-            result = re.findall('\[Name\] : (.*) \[Email\] : (.*)', response.text)
-            return result[0][0].strip(), result[0][1].strip()
-        else:
-            raise ValueError("Failed to get student name and email!")
-
-    username, email = get_name_and_email(student_id)
-    info = {'username': username, 'email': email, 'member_id': student_id}
+    info = {'member_id': student_id}
 
     more_info = ecplatform_load_student(student_id)
     info.update(more_info)
+    info['username'] = info['user_name']
 
     more_info = score_helper_load_student(student_id)
     info.update(more_info)
