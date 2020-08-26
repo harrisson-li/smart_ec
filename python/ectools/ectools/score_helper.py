@@ -97,8 +97,8 @@ def enroll_to_unit(unit_id):
     _get_score_helper().enroll_to_unit(unit_id)
 
 
-def pass_level_test(score=get_score()):
-    student_id = getattr(Cache, 'current_student_id')
+def pass_level_test(score=get_score(), student_id=None):
+    student_id = getattr(Cache, 'current_student_id', student_id)
     pass_level_test_v2(student_id, score)
 
 

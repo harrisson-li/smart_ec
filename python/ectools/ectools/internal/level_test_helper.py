@@ -22,6 +22,7 @@ SUBMIT_SECTION_SCORE = '{}/services/api/school/command/scoring/SubmitLevelTestSe
 
 
 def pass_level_test_v2(student_id, score=get_score()):
+    assert student_id is not None
     get_logger().info('Pass level test 2.0 for student: {}, score={}'.format(student_id, score))
 
     student = account_service_load_student(student_id)
