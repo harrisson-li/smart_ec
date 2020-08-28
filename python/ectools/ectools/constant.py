@@ -1,3 +1,15 @@
+PAGE_TIMEOUT_RETRY_INTERVAL = 1
+TIMEOUT_SECONDS = 10
+TIMEOUT_FOR_ELEMENT_WAITING = 10
+TIMEOUT_FOR_ELEMENT_PRESENT = 10
+TIMEOUT_FOR_ELEMENT_VISIBLE = 10
+NORMAL_ELEMENT_POLLING_TIME = 1
+WAIT_FOR_ACCOUNT_EXPIRED_TIME = 30
+
+OBOE_USERNAME = "qa.testauto"
+OBOE_PASSWORD = "test@456"
+
+
 class Memcached(object):
     # cache time = 6 hours
     STUDENT_FEATURE_ACCESS_GRANTS = 'ec_platform_oboe_studentfeatureaccessgrants_bystudent_primitive_{student_id}'
