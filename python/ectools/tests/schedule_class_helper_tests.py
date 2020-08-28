@@ -1,18 +1,18 @@
 from ectools.config import set_environment, set_partner
 from ectools.logger import get_logger
-from ectools.oboe.schedule_class_helper import *
+from ectools.oboe.schedule_class_helper import schedule_class_topic, schedule_class, get_year_week_code, get_future_date
 
 
 def test_schedule_class_topic():
     set_environment('qa')
-    set_partner('mini')
+    set_partner('cool')
 
     schedule_date = get_future_date(7)  # e.g. 05/20/2018
     week_code = get_year_week_code(schedule_date)  # e.g. 1821
 
     topic = schedule_class_topic(week_code=week_code,
                                  class_category='F2F',
-                                 class_type='F2F High')
+                                 class_type='F2F Beginner High')
     get_logger().info(topic)
     assert topic['School_id'] == 99
     assert topic['ClassCategory_id'] == 1
@@ -33,9 +33,9 @@ def test_schedule_class():
 
     # change partner
     set_partner('mini')
-    schedule_class(schedule_date=schedule_date,
-                   school_name='CD_MCC',
-                   class_category='Workshop')
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='CD_MCC',
+                            class_category='Workshop')
 
     get_logger().info(detail)
     assert detail is not None

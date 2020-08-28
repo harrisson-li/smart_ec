@@ -129,4 +129,9 @@ def is_api_available():
     return no_ssl_requests().get(config.remote_api).status_code == HTTP_STATUS_OK
 
 
+def is_deploy_to_aws():
+    """For now all environment are using AWS authentication."""
+    return True
+
+
 setup()
