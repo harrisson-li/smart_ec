@@ -3,7 +3,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 
 from ectools.config import *
-from ectools.constant import OBOE_USERNAME, OBOE_PASSWORD
+from ectools.internal.constants import OBOE_USERNAME, OBOE_PASSWORD
 from ectools.internal.pages.oboe_page_base import OboePageBase
 from ectools.utility import wait_for
 

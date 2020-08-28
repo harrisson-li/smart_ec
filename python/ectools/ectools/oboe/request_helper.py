@@ -2,7 +2,7 @@ import requests
 import urllib3
 
 from ectools.config import *
-from ectools.constant import OBOE_USERNAME, OBOE_PASSWORD
+from ectools.internal.constants import OBOE_USERNAME, OBOE_PASSWORD
 from .utils import *
 
 headers = {

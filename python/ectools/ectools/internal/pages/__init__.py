@@ -10,8 +10,9 @@ from selenium.webdriver.support import expected_conditions as conditions
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ectools.constant import *
 from ectools.internal.business.enums import Attribute
+from ectools.internal.constants import TIMEOUT_SECONDS, TIMEOUT_FOR_ELEMENT_WAITING, TIMEOUT_FOR_ELEMENT_PRESENT, \
+    TIMEOUT_FOR_ELEMENT_VISIBLE
 from ectools.logger import get_logger
 from ectools.utility import detail_on_failure, retry_for_error, convert_to_str, get_random_item
 

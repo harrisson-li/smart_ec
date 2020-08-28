@@ -6,8 +6,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 
 from ectools.config import *
-from ectools.constant import *
 from ectools.internal.business.enums import PageResponseStatus
+from ectools.internal.constants import TIMEOUT_FOR_ELEMENT_WAITING, NORMAL_ELEMENT_POLLING_TIME
 from ectools.internal.pages import PageBase
 from ectools.logger import get_logger
 from ectools.oboe.utils import get_future_date, get_day_from_date, get_month_from_date
