@@ -552,6 +552,19 @@ class PageBase(object):
         self.wait_until(text_not_empty, timeout=timeout)
         return self.get_element(xpath).text
 
+    @detail_on_failure
+    def wait_until_text_of_elements_is_not_empty_on_xpath(self, xpath, timeout=TIMEOUT_SECONDS):
+        """
+        Used for the situation that the text is loaded several seconds later than text_object
+        """
+
+        def text_not_empty(x):
+            elements = self.get_elements(xpath)
+            return all([ele.text.strip() for ele in elements])
+
+        self.wait_until(text_not_empty, timeout=timeout)
+        return [ele.text.strip() for ele in self.get_elements(xpath)]
+
     @staticmethod
     def clear_and_input(element, text):
         element.clear()
