@@ -27,7 +27,8 @@ def main():
             'bs4',
             'lxml',
             pymssql_pack,
-            'numpy'
+            'numpy',
+            'xmltodict'
         ],
         zip_safe=False,
     )
