@@ -83,3 +83,49 @@ class Environments(object):
     STAGING = "staging"
     STAGINGCN = 'stagingcn'
     LIVE = "live"
+
+
+class CouponType:
+    # F2F, WS value shows "F2F" and "WS" in oboe -> adjust coupon page, hence add another F2F, WS to separate
+    F2F = 'F2F'
+    Face2Face = 'Face to Face'
+    F2FPL20 = 'F2F/PL20'
+    WORKSHOP = 'Workshop'
+    WS = 'WS'
+    APPLY = 'Apply'
+    EF_EVENTS = 'EF Events'
+    LC = 'LC'
+    Life_Club = 'Life Club'
+    LifeClub = 'LifeClub'
+    BB = 'BB'
+    PL20 = 'PL20'
+    PL40 = 'PL40'
+    GL = 'GL'
+    OnlinePL = 'Online Private Class'
+    OnlineGL = 'Online Group Class'
+    BBv2 = 'BBv2'
+    Beginner_Basics = 'Beginner Basics'
+    Beginner_Basics_v2 = 'Beginner Basics'
+    BBPL = 'BBPL'
+    BBC = 'BBC'
+    L0WS = 'L0WS'
+    LCApply = 'LCApply'
+    CareerWorkshop = 'CareerWorkshop'
+    Career_Track = 'Career Track'
+    Skills = 'Skills'
+    Skills_Clinics = 'Skills Clinics'
+    OSC = 'OSC'
+    TeacherReview = '1:1 Teacher Review'
+    EEA = 'EEA'
+
+
+class StageName:
+    BEGINNER = 'BEGINNER'
+    BEGINNER_LOW = 'BEGINNER LOW'
+    BEGINNER_STARTER = 'BEGINNER STARTER'
+    BEGINNER_HIGH = 'BEGINNER HIGH'
+    ELEMENTARY = 'ELEMENTARY'
+    INTERMEDIATE = 'INTERMEDIATE'
+    UPPER_INTERMEDIATE = 'UPPER INTERMEDIATE'
+    ADVANCED = 'ADVANCED'
+    UPPER_ADVANCED = 'UPPER ADVANCED'

@@ -290,3 +290,26 @@ def get_random_time_for_lc(today=False):
         end_time = 2200
 
     return start_time, end_time
+
+
+def level_code_map(level_code='0A'):
+    if level_code == 'L0':
+        return 0
+    elif level_code == '0A':
+        return 1
+    elif level_code == '0B':
+        return 2
+    else:
+        return int(level_code) + 2
+
+
+def level_number_map(level_number=1):
+    if level_number < 0 or level_number > 16:
+        raise ValueError("Level number {} is invalid, please pass value between 0 to 16.".format(level_number))
+
+    if level_number in (0, 1):
+        return '0A'
+    elif level_number == 2:
+        return '0B'
+    else:
+        return str(level_number - 2)
