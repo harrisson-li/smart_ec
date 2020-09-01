@@ -18,6 +18,7 @@ from functools import wraps
 
 import arrow
 import requests
+import xmltodict
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
@@ -524,3 +525,12 @@ def config_sys_logging(to_console=True, log_file_dir=None, log_file_name=None):
 def password_generator(password_length=8):
     letters_digits = string.ascii_lowercase + string.ascii_uppercase + string.digits
     return ''.join(random.sample(letters_digits, password_length))
+
+
+def xml_to_dict(xml):
+    """
+    Convert xml to dict format
+    """
+    dict_parsed = xmltodict.parse(xml)
+
+    return dict_parsed
