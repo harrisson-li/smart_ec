@@ -1,7 +1,10 @@
+import json
+
+from ectools.config import config
 from ectools.db_query import fetch_all
 from ectools.internal.business.enums import CouponType
 from ectools.internal.constants import E19_LEVEL_STAGE_MAPPING, S18_LEVEL_STAGE_MAPPING
-from ectools.internal.data_helper import get_move_on_info
+from ectools.internal.data_helper import get_move_on_info, get_phoenix_pack
 from ectools.oboe.utils import level_code_map
 from ectools.service_helper import get_EEA_coupon, get_basic_offline_coupon_info, get_special_offline_coupon_info, \
     is_e19_student
@@ -211,3 +214,12 @@ def get_student_left_offline_coupon(student_id):
         left_offline_coupon[CouponType.EEA] = student_left_eea_coupon
 
     return left_offline_coupon
+
+
+def get_phoenix_initial_coupon(pack_name, is_v1_pack=False):
+    pack_info = get_phoenix_pack(config.env, config.partner, pack_name, is_v1_pack)
+    coupon_info = {}
+    for info in json.loads(pack_info['data'])['coupons']:
+        coupon_info[info['name']] = info['count']
+
+    return coupon_info
