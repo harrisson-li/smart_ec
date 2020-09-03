@@ -22,9 +22,9 @@ class DbQueryPage(PageBase):
 
         # self.env = 'qacn', self.env[-2:] = 'cn', self.env[:-2] = 'qa'
         if self.env[-2:] == 'cn':
-            self.url_base = "https://{}deepblue2.englishtown.cn/dbquery/{}"
+            self.url_base = "https://{}deepblue2.eflabs.cn/dbquery/{}"
         else:
-            self.url_base = "https://{}deepblue2.englishtown.com/dbquery/{}"
+            self.url_base = "https://{}deepblue2.eflabs.io/dbquery/{}"
 
         if self.env == 'live':
             e = ''
