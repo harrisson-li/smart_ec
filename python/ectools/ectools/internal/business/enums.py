@@ -129,3 +129,12 @@ class StageName:
     UPPER_INTERMEDIATE = 'UPPER INTERMEDIATE'
     ADVANCED = 'ADVANCED'
     UPPER_ADVANCED = 'UPPER ADVANCED'
+
+
+class Timezone:
+    UTC = "UTC"
+    CHINA = "Asia/Shanghai"
+    MOSCOW = "Europe/Moscow"
+    JAKARTA = "Asia/Bangkok"
+    BOSTON = "America/New_York"
+    MADRID = "Europe/Madrid"

@@ -11,16 +11,17 @@ from datetime import datetime
 
 import arrow
 import numpy
-from lxml import etree
-
 from ectools.config import config
 from ectools.constant import Memcached, ClearCacheType
 from ectools.internal import sf_service_helper as sf
 from ectools.internal import troop_service_helper
+from ectools.internal.business.enums import Timezone
+from ectools.internal.business.time_helper import get_current_china_date_time, convert_utc_to_target_timezone
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
 from ectools.token_helper import get_token, get_site_version
 from ectools.utility import camelcase_to_underscore, no_ssl_requests
+from lxml import etree
 
 GRAPHQL_SERVICE_URL = "/services/api/ecplatform/graphql"
 
@@ -1097,3 +1098,34 @@ def convert_to_smart_plus(student_id):
     response = no_ssl_requests().post(url, data=data)
 
     assert response.status_code == HTTP_STATUS_OK and '"Success":true' in response.text, response.text
+
+
+def get_student_left_days_by_subscription(student_id):
+    """Get China S18 student left days. Need convert expired date to home center date."""
+    subscription = get_student_active_subscription(student_id=student_id)
+    expiration_date = datetime.strptime(subscription[0]['expiration_utc_date'].split('T')[0], '%Y-%m-%d')
+    expiration_date = convert_utc_to_target_timezone(Timezone.CHINA, expiration_date)
+    current_local_time = get_current_china_date_time()
+
+    left_days = (expiration_date.date() - current_local_time.date()).days
+    return left_days
+
+
+def get_student_left_days_by_fag(student_id):
+    """Get China S18 student left days. Need convert expired date to home center date."""
+    grants = get_student_feature_access_grants(student_id=student_id)
+    grant_list = [item for item in grants if item['FeatureAccessId'] == 11]
+
+    # When having many GL FAG records, need filter out not expired record
+    left_days = 0
+    for item in grant_list:
+        expiration_date = datetime.strptime(item['ActiveToUTCDate'].split('T')[0], '%Y-%m-%d')
+        expiration_date = convert_utc_to_target_timezone(Timezone.CHINA, expiration_date)
+        current_local_time = get_current_china_date_time()
+        left_days = (expiration_date.date() - current_local_time.date()).days
+
+        if left_days > 0:
+            left_days = left_days
+            break
+
+    return left_days
