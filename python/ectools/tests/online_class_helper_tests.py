@@ -51,7 +51,7 @@ def test_schedule_class():
 
 
 def test_get_teacher_center_code():
-    set_environment('staging')
-    teacher_id = 10708789
+    set_environment('stagingcn')
+    teacher_id = 14828995
     center_code = get_teacher_center(teacher_id)
     print(center_code)

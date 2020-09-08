@@ -254,19 +254,15 @@ def query_troop_service(student_or_teacher_name,
             troop_service_helper.login(student_or_teacher_name, password)
 
     url_with_context = True if student_or_teacher_name else False
-    return troop_service_helper.query(student_or_teacher_name,
-                                      query_string,
-                                      url_with_context=url_with_context,
-                                      return_first_item=return_first_item,
-                                      use_default_context=use_default_context)
+    return troop_service_helper.query(student_or_teacher_name, query_string, url_with_context=url_with_context,
+                                      return_first_item=return_first_item, use_default_context=use_default_context,
+                                      is_to_axis=is_to_axis)
 
 
 def troop_service_translate_blurb(blurb_id, culture_code='en'):
     query_string = 'q=blurb!{}'.format(blurb_id)
     url_query_string = 'c=culturecode={}'.format(culture_code)
-    return troop_service_helper.query(None, query_string,
-                                      url_with_context=False,
-                                      url_query_string=url_query_string)['translation']
+    return troop_service_helper.query(None, query_string, url_with_context=False, url_query_string=url_query_string)['translation']
 
 
 def troop_service_load_student(student_name, password=DEFAULT_PASSWORD):
@@ -279,14 +275,14 @@ def troop_service_reminder_settings(student_name, password=DEFAULT_PASSWORD):
     return query_troop_service(student_name, query_string=query_string, password=password)
 
 
-def troop_service_get_teacher_info(teacher_name_or_id, password=DEFAULT_PASSWORD):
+def troop_service_get_teacher_info(teacher_name_or_id):
     query_string = 'q=axis_profile!current'
 
     teacher = account_service_load_student(teacher_name_or_id)
     teacher_name = teacher['user_name']
     password = teacher['password']
-
-    return query_troop_service(teacher_name, query_string=query_string, password=password, is_to_axis=True)['data']
+    result = query_troop_service(teacher_name, query_string=query_string, password=password, is_to_axis=True)
+    return result['data']
 
 
 def get_sms_reminder_mobile_phone(student_name, password=DEFAULT_PASSWORD):
