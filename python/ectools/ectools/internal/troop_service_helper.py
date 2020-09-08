@@ -23,12 +23,12 @@ def _get_default_header():
     return {"Content-Type": DEFAULT_HEADER_CONTENT_TYPE}
 
 
-def get_request_session(username):
+def get_request_session(username, is_to_axis=False):
     """get one session  for same username."""
     if not username:
         username = 'temp_user'
 
-    session = getattr(Cache, username + '_session', no_ssl_requests())
+    session = getattr(Cache, username + '_session', no_ssl_requests(is_to_axis=is_to_axis))
     setattr(Cache, username + '_session', session)
 
     assert isinstance(session, Session)
@@ -67,7 +67,7 @@ def login_axis(username, password=DEFAULT_PASSWORD):
     }
 
     url = LOGIN_SERVICE_URL.format(config.axis_root)
-    session = get_request_session(username)
+    session = get_request_session(username, is_to_axis=True)
     response = session.post(url, data=parameters, headers=_get_default_header())
 
     if '"success":true' in response.text:
@@ -76,17 +76,17 @@ def login_axis(username, password=DEFAULT_PASSWORD):
         raise ValueError('Failed to login axis troop service by {}/{}'.format(username, password))
 
 
-def query_current_context(username):
+def query_current_context(username, is_to_axis=False):
     query_string = 'q=context!current'
-    return query(username, query_string, url_with_context=False)['values']
+    return query(username, query_string, url_with_context=False, is_to_axis=is_to_axis)['values']
 
 
-def _build_context(username, use_default_context=True):
+def _build_context(username, use_default_context=True, is_to_axis=False):
     context_id = username + '_troop_service_context'
 
     # try to get from cache, if not found then query from troop
     if not getattr(Cache, context_id, None):
-        setattr(Cache, context_id, query_current_context(username))
+        setattr(Cache, context_id, query_current_context(username, is_to_axis=is_to_axis))
 
     context_values = getattr(Cache, context_id)
 
@@ -102,11 +102,17 @@ def _build_context(username, use_default_context=True):
 
 
 def query(username, query_string, url_with_context=True, return_first_item=True, url_query_string=None,
-          use_default_context=True):
-    url = TROOP_SERVICE_URL.format(config.etown_root)
+          use_default_context=True, is_to_axis=False):
+
+    if is_to_axis:
+        url_root = config.axis_root
+    else:
+        url_root = config.etown_root
+
+    url = TROOP_SERVICE_URL.format(url_root)
 
     if url_with_context:
-        url += _build_context(username, use_default_context)
+        url += _build_context(username, use_default_context, is_to_axis=is_to_axis)
 
     if url_query_string:
         url += url_query_string

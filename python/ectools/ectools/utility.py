@@ -393,12 +393,14 @@ def camelcase_to_underscore(name):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-def no_ssl_requests():
+def no_ssl_requests(is_to_axis=False):
     """get requests instance without SSL verify."""
     from ectools.config import config
     s = requests.Session()
 
-    if config.domain == 'CN':
+    if is_to_axis:
+        referer_url = '{}/partner/englishcenters?z=1234567'.format(config.axis_root)
+    elif config.domain == 'CN':
         referer_url = '{}/partner/englishcenters/cn?z=1234567'.format(config.etown_root)
     else:
         referer_url = '{}/partner/englishcenters?z=1234567'.format(config.etown_root)
