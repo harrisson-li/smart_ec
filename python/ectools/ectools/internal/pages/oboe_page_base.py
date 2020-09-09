@@ -217,9 +217,6 @@ class OboePageBase(PageBase):
             current_url = self.browser.current_url
 
             self.element_oboe_user_image.click()
-            # Because this web element is popped up after clicking the image above
-            # So we have to give a fixed time to wait until the it is shown completely
-            time.sleep(NORMAL_ELEMENT_POLLING_TIME)
             self.mouse_over(self.element_change_partner)
 
             for partner_number in range(1, partner_list_number + 1):
@@ -229,8 +226,6 @@ class OboePageBase(PageBase):
                 if partner_text == to_partner:
                     self.wait_until_xpath_clickable(partner_xpath)
                     self.get_element(partner_xpath).click()
-                    # The loading icon and prompt message may appear slow, so wait a second
-                    time.sleep(NORMAL_ELEMENT_POLLING_TIME)
                     self.wait_for_page_load_change_partner()
                     self.wait_until_page_response_status(current_url, PageResponseStatus.SUCCESS)
                     break
