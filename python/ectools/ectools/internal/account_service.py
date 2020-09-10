@@ -274,7 +274,13 @@ or
 
             return False
 
-        if is_flex_vip_pack():
+        def is_flex_pl_or_pro_for_support():
+            for pack in phoenix_packs:
+                if 'Support 1133' in pack or 'Support 1134' in pack:
+                    return True
+            return False
+
+        if is_flex_vip_pack() or is_flex_pl_or_pro_for_support():
             data['RedemptionQty'] = qty
         else:
             data['RedemptionQty'] = qty * 30
