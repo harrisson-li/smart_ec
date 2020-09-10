@@ -264,6 +264,12 @@ or
     # hack: if RedemptionQty <= 12 we treat it as months, else as days
     qty = int(data['RedemptionQty'])
 
+    def is_flex_pl_or_pro_for_support():
+        for pack in phoenix_packs:
+            if 'Support 1133' in pack or 'Support 1134' in pack:
+                return True
+        return False
+
     if qty <= 12:
         # Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
         # which can get from table CommerceContent.dbo.PaymentPlanFeature
@@ -274,16 +280,13 @@ or
 
             return False
 
-        def is_flex_pl_or_pro_for_support():
-            for pack in phoenix_packs:
-                if 'Support 1133' in pack or 'Support 1134' in pack:
-                    return True
-            return False
-
-        if is_flex_vip_pack() or is_flex_pl_or_pro_for_support():
+        if is_flex_vip_pack():
             data['RedemptionQty'] = qty
         else:
             data['RedemptionQty'] = qty * 30
+
+    if is_flex_pl_or_pro_for_support():
+        data['RedemptionQty'] = qty
 
     # legal duration = main redemption qty
     data['LegalDuration'] = data['RedemptionQty']
