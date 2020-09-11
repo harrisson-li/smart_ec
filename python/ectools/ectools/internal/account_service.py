@@ -185,6 +185,13 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
+def is_flex_pl_or_pro_for_support(phoenix_packs):
+    for pack in phoenix_packs:
+        if 'Support 1133' in pack or 'Support 1134' in pack:
+            return True
+    return False
+
+
 def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
     """
 
@@ -264,12 +271,6 @@ or
     # hack: if RedemptionQty <= 12 we treat it as months, else as days
     qty = int(data['RedemptionQty'])
 
-    def is_flex_pl_or_pro_for_support():
-        for pack in phoenix_packs:
-            if 'Support 1133' in pack or 'Support 1134' in pack:
-                return True
-        return False
-
     if qty <= 12:
         # Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
         # which can get from table CommerceContent.dbo.PaymentPlanFeature
@@ -285,7 +286,7 @@ or
         else:
             data['RedemptionQty'] = qty * 30
 
-    if is_flex_pl_or_pro_for_support():
+    if is_flex_pl_or_pro_for_support(phoenix_packs):
         data['RedemptionQty'] = qty
 
     # legal duration = main redemption qty
