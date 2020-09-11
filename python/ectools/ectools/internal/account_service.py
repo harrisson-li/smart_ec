@@ -185,6 +185,13 @@ def merge_activation_data(source_dict, **more):
     return source_dict
 
 
+def is_flex_pl_or_pro_for_support(phoenix_packs):
+    for pack in phoenix_packs:
+        if 'Support 1133' in pack or 'Support 1134' in pack:
+            return True
+    return False
+
+
 def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
     """
 
@@ -278,6 +285,9 @@ or
             data['RedemptionQty'] = qty
         else:
             data['RedemptionQty'] = qty * 30
+
+    if is_flex_pl_or_pro_for_support(phoenix_packs):
+        data['RedemptionQty'] = qty
 
     # legal duration = main redemption qty
     data['LegalDuration'] = data['RedemptionQty']
