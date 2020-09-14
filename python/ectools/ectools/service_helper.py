@@ -1125,3 +1125,18 @@ def get_student_left_days_by_fag(student_id):
             break
 
     return left_days
+
+
+def get_student_timezone(student_id):
+    site_settings = get_member_site_settings(student_id, site_area='EVC')
+    time_zone_site_value = site_settings.get('TimeZone', 'China Standard Time')
+
+    if time_zone_site_value == 'China Standard Time':
+        return Timezone.CHINA
+    elif time_zone_site_value == 'SE Asia Standard Time':
+        return Timezone.JAKARTA
+    elif time_zone_site_value == 'Russian Standard Time':
+        return Timezone.MOSCOW
+    else:
+        return Timezone.BOSTON
+

@@ -208,6 +208,26 @@ def get_future_date(days_delta=0, date_format="%m/%d/%Y"):
     return future_date.strftime(date_format)
 
 
+def get_future_hour(days_delta=0, hours_delta=0, date_format="%m/%d/%Y %H:%M:%S"):
+    """this method gets current hour by default"""
+
+    current_time = datetime.now()
+    minutes_delta = -current_time.minute
+    seconds_delta = -current_time.second
+    future_time = current_time + timedelta(days=days_delta, hours=hours_delta,
+                                           minutes=minutes_delta, seconds=seconds_delta)
+    return future_time.strftime(date_format)
+
+
+def get_future_time(days_delta=0, hours_delta=0, minutes_delta=0, seconds_delta=0, date_format="%m/%d/%Y %H:%M:%S"):
+    """this method gets current time by default"""
+
+    current_time = datetime.now()
+    future_time = current_time + timedelta(days=days_delta, hours=hours_delta,
+                                           minutes=minutes_delta, seconds=seconds_delta)
+    return future_time.strftime(date_format)
+
+
 def get_year_week_code(date_str=None):
     """
     get the exact week code in year from given date_str
