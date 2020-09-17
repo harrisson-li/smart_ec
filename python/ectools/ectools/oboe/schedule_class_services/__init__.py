@@ -46,3 +46,10 @@ def schedule_class(**kwargs):
         return schedule_offsite_class(**kwargs)
     else:
         return schedule_regular_class(**kwargs)
+
+
+def delete_class(class_id, class_category):
+    if class_category in [ClassCategory.LC, ClassCategory.CAE]:
+        schedule_offsite_class_service.delete_class(class_id)
+    else:
+        schedule_regular_class_service.delete_class(class_id)

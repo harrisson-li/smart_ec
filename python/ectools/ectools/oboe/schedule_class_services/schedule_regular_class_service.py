@@ -242,3 +242,10 @@ def _publish_class(school_id, week_code):
     response = post_request(ScheduleClassServices.ScheduleClassPublish, data)
     assert is_response_success(response), response
     get_logger().debug('Publish class success')
+
+
+def delete_class(class_id):
+    data = {'scheduledclass_id': class_id}
+    response = post_request(ScheduleClassServices.DeleteScheduledClass, data)
+    assert is_response_success(response), response
+    get_logger().debug('Delete class success')
