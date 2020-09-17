@@ -173,6 +173,13 @@ def test_account_service_update_name():
     account_service_update_info(student_id, {'FirstName': 'unit.test'})
 
 
+def test_account_service_update_email():
+    set_environment('qacn')
+    student_id = '11612914'
+    updated_email = 'emailupdatetest202009171557@qp1.org'
+    account_service_update_info(student_id, {'email': updated_email})
+
+
 def test_adjust_level():
     set_environment('staging')
     student_id = 14896006

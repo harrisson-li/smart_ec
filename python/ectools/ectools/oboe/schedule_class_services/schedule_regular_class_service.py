@@ -28,7 +28,8 @@ CLASSROOM_CONFLICT_ERROR = "in the classroom selected."
 
 # @retry_for_error(error=AssertionError)  # to improve schedule class rate, add retry mechanism
 def schedule_regular_class(schedule_date, school_name, class_category,
-                           class_type=None, class_topic=None, is_preview=False):
+                           class_type=None, class_topic=None, is_preview=False,
+                           is_online_attending=False, is_vip_class=False):
     """
     method to schedule normal class: f2f, ws, apply etc.
     """
@@ -83,7 +84,8 @@ def schedule_regular_class(schedule_date, school_name, class_category,
     class_category_id = get_class_category_id(class_category)
     types_info = _read_available_types(schedule_date, school_id, class_category_id)
     type_info = _select_class_type_info(types_info, class_type)
-    get_logger().debug('Use class type: {}'.format(type_info['ClassTypeName']))
+    get_logger().debug(
+        'Use class type: {} (class_type_id={})'.format(type_info['ClassTypeName'], type_info['ClassType_id']))
 
     topics_info = _read_available_topics(schedule_date, school_id, type_info['ClassType_id'])
     topic_info = _select_scheduled_class_topic_info(topics_info, class_topic)
@@ -103,13 +105,22 @@ def schedule_regular_class(schedule_date, school_name, class_category,
         'Teacher_id': teacher_ids.pop(),
         'LCDescription': '',
         'EnterableClassTopic': '',
+        'IsOnlineAttending': False,
         'IsPreview': False,
         'PreviewTimePeriodIndex': 0,
-        'AutoScheduledClassNeedToReview': ''
+        'AutoScheduledClassNeedToReview': '',
+        'IsVipClass': False
     }
 
     if topic_info:
-        get_logger().debug('Use class topic: {}'.format(topic_info['ClassTopicName']))
+        get_logger().debug(
+            'Use scheduled class topic: {} / {} / {} / {} / {} with AvailableWeekDayType={}'.format(
+                topic_info['ScheduledClassTopic_id'],
+                topic_info['ClassCategory_id'],
+                topic_info['ClassType_id'],
+                topic_info['ClassTopic_id'],
+                topic_info['ClassTopicName'],
+                topic_info['AvailableWeekDayType']))
         data['ScheduledClassTopic_id'] = topic_info['ScheduledClassTopic_id']
         data['ClassTopic_id'] = topic_info['ClassTopic_id']
 
@@ -122,6 +133,15 @@ def schedule_regular_class(schedule_date, school_name, class_category,
     if class_category == 'Apply':
         data.update({'LCDescription': 'Apply Topic Detail',
                      'EnterableClassTopic': 'Apply Test Topic'})
+
+    if is_online_attending:
+        get_logger().debug('Schedule online attending class')
+        data['IsOnlineAttending'] = True
+
+    if is_vip_class:
+        get_logger().debug('Schedule VIP F2F class')
+        assert_that(class_category).is_equal_to('F2F')
+        data['IsVipClass'] = True
 
     get_logger().debug('detail = {}'.format(data))
     while True:

@@ -135,7 +135,7 @@ def _get_class_topic_id(class_type_id, class_topic_name):
             matched = [x for x in class_topics if class_topic_name in x['ClassTopicName']]
             assert_that(len(matched), 'Class type name not found: {}'.format(class_topic_name)).is_not_zero()
             found = choice(matched)
-
+        get_logger().info("Get class topic id: {}".format(found['ClassTopic_id']))
         return found['ClassTopic_id']
     else:
         raise ValueError("No class topic found with class type id = {}".format(class_type_id))
