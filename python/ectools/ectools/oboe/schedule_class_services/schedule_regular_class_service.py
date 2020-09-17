@@ -199,9 +199,13 @@ def _select_class_type_info(info, class_type_name):
     types = [t for t in info['ClassTypes']]
 
     if class_type_name:
+        get_logger().info("Try to get class type with name: {}".format(class_type_name))
         types = [t for t in types if t['ClassTypeName'] == class_type_name]
 
-    return choice(types)
+    if len(types) > 0:
+        return choice(types)
+    else:
+        raise Exception("Unable to get class type with name.")
 
 
 def _select_scheduled_class_topic_info(info, class_topic_name):
@@ -225,7 +229,9 @@ def _publish_class(school_id, week_code):
 
 
 def delete_class(class_id):
-    data = {'scheduledclass_id': class_id}
+    data = {'scheduledclass_id': class_id,
+            'isMandatory': True
+    }
     response = post_request(ScheduleClassServices.DeleteScheduledClass, data)
     assert is_response_success(response), response
     get_logger().debug('Delete class success')

@@ -216,7 +216,9 @@ class OboePageBase(PageBase):
             partner_list_number = len(self.browser.find_elements_by_xpath(self.PARTNER_LIST_XPATH))
             current_url = self.browser.current_url
 
+            get_logger().info("Click oboe user image")
             self.element_oboe_user_image.click()
+            get_logger().info("Mouse over oboe change partner element")
             self.mouse_over(self.element_change_partner)
 
             for partner_number in range(1, partner_list_number + 1):
