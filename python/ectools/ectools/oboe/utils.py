@@ -25,6 +25,8 @@ class ScheduleClassServices:
     ScheduleOffSiteNew = "LCOffSite/New"
     ScheduleLCOffSiteClass = "LCOffSite/Insert"
     EditScheduledClassTopic = "ScheduledClassTopic/Edit"
+    DeleteScheduledClass = "ScheduledClass/Delete"
+    DeleteOffSiteClass = "LCOffSite/Delete"
 
 
 class ClassInfoServices:

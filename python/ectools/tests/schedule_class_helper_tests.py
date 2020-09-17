@@ -1,6 +1,7 @@
 from ectools.config import set_environment, set_partner
 from ectools.logger import get_logger
-from ectools.oboe.schedule_class_helper import schedule_class_topic, schedule_class, get_year_week_code, get_future_date
+from ectools.oboe.schedule_class_helper import schedule_class_topic, schedule_class, get_year_week_code, \
+    get_future_date, delete_class
 
 
 def test_schedule_class_topic():
@@ -39,3 +40,23 @@ def test_schedule_class():
 
     get_logger().info(detail)
     assert detail is not None
+
+
+def test_delete_class():
+    set_environment('qacn')
+    set_partner('mini')
+
+    schedule_date = get_future_date(1)  # tomorrow
+
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='CD_MCC',
+                            class_category='LC')
+
+    delete_class(detail['ScheduledClass_id'], class_category='LC')
+
+    # change partner
+    set_partner('cool')
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='BJ_DFG',
+                            class_category='F2F')
+    delete_class(detail['ScheduledClass_id'], class_category='F2F')

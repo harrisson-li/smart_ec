@@ -165,3 +165,10 @@ def _get_classrooms_by_school_id(school_id, schedule_date):
     }
 
     return post_request(ClassInfoServices.GetClassroomBySchoolId, data)
+
+
+def delete_class(class_id):
+    data = {'scheduledclass_id': class_id}
+    response = post_request(ScheduleClassServices.DeleteOffSiteClass, data)
+    assert is_response_success(response), response
+    get_logger().debug('Delete class success')
