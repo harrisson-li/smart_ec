@@ -46,3 +46,7 @@ def schedule_class(**kwargs):
     :return: class info, dict data type.
     """
     return schedule_class_services.schedule_class(**kwargs)
+
+
+def delete_class(class_id, class_category):
+    schedule_class_services.delete_class(class_id, class_category)
