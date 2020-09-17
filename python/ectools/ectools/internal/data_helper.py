@@ -547,3 +547,21 @@ def get_latest_android_build_info_for_cn():
 
     assert len(found), "No Android Juno build info found."
     return found[0]
+
+
+def get_all_online_teachers():
+    if not hasattr(Cache, 'online_teachers'):
+        Cache.online_teachers = read_data('online_teachers')
+    return Cache.online_teachers
+
+
+def get_random_online_teacher(env_name):
+    found = [x for x in get_all_online_teachers() if env_name.lower() in x['env'].lower()]
+    assert len(found), "No online teachers in {}!".format(env_name)
+    return get_random_item(found)
+
+
+def get_online_teacher_by_id(teacher_id):
+    found = [x for x in get_all_online_teachers() if teacher_id == x['teacher_id']]
+    assert len(found), "No online teacher found with teacher_id = {}!".format(teacher_id)
+    return found[0]
