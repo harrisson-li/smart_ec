@@ -168,6 +168,11 @@ def _get_classrooms_by_school_id(school_id, schedule_date):
 
 
 def delete_class(class_id):
+    """
+    Delete class without student booked.
+    :param class_id:
+    :return:
+    """
     data = {'scheduledclass_id': class_id}
     response = post_request(ScheduleClassServices.DeleteOffSiteClass, data)
     assert is_response_success(response), response

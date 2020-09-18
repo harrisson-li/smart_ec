@@ -249,6 +249,11 @@ def _publish_class(school_id, week_code):
 
 
 def delete_class(class_id):
+    """
+    Delete class whatever with student booked.
+    :param class_id:
+    :return:
+    """
     data = {'scheduledclass_id': class_id,
             'isMandatory': True
     }
