@@ -222,10 +222,7 @@ def _select_class_type_info(info, class_type_name):
         get_logger().info("Try to get class type with name: {}".format(class_type_name))
         types = [t for t in types if t['ClassTypeName'] == class_type_name]
 
-    if len(types) > 0:
-        return choice(types)
-    else:
-        raise Exception("Unable to get class type with name.")
+    return choice(types)
 
 
 def _select_scheduled_class_topic_info(info, class_topic_name):
