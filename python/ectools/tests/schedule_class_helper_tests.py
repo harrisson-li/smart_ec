@@ -61,6 +61,7 @@ def test_delete_class():
                             class_category='F2F')
     delete_class(detail['ScheduledClass_id'], class_category='F2F')
 
+
 def test_schedule_class_F2F_VIP():
     set_environment('uatcn')
     set_partner('cool')
@@ -81,6 +82,20 @@ def test_schedule_class_F2F_VIP():
                             school_name='QA_T2C',
                             class_category='F2F',
                             is_vip_class=True)
+
+    get_logger().info(detail)
+    assert detail is not None
+
+
+def test_schedule_class_Teacher_Review():
+    set_environment('uatcn')
+    set_partner('cool')
+
+    schedule_date = get_future_date(1)  # tomorrow
+
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='QA_T1C',
+                            class_category='1:1 Teacher Review')
 
     get_logger().info(detail)
     assert detail is not None
