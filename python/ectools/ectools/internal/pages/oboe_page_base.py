@@ -199,7 +199,7 @@ class OboePageBase(PageBase):
 
             wait_for(loaded)
             get_logger().info("After select the expected value {}, new_sub_options: {}"
-                        .format(expected_value, self.get_all_option_text(sub_xpath)))
+                              .format(expected_value, self.get_all_option_text(sub_xpath)))
 
     def select_option_delay(self, select_xpath, option_value, tag_name="option"):
         option_xpath = select_xpath + "/{}[contains(text(), '{}')]".format(tag_name, option_value)
@@ -235,6 +235,10 @@ class OboePageBase(PageBase):
             changed_partner = self.get_element(self.PARTNER_TEXT_XPATH).text
             get_logger().info("The partner is changed from {} to {}".format(original_partner, to_partner))
             assert_that(changed_partner, "Failed to change partner.").is_equal_to(to_partner)
+        else:
+            get_logger().info(
+                "Current partner is {}, which is same as to partner {}, no need to change partner in oboe".format(
+                    self.current_partner, to_partner))
 
     def search_student_by_username(self, username):
         get_logger().info("Search student by username: {}".format(username))

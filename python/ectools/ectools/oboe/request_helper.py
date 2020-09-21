@@ -52,9 +52,11 @@ def get_session():
     """Gets a valid oboe service session."""
 
     if getattr(Cache, 'oboe_service_session', None):
+        get_logger().info("Get oboe service session from Cache.")
         return Cache.oboe_service_session
 
     if is_deploy_to_aws():
+        get_logger().info("Get aws session.")
         session = get_aws_session()
 
     else:
