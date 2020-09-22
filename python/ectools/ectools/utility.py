@@ -23,6 +23,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver import Remote
 
 from .internal.objects import Cache, Configuration
 
@@ -355,7 +356,15 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--ignore-certificate-errors')
             get_logger().info('chrome driver options {}'.format(options.arguments))
 
-            browser = webdriver.Chrome(options=options)
+            # browser = webdriver.Chrome(options=options)
+            browser = Remote(command_executor='http://10.128.42.94:4444/wd/hub',
+                             desired_capabilities={
+                                 'platform': 'ANY',
+                                 'browserName': 'chrome',
+                                 'version': '',
+                                 'javascriptEnabled': True
+                             },
+                             options=options)
         else:
             browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)
