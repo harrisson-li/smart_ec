@@ -24,6 +24,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver import Remote
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from .internal.objects import Cache, Configuration
 
@@ -329,13 +330,16 @@ def close_browser(browser_id=None):
         delattr(Cache, browser_id)
 
 
-def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=None):
+def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=None, test_case_name=None):
     from ectools.config import config
 
     if not browser_id:
         browser_id = config.browser_id
 
-    if not hasattr(Cache, browser_id):
+    if test_case_name:
+        browser_id = '{}_{}'.format(browser_id, test_case_name)
+
+    if not hasattr(Cache, browser_id) or not test_case_name:
         LOGGER.setLevel(logging.WARNING)
         if browser_type == 'Chrome':
             options = Options()
@@ -356,15 +360,13 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--ignore-certificate-errors')
             get_logger().info('chrome driver options {}'.format(options.arguments))
 
-            # browser = webdriver.Chrome(options=options)
-            browser = Remote(command_executor='http://10.128.42.94:4444/wd/hub',
-                             desired_capabilities={
-                                 'platform': 'ANY',
-                                 'browserName': 'chrome',
-                                 'version': '',
-                                 'javascriptEnabled': True
-                             },
-                             options=options)
+            if config.selenium_grid_hub:
+                get_logger().info("Webdriver based on selenium grid hub {}".format(config.selenium_grid_hub))
+                browser = Remote(command_executor=config.selenium_grid_hub,
+                                 desired_capabilities=DesiredCapabilities.CHROME, options=options)
+            else:
+                get_logger().info("Webdriver chrome")
+                browser = webdriver.Chrome(options=options)
         else:
             browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)
