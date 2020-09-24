@@ -19,6 +19,8 @@ class ClassCategory:
     SKILLS_CLINICS = "Skills Clinics"
     BBv2 = "BBv2"
     BEGINNER_BASICS_v2 = "Beginner Basics v2"
+    F2F_VIP = "F2F Vip"
+    TEACHER_REVIEW = "1:1 Teacher Review"
 
 
 class Attribute:

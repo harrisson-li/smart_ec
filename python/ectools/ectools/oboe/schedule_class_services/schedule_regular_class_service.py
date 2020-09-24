@@ -61,7 +61,7 @@ def schedule_regular_class(schedule_date, school_name, class_category,
     school_id = get_school_by_name(school_name, ignore_socn=True)['id']
 
     # skip when in live environment
-    if config.env != Environments.LIVE:
+    if config.env != Environments.LIVE and class_category != ClassCategory.TEACHER_REVIEW:
         schedule_class_topic_if_needed(week_code, class_category,
                                        class_type, class_topic,
                                        available_week_type)

@@ -43,7 +43,13 @@ def schedule_class_topic(**kwargs):
 def schedule_class(**kwargs):
     """
     Schedule class
-    :return: class info, dict data type.
+    :return: class info, dict data type with keys. eg.
+    <class 'dict'>: {'ScheduledClass_id': 3005381,
+    'EndDate': '09/21/2020', 'School_id': 68, 'LastUpdateUTCDateTicks': '',
+    'StartDate': '09/21/2020', 'StartTime': '1640', 'EndTime': '1730 ', 'ClassRoom_id': '3055', 'Capacity': 7,
+    'ClassCategory_id': 1, 'ClassType_id': 5019, 'Teacher_id': '173', 'LCDescription': '', 'EnterableClassTopic': '',
+    'IsOnlineAttending': False, 'IsPreview': False, 'PreviewTimePeriodIndex': 0, 'AutoScheduledClassNeedToReview': '',
+    'IsVipClass': True, 'ScheduledClassTopic_id': 524, 'ClassTopic_id': 97256257, 'WeekCode': '2039'}
     """
     return schedule_class_services.schedule_class(**kwargs)
 
