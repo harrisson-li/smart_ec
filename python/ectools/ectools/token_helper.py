@@ -31,13 +31,16 @@ def get_matched_result(result, pattern, match_index, split_by=None):
 
 
 def get_token():
-    result = get_token_page()
-    pattern = '.*token">(.*)</span>.*'
+    if config.env in ('uat', 'uatcn', 'qa', 'qacn'):
+        return ''
+    else:
+        result = get_token_page()
+        pattern = '.*token">(.*)</span>.*'
 
-    try:
-        return get_matched_result(result.text, pattern, 1)
-    except Exception:
-        raise EnvironmentError("Cannot get token!")
+        try:
+            return get_matched_result(result.text, pattern, 1)
+        except Exception:
+            raise EnvironmentError("Cannot get token!")
 
 
 def get_site_version():
