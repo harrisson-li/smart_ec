@@ -43,6 +43,8 @@ def schedule_regular_class(schedule_date, school_name, class_category,
             class_type = 'F2F Beginner Starter'
         else:
             class_type = 'F2F Beginner'
+    if class_category == 'Beginner Life Club' and not class_type:
+        class_type = 'Beginner Life Club Starter'
 
     info = [config.env, config.partner, school_name,
             class_category, class_type, class_topic, schedule_date]
