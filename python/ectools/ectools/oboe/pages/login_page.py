@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from ectools.config import *
 from ectools.internal.constants import OBOE_USERNAME, OBOE_PASSWORD
 from ectools.internal.pages.oboe_page_base import OboePageBase
+from ectools.logger import get_logger
 from ectools.utility import wait_for
 
 
@@ -99,12 +100,17 @@ class LoginPage(OboePageBase):
         # so we first try if it is direct login
         if self.is_xpath_visible(self.AWS_SUBMIT_BUTTON_XPATH):
             # login to microsoft online with username + password
+            get_logger().info("Input oboe username: {}".format(username + '@ef.com'))
             self.element_aws_username.send_keys(username + '@ef.com')
+            get_logger().info("Click Next button")
             self.element_aws_submit.click()
+            get_logger().info("Input password")
             self.element_aws_password.send_keys(password)
+            get_logger().info("Click Sign In button")
             self.element_aws_submit.click()
 
             # choose not keep login session to let the dialog always show up
+            get_logger().info("Click No button that not to keep login session")
             self.element_aws_back.click()
 
             # if prompt authentication required dialog, please update internet options as below
