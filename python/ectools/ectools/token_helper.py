@@ -31,7 +31,7 @@ def get_matched_result(result, pattern, match_index, split_by=None):
 
 
 def get_token():
-    if config.env in ('uat', 'uatcn', 'qa', 'qacn'):
+    if config.env.lower() in ('uat', 'uatcn', 'qa', 'qacn'):
         return ''
     else:
         result = get_token_page()
