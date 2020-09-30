@@ -30,8 +30,8 @@ class OboePageBase(PageBase):
     SEARCH_CONTEXT_TEXT_ID = "SearchContent"
     SEARCH_DATE_XPATH = '//*[@id="Query_SearchDate"]'
     SEARCH_BUTTON_ID = "btnSearch"
-    SEARCH_DATE_PICKER_NEXT_XPATH = "//span[@innertext='Next']"
-    SEARCH_DATE_PICKER_PREV_XPATH = "//span[@innertext='Prev']"
+    SEARCH_DATE_PICKER_NEXT_XPATH = "//span[text()='Next']"
+    SEARCH_DATE_PICKER_PREV_XPATH = "//span[text()='Prev']"
     VALUE_USER_NAME_TEXT_OPTION = "UserName"
     VALUE_ELITE_CODE_TEXT_OPTION = "EliteCode"
     TEXT_CHANGE_PARTNER_MENU_LINK = "Change Partner"
