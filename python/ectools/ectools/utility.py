@@ -330,16 +330,13 @@ def close_browser(browser_id=None):
         delattr(Cache, browser_id)
 
 
-def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=None, test_case_name=None):
+def get_browser(browser_type=Configuration.browser_type, browser_id=None, headless=None):
     from ectools.config import config
 
     if not browser_id:
         browser_id = config.browser_id
 
-    if test_case_name:
-        browser_id = '{}_{}'.format(browser_id, test_case_name)
-
-    if not hasattr(Cache, browser_id) or not test_case_name:
+    if not hasattr(Cache, browser_id):
         LOGGER.setLevel(logging.WARNING)
         if browser_type == 'Chrome':
             options = Options()
