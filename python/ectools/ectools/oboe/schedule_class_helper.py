@@ -2,6 +2,7 @@
 This module will provide functions to schedule EC class via oboe service.
 """
 
+from ectools.internal.objects import Cache
 from ectools.oboe import utils, schedule_class_services
 from ectools.oboe.schedule_class_services import schedule_class_topic_service
 
@@ -51,6 +52,8 @@ def schedule_class(**kwargs):
     'IsOnlineAttending': False, 'IsPreview': False, 'PreviewTimePeriodIndex': 0, 'AutoScheduledClassNeedToReview': '',
     'IsVipClass': True, 'ScheduledClassTopic_id': 524, 'ClassTopic_id': 97256257, 'WeekCode': '2039'}
     """
+    # For error caused by different partner with same session.
+    Cache.oboe_service_session = None
     return schedule_class_services.schedule_class(**kwargs)
 
 
