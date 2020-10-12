@@ -108,7 +108,7 @@ def test_schedule_class_with_capacity_reset():
     schedule_date = get_future_date(1)  # tomorrow
     detail = schedule_class(schedule_date=schedule_date,
                             school_name='SH_PSQ',
-                            class_category='Workshop', need_reset_capacity=True)
+                            class_category='Workshop', capacity=0)
 
     get_logger().info(detail)
     assert detail is not None
