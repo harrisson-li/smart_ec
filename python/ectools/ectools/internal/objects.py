@@ -39,3 +39,4 @@ class Configuration(Base):
     smart_repo = r'\\cnshhq-w0633\Shared\git\smart'
     version_file = join('/opt', 'ectools_packages', 'pypi', 'ectools', 'version.txt')
     version_url = 'http://10.179.237.165:8081/pypi/ectools/version.txt'
+    selenium_grid_hub = None

@@ -23,6 +23,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.remote_connection import LOGGER
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver import Remote
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from .internal.objects import Cache, Configuration
 
@@ -357,7 +359,13 @@ def get_browser(browser_type=Configuration.browser_type, browser_id=None, headle
                 options.add_argument('--ignore-certificate-errors')
             get_logger().info('chrome driver options {}'.format(options.arguments))
 
-            browser = webdriver.Chrome(options=options)
+            if config.selenium_grid_hub:
+                get_logger().info("Webdriver based on selenium grid hub {}".format(config.selenium_grid_hub))
+                browser = Remote(command_executor=config.selenium_grid_hub,
+                                 desired_capabilities=DesiredCapabilities.CHROME, options=options)
+            else:
+                get_logger().info("Webdriver chrome")
+                browser = webdriver.Chrome(options=options)
         else:
             browser = getattr(webdriver, browser_type)()
         setattr(Cache, browser_id, browser)

@@ -28,7 +28,7 @@ CLASSROOM_CONFLICT_ERROR = "in the classroom selected."
 
 # @retry_for_error(error=AssertionError)  # to improve schedule class rate, add retry mechanism
 def schedule_regular_class(schedule_date, school_name, class_category,
-                           class_type=None, class_topic=None, is_preview=False,
+                           class_type=None, class_topic=None, capacity=randint(4, 10), is_preview=False,
                            is_online_attending=False, is_vip_class=False):
     """
     method to schedule normal class: f2f, ws, apply etc.
@@ -101,7 +101,7 @@ def schedule_regular_class(schedule_date, school_name, class_category,
         'StartTime': time_slot[0],
         'EndTime': time_slot[1],
         'ClassRoom_id': classroom_ids.pop(),
-        'Capacity': randint(4, 10),
+        'Capacity': capacity,
         'ClassCategory_id': class_category_id,
         'ClassType_id': type_info['ClassType_id'],
         'Teacher_id': teacher_ids.pop(),

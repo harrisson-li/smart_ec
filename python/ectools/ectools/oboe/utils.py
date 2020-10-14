@@ -6,6 +6,7 @@ from random import choice, randint
 from bs4 import BeautifulSoup as bs
 
 from ectools.internal.business.enums import ClassCategory
+from ectools.internal.business.time_helper import get_current_local_date_time_by_partner
 from ectools.logger import get_logger
 
 
@@ -206,7 +207,8 @@ def parse_timeslot_format(timeslot, split_mode='-'):
 def get_future_date(days_delta=0, date_format="%m/%d/%Y"):
     """this method gets today's date by default"""
 
-    today = date.today()
+    current_time = get_current_local_date_time_by_partner()
+    today = current_time.date()
     future_date = today + timedelta(days=days_delta)
     return future_date.strftime(date_format)
 
@@ -214,7 +216,7 @@ def get_future_date(days_delta=0, date_format="%m/%d/%Y"):
 def get_future_hour(days_delta=0, hours_delta=0, date_format="%m/%d/%Y %H:%M:%S"):
     """this method gets current hour by default"""
 
-    current_time = datetime.now()
+    current_time = get_current_local_date_time_by_partner()
     minutes_delta = -current_time.minute
     seconds_delta = -current_time.second
     future_time = current_time + timedelta(days=days_delta, hours=hours_delta,
@@ -225,7 +227,7 @@ def get_future_hour(days_delta=0, hours_delta=0, date_format="%m/%d/%Y %H:%M:%S"
 def get_future_time(days_delta=0, hours_delta=0, minutes_delta=0, seconds_delta=0, date_format="%m/%d/%Y %H:%M:%S"):
     """this method gets current time by default"""
 
-    current_time = datetime.now()
+    current_time = get_current_local_date_time_by_partner()
     future_time = current_time + timedelta(days=days_delta, hours=hours_delta,
                                            minutes=minutes_delta, seconds=seconds_delta)
     return future_time.strftime(date_format)
