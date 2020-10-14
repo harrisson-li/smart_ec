@@ -326,7 +326,9 @@ def close_browser(browser_id=None):
         browser_id = config.browser_id
 
     if hasattr(Cache, browser_id):
-        getattr(Cache, browser_id).quit()
+        browser = getattr(Cache, browser_id)
+        browser.close()
+        browser.quit()
         delattr(Cache, browser_id)
 
 
