@@ -565,3 +565,9 @@ def get_online_teacher_by_id(teacher_id):
     found = [x for x in get_all_online_teachers() if teacher_id == x['teacher_id']]
     assert len(found), "No online teacher found with teacher_id = {}!".format(teacher_id)
     return found[0]
+
+
+def get_online_teacher_by_display_name(teacher_display_name):
+    found = [x for x in get_all_online_teachers() if teacher_display_name == x['teacher_display_name']]
+    assert len(found), "No online teacher found with teacher_display_name = {}!".format(teacher_display_name)
+    return found[0]
