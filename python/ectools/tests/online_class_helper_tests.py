@@ -1,6 +1,6 @@
 from ectools.config import *
-from ectools.online_class_helper import OnlineClassHelper, classTypeGroup, get_teacher_center
 from ectools.internal.data_helper import get_online_teacher_by_display_name
+from ectools.online_class_helper import OnlineClassHelper, classTypeGroup, get_teacher_center
 
 
 def test_get_class_type():
