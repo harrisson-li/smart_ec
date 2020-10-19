@@ -1,5 +1,6 @@
 from ectools.config import *
 from ectools.online_class_helper import OnlineClassHelper, classTypeGroup, get_teacher_center
+from ectools.internal.data_helper import get_online_teacher_by_display_name
 
 
 def test_get_class_type():
@@ -55,3 +56,9 @@ def test_get_teacher_center_code():
     teacher_id = 14828995
     center_code = get_teacher_center(teacher_id)
     print(center_code)
+
+
+def test_get_teacher_by_display_name():
+    set_environment('qacn')
+    teacher_name = get_online_teacher_by_display_name('Candy E.')
+    print(teacher_name)
