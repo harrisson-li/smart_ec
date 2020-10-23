@@ -66,7 +66,7 @@ def submit_for_unit(unit_id, score=get_score(), skip_activity=0):
     submit_current_unit(score=score, skip_activity=skip_activity)
 
 
-@retry_for_errors(error=(AssertionError, StaleElementReferenceException))
+@retry_for_errors(errors=(AssertionError, StaleElementReferenceException))
 def enroll_to_unit(target_unit_id):
     get_logger().info("Enroll to unit {}".format(target_unit_id))
     _page().select_option_by_index(CurrentPage.UNIT_LIST_SELECTOR_XPATH, target_unit_id - 1)
