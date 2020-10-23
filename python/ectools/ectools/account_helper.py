@@ -545,8 +545,8 @@ def activate_e19_phoenix_student_with_eea(**kwargs):
 
 
 def activate_smart_plus_pro_student(**kwargs):
-    kwargs['is_s18'] = False
-    kwargs['is_e19'] = True
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
     # For Flex and Pro both use same product id but use different redemption code
