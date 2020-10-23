@@ -406,3 +406,13 @@ def test_activate_s18_using_product_name():
     set_partner('cool')
     activate_account(is_s18=False, is_e19=True, school_name='SH_JAT', product_name='Smart 18 - School - E19')
 
+
+def test_activate_indo_smart_plus_pro():
+    set_environment('uat')
+    set_partner('indo')
+    student = activate_smart_plus_pro_student()
+
+    assert student['partner'] == 'Indo'
+    assert student['is_smart_plus']
+    assert not student['is_e19']
+    assert student['is_s18']
