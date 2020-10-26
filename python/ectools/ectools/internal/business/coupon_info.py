@@ -90,7 +90,17 @@ PRODUCT_INITIAL_COUPON_MAPPING = {
         'GL': 18,
         'PL40': 12
     },
+    # Online VIP release coupon monthly
+    174: {
+        'GL': 30,
+        'PL40': 4
+    },
+    175: {
+        'GL': 30,
+        'PL40': 4
+    },
     'Beginner Basics': {'Beginner Basics': 10},
+    'BBPL': {'BBPL': 10},
     'Skills Clinics': {'Skills Clinics': 6},
     'Career Track': {'Career Track': 4}
 }
@@ -119,11 +129,14 @@ def is_offline_coupon(coupon_type):
                            CouponType.TeacherReview)
 
 
-def get_initial_coupon(product_id, has_beginner_basics):
+def get_initial_coupon(product_id, has_beginner_basics, has_bbpl=False):
     initial_coupon = PRODUCT_INITIAL_COUPON_MAPPING[product_id]
 
     if has_beginner_basics:
         initial_coupon.update(PRODUCT_INITIAL_COUPON_MAPPING['Beginner Basics'])
+
+    if has_bbpl:
+        initial_coupon.update(PRODUCT_INITIAL_COUPON_MAPPING['BBPL'])
 
     return initial_coupon
 
