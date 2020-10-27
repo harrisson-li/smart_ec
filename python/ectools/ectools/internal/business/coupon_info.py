@@ -92,13 +92,28 @@ PRODUCT_INITIAL_COUPON_MAPPING = {
     },
     # Online VIP release coupon monthly
     174: {
-        'GL': 30,
-        'PL40': 4
+        'GL': 360,  # 30/month
+        'PL40': 48  # 4/month
     },
     175: {
-        'GL': 30,
-        'PL40': 4
+        'GL': 360,
+        'PL40': 48
     },
+    176: {
+    },
+    177: {
+        'PL20': 3,  # Upfront given
+        'GL': 0  # 1/day
+    },
+    178: {
+        'PL20': 3,  # Upfront given
+        'GL': 0  # 1/day
+    },
+    179: {
+        'PL20': 1,  # 1/unit
+        'GL': 0  # 1/day
+    },
+
     'Beginner Basics': {'Beginner Basics': 10},
     'BBPL': {'BBPL': 10},
     'Skills Clinics': {'Skills Clinics': 6},
