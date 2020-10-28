@@ -142,7 +142,7 @@ def _get_citywide_school_id(school_name):
     city_name = get_school_by_name(school_name)['lc_city']
     school_ids = search_html_strings(response, 'select',
                                      attr={'name': 'currentVirtualSchool_id'},
-                                     regex=r'<option .*value="(.*?)">{}'.format(city_name))
+                                     regex=r'<option .*value="(.*?)">{}<'.format(city_name))
     return choice(school_ids)
 
 
@@ -168,6 +168,11 @@ def _get_classrooms_by_school_id(school_id, schedule_date):
 
 
 def delete_class(class_id):
+    """
+    Delete class without student booked.
+    :param class_id:
+    :return:
+    """
     data = {'scheduledclass_id': class_id}
     response = post_request(ScheduleClassServices.DeleteOffSiteClass, data)
     assert is_response_success(response), response

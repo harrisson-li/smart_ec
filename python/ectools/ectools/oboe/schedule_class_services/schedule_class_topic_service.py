@@ -91,6 +91,7 @@ def schedule_class_topic_if_needed(week_code, class_category, class_type=None, c
         if config.env.lower() == 'live':
             get_logger().warn('Cannot schedule class topic in Live env.')
             return
+        Cache.oboe_service_session = None  # clear cache to re-login oboe
         schedule_class_topic(week_code, class_category, class_type, class_topic, available_week_type)
         Cache.oboe_service_session = None  # clear cache to make schedule topic available
 
@@ -135,7 +136,7 @@ def _get_class_topic_id(class_type_id, class_topic_name):
             matched = [x for x in class_topics if class_topic_name in x['ClassTopicName']]
             assert_that(len(matched), 'Class type name not found: {}'.format(class_topic_name)).is_not_zero()
             found = choice(matched)
-
+        get_logger().info("Get class topic id: {}".format(found['ClassTopic_id']))
         return found['ClassTopic_id']
     else:
         raise ValueError("No class topic found with class type id = {}".format(class_type_id))
@@ -148,12 +149,14 @@ def _get_class_types(category_id):
 
 
 def _get_class_topics(class_type_id):
+    get_logger().info("Try to get class topic id for class type {}".format(class_type_id))
     return post_request(ScheduleClassServices.LoadClassTopic, {
         'classType_id': class_type_id
     })
 
 
 def _get_scheduled_class_topics(school_id, week_code):
+    get_logger().info("Try to get scheduled class topic for school {} in week {}".format(school_id, week_code))
     dict_data = {
         'currentSchoolId': school_id,
         'currentWeekCode': week_code
@@ -198,5 +201,6 @@ def _get_scheduled_class_topics(school_id, week_code):
                        'EndDate': cells[index + 4],
                        'AvailableWeekType': available_week_type})
         index += columns
-
+    if len(topics) == 0:
+        get_logger().info("No scheduled class topic found, need to schedule a new one.")
     return topics

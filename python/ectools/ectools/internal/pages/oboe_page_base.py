@@ -30,8 +30,8 @@ class OboePageBase(PageBase):
     SEARCH_CONTEXT_TEXT_ID = "SearchContent"
     SEARCH_DATE_XPATH = '//*[@id="Query_SearchDate"]'
     SEARCH_BUTTON_ID = "btnSearch"
-    SEARCH_DATE_PICKER_NEXT_XPATH = "//span[@innertext='Next']"
-    SEARCH_DATE_PICKER_PREV_XPATH = "//span[@innertext='Prev']"
+    SEARCH_DATE_PICKER_NEXT_XPATH = "//span[text()='Next']"
+    SEARCH_DATE_PICKER_PREV_XPATH = "//span[text()='Prev']"
     VALUE_USER_NAME_TEXT_OPTION = "UserName"
     VALUE_ELITE_CODE_TEXT_OPTION = "EliteCode"
     TEXT_CHANGE_PARTNER_MENU_LINK = "Change Partner"
@@ -199,7 +199,7 @@ class OboePageBase(PageBase):
 
             wait_for(loaded)
             get_logger().info("After select the expected value {}, new_sub_options: {}"
-                        .format(expected_value, self.get_all_option_text(sub_xpath)))
+                              .format(expected_value, self.get_all_option_text(sub_xpath)))
 
     def select_option_delay(self, select_xpath, option_value, tag_name="option"):
         option_xpath = select_xpath + "/{}[contains(text(), '{}')]".format(tag_name, option_value)
@@ -216,7 +216,9 @@ class OboePageBase(PageBase):
             partner_list_number = len(self.browser.find_elements_by_xpath(self.PARTNER_LIST_XPATH))
             current_url = self.browser.current_url
 
+            get_logger().info("Click oboe user image")
             self.element_oboe_user_image.click()
+            get_logger().info("Mouse over oboe change partner element")
             self.mouse_over(self.element_change_partner)
 
             for partner_number in range(1, partner_list_number + 1):
@@ -233,6 +235,10 @@ class OboePageBase(PageBase):
             changed_partner = self.get_element(self.PARTNER_TEXT_XPATH).text
             get_logger().info("The partner is changed from {} to {}".format(original_partner, to_partner))
             assert_that(changed_partner, "Failed to change partner.").is_equal_to(to_partner)
+        else:
+            get_logger().info(
+                "Current partner is {}, which is same as to partner {}, no need to change partner in oboe".format(
+                    self.current_partner, to_partner))
 
     def search_student_by_username(self, username):
         get_logger().info("Search student by username: {}".format(username))

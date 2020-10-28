@@ -63,9 +63,60 @@ def test_delete_class():
     delete_class(detail['ScheduledClass_id'], class_category='F2F')
 
 
+def test_schedule_class_F2F_VIP():
+    set_environment('uatcn')
+    set_partner('cool')
+
+    schedule_date = get_future_date(1)  # tomorrow
+
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='QA_T1C',
+                            class_category='F2F',
+                            is_vip_class=True)
+
+    get_logger().info(detail)
+    assert detail is not None
+
+    # change partner
+    set_partner('mini')
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='QA_T2C',
+                            class_category='F2F',
+                            is_vip_class=True)
+
+    get_logger().info(detail)
+    assert detail is not None
+
+
+def test_schedule_class_Teacher_Review():
+    set_environment('uatcn')
+    set_partner('cool')
+
+    schedule_date = get_future_date(1)  # tomorrow
+
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='QA_T1C',
+                            class_category='1:1 Teacher Review')
+
+    get_logger().info(detail)
+    assert detail is not None
+
+
+def test_schedule_class_with_capacity_reset():
+    set_environment('staging')
+    set_partner('cool')
+
+    schedule_date = get_future_date(1)  # tomorrow
+    detail = schedule_class(schedule_date=schedule_date,
+                            school_name='SH_PSQ',
+                            class_category='Workshop', capacity=0)
+
+    get_logger().info(detail)
+    assert detail is not None
+
+
 def test_create_teacher():
     set_environment('uat')
     set_partner('cool')
     is_teacher_exist('Auto_Test')
     create_teacher_by_school(school_id=155, teacher_name='Auto_Test')
-

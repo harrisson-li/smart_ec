@@ -22,7 +22,9 @@ def schedule_class(**kwargs):
                                                             class_category,
                                                             class_type (default = None),
                                                             class_topic (default = None),
-                                                            is_preview (default = False)
+                                                            is_preview (default = False),
+                                                            is_online_attending=False,
+                                                            is_vip_class=False
 
     :param kwargs: more detail please check function doc and unit tests.
     :return: will return the schedule id if success
