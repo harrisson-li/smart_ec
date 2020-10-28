@@ -344,10 +344,3 @@ def level_number_map(level_number=1):
         return '0B'
     else:
         return str(level_number - 2)
-
-
-def get_user_roles(user_name):
-    """
-    Get user all roles: like CEM, CGM, LCC...
-    """
-    pass
