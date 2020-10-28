@@ -13,6 +13,7 @@ class ScheduleClassServices:
     ScheduleClass = "ScheduledClass"
     GetClassType = "ScheduledClass/GetClassTypeAndScheduledClassTopicByClassCategory"
     GetClassTopic = "ScheduledClass/GetClassTopicByClassTypeId"
+    GetTeacher = "ScheduledClass/GetTeacherListFilteredByClassTypeAndClassCategory"
     GetScheduledClassTopic = "ScheduledClassTopic"
     ScheduleClassTopic = "ScheduledClassTopic/Insert"
     ScheduleSpecifiedClass = "ScheduledClass/Insert"
@@ -27,6 +28,11 @@ class ScheduleClassServices:
     EditScheduledClassTopic = "ScheduledClassTopic/Edit"
     DeleteScheduledClass = "ScheduledClass/Delete"
     DeleteOffSiteClass = "LCOffSite/Delete"
+
+
+class TeacherServices:
+    InsertTeacher = "Smart/Teacher/Insert"
+    GetTeacherList = "Smart/Teacher/GetTeacherList"
 
 
 class ClassInfoServices:
@@ -335,3 +341,10 @@ def level_number_map(level_number=1):
         return '0B'
     else:
         return str(level_number - 2)
+
+
+def get_user_roles(user_name):
+    """
+    Get user all roles: like CEM, CGM, LCC...
+    """
+    pass

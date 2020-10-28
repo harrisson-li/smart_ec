@@ -8,6 +8,7 @@ The major method you can use:
    if not class topic scheduled ahead will schedule a new one for you
 
 """
+import string
 from random import choice, randint
 
 from assertpy import assert_that
@@ -20,6 +21,7 @@ from ectools.oboe.request_helper import post_request, ScheduleClassServices, is_
 from ectools.oboe.utils import get_future_date, get_year_week_code, get_week_day, get_available_week_type
 from ectools.oboe.utils import search_html_strings, parse_timeslot_format, get_class_category_id
 from .schedule_class_topic_service import schedule_class_topic_if_needed
+from .teacher_services import create_teacher_by_school, is_teacher_exist
 
 SCHEDULE_CONFLICT_ERROR = "Another class has been scheduled"
 TEACHER_CONFLICT_ERROR = "for the selected teacher."
@@ -136,7 +138,13 @@ def schedule_regular_class(schedule_date, school_name, class_category,
 
                 if TEACHER_CONFLICT_ERROR in str(response):
                     get_logger().debug('Retry due to teacher conflict...')
-                    data['Teacher_id'] = teacher_ids.pop()
+
+                    if teacher_ids:
+                        data['Teacher_id'] = teacher_ids.pop()
+                    else:
+                        get_logger().info('No available teacher, need create a new one.')
+                        data['Teacher_id'] = _create_teacher(class_category_id,
+                                                             school_name, type_info['ClassType_id'])
 
                 if CLASSROOM_CONFLICT_ERROR in str(response):
                     get_logger().debug('Retry due to classroom conflict...')
@@ -193,6 +201,18 @@ def _read_available_topics(schedule_date, school_id, class_type_id):
     return post_request(ScheduleClassServices.GetClassTopic, data)
 
 
+def _read_available_teachers(class_category_id, school_id, class_type_id):
+    """api = ScheduledClass/GetTeacherListFilteredByClassTypeAndClassCategory"""
+
+    data = {
+        "schoolId": school_id,
+        "classCategoryId": class_category_id,
+        "classTypeId": class_type_id,
+    }
+
+    return post_request(ScheduleClassServices.GetTeacher, data)
+
+
 def _select_class_type_info(info, class_type_name):
     """method to select proper class type id."""
     assert isinstance(info, dict) and 'ClassTypes' in info
@@ -211,6 +231,32 @@ def _select_scheduled_class_topic_info(info, class_topic_name):
         info = [x for x in info if class_topic_name in x['ClassTopicName']]
 
     return choice(info) if info else None
+
+
+def _select_teacher_info(info, teacher_name):
+    """method to select proper teacher info."""
+    assert isinstance(info, list)
+    if teacher_name:
+        info = [x for x in info if teacher_name in x['TeacherName']]
+
+    return choice(info) if info else None
+
+
+def _create_teacher(class_category_id, school_name, class_type_id):
+    school_id = get_school_by_name(school_name, ignore_socn=True)['id']
+
+    while True:
+        teacher_name = 'Auto_' + ''.join([choice(string.ascii_letters + string.digits) for i in range(4)])
+        if not is_teacher_exist(teacher_name):
+            break
+
+    create_teacher_by_school(school_id, teacher_name)
+    get_logger().debug('Create {0} teacher for {1} success.'.format(teacher_name, school_name))
+
+    teacher_infos = _read_available_teachers(class_category_id, school_id, class_type_id)
+    teacher_id = _select_teacher_info(teacher_infos, teacher_name)['TeacherId']
+
+    return teacher_id
 
 
 def _publish_class(school_id, week_code):
