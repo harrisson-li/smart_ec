@@ -73,6 +73,7 @@ class ClassBookingStatusId:
     CANCELLED = "4"
     WAITING = "6"
     NO_SHOW_LATE = "8"
+    WAITING_FAILED = "10"
     TENTATIVELY_BOOKED = "11"
     STAND_BY = "12"
 
