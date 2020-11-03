@@ -14,6 +14,7 @@ class ScheduleClassServices:
     ScheduleClass = "ScheduledClass"
     GetClassType = "ScheduledClass/GetClassTypeAndScheduledClassTopicByClassCategory"
     GetClassTopic = "ScheduledClass/GetClassTopicByClassTypeId"
+    GetTeacher = "ScheduledClass/GetTeacherListFilteredByClassTypeAndClassCategory"
     GetScheduledClassTopic = "ScheduledClassTopic"
     ScheduleClassTopic = "ScheduledClassTopic/Insert"
     ScheduleSpecifiedClass = "ScheduledClass/Insert"
@@ -28,6 +29,11 @@ class ScheduleClassServices:
     EditScheduledClassTopic = "ScheduledClassTopic/Edit"
     DeleteScheduledClass = "ScheduledClass/Delete"
     DeleteOffSiteClass = "LCOffSite/Delete"
+
+
+class TeacherServices:
+    InsertTeacher = "Smart/Teacher/Insert"
+    GetTeacherList = "Smart/Teacher/GetTeacherList"
 
 
 class ClassInfoServices:

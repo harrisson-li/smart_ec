@@ -2,6 +2,7 @@ from ectools.config import set_environment, set_partner
 from ectools.logger import get_logger
 from ectools.oboe.schedule_class_helper import schedule_class_topic, schedule_class, get_year_week_code, \
     get_future_date, delete_class
+from ectools.oboe.schedule_class_services.teacher_services import create_teacher_by_school, is_teacher_exist
 
 
 def test_schedule_class_topic():
@@ -112,3 +113,10 @@ def test_schedule_class_with_capacity_reset():
 
     get_logger().info(detail)
     assert detail is not None
+
+
+def test_create_teacher():
+    set_environment('uat')
+    set_partner('cool')
+    is_teacher_exist('Auto_Test')
+    create_teacher_by_school(school_id=155, teacher_name='Auto_Test')
