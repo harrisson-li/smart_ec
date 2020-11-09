@@ -351,7 +351,10 @@ def enroll_account(username, password, force=False, level_code='0A'):
         r = s.post(url=url, data=d)
 
         if r.status_code == HTTP_STATUS_OK and r.json()['success']:
-            redirect_url = r.json()['redirect']
+            if config.domain == 'HK':
+                redirect_url = config.etown_root + r.json()['redirect']
+            else:
+                redirect_url = r.json()['redirect']
             redirect_result = s.get(redirect_url, allow_redirects=True)
         else:
             raise ValueError('Fail to login with user {} / {}! '.format(student_username, student_password) + r.text)
