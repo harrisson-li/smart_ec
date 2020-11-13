@@ -337,7 +337,7 @@ def _api_get_accounts_by_tag(tag, expiration_days=None):
 
 
 def _db_get_accounts_by_tag(tag, expiration_days=None):
-    sql = "select * from ec_test_accounts where environment = {}".format(config.env)
+    sql = "select * from ec_test_accounts where environment = '{}'".format(config.env)
     sql += " and tags like '%{}%'".format(tag)
 
     if expiration_days:
