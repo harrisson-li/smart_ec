@@ -86,6 +86,8 @@ def set_environment(env):
 
     :param env: should be one of 'UAT', 'QA', 'Staging', 'Live'
     """
+    if 'QA' in env and config.partner.lower() in ('cehk', 'indo'):
+        config.domain = 'hk'
     env = get_environment(env, config.domain)
     config.env = env['name']
     _setup()
@@ -117,6 +119,8 @@ def _setup():
     config.base_dir = dirname(abspath(__file__))
     config.data_dir = join(config.base_dir, config.data_dir)
     config.database = get_database(config.env, config.domain)
+    if 'QA' in config.env and config.partner.lower() in ('cehk', 'indo'):
+        config.domain = 'hk'
     env = get_environment(config.env, config.domain)
     config.etown_root = env['etown_url']
     config.etown_root_http = config.etown_root.replace('https', 'http')
