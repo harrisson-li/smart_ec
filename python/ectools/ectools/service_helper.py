@@ -587,21 +587,41 @@ def parse_xml(response_xml):
     return info
 
 
-def get_student_info_by_graphql(student, info):
+def get_info_by_graphql(student, query, variables=None, operation_name=None):
     troop_service_helper.login(student.username, student.password)
     client = troop_service_helper.get_request_session(student.username)
-
-    data = {"variables": {},
-            "query": "{student {" + info + "}}"}
+    data = {
+        "operationName": operation_name,
+        "variables": variables or {},
+        "query": query
+    }
     graphql_url = config.etown_root + GRAPHQL_SERVICE_URL + '?token={}'.format(get_token())
-
     graphql_result = no_ssl_requests().post(graphql_url,
                                             data=json.dumps(data),
                                             headers={"X-EC-CMUS": client.cookies['CMus'],
                                                      "X-EC-SID": client.cookies['et_sid'],
                                                      "X-EC-LANG": "en"})
+    return graphql_result.json()["data"]
 
-    return graphql_result.json()["data"]["student"][info]
+
+def get_student_info_by_graphql(student, info):
+    params = {
+        "query": "{student {" + info + "}}"
+    }
+    result = get_info_by_graphql(student, **params)
+    return result["student"][info]
+
+
+def get_school_info_by_graphql(student, dates, fields):
+    params = {
+        "query": (
+            "query GQLQuerySchoolList($selectedDates: [Date!]) {" + "...schoolList }" +
+            "fragment schoolList on Query { schoolList(selectedDates: $selectedDates){" + "%s }" % fields + "}"),
+        "operation_name": "GQLQuerySchoolList",
+        "variables": {"selectedDates": dates}
+    }
+    result = get_info_by_graphql(student, **params)
+    return result["schoolList"]
 
 
 def get_student_coupon_info(student_id):
@@ -1142,4 +1162,3 @@ def get_student_timezone(student_id):
         return Timezone.MOSCOW
     else:
         return Timezone.BOSTON
-
