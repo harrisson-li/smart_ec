@@ -323,7 +323,7 @@ def account_service_load_student(student_name_or_id):
     for key, value in response.items():
         if isinstance(value, str) and re.match(r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}:\d{1,2}', value):
             # value = eg. '3/15/2017 3:42:00 AM'
-            if config.domain == 'HK':
+            if config.domain.lower() == 'hk':
                 value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S").strftime(datetime_format)
             else:
                 value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S %p").strftime(datetime_format)
