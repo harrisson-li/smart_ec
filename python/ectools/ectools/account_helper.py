@@ -13,7 +13,7 @@ Here is a quick example to play with this module::
   student = convert_account_to_object(account, Student, Product, School)  # Product and School are optional
   print(student.member_id)
   print(student.school.name)
-  
+
   # or you might want to reuse an account, default expiration days = 365
   account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will activate one if not existed
   account = get_or_activate_account(tag='ECS-1254', is_v2=True)  # will return same one if not expired
@@ -39,11 +39,11 @@ def get_or_activate_account(tag, expiration_days=360, method='activate_account',
     """
     To get an account with specified tag, if not exist or expired will activate a new one.
     If the account is found by tag, it will contains a key named: found_by_tag.
-    
+
     :param tag: Specified tag to search a test account.
     :param expiration_days: Will activate a new one if cannot get within expiration days.
     :param method: method to activate account, can be any activation method in this module.
-    :param kwargs: Arguments for method **activate_account**.  
+    :param kwargs: Arguments for method **activate_account**.
     """
     accounts = get_accounts_by_tag(tag)
 
@@ -351,7 +351,7 @@ def enroll_account(username, password, force=False, level_code='0A'):
         r = s.post(url=url, data=d)
 
         if r.status_code == HTTP_STATUS_OK and r.json()['success']:
-            if config.domain == 'HK':
+            if config.domain.lower() == 'hk':
                 redirect_url = config.etown_root + r.json()['redirect']
             else:
                 redirect_url = r.json()['redirect']
