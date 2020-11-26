@@ -324,7 +324,7 @@ def account_service_load_student(student_name_or_id):
         if isinstance(value, str) and re.match(r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}:\d{1,2}', value):
             # value = eg. '3/15/2017 3:42:00 AM'
             if config.domain.lower() == 'hk':
-                value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S").strftime(datetime_format)
+                value = datetime.strptime(value, "%m/%d/%Y %H:%M:%S").strftime(datetime_format)
             else:
                 value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S %p").strftime(datetime_format)
         info[camelcase_to_underscore(key)] = value
