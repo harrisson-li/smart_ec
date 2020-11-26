@@ -416,3 +416,15 @@ def test_activate_indo_smart_plus_pro():
     assert student['is_smart_plus']
     assert not student['is_e19']
     assert student['is_s18']
+
+
+def test_activate_indo_smart_plus_flex_vip():
+    set_environment('uat')
+    set_partner('indo')
+    student = activate_smart_plus_flex_vip_student()
+    assert student['partner'] == 'Indo'
+    assert student['is_smart_plus']
+    assert not student['is_e19']
+    assert student['is_s18']
+    assert student['product']['id'] == 184
+    assert student['activation_data']['RedemptionQty'] == 90

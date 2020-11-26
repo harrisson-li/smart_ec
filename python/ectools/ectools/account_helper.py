@@ -568,8 +568,8 @@ def activate_smart_plus_pro_student(**kwargs):
 
 
 def activate_smart_plus_flex_pl_student(**kwargs):
-    kwargs['is_s18'] = False
-    kwargs['is_e19'] = True
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
     # For Flex and Pro both use same product id but use different redemption code
@@ -588,8 +588,8 @@ def activate_smart_plus_flex_pl_student(**kwargs):
 
 
 def activate_smart_plus_flex_gl_student(**kwargs):
-    kwargs['is_s18'] = False
-    kwargs['is_e19'] = True
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
     # For Flex and Pro both use same product id but use different redemption code
@@ -608,8 +608,8 @@ def activate_smart_plus_flex_gl_student(**kwargs):
 
 
 def activate_smart_plus_flex_vip_student(**kwargs):
-    kwargs['is_s18'] = False
-    kwargs['is_e19'] = True
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
     # smart plus flex vip has different redemption code,
@@ -628,8 +628,8 @@ def activate_smart_plus_flex_vip_student(**kwargs):
 
 
 def activate_smart_plus_school_vip_student(**kwargs):
-    kwargs['is_s18'] = False
-    kwargs['is_e19'] = True
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
     # smart plus school vip has different redemption code,

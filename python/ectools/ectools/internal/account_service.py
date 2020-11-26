@@ -272,7 +272,8 @@ or
     qty = int(data['RedemptionQty'])
 
     if qty <= 12:
-        # Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
+        # CN Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
+        # Indo Flex VIP redemption code PHOENIXPECIDM1D duration is not based on 30 days,
         # which can get from table CommerceContent.dbo.PaymentPlanFeature
         def is_flex_vip_pack():
             for pack in phoenix_packs:
@@ -281,7 +282,7 @@ or
 
             return False
 
-        if is_flex_vip_pack():
+        if is_flex_vip_pack() and config.domain == 'CN':
             data['RedemptionQty'] = qty
         else:
             data['RedemptionQty'] = qty * 30
