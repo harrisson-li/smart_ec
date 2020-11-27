@@ -128,11 +128,17 @@ def get_default_product(partner=None, **kwargs):
     else:
         is_smart_plus = False
 
+    if partner.lower() == 'rupe':
+        is_phoenix = True
+    else:
+        is_phoenix = is_smart_plus
+
     return [x for x in get_all_products()
             if is_item_has_tag(x, 'default')
             and x['partner'].lower() == partner.lower()
             and is_item_has_tag(x, 'S18') == is_s18
             and is_item_has_tag(x, 'E19') == is_e19
+            and is_item_has_tag(x, 'Phoenix') == is_phoenix
             and is_item_has_tag(x, 'Smart_Plus') == is_smart_plus][0]
 
 
