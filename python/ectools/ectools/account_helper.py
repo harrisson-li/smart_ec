@@ -647,6 +647,82 @@ def activate_smart_plus_school_vip_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
+def activate_smart_plus_gov_basic_student(**kwargs):
+    kwargs['is_s18'] = True
+    kwargs['is_e19'] = False
+    kwargs['is_smart_plus'] = True
+
+    # create smart plus student, use the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Indo Basic'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_gov_premium_student(**kwargs):
+    kwargs['is_s18'] = True
+    kwargs['is_e19'] = False
+    kwargs['is_smart_plus'] = True
+
+    # create smart plus student, use the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Indo Premium'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_gov_plus_student(**kwargs):
+    kwargs['is_s18'] = True
+    kwargs['is_e19'] = False
+    kwargs['is_smart_plus'] = True
+
+    # create smart plus student, use the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Indo Plus'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_gov_pro_student(**kwargs):
+    kwargs['is_s18'] = True
+    kwargs['is_e19'] = False
+    kwargs['is_smart_plus'] = True
+
+    # create smart plus student, use the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Indo Pro'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
 def activate_e19_student(**kwargs):
     kwargs['is_s18'] = False
     kwargs['is_e19'] = True
