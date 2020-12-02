@@ -192,6 +192,13 @@ def is_flex_pl_or_pro_for_support(phoenix_packs):
     return False
 
 
+def is_gov_basic_pack(phoenix_packs):
+    for pack in phoenix_packs:
+        if 'Smart Plus - Indo Basic' in pack:
+            return True
+    return False
+
+
 def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
     """
 
@@ -288,6 +295,9 @@ or
             data['RedemptionQty'] = qty * 30
 
     if is_flex_pl_or_pro_for_support(phoenix_packs):
+        data['RedemptionQty'] = qty
+
+    if is_gov_basic_pack(phoenix_packs):
         data['RedemptionQty'] = qty
 
     # legal duration = main redemption qty
