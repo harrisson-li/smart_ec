@@ -440,6 +440,7 @@ def test_activate_indo_smart_plus_gov_basic():
     assert student['is_s18']
     assert student['product']['id'] == 184
     assert student['activation_data']['RedemptionCode'] == 'PHOENIXPECIDNM90D'
+    assert student['activation_data']['RedemptionQty'] == 3
 
 
 def test_activate_indo_smart_plus_gov_pro():
