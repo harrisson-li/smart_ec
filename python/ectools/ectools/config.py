@@ -86,7 +86,7 @@ def set_environment(env):
 
     :param env: should be one of 'UAT', 'QA', 'Staging', 'Live'
     """
-    if 'QA' in env and config.partner.lower() in ('cehk', 'indo', 'rupe'):
+    if 'qa' in env.lower() and config.partner.lower() in ('cehk', 'indo', 'rupe'):
         config.domain = 'hk'
     env = get_environment(env, config.domain)
     config.env = env['name']
