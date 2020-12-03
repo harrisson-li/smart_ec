@@ -52,6 +52,10 @@ class ManageClassStatusServices:
     ClassStatusSave = "BookingStatus/SaveForAdmin"
 
 
+class AdminToolsServices:
+    GetToken = "AdminTools/MemberSiteSetting"
+
+
 class StatusCode:
     Success = 200
 
