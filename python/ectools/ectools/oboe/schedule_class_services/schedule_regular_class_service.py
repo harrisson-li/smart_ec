@@ -31,7 +31,7 @@ CLASSROOM_CONFLICT_ERROR = "in the classroom selected."
 # @retry_for_error(error=AssertionError)  # to improve schedule class rate, add retry mechanism
 def schedule_regular_class(schedule_date, school_name, class_category,
                            class_type=None, class_topic=None, capacity=randint(4, 10), is_preview=False,
-                           is_online_attending=False, is_vip_class=False):
+                           is_online_attending=False, is_vip_class=False, start_time=None, end_time=None):
     """
     method to schedule normal class: f2f, ws, apply etc.
     """
@@ -100,13 +100,13 @@ def schedule_regular_class(schedule_date, school_name, class_category,
         'School_id': school_id,
         'LastUpdateUTCDateTicks': '',
         'StartDate': schedule_date,
-        'StartTime': time_slot[0],
-        'EndTime': time_slot[1],
+        'StartTime': start_time or time_slot[0],
+        'EndTime': end_time or time_slot[1],
         'ClassRoom_id': classroom_ids.pop(),
         'Capacity': capacity,
         'ClassCategory_id': class_category_id,
         'ClassType_id': type_info['ClassType_id'],
-        'Teacher_id': teacher_ids.pop(),
+        'Teacher_id': _get_available_teacher(teacher_ids, class_category_id, school_name, type_info['ClassType_id']),
         'LCDescription': '',
         'EnterableClassTopic': '',
         'IsOnlineAttending': False,
@@ -161,12 +161,8 @@ def schedule_regular_class(schedule_date, school_name, class_category,
                 if TEACHER_CONFLICT_ERROR in str(response):
                     get_logger().debug('Retry due to teacher conflict...')
 
-                    if teacher_ids:
-                        data['Teacher_id'] = teacher_ids.pop()
-                    else:
-                        get_logger().info('No available teacher, need create a new one.')
-                        data['Teacher_id'] = _create_teacher(class_category_id,
-                                                             school_name, type_info['ClassType_id'])
+                    data['Teacher_id'] = _get_available_teacher(teacher_ids, class_category_id,
+                                                                school_name, type_info['ClassType_id'])
 
                 if CLASSROOM_CONFLICT_ERROR in str(response):
                     get_logger().debug('Retry due to classroom conflict...')
@@ -280,6 +276,15 @@ def _create_teacher(class_category_id, school_name, class_type_id):
     teacher_id = _select_teacher_info(teacher_infos, teacher_name)['TeacherId']
 
     return teacher_id
+
+
+def _get_available_teacher(teacher_ids, class_category_id, school_name, class_type_id):
+    assert type(teacher_ids) is list
+    if teacher_ids:
+        return teacher_ids.pop()
+    else:
+        get_logger().info('No available teacher, need create a new one.')
+        return _create_teacher(class_category_id, school_name, class_type_id)
 
 
 def _publish_class(school_id, week_code):
