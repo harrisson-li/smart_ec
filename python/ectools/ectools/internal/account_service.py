@@ -20,7 +20,7 @@ from ectools.ecdb_helper_v2 import get_config_value
 from ectools.internal.data_helper import get_phoenix_pack
 from ectools.internal.objects import Configuration
 from ectools.service_helper import account_service_update_info, get_student_active_subscription
-from ectools.oboe.admin_tools_helper import get_token
+from ectools.token_helper import get_token
 from ectools.utility import ignore_error, no_ssl_requests
 from .constants import HTTP_STATUS_OK
 
