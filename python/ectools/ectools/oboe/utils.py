@@ -53,6 +53,7 @@ class ManageClassStatusServices:
 
 
 class AdminToolsServices:
+    TechSupport = "/techsupport"
     GetToken = "AdminTools/MemberSiteSetting"
 
 

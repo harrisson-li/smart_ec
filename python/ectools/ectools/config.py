@@ -88,6 +88,10 @@ def set_environment(env):
     """
     if 'qa' in env.lower() and config.partner.lower() in ('cehk', 'indo', 'rupe'):
         config.domain = 'hk'
+
+    if env.lower() == 'staginghk':
+        config.domain = 'hk'
+
     env = get_environment(env, config.domain)
     config.env = env['name']
     _setup()

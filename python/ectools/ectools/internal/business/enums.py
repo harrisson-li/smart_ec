@@ -87,6 +87,7 @@ class Environments(object):
     STAGINGCN = 'stagingcn'
     LIVE = "live"
     QAHK = 'qahk'
+    STAGINGHK = 'staginghk'
 
 
 class CouponType:
