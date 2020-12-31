@@ -15,6 +15,7 @@ from assertpy import assert_that
 
 from ectools.config import *
 from ectools.internal.business.enums import Partners, ClassCategory, Environments
+from ectools.internal.constants import CITY_ID
 from ectools.internal.data_helper import get_school_by_name
 from ectools.logger import get_logger
 from ectools.oboe.request_helper import post_request, ScheduleClassServices, is_response_success
@@ -62,7 +63,9 @@ def schedule_regular_class(schedule_date, school_name, class_category,
         week_day = get_week_day(schedule_date)
         available_week_type = get_available_week_type(week_day)
 
-    school_id = get_school_by_name(school_name, ignore_socn=True)['id']
+    school_info = get_school_by_name(school_name, ignore_socn=True)
+    school_id = school_info['id']
+    city_id = CITY_ID[school_info['city']]
 
     # skip when in live environment
     if config.env != Environments.LIVE and class_category != ClassCategory.TEACHER_REVIEW:
@@ -175,7 +178,7 @@ def schedule_regular_class(schedule_date, school_name, class_category,
             raise ValueError(response)
 
     # after schedule class success, we should publish the class
-    _publish_class(school_id, week_code)
+    _publish_class(city_id, school_id, week_code)
     get_logger().info('The scheduled class id is: {}'.format(scheduled_class_id))
 
     # return the whole schedule class detail
@@ -287,10 +290,15 @@ def _get_available_teacher(teacher_ids, class_category_id, school_name, class_ty
         return _create_teacher(class_category_id, school_name, class_type_id)
 
 
-def _publish_class(school_id, week_code):
+def _publish_class(city_id, school_id, week_code):
     data = {
+        "pageScroll": "",
+        "PageStatus": None,
+        "PageMessage": "",
+        "currentCityId": city_id,
         "currentSchoolId": school_id,
-        "currentWeekCode": week_code
+        "currentWeekCode": week_code,
+        "viewMode": "Full"
     }
 
     response = post_request(ScheduleClassServices.ScheduleClassPublish, data)
@@ -306,7 +314,7 @@ def delete_class(class_id):
     """
     data = {'scheduledclass_id': class_id,
             'isMandatory': True
-    }
+            }
     response = post_request(ScheduleClassServices.DeleteScheduledClass, data)
     assert is_response_success(response), response
     get_logger().debug('Delete class success')
