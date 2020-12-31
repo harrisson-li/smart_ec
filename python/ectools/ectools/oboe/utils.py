@@ -260,8 +260,8 @@ def get_year_week_code(date_str=None):
     should_adjust = first_day_of_the_year[0] != date_time.year
 
     week_info = date(date_time.year, date_time.month, date_time.day).isocalendar()
-    year = str(week_info[0])[2:]
-    week = week_info[1] + 1 if should_adjust else week_info[1]
+    year = str(week_info[0] + 1 if should_adjust else week_info[0])[2:]
+    week = 1 if should_adjust else week_info[1]
 
     return "{0}{1:02d}".format(year, week)
 
