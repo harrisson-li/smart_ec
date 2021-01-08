@@ -28,12 +28,9 @@ def refund_smart_plus_student(student_id, refund_type):
     url = S18_REFUND_URL.format(config.etown_root)
     data = {"MemberId": student_id, "RefundType": refund_type}
     result = Session().post(url, json=data)
-    assert result.status_code == HTTP_STATUS_OK, result.text
 
-    if 'Success' in result.text:
-        get_logger().info('{0} student:{1} success!'.format(refund_type, student_id))
-    else:
-        get_logger().info('{0} student:{1} failed!'.format(refund_type, student_id))
+    assert 'Success' in result.text, result.text
+    get_logger().info('{0} student:{1} success!'.format(refund_type, student_id))
 
 
 def deactivate_phoenix_student(student_id, order_id=None, order_product_id=None, deactivate_pack_type=None):
@@ -48,10 +45,7 @@ def deactivate_phoenix_student(student_id, order_id=None, order_product_id=None,
     data = {"MemberId": student_id, "OrderId": order_id, "OrderProductIds": order_product_id,
             "DeactivatePackageType": deactivate_pack_type}
     result = Session().post(url, json=data)
-    assert result.status_code == HTTP_STATUS_OK, result.text
 
-    if 'Success' in result.text:
-        get_logger().info('Deactivate {0} student:{1} success!'.format(deactivate_pack_type, student_id))
-    else:
-        get_logger().info('Deactivate {0} student:{1} failed!'.format(deactivate_pack_type, student_id))
+    assert 'Success' in result.text, result.text
+    get_logger().info('Deactivate {0} student:{1} success!'.format(deactivate_pack_type, student_id))
 
