@@ -404,6 +404,24 @@ def adjust_coupon(student_id, coupon_tye, adjust_count):
     assert "Success" in response.text, response.text
 
 
+def append_ccb(student_id, school_id, city_id=None, country_id=None):
+    """
+    increase or reduce the coupon count
+    :param student_id:
+    :param school_id:
+    :param city_id:
+    :param country_id:
+    :return:
+    """
+    url = '{}/services/oboe2/salesforce/test/AppendCCB?token={}'.format(config.etown_root, get_token())
+    data = {
+        'memberId': student_id, 'schoolId': school_id, 'cityId': city_id, 'countryId': country_id
+    }
+
+    response = no_ssl_requests().post(url, data=data)
+    assert "Success" in response.text, response.text
+
+
 def call_troop_command_service(student_name,
                                command_url,
                                data,
