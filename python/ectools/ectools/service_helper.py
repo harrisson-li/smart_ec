@@ -147,9 +147,6 @@ def get_student_info(student_id):
     info.update(more_info)
     info['username'] = info['user_name']
 
-    more_info = score_helper_load_student(student_id)
-    info.update(more_info)
-
     info = {k: v for k, v in info.items() if v is not None}
 
     # dict key name refine
