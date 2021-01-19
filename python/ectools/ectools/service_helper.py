@@ -19,8 +19,7 @@ from ectools.internal.business.enums import Timezone
 from ectools.internal.business.time_helper import get_current_china_date_time, convert_utc_to_target_timezone
 from ectools.internal.constants import HTTP_STATUS_OK
 from ectools.internal.troop_service_helper import DEFAULT_PASSWORD
-from ectools.oboe.admin_tools_helper import get_token
-from ectools.token_helper import get_site_version
+from ectools.token_helper import get_token, get_site_version
 from ectools.utility import camelcase_to_underscore, no_ssl_requests
 from lxml import etree
 

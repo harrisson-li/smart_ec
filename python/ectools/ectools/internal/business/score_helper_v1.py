@@ -1,5 +1,5 @@
 from ectools.logger import get_logger
-from ectools.oboe.admin_tools_helper import get_token
+from ectools.token_helper import get_token
 from ectools.utility import get_score, get_browser, retry_for_error
 from ..objects import *
 from ..pages.score_helper_page_v1 import SubmitScoreHelperS15Page as CurrentPage
