@@ -59,7 +59,7 @@ To get or set logging behavior, you could take the advantage of `get_logger()` m
 -----
 
 """
-from os.path import dirname, join, abspath
+from os.path import dirname, abspath
 
 from .internal.constants import HTTP_STATUS_OK
 from .internal.data_helper import get_partner, get_environment, get_database
@@ -86,8 +86,10 @@ def set_environment(env):
 
     :param env: should be one of 'UAT', 'QA', 'Staging', 'Live'
     """
-    if 'qa' in env.lower() and config.partner.lower() in ('cehk', 'indo', 'rupe'):
+    if (('qa' in env.lower() or 'staging' in env.lower() or 'live' in env.lower())
+            and config.partner.lower() in ('cehk', 'indo', 'rupe')):
         config.domain = 'hk'
+
     env = get_environment(env, config.domain)
     config.env = env['name']
     _setup()
