@@ -96,11 +96,14 @@ def schedule_offsite_class(schedule_date, school_name, class_category=ClassCateg
         classroom = choice(classrooms)
 
         data.update({'InCenterSchool_id': school_id,
-                     'InCenterClassroom_id': classroom['Classroom_id'],
-                     'Capacity': classroom['Capacity']})
+                     'InCenterClassroom_id': classroom['Classroom_id']})
+        if not kwargs.get('ignore_classroom_capacity', False):
+            data.update({'Capacity': classroom['Capacity']})
 
     if class_category == ClassCategory.CAE:
         data['ClassType_id'] = 3016
+    if class_category == ClassCategory.EEA:
+        data['ClassType_id'] = 5051
 
     get_logger().debug('detail = {}'.format(data))
     response = post_request(ScheduleClassServices.ScheduleLCOffSiteClass, data)

@@ -42,7 +42,7 @@ def schedule_class(**kwargs):
     if config.partner == Partners.SOCN:
         set_partner(partner)
 
-    if class_category in [ClassCategory.LC, ClassCategory.CAE]:
+    if class_category in [ClassCategory.LC, ClassCategory.CAE, ClassCategory.EEA]:
         return schedule_offsite_class(**kwargs)
     else:
         return schedule_regular_class(**kwargs)
