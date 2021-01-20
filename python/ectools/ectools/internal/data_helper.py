@@ -334,6 +334,24 @@ def get_school_by_name(name, cached=False, ignore_socn=True):
         return found[0]
 
 
+def get_school_by_id(id, cached=False, ignore_socn=True):
+    """id should be int."""
+    found = [x for x in get_all_schools(cached=cached) if x['id'] == id]
+    assert len(found), "No such school: {}!".format(id)
+
+    # just return if only one match
+    if len(found) == 1:
+        return found[0]
+    else:
+        # filter socn school as it might be duplicate with cool / mini school
+        if ignore_socn:
+            found = [x for x in found if x['partner'] != 'Socn']
+        else:  # when check socn student basic info, still need socn partner
+            found = [x for x in found if x['partner'] == 'Socn']
+
+        return found[0]
+
+
 def get_schools_has_tag(tag):
     return get_item_has_tag(get_all_schools(cached=False), tag)
 
