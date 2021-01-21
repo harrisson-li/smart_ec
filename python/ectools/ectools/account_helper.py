@@ -351,7 +351,7 @@ def enroll_account(username, password, force=False, level_code='0A'):
         r = s.post(url=url, data=d)
 
         if r.status_code == HTTP_STATUS_OK and r.json()['success']:
-            if config.domain.lower() == 'hk':
+            if 'uat' not in config.env.lower() and config.domain.lower() != 'cn':
                 redirect_url = config.etown_root + r.json()['redirect']
             else:
                 redirect_url = r.json()['redirect']
