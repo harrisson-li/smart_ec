@@ -21,6 +21,7 @@ class ClassCategory:
     BEGINNER_BASICS_v2 = "Beginner Basics v2"
     F2F_VIP = "F2F Vip"
     TEACHER_REVIEW = "1:1 Teacher Review"
+    EEA = "EEA"
 
 
 class Attribute:

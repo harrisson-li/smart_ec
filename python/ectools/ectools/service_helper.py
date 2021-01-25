@@ -147,9 +147,6 @@ def get_student_info(student_id):
     info.update(more_info)
     info['username'] = info['user_name']
 
-    more_info = score_helper_load_student(student_id)
-    info.update(more_info)
-
     info = {k: v for k, v in info.items() if v is not None}
 
     # dict key name refine
@@ -322,8 +319,8 @@ def account_service_load_student(student_name_or_id):
     info = {}
     for key, value in response.items():
         if isinstance(value, str) and re.match(r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}:\d{1,2}', value):
-            # value = eg. '3/15/2017 3:42:00 AM'
-            if config.domain.lower() == 'hk':
+            # value = eg. '3/15/2017 3:42:00 AM' for UAT env or CN stuent in other environments
+            if 'uat' not in config.env.lower() and config.domain.lower() != 'cn':
                 value = datetime.strptime(value, "%m/%d/%Y %H:%M:%S").strftime(datetime_format)
             else:
                 value = datetime.strptime(value, "%m/%d/%Y %I:%M:%S %p").strftime(datetime_format)
@@ -399,6 +396,24 @@ def adjust_coupon(student_id, coupon_tye, adjust_count):
     data = {'MemberId': student_id,
             'CouponAttribute': "[{\"name\": " + "\"" + coupon_tye + "\"" + ",\"count\": " + str(adjust_count) + "}]"
             }
+
+    response = no_ssl_requests().post(url, data=data)
+    assert "Success" in response.text, response.text
+
+
+def append_ccb(student_id, school_id, city_id=None, country_id=None):
+    """
+    increase or reduce the coupon count
+    :param student_id:
+    :param school_id:
+    :param city_id:
+    :param country_id:
+    :return:
+    """
+    url = '{}/services/oboe2/salesforce/test/AppendCCB?token={}'.format(config.etown_root, get_token())
+    data = {
+        'memberId': student_id, 'schoolId': school_id, 'cityId': city_id, 'countryId': country_id
+    }
 
     response = no_ssl_requests().post(url, data=data)
     assert "Success" in response.text, response.text
