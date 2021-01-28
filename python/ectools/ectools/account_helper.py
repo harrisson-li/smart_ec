@@ -652,7 +652,7 @@ def activate_smart_plus_free_trial_student(**kwargs):
     kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
-    # smart plus school vip has different redemption code,
+    # smart plus free trial has different redemption code,
     # which can only get by the pack name
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
@@ -672,7 +672,7 @@ def activate_smart_plus_free_trial_flex_gl_student(**kwargs):
     kwargs['is_e19'] = True if config.domain == 'CN' else False
     kwargs['is_smart_plus'] = True
 
-    # smart plus school vip has different redemption code,
+    # smart plus free trial flex gl has different redemption code,
     # which can only get by the pack name
     if 'product_id' in kwargs:
         kwargs['product_id'] = None
