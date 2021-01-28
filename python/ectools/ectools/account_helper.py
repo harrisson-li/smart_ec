@@ -647,6 +647,46 @@ def activate_smart_plus_school_vip_student(**kwargs):
     return activate_account_by_dict(kwargs)
 
 
+def activate_smart_plus_free_trial_student(**kwargs):
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
+    kwargs['is_smart_plus'] = True
+
+    # smart plus school vip has different redemption code,
+    # which can only get by the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Free Trial'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
+def activate_smart_plus_free_trial_flex_gl_student(**kwargs):
+    kwargs['is_s18'] = False if config.domain == 'CN' else True
+    kwargs['is_e19'] = True if config.domain == 'CN' else False
+    kwargs['is_smart_plus'] = True
+
+    # smart plus school vip has different redemption code,
+    # which can only get by the pack name
+    if 'product_id' in kwargs:
+        kwargs['product_id'] = None
+
+    if 'product_name' not in kwargs:
+        kwargs['product_name'] = 'Smart Plus - Free Trial - Flex GL'
+
+    if 'school_name' not in kwargs:
+        is_online = not kwargs.get('center_pack', True)
+        kwargs['school_name'] = get_any_phoenix_school(is_virtual=is_online)['name']
+
+    return activate_account_by_dict(kwargs)
+
+
 def activate_smart_plus_gov_basic_student(**kwargs):
     kwargs['is_s18'] = True
     kwargs['is_e19'] = False
