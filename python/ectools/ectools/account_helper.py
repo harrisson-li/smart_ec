@@ -678,7 +678,7 @@ def activate_smart_plus_free_trial_flex_gl_student(**kwargs):
         kwargs['product_id'] = None
 
     if 'product_name' not in kwargs:
-        kwargs['product_name'] = 'Smart Plus - Free Trial - Flex GL'
+        kwargs['product_name'] = 'Smart Plus - Free Trial Flex GL'
 
     if 'school_name' not in kwargs:
         is_online = not kwargs.get('center_pack', True)
