@@ -60,8 +60,27 @@ def book_school_vip_class(student_name, scheduled_class_id):
             _page().element_student_name(scheduled_class_id).clear()
             _page().element_student_name(scheduled_class_id).send_keys(student_name)
 
+        _page().wait_until_xpath_visible(_page().BOOK_BUTTON_XPATH.format(scheduled_class_id))
         _page().get_element_book_button(scheduled_class_id).click()
         _page().wait_until_xpath_visible(_page().CONFIRM_BOOK_POPUP_XPATH)
         _page().element_popup_confirm_button.click()
+    else:
+        raise ValueError("No classes searched.")
+
+
+def book_school_vip_class_failed(student_name, scheduled_class_id):
+    get_logger().info("Book class failed (class_id={}) for student {}".format(scheduled_class_id, student_name))
+    if has_class_searched():
+        student_field = _page().get_student_name(scheduled_class_id)
+        if student_field != student_name:
+            _page().element_student_name(scheduled_class_id).clear()
+            _page().element_student_name(scheduled_class_id).send_keys(student_name)
+
+        _page().wait_until_xpath_visible(_page().BOOK_BUTTON_XPATH.format(scheduled_class_id))
+        _page().get_element_book_button(scheduled_class_id).click()
+        _page().wait_until_xpath_visible(_page().CONFIRM_BOOK_POPUP_XPATH)
+        _page().element_popup_confirm_button.click()
+        _page().wait_until_xpath_visible(_page().ERROR_MESSAGE_POPUP_XPATH)
+        _page().element_popup_close.click()
     else:
         raise ValueError("No classes searched.")

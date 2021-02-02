@@ -16,6 +16,7 @@ class SchoolVipClassBookingPage(PageBase):
     CONFIRM_BOOK_POPUP_XPATH = "//div[@class='popup-book']"
     POPUP_CLOSE_BUTTON_XPATH = "//button[@class='close']"
     POPUP_CONFIRM_BUTTON_XPATH = "//button[@id='popup-book-confirm-button']"
+    ERROR_MESSAGE_POPUP_XPATH = "//div[@class='err-msg']"
 
     def __init__(self, browser, token):
         super(SchoolVipClassBookingPage, self).__init__(browser)
@@ -49,3 +50,7 @@ class SchoolVipClassBookingPage(PageBase):
     @property
     def element_popup_confirm_button(self):
         return self.get_element(self.POPUP_CONFIRM_BUTTON_XPATH)
+
+    @property
+    def element_popup_close(self):
+        return self.get_element(self.POPUP_CLOSE_BUTTON_XPATH)

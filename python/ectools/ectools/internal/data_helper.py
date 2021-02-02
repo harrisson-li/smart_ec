@@ -595,3 +595,18 @@ def get_online_teacher_by_display_name(teacher_display_name):
     found = [x for x in get_all_online_teachers() if teacher_display_name == x['teacher_display_name']]
     assert len(found), "No online teacher found with teacher_display_name = {}!".format(teacher_display_name)
     return found[0]
+
+
+def get_all_booking_limit_infos():
+    if not hasattr(Cache, 'booking_limit_info'):
+        Cache.booking_limit_info = read_data('booking_limit_info')
+    return Cache.booking_limit_info
+
+
+def get_booking_limit_info_by_product_id_and_group_id(product_id, group_id):
+    found = [
+        x for x in get_all_booking_limit_infos()
+        if product_id == x['product_id'] and group_id == x['class_category_group_id']
+    ]
+    assert len(found), "No booking info found with product_id = {} and group_id = {}!".format(product_id, group_id)
+    return found[0]
