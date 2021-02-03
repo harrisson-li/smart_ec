@@ -12,7 +12,7 @@ class DbQueryPage(PageBase):
     LOGIN_NAME = "//input[@id='i0116']"
     LOGIN_PASS = "//input[@id='i0118']"
     LOGIN_NEXT = "//input[@id='idSIButton9']"
-    LOGIN_USER = ('qa.testauto@ef.com', 'test@456')
+    LOGIN_USER = ('svc.qa.testauto@ef.com', 'Test@efec')
 
     def __init__(self, browser, env):
         super().__init__(browser)
@@ -23,10 +23,8 @@ class DbQueryPage(PageBase):
         # self.env = 'qacn', self.env[-2:] = 'cn', self.env[:-2] = 'qa'
         if self.env[-2:] == 'cn':
             self.url_base = "https://{}deepblue2.eflabs.cn/dbquery/{}"
-        elif self.env[-2:] == 'hk':
-            self.url_base = "https://{}deepblue2.eflabs.hk/dbquery/{}"
         else:
-            self.url_base = "https://{}deepblue2.eflabs.io/dbquery/{}"
+            self.url_base = "https://{}deepblue2.eflabs.hk/dbquery/{}"
 
         if self.env == 'live':
             e = ''
