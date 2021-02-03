@@ -1125,7 +1125,7 @@ def convert_to_smart_plus(student_id):
 
     data = {
         'studentId': student_id,
-        'operatorUser': 'qa.testauto',
+        'operatorUser': 'svc.qa.testauto',
         'token': '62c79778-c497-434f-89ab-e6debe4f2a18'
     }
 
