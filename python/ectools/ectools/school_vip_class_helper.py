@@ -47,3 +47,7 @@ def search_school_vip_class(student_id, school_name, class_category, class_date)
 
 def book_school_vip_class(student_name, scheduled_class_id):
     school_vip_booking_helper.book_school_vip_class(student_name, scheduled_class_id)
+
+
+def book_school_vip_class_failed(student_name, scheduled_class_id):
+    school_vip_booking_helper.book_school_vip_class_failed(student_name, scheduled_class_id)
