@@ -427,7 +427,8 @@ def test_activate_indo_smart_plus_flex_vip():
     assert not student['is_e19']
     assert student['is_s18']
     assert student['product']['id'] == 184
-    assert student['activation_data']['RedemptionQty'] == 90
+    assert student['activation_data']['RedemptionCode'] == 'PHOENIXPECIDMAIN'
+    assert student['activation_data']['RedemptionQty'] == 3
 
 
 def test_activate_indo_smart_plus_gov_basic():
