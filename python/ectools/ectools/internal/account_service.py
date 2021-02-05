@@ -206,6 +206,13 @@ def is_smart_plus_free_trial(phoenix_packs):
     return False
 
 
+def is_flex_vip_pack(phoenix_packs):
+    for pack in phoenix_packs:
+        if 'Flex VIP' in pack:
+            return True
+    return False
+
+
 def generate_activation_data_for_phoenix(data, phoenix_packs, is_v1_pack=True, is_smart_plus=False):
     """
 
@@ -286,20 +293,12 @@ or
     qty = int(data['RedemptionQty'])
 
     if qty <= 12:
-        # CN Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days,
-        # Indo Flex VIP redemption code PHOENIXPECIDM1D duration is not based on 30 days,
+        # CN Flex VIP redemption code PHOENIXECCNMAIN duration is based on 30 days.
+        # Indo Flex VIP redemption code PHOENIXPECIDMAIN duration is based on 30 days.
         # which can get from table CommerceContent.dbo.PaymentPlanFeature
-        def is_flex_vip_pack():
-            for pack in phoenix_packs:
-                if 'Flex VIP' in pack:
-                    return True
 
-            return False
-
-        if is_flex_vip_pack() and config.domain == 'CN':
+        if is_flex_vip_pack(phoenix_packs):
             data['RedemptionQty'] = qty
-        else:
-            data['RedemptionQty'] = qty * 30
 
     if is_flex_pl_or_pro_for_support(phoenix_packs):
         data['RedemptionQty'] = qty
