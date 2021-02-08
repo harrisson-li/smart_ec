@@ -44,10 +44,15 @@ def get_token():
 
 
 def get_site_version():
-    result = get_token_page()
-    pattern = '.*siteversion" value="(.*)" />'
+    if config.env.lower() in ('uat', 'uatcn'):
+        return 'development'
+    elif config.env.lower() in ('qa', 'qacn', 'qahk'):
+        return 'qa'
+    else:
+        result = get_token_page()
+        pattern = '.*siteversion" value="(.*)" />'
 
-    try:
-        return get_matched_result(result.text, pattern, 1, '\n')
-    except Exception:
-        raise EnvironmentError("Cannot get site version!")
+        try:
+            return get_matched_result(result.text, pattern, 1, '\n')
+        except Exception:
+            raise EnvironmentError("Cannot get site version!")
