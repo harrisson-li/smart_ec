@@ -63,7 +63,9 @@ def _build_db():
 
 
 def _connect():
-    _build_db()
+    # _build_db()
+    Cache.db_has_built = True
+    _get_db_path()
     if not hasattr(Cache, 'ecdb_conn'):
         Cache.ecdb_conn = sqlite3.connect(Configuration.db_path)
         Cache.ecdb_cur = Cache.ecdb_conn.cursor()
